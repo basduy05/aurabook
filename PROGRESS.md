@@ -13,7 +13,7 @@
 | **Phase 3: Catalog & Books** | Categories, Book listing phân trang, lọc đa tiêu chí, chi tiết sách theo slug | ✅ **COMPLETED** | Commit `6d5ebf7` |
 | **Phase 4: Cart & Sandbox Checkout (UC04)** | Giỏ hàng, Khóa bi quan SELECT FOR UPDATE, Hold kho 15m, Webhook HMAC, Cấp quyền E-book | ✅ **COMPLETED** | Commit `e7036d1` |
 | **Phase 5: DRM E-Book Reader (UC05)** | WebAssembly Canvas Reader, AES-256-GCM Ephemeral Key, AEAD 128-bit Tag, Zero-out RAM, Tiến độ đọc | ✅ **COMPLETED** | 15/15 Pytest Passed, Next.js Reader Ready |
-| **Phase 6: AI RAG & Voice (UC06, UC07)** | Gemini 768d Vector Pipeline, HNSW Hybrid Search, SSE Streaming RAG, Web Speech Voice | ⏳ **PENDING** | Kế hoạch tiếp theo sau Phase 5 |
+| **Phase 6: AI RAG & Voice (UC06, UC07)** | Gemini 768d Vector Pipeline, Cosine Search, SSE Stream RAG, Web Speech Voice Agent | ✅ **COMPLETED** | 19/19 Pytest Passed, Next.js Reader & Voice Widget Ready |
 
 ---
 
@@ -44,3 +44,20 @@ Khi một phiên chat bị dừng giữa chừng (hết token, ngắt kết nố
 1. **Kiểm tra trạng thái Git**: Gõ `git log -n 5` và `git status` tại thư mục gốc của dự án.
 2. **Đọc tài liệu này (PROGRESS.md)**: Xác định Phase nào đang ở trạng thái PENDING tiếp theo.
 3. **Tiếp tục công việc**: Orchestrator sẽ tự động đọc bảng trên và tiếp tục ngay từ Phase 6 mà không phải làm lại từ đầu.
+
+---
+
+## 🤖 Chi Tiết Kỹ Thuật Phase 6 (UC06 & UC07 - AI RAG Companion & Voice Telephony Agent)
+1. **AI RAG Companion (`/api/v1/ai/rag-stream` & `/api/v1/ai/rag/chat`)**:
+   - **Vector Embeddings**: Pipeline sinh vector đặc trưng 768 chiều (L2-normalized) tương thích chuẩn Gemini embedding-004.
+   - **Vector Search Engine**: Thuật toán tìm kiếm độ tương đồng Cosine trên trường `book_chunks.embedding` (ngưỡng tương đồng $\ge 0.70$), trích xuất chính xác số trang làm ngữ cảnh dẫn chứng `[Trang X]`.
+   - **Streaming SSE**: Hỗ trợ Server-Sent Events truyền tải từng token phản hồi trực tiếp tới giao diện đọc sách.
+   - **Giao diện Reader RAG**: Tích hợp sidebar tương tác tại `apps/web/app/reader/[bookId]/page.tsx`, hỗ trợ gợi ý câu hỏi tóm tắt, giải thích thuật ngữ và nhảy tức thì đến trang được trích dẫn.
+
+2. **Voice Telephony Agent (`/api/v1/ai/voice-agent`)**:
+   - **Gemini Function Calling Dispatcher**: Tự động nhận diện ý định khẩu lệnh tiếng Việt của người dùng và gọi các công cụ thực thi:
+     - `cancel_order`: Kiểm tra trạng thái hợp lệ (`PENDING`/`PAID`), hủy đơn hàng, hoàn trả số lượng tồn kho và ghi nhật ký kiểm toán.
+     - `get_order_status`: Tra cứu tiến trình xử lý, thời gian tạo và số tiền đơn hàng.
+     - `check_book_stock`: Tra cứu số lượng tồn kho khả dụng của tựa sách trong danh mục.
+   - **Bảo mật & Kiểm toán**: Model `AuditLog` (`audit_logs`) ghi nhận mọi thao tác nhạy cảm với `user_id`, `action`, `entity_type`, `entity_id` và `details` JSON.
+   - **Giao diện Voice Assistant toàn cục**: Component `apps/web/components/voice-assistant.tsx` gắn tại `apps/web/app/layout.tsx` với Web Speech API nhận dạng giọng nói tiếng Việt (`vi-VN`), tổng hợp giọng đọc (`speechSynthesis`) và hiển thị huy hiệu hàm thực thi minh bạch.

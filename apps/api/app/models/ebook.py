@@ -2,6 +2,7 @@ import uuid
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
+from pgvector.sqlalchemy import Vector
 from sqlalchemy import (
     Boolean,
     DateTime,
@@ -156,6 +157,10 @@ class BookChunk(Base, TimestampMixin):
         Integer,
         default=0,
         nullable=False,
+    )
+    embedding: Mapped[list[float] | None] = mapped_column(
+        Vector(768),
+        nullable=True,
     )
 
     # Relationships

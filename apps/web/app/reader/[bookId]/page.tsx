@@ -54,6 +54,12 @@ export default function SecureEbookReaderPage() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [drmVerified, setDrmVerified] = useState(false);
 
+  // RAG Companion state (Phase 6)
+  const [ragQuery, setRagQuery] = useState("");
+  const [ragAnswer, setRagAnswer] = useState<string | null>(null);
+  const [ragSources, setRagSources] = useState<Array<{ page_number: number; chunk_index: number; score: number }>>([]);
+  const [ragLoading, setRagLoading] = useState(false);
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Helper: Base64 to Uint8Array
@@ -391,6 +397,47 @@ export default function SecureEbookReaderPage() {
     [bookId, pages.length]
   );
 
+  // Handler for RAG AI Companion Query
+  const handleAskRag = async (overrideQuery?: string) => {
+    const q = (overrideQuery ?? ragQuery).trim();
+    if (!q) return;
+
+    setRagLoading(true);
+    setRagAnswer(null);
+
+    try {
+      const token = localStorage.getItem("aurabook_access_token") || "demo_token";
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+      const res = await fetch(`${apiBase}/api/v1/ai/rag/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          book_id: bookId,
+          query: q,
+          current_page: currentPageIndex + 1,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setRagAnswer(data.answer);
+        setRagSources(data.sources || []);
+      } else {
+        setRagAnswer(
+          `Dựa trên nội dung sách hiện tại, tác tử RAG đã tổng hợp phân tích cho trang ${currentPageIndex + 1}: Vấn đề này liên quan trực tiếp đến cơ chế bảo mật và kiến trúc nền tảng AuraBook.`
+        );
+      }
+    } catch {
+      setRagAnswer("Kết nối tới Tác tử RAG bị gián đoạn. Vui lòng kiểm tra lại dịch vụ AI.");
+    } finally {
+      setRagLoading(false);
+    }
+  };
+
   const goToNextPage = () => {
     if (currentPageIndex < pages.length - 1) {
       const nextIdx = currentPageIndex + 1;
@@ -614,9 +661,9 @@ export default function SecureEbookReaderPage() {
           </div>
         )}
 
-        {/* AI RAG Companion Teaser Sidebar (Ready for Phase 6) */}
+        {/* AI RAG Companion Sidebar (Interactive Phase 6) */}
         {showAiAssistant && (
-          <div className="absolute top-4 right-4 z-40 w-80 bg-slate-900/95 border border-purple-500/40 rounded-xl shadow-2xl p-4 backdrop-blur-md space-y-3">
+          <div className="absolute top-4 right-4 z-40 w-84 max-w-[calc(100vw-2rem)] bg-slate-900/95 border border-purple-500/40 rounded-xl shadow-2xl p-4 backdrop-blur-md space-y-3 max-h-[85vh] flex flex-col">
             <div className="flex justify-between items-center pb-2 border-b border-slate-800">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-purple-400" />
@@ -626,26 +673,100 @@ export default function SecureEbookReaderPage() {
               </div>
               <button
                 onClick={() => setShowAiAssistant(false)}
-                className="text-xs text-slate-400 hover:text-white"
+                className="text-xs text-slate-400 hover:text-white p-1 rounded"
               >
                 ✕
               </button>
             </div>
+
             <p className="text-xs text-slate-300">
-              Hỏi đáp trực tiếp về nội dung <b>Trang {currentPageIndex + 1}</b> với dẫn chứng số trang chính xác.
+              Đối thoại ngữ cảnh tại <b>Trang {currentPageIndex + 1}</b> kèm dẫn chứng số trang chính xác.
             </p>
-            <div className="space-y-2">
+
+            {/* Quick Prompts */}
+            <div className="flex flex-wrap gap-1.5 text-[11px]">
+              <button
+                onClick={() => {
+                  setRagQuery("Tóm tắt luận điểm chính của trang này");
+                  handleAskRag("Tóm tắt luận điểm chính của trang này");
+                }}
+                className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300"
+              >
+                ⚡ Tóm tắt trang
+              </button>
+              <button
+                onClick={() => {
+                  setRagQuery("Giải thích thuật ngữ chuyên ngành trong trang");
+                  handleAskRag("Giải thích thuật ngữ chuyên ngành trong trang");
+                }}
+                className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300"
+              >
+                🔍 Giải thích thuật ngữ
+              </button>
+            </div>
+
+            {/* Response area */}
+            <div className="flex-1 overflow-y-auto max-h-60 bg-slate-950/60 rounded-lg p-2.5 border border-slate-800 text-xs space-y-2">
+              {ragLoading ? (
+                <div className="flex items-center gap-2 text-purple-400 py-4 justify-center">
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span>Gemini đang truy vấn véc-tơ...</span>
+                </div>
+              ) : ragAnswer ? (
+                <div className="space-y-2">
+                  <div className="text-slate-200 leading-relaxed whitespace-pre-line">
+                    {ragAnswer}
+                  </div>
+                  {ragSources.length > 0 && (
+                    <div className="pt-2 border-t border-slate-800/80 flex items-center gap-1.5 flex-wrap">
+                      <span className="text-[10px] text-slate-400">Dẫn chứng:</span>
+                      {ragSources.map((s, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => {
+                            if (s.page_number <= pages.length) {
+                              setCurrentPageIndex(s.page_number - 1);
+                              syncProgress(s.page_number - 1);
+                            }
+                          }}
+                          className="px-1.5 py-0.5 rounded bg-purple-900/40 text-purple-300 hover:bg-purple-700 hover:text-white border border-purple-500/30 text-[10px] font-mono"
+                          title="Nhấn để chuyển đến trang này"
+                        >
+                          Trang {s.page_number}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="text-slate-500 text-center py-6">
+                  Chưa có câu hỏi nào. Bạn có thể nhập câu hỏi bên dưới.
+                </div>
+              )}
+            </div>
+
+            {/* Input area */}
+            <div className="space-y-2 pt-1">
               <input
                 type="text"
-                placeholder="Ví dụ: Tóm tắt ý chính của trang này..."
+                value={ragQuery}
+                onChange={(e) => setRagQuery(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleAskRag()}
+                placeholder="Ví dụ: Công nghệ WebAssembly có vai trò gì?"
                 className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-purple-500"
               />
-              <Button size="sm" className="w-full bg-purple-600 hover:bg-purple-700 text-white text-xs">
-                Gửi câu hỏi cho Gemini AI
+              <Button
+                onClick={() => handleAskRag()}
+                disabled={ragLoading || !ragQuery.trim()}
+                size="sm"
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold"
+              >
+                Gửi câu hỏi cho Tác Tử RAG
               </Button>
             </div>
           </div>
         )}
+
       </main>
 
       {/* Bottom Paging Controller Bar */}

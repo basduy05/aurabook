@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.routers import auth, cart, catalog, ebooks, health, orders, payments
+from app.routers import ai, auth, cart, catalog, ebooks, health, orders, payments
 
 api_v1_router = APIRouter()
 
@@ -24,3 +24,6 @@ api_v1_router.include_router(payments.router)
 
 # 7. E-Books & DRM WASM Reader (UC05)
 api_v1_router.include_router(ebooks.router)
+
+# 8. AI Multimodal Agents (UC06, UC07)
+api_v1_router.include_router(ai.router)

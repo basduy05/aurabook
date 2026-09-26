@@ -1,3 +1,4 @@
+from app.models.audit import AuditLog
 from app.models.base import Base, TimestampMixin
 from app.models.catalog import Book, BookFormat, Category
 from app.models.ebook import BookChunk, EbookAccess, ReadingProgress, Review
@@ -33,4 +34,5 @@ __all__ = [
     "ReadingProgress",
     "BookChunk",
     "Review",
+    "AuditLog",
 ]

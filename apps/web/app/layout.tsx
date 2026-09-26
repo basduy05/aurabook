@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { VoiceAssistant } from "@/components/voice-assistant";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,6 +20,7 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className={`${inter.className} min-h-screen antialiased bg-slate-950 text-slate-100`}>
         {children}
+        <VoiceAssistant />
       </body>
     </html>
   );
