@@ -68,14 +68,14 @@ Khi một phiên chat bị dừng giữa chừng (hết token, ngắt kết nố
 
 | Mã UC | Tên nghiệp vụ chuẩn | Trạng thái Backend | Trạng thái Frontend | Ghi chú kỹ thuật |
 | :---: | :--- | :---: | :---: | :--- |
-| **UC01** | Đăng ký & Đăng nhập JWT | ✅ **100% Hoàn thành** | ⏳ Chưa ghép Form UI | Bcrypt, Access (1d) + Refresh (7d), RBAC |
-| **UC02** | Tìm kiếm lai RRF (BM25 + 768d Vector) | ✅ **100% Hoàn thành** | ⏳ Chưa có Search Bar UI | Hợp nhất điểm RRF k=60 song song Lexical + 768d Cosine |
-| **UC03** | Nghe thử âm thanh tóm tắt AI Teaser | ✅ **100% Hoàn thành** | ⏳ Chưa có Audio Player | Endpoint GET /api/v1/books/{id}/audio-teaser (WAV data URI) |
+| **UC01** | Đăng ký & Đăng nhập JWT | ✅ **100% Hoàn thành** | ✅ **100% Hoàn thành** | Bcrypt, Access (1d) + Refresh (7d), RBAC |
+| **UC02** | Tìm kiếm lai RRF (BM25 + 768d Vector) | ✅ **100% Hoàn thành** | ✅ **100% Hoàn thành** | Hợp nhất điểm RRF k=60 song song Lexical + 768d Cosine |
+| **UC03** | Nghe thử âm thanh tóm tắt AI Teaser | ✅ **100% Hoàn thành** | ✅ **100% Hoàn thành** | Endpoint GET /api/v1/books/{id}/audio-teaser (WAV data URI) |
 | **UC04** | Đặt hàng & Thanh toán Sandbox | ✅ **100% Hoàn thành** | 🟡 Đã có Simulator HTML | SELECT FOR UPDATE, Hold 15m, Webhook IPN |
 | **UC05** | Đọc E-book WASM Canvas DRM | ✅ **100% Hoàn thành** | ✅ **100% Hoàn thành** | Khóa phiên AES-GCM AEAD Tag, Canvas RAM zero-out |
 | **UC06** | Tác tử RAG Companion đối thoại | ✅ **100% Hoàn thành** | ✅ **100% Hoàn thành** | 768d Cosine Search, SSE Stream, Dẫn chứng trang |
 | **UC07** | Tác tử Thoại Voice AI Function Calling | ✅ **100% Hoàn thành** | ✅ **100% Hoàn thành** | Gemini Function Calling, Hoàn kho, Audit Log |
-| **UC08** | Đánh giá & Bình luận sách đã mua | ✅ **100% Hoàn thành** | ⏳ Chưa có Review UI | Xác thực đơn PAID, lọc từ cấm thô tục, tính avg_rating |
+| **UC08** | Đánh giá & Bình luận sách đã mua | ✅ **100% Hoàn thành** | ✅ **100% Hoàn thành** | Xác thực đơn PAID, lọc từ cấm thô tục, tính avg_rating |
 | **UC09** | Quản trị danh mục ấn phẩm (Admin) | ✅ **100% Hoàn thành** | ⏳ Chưa có Admin UI | CRUD ấn phẩm, điều chỉnh tồn kho, kiểm soát hiển thị |
 | **UC10** | Quét ảnh bìa Vision OCR qua Gemini | ✅ **100% Hoàn thành** | ⏳ Chưa có UI Upload bìa | Gemini 2.0 Flash Vision bóc tách ISBN, tựa đề, tác giả autofill |
 | **UC11** | Quản trị vòng đời đơn hàng (Admin) | ✅ **100% Hoàn thành** | ⏳ Chưa có Admin Orders UI | Máy trạng thái FSM, hoàn kho khi hủy, ghi AuditLog |
@@ -128,3 +128,51 @@ Khi một phiên chat bị dừng giữa chừng (hết token, ngắt kết nố
    - Endpoint: `POST /api/v1/admin/books/{id}/process-ebook`.
    - Thuật toán phân đoạn đệ quy Recursive Chunking ($512\text{ tokens}$, $\text{overlap}=64\text{ tokens}$).
    - Tự động gọi `AiService.generate_embedding` sinh vector 768 chiều cho từng phân đoạn và bulk insert vào bảng `book_chunks` phục vụ tác tử RAG.
+
+---
+
+## 🛍️ Chi Tiết Kỹ Thuật Phase 9 (Frontend Storefront E-Commerce & Full Consumer Flow)
+
+1. **Global Cart Context & Session State (`apps/web/context/cart-context.tsx`)**:
+   - Lưu trữ giỏ hàng trong `localStorage` (`aurabook_cart`), hỗ trợ đồng thời 2 định dạng: Sách in (`PHYSICAL`) và Sách điện tử DRM (`EBOOK`).
+   - Tự động đồng bộ số lượng, tính toán `subtotal`, phí vận chuyển (miễn phí khi $\ge 300.000$ đ hoặc đơn chỉ có E-book, 25.000 đ cho sách in).
+   - Tích hợp động cơ mã khuyến mãi voucher: Hỗ trợ mã voucher `AURA2026` giảm trực tiếp 15% tổng giá trị đơn hàng.
+   - Quản lý trạng thái phiên đăng nhập của người dùng (`aurabook_access_token` và `aurabook_user`), hỗ trợ tự động điền form thanh toán.
+
+2. **Global Layout & Navigation (`apps/web/components/navbar.tsx`, `cart-drawer.tsx`, `footer.tsx`)**:
+   - `<Navbar />`: Thanh điều hướng mờ kính (Glassmorphism), tích hợp ô tìm kiếm tức thì, huy hiệu đếm số lượng giỏ hàng thời gian thực, menu tài khoản người dùng, liên kết Thư viện số và Cửa hàng.
+   - `<CartDrawer />`: Drawer trượt mượt mà hiển thị danh sách sản phẩm nhanh, nút tăng giảm số lượng, xóa sản phẩm và nút chuyển nhanh đến trang Thanh toán.
+   - `<Footer />`: Giới thiệu 4 trụ cột công nghệ (Next.js 15 App Router, AES-256-GCM DRM, Gemini 768d Vector, RRF Hybrid Search) cùng liên kết trực tiếp đến API Swagger & Health Check.
+   - `<VoiceAssistant />`: Trợ lý giọng nói AI (UC07) hoạt động toàn cục trên mọi trang.
+
+3. **Storefront Landing Page (`apps/web/app/page.tsx`)**:
+   - Hero banner hiện đại với thanh tìm kiếm nhanh, các thẻ lọc danh mục, các trụ cột công nghệ cốt lõi.
+   - Lưới hiển thị các tác phẩm nổi bật với giá gốc, giá khuyến mãi, huy hiệu định dạng và số sao đánh giá trung bình.
+   - Spotlight máy phát âm thanh 60s AI Audio Teaser (UC03) trực quan hóa dạng sóng âm thanh tương tác.
+
+4. **Trang Danh Mục & Tìm Kiếm Lai RRF (`apps/web/app/books/page.tsx`)**:
+   - Nút bật/tắt chế độ tìm kiếm lai RRF ($k=60$) kết hợp song song Lexical BM25 và Semantic 768d Vector Cosine.
+   - Bộ lọc định dạng ấn phẩm: Tất cả, Sách in, Sách điện tử E-Book DRM.
+   - Hiển thị điểm số xếp hạng RRF (`rrf_score`) và loại khớp (`HYBRID`, `SEMANTIC`, `LEXICAL`).
+   - Đóng gói toàn bộ trang trong `<React.Suspense>` tuân thủ nghiêm ngặt chuẩn Next.js 15 Client Side Rendering bail-out.
+
+5. **Trang Chi Tiết Tác Phẩm & Đánh Giá Đã Mua (`apps/web/app/books/[slug]/page.tsx`)**:
+   - Hỗ trợ Dynamic Route với Promise-based params (`React.use(params)`).
+   - Trình phát âm thanh 60s AI Audio Teaser (UC03) với các nút điều khiển Audio HTML5 (Play/Pause, thanh tiến trình thời gian thực).
+   - Nút chuyển nhanh vào trình đọc sách WASM Canvas DRM (UC05) cho bản E-Book.
+   - Động cơ Đánh giá & Bình luận khách hàng đã mua (UC08): Phân bố số sao 1-5, danh sách phản hồi có nhãn "Đã mua hàng thành công", form gửi đánh giá tích hợp bộ lọc từ ngữ thô tục.
+
+6. **Trang Giỏ Hàng Chi Tiết (`apps/web/app/cart/page.tsx`)**:
+   - Bảng quản lý giỏ hàng đầy đủ, nhập mã khuyến mãi `AURA2026`, hiển thị chi tiết chiết khấu và tổng thanh toán.
+
+7. **Trang Thanh Toán & Giả Lập Cổng Sandbox (`apps/web/app/checkout/page.tsx`)**:
+   - Form thông tin giao hàng: Họ tên, số điện thoại, email, địa chỉ, tỉnh/thành phố, ghi chú vận chuyển.
+   - Lựa chọn phương thức thanh toán: Cổng Sandbox Trực tuyến (HMAC-SHA256) vs Thanh toán khi nhận hàng (COD).
+   - Tích hợp gọi API `POST /api/v1/orders/checkout` thực thi khóa bi quan 15 phút, đồng thời cung cấp giao diện Modal mô phỏng thanh toán tức thì ngay trên trang hoặc mở link Cổng Sandbox Simulator gốc.
+   - Màn hình xác nhận hoàn tất đơn hàng và nút vào ngay Thư viện đọc sách DRM.
+
+8. **Trang Đăng Nhập & Đăng Ký Tài Khoản (`apps/web/app/login/page.tsx`, `apps/web/app/register/page.tsx`)**:
+   - Giao diện thẻ tối sang trọng với hiệu ứng ánh sáng gradient.
+   - Nút đăng nhập 1-chạm tài khoản Demo Khách Hàng (`customer@aurabook.vn`) & Quản Trị Viên (`admin@aurabook.vn`).
+   - Kết nối trực tiếp API `POST /api/v1/auth/login` và `POST /api/v1/auth/register`, tự động lưu trữ Access Token và hồ sơ người dùng.
+   - Đóng gói trong `<Suspense>` boundary để xử lý `useSearchParams()` chuẩn Next.js 15.

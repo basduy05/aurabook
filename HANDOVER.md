@@ -6,11 +6,11 @@
 
 ## 🚀 Trạng Thái Dự Án Hiện Tại (Snapshot State)
 - **Repository**: `https://github.com/basduy05/aurabook.git`
-- **Nhánh hoạt động**: `main` (Up to date with origin/main)
+- **Nhánh hoạt động**: `main`
 - **Git Author & Committer**: `basduy05 <basduygame@gmail.com>` (Đã cấu hình chuẩn 100%)
 - **Hệ thống Kiểm thử**:
   - `apps/api`: **30/30 tests Pytest PASSED**, Ruff linter đạt **0 lỗi, 0 cảnh báo**.
-  - `apps/web`: **TypeScript `tsc --noEmit` PASSED**, ESLint đạt **0 lỗi, 0 cảnh báo**.
+  - `apps/web`: **Next.js 15 Production Build (10/10 routes OK)**, TypeScript `tsc --noEmit` PASSED, ESLint đạt **0 lỗi, 0 cảnh báo**.
 
 ---
 
@@ -18,60 +18,38 @@
 
 | Phase | Trọng tâm chức năng | Tình trạng BE | Tình trạng FE | Trạng thái tổng |
 | :--- | :--- | :--- | :--- | :--- |
-| **Phase 1: Foundation** | 13 Models Async SQLAlchemy, pgvector:pg16, Seed script | ✅ Xong | ➖ Setup Monorepo | ✅ **HOÀN THÀNH** |
-| **Phase 2: Auth & RBAC** | JWT Access + Refresh, Bcrypt, RBAC Middleware | ✅ Xong | ⏳ Chưa ghép UI form | ✅ **HOÀN THÀNH (BE)** |
-| **Phase 3: Catalog & Books** | Lọc đa tiêu chí, phân trang, slug, chi tiết sách | ✅ Xong | ⏳ Chưa ghép UI Store | ✅ **HOÀN THÀNH (BE)** |
-| **Phase 4: Cart & Sandbox Checkout** | Khóa bi quan SELECT FOR UPDATE, Hold 15m, Webhook IPN HMAC | ✅ Xong | ⏳ Đã có Simulator HTML | ✅ **HOÀN THÀNH** |
-| **Phase 5: DRM E-Book Reader (UC05)** | Cấp khóa phiên AES-256, chunk AES-GCM AEAD Tag, Tiến độ đọc | ✅ Xong | ✅ WASM Canvas Reader + Digital Library | ✅ **HOÀN THÀNH** |
-| **Phase 6: AI RAG & Voice AI (UC06, UC07)** | Gemini 768d vector embeddings, Cosine Similarity, SSE Stream RAG, Web Speech Voice | ✅ Xong | ✅ Xong | ✅ **HOÀN THÀNH** |
+| **Phase 1: Foundation** | 13 Models Async SQLAlchemy, pgvector:pg16, Seed script | ✅ Xong | ⚙️ Setup Monorepo | ✅ **HOÀN THÀNH** |
+| **Phase 2: Auth & RBAC** | JWT Access + Refresh, Bcrypt, RBAC Middleware | ✅ Xong | ✅ Form UI Login & Register | ✅ **HOÀN THÀNH** |
+| **Phase 3: Catalog & Books** | Lọc đa tiêu chí, phân trang, slug, chi tiết sách | ✅ Xong | ✅ Storefront Catalog & Details | ✅ **HOÀN THÀNH** |
+| **Phase 4: Cart & Sandbox Checkout** | Khóa bi quan SELECT FOR UPDATE, Hold 15m, Webhook IPN HMAC | ✅ Xong | ✅ Cart, Checkout & Sandbox | ✅ **HOÀN THÀNH** |
+| **Phase 5: DRM E-Book Reader (UC05)** | Cấp khóa phiên AES-256, chunk AES-GCM AEAD Tag, Tiến độ đọc | ✅ Xong | ✅ WASM Canvas Reader & Library | ✅ **HOÀN THÀNH** |
+| **Phase 6: AI RAG & Voice AI (UC06, UC07)** | Gemini 768d vector embeddings, Cosine Similarity, SSE Stream RAG, Web Speech Voice | ✅ Xong | ✅ RAG Sidebar & Global Voice | ✅ **HOÀN THÀNH** |
+| **Phase 7: Advanced Catalog & Review (UC02, UC03, UC08)** | RRF k=60 Hybrid Search, Audio Teaser WAV, Đánh giá đơn PAID & Profanity filter | ✅ Xong | ✅ RRF Toggle, Audio Player, Reviews | ✅ **HOÀN THÀNH** |
+| **Phase 8: Admin Services & Pipelines (UC09-UC13)** | Admin CRUD, Gemini Vision OCR Bìa, FSM Order, Dashboard Realtime, Vector Worker | ✅ Xong | ⏳ Sắp làm Phase 10 | ✅ **HOÀN THÀNH (BE)** |
+| **Phase 9: Frontend Storefront E-Commerce (UC01-UC04, UC08)** | Trang chủ, Catalog RRF, Sách chi tiết, Audio Teaser, Giỏ hàng, Checkout Sandbox, Login & Register | ✅ Sẵn sàng | ✅ 10/10 Routes Biên dịch OK | ✅ **HOÀN THÀNH** |
+| **Phase 10: Admin Dashboard & Operation Portal (UC09-UC13)** | Admin Portal UI, Gemini Vision Bìa Sách, Quản lý đơn FSM, Giám sát doanh thu & Vector Worker | ✅ Sẵn sàng | ⏳ Sắp thực hiện | ⏳ **PENDING** |
 
 ---
 
-## 🔍 Trả Lời Về Tình Trạng Frontend vs Backend
-- **Đã làm ở Frontend (`apps/web`)**:
-  1. `apps/web/app/reader/[bookId]/page.tsx`: Trình đọc E-book DRM Canvas bảo mật cao cấp (Giải mã AES-GCM trong RAM, Zero-out memory, vẽ Canvas chống scraping DOM, Dark/Sepia/Light, chỉnh cỡ chữ, TOC, đồng bộ tiến độ đọc).
-  2. `apps/web/app/library/page.tsx`: Giao diện Thư viện số cá nhân hiển thị sách đã mua kèm thanh tiến độ.
-  3. `apps/web/app/page.tsx`: Trang chủ giới thiệu hệ sinh thái AuraBook kèm liên kết Swagger và Thư viện số.
-- **Phần Frontend còn lại cần bổ sung thêm**:
-  - Giao diện Sàn thương mại điện tử mua sách (Trang duyệt danh mục phân tầng, trang chi tiết sách với nút chọn Mua sách giấy / Mua E-book, Giỏ hàng trượt Drawer, Modal Đăng nhập/Đăng ký, và Khung thoại Voice AI trên giao diện web).
+## 🎯 Chi Tiết Frontend Đã Hoàn Thiện Tại Phase 9 (`apps/web`)
+1. `apps/web/context/cart-context.tsx`: Context toàn cục quản lý giỏ hàng (`localStorage`), mã giảm giá `AURA2026` 15%, phiên xác thực độc giả.
+2. `apps/web/components/navbar.tsx`: Header dính mờ kính (Glassmorphism), ô tìm kiếm trực tiếp, huy hiệu đếm giỏ hàng, menu tài khoản người dùng.
+3. `apps/web/components/cart-drawer.tsx`: Drawer trượt mượt mà hiển thị sản phẩm tức thì, thay đổi số lượng và nút thanh toán nhanh.
+4. `apps/web/components/footer.tsx`: Chân trang hiện đại giới thiệu kiến trúc Next.js 15, AES-256-GCM DRM, Gemini 768d và liên kết Swagger.
+5. `apps/web/app/page.tsx`: Landing page ấn tượng với tìm kiếm tức thời, danh mục thẻ lọc, các tác phẩm nổi bật và máy phát 60s AI Audio Teaser.
+6. `apps/web/app/books/page.tsx`: Trang danh mục toàn diện với nút bật/tắt tìm kiếm lai RRF $k=60$, bộ lọc định dạng sách, đóng gói trong `<Suspense>`.
+7. `apps/web/app/books/[slug]/page.tsx`: Trang chi tiết ấn phẩm với `use(params)`, máy phát 60s Audio Teaser HTML5, lựa chọn định dạng, liên kết đọc DRM và động cơ Đánh giá xác thực đơn hàng (UC08).
+8. `apps/web/app/cart/page.tsx`: Trang giỏ hàng chi tiết với form áp mã khuyến mãi `AURA2026`, bảng tính tạm tính, chiết khấu và tổng thanh toán.
+9. `apps/web/app/checkout/page.tsx`: Form thanh toán đơn hàng (sách in / sách số), lựa chọn Cổng Sandbox (HMAC-SHA256) vs COD, giả lập thanh toán tức thì và chuyển quyền đọc sách.
+10. `apps/web/app/login/page.tsx` & `apps/web/app/register/page.tsx`: Thẻ đăng nhập và đăng ký bảo mật với nút 1-chạm tài khoản Demo Khách Hàng / Quản Trị Viên, lưu JWT vào Context và chuyển hướng thông minh.
+11. `apps/web/app/reader/[bookId]/page.tsx`: Trình đọc sách WASM Canvas DRM chống trích xuất text DOM, giải mã AES-256-GCM và zero-out RAM.
+12. `apps/web/app/library/page.tsx`: Thư viện số cá nhân hiển thị toàn bộ sách đã mua và thanh tiến độ đọc.
 
 ---
 
-## 🎯 Nhiệm Vụ Kế Tiếp: Phase 6 (AI RAG & Voice AI Companion)
-1. **UC06: Tác Tử RAG Companion đối thoại ngữ cảnh trang sách**:
-   - `pgvector` vector embedding pipeline (768 chiều với Google Gemini `text-embedding-004`).
-   - Tìm kiếm lai HNSW Cosine Similarity $\ge 0.70$ kết hợp lọc theo `book_id`.
-   - Endpoint Streaming SSE: `POST /api/v1/ai/rag/chat` sinh câu trả lời dạng hiệu ứng gõ chữ kèm huy hiệu dẫn chứng số trang (`[Trang X]`).
-2. **UC07: Tác Tử Thoại Chăm Sóc Khách Hàng (Voice Telephony Agent)**:
-   - Web Speech API (nhận diện giọng nói tiếng Việt & tổng hợp giọng đọc).
-   - Gemini 2.0 Flash Function Calling: Tự động tra cứu đơn hàng (`track_order`), kiểm tra hủy đơn hàng (`cancel_order`), tra cứu tồn kho sách (`check_book_stock`).
-   - Endpoint: `POST /api/v1/ai/voice/command`.
-
----
-
-## 📋 Câu Lệnh 1-Click Để Tiếp Tục Khi Mở Conversation Mới
-Nếu bạn mở Conversation mới, chỉ cần gửi tin nhắn sau:
-```text
-Tiếp tục dự án AuraBook theo file HANDOVER.md và PROGRESS.md. Triển khai Phase 6 (AI RAG & Voice AI Companion).
-```
-Tác tử sẽ tự động đọc tài liệu này và tiếp tục ngay lập tức!
-
----
-
-## 📋 Bảng Đối Chiếu 13 Use Cases Chuẩn Luận Văn (filev45.tex)
-
-| Mã UC | Tên nghiệp vụ chuẩn | Backend Status | Frontend Status | Trạng thái tổng |
-| :---: | :--- | :---: | :---: | :---: |
-| **UC01** | Đăng ký & Đăng nhập JWT | ✅ Xong | ⏳ Chưa ghép Form UI | **Backend Xong** |
-| **UC02** | Tìm kiếm lai RRF (BM25 + 768d Vector) | ✅ Xong | ⏳ Chưa có Search Bar | **Backend Xong** |
-| **UC03** | Nghe thử âm thanh tóm tắt AI Teaser | ✅ Xong | ⏳ Chưa có Audio Player | **Backend Xong** |
-| **UC04** | Đặt hàng & Thanh toán Sandbox | ✅ Xong | 🟡 Đã có Simulator HTML | **Backend Xong** |
-| **UC05** | Đọc E-book WASM Canvas DRM | ✅ Xong | ✅ Xong | ✅ **HOÀN THÀNH 100%** |
-| **UC06** | Tác tử RAG Companion đối thoại | ✅ Xong | ✅ Xong | ✅ **HOÀN THÀNH 100%** |
-| **UC07** | Tác tử Thoại Voice AI Function Calling | ✅ Xong | ✅ Xong | ✅ **HOÀN THÀNH 100%** |
-| **UC08** | Đánh giá & Bình luận sách đã mua | ✅ Xong | ⏳ Chưa có Review UI | **Backend Xong** |
-| **UC09** | Quản trị danh mục ấn phẩm (Admin) | ✅ Xong | ⏳ Chưa có Admin UI | **Backend Xong** |
-| **UC10** | Quét ảnh bìa Vision OCR qua Gemini | ✅ Xong | ⏳ Chưa có Upload bìa | **Backend Xong** |
-| **UC11** | Quản trị vòng đời đơn hàng (Admin) | ✅ Xong | ⏳ Chưa có Admin Orders | **Backend Xong** |
-| **UC12** | Giám sát Dashboard thời gian thực | ✅ Xong | ⏳ Chưa có Dashboard UI | **Backend Xong** |
-| **UC13** | Tự động Chunking & Vector hóa | ✅ Xong | ⏳ Chưa có Upload E-book | **Backend Xong** |
+## 📌 Hướng Dẫn Khôi Phục Khi Khởi Động Phiên Mới
+Khi bắt đầu một phiên hội thoại mới:
+1. Orchestrator đọc trực tiếp file này (`HANDOVER.md`) và `PROGRESS.md`.
+2. Chạy `git status` và xác nhận tác giả Git: `basduy05 <basduygame@gmail.com>`.
+3. Kiểm tra các cổng: Backend `apps/api` (port 8000), Frontend `apps/web` (port 3000).
+4. Tiếp tục thực hiện **Phase 10: Admin Dashboard & Operation Portal (UC09-UC13)** theo kế hoạch tổng thể.
