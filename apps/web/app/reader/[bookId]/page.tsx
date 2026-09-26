@@ -47,7 +47,7 @@ export default function SecureEbookReaderPage() {
   const [bookTitle, setBookTitle] = useState("Sách Điện Tử Bảo Mật");
   const [pages, setPages] = useState<DecryptedPage[]>([]);
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
-  const [theme, setTheme] = useState<ReaderTheme>("dark");
+  const [theme, setTheme] = useState<ReaderTheme>("light");
   const [fontSize, setFontSize] = useState<number>(18);
   const [showToc, setShowToc] = useState(false);
   const [showAiAssistant, setShowAiAssistant] = useState(false);
@@ -470,22 +470,18 @@ export default function SecureEbookReaderPage() {
   return (
     <div
       className={`min-h-screen flex flex-col select-none ${
-        theme === "dark"
-          ? "bg-slate-950 text-slate-100"
-          : theme === "sepia"
-          ? "bg-[#fcf6e9] text-[#3d2d1d]"
-          : "bg-slate-50 text-slate-900"
+        theme === "sepia"
+          ? "bg-[#faf6ef] text-[#451a03]"
+          : "bg-white text-slate-900"
       }`}
       onContextMenu={(e) => e.preventDefault()}
     >
       {/* Top Reader Navigation Bar */}
       <header
         className={`sticky top-0 z-30 flex items-center justify-between px-4 py-3 border-b backdrop-blur-md transition-colors ${
-          theme === "dark"
-            ? "border-slate-800 bg-slate-950/80"
-            : theme === "sepia"
-            ? "border-[#e6d8c3] bg-[#fcf6e9]/90"
-            : "border-slate-200 bg-white/90"
+          theme === "sepia"
+            ? "border-[#ebdcc6] bg-[#faf6ef]/95 shadow-xs"
+            : "border-sky-100 bg-white/95 shadow-xs"
         }`}
       >
         <div className="flex items-center gap-3">
@@ -628,17 +624,17 @@ export default function SecureEbookReaderPage() {
 
         {/* Table of Contents Floating Drawer */}
         {showToc && (
-          <div className="absolute top-4 left-4 z-40 w-72 bg-slate-900/95 border border-slate-700 rounded-xl shadow-2xl p-4 backdrop-blur-md">
-            <div className="flex justify-between items-center mb-3 pb-2 border-b border-slate-800">
-              <span className="font-bold text-sm">Mục Lục Các Chương</span>
+          <div className="absolute top-4 left-4 z-40 w-72 bg-white/98 border border-sky-100 rounded-2xl shadow-2xl shadow-sky-950/10 p-4 backdrop-blur-md">
+            <div className="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
+              <span className="font-bold text-sm text-slate-900">Mục Lục Các Chương</span>
               <button
                 onClick={() => setShowToc(false)}
-                className="text-xs text-slate-400 hover:text-white"
+                className="text-xs text-slate-400 hover:text-slate-700 p-1"
               >
                 ✕
               </button>
             </div>
-            <div className="space-y-1.5 max-h-80 overflow-y-auto">
+            <div className="space-y-1 max-h-80 overflow-y-auto">
               {pages.map((p, idx) => (
                 <button
                   key={idx}
@@ -647,13 +643,13 @@ export default function SecureEbookReaderPage() {
                     syncProgress(idx);
                     setShowToc(false);
                   }}
-                  className={`w-full text-left px-3 py-2 rounded text-xs transition-colors ${
+                  className={`w-full text-left px-3 py-2 rounded-xl text-xs transition-colors ${
                     currentPageIndex === idx
-                      ? "bg-purple-600/30 text-purple-300 font-semibold border border-purple-500/30"
-                      : "hover:bg-slate-800/60 text-slate-300"
+                      ? "bg-sky-50 text-sky-700 font-bold border border-sky-200"
+                      : "hover:bg-slate-50 text-slate-700"
                   }`}
                 >
-                  <span className="text-slate-500 mr-2">#{idx + 1}</span>
+                  <span className="text-slate-400 mr-2">#{idx + 1}</span>
                   {p.chapter_title}
                 </button>
               ))}
@@ -706,7 +702,7 @@ export default function SecureEbookReaderPage() {
             </div>
 
             {/* Response area */}
-            <div className="flex-1 overflow-y-auto max-h-60 bg-slate-950/60 rounded-lg p-2.5 border border-slate-800 text-xs space-y-2">
+            <div className="flex-1 overflow-y-auto max-h-60 bg-slate-50 rounded-xl p-3 border border-slate-200 text-xs space-y-2">
               {ragLoading ? (
                 <div className="flex items-center gap-2 text-purple-400 py-4 justify-center">
                   <RefreshCw className="w-4 h-4 animate-spin" />
@@ -753,7 +749,7 @@ export default function SecureEbookReaderPage() {
                 onChange={(e) => setRagQuery(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleAskRag()}
                 placeholder="Ví dụ: Công nghệ WebAssembly có vai trò gì?"
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-purple-500"
               />
               <Button
                 onClick={() => handleAskRag()}
@@ -772,11 +768,9 @@ export default function SecureEbookReaderPage() {
       {/* Bottom Paging Controller Bar */}
       <footer
         className={`sticky bottom-0 z-30 flex items-center justify-between px-6 py-3 border-t backdrop-blur-md ${
-          theme === "dark"
-            ? "border-slate-800 bg-slate-950/80"
-            : theme === "sepia"
-            ? "border-[#e6d8c3] bg-[#fcf6e9]/90"
-            : "border-slate-200 bg-white/90"
+          theme === "sepia"
+            ? "border-[#ebdcc6] bg-[#faf6ef]/95 shadow-xs"
+            : "border-sky-100 bg-white/95 shadow-xs"
         }`}
       >
         <Button

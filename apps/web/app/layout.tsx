@@ -10,9 +10,9 @@ import { CartDrawer } from "@/components/cart-drawer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AuraBook - Nền Tảng Thương Mại Điện Tử & Đọc Sách Số Bảo Mật AI",
+  title: "AuraBook - Sàn Mua Bán Sách & Thư Viện Bản Quyền Số DRM",
   description:
-    "Hệ thống phân phối và bảo mật bản quyền E-book WebAssembly Canvas DRM tích hợp tác tử RAG đa phương thức và Voice AI.",
+    "Hệ thống phân phối sách in & bảo mật bản quyền E-book WebAssembly Canvas DRM tích hợp trợ lý RAG đa phương thức và Voice AI.",
 };
 
 export default function RootLayout({
@@ -21,9 +21,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className="dark">
+    <html lang="vi">
       <body
-        className={`${inter.className} min-h-screen flex flex-col antialiased bg-slate-950 text-slate-100 selection:bg-purple-600 selection:text-white`}
+        className={`${inter.className} min-h-screen flex flex-col antialiased bg-white text-slate-900 selection:bg-sky-500 selection:text-white`}
       >
         <CartProvider>
           <Navbar />
