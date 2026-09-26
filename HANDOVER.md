@@ -9,8 +9,13 @@
 - **Nhánh hoạt động**: `main`
 - **Git Author & Committer**: `basduy05 <basduygame@gmail.com>` (Đã cấu hình chuẩn 100%)
 - **Hệ thống Kiểm thử**:
-  - `apps/api`: **30/30 tests Pytest PASSED**, Ruff linter đạt **0 lỗi, 0 cảnh báo**.
-  - `apps/web`: **Next.js 15 Production Build (10/10 routes OK)**, TypeScript `tsc --noEmit` PASSED, ESLint đạt **0 lỗi, 0 cảnh báo**.
+  - `apps/api`: **34/34 tests Pytest PASSED**, Ruff linter đạt **0 lỗi, 0 cảnh báo**.
+  - `apps/web`: **Next.js 15 Production Build (20/20 routes OK)**, TypeScript `tsc --noEmit` PASSED, ESLint đạt **0 lỗi, 0 cảnh báo**.
+- **Bộ Kỹ Năng Thiết Kế Cốt Lõi (Primary UI Frameworks)**:
+  - **Taste-Skill** (`.agents/skills/taste-skill`): Anti-slop frontend, định hướng mỹ thuật độc bản, triệt tiêu thiết kế mặc định rập khuôn.
+  - **Impeccable** (`.agents/skills/impeccable`): Chuẩn mực thủ công cao cấp (Craft Floor), 4 chế độ giao diện (Persuade, Operate, Read, Experience), trau chuốt tối đa.
+- **Nhận Diện Thương Hiệu (Brand Assets)**:
+  - Logo chính thức: Tích hợp hình ảnh nghệ thuật hình học trắng đen (`Black and White Geometric Aerial Cinematography Loghuaoso.png` -> `/logo.png`) xuyên suốt Navbar, Footer, Trang Đăng nhập, Trang Đăng ký và Cổng Quản trị Admin. Favicon được giữ nguyên vẹn theo yêu cầu.
 
 ---
 
@@ -27,7 +32,7 @@
 | **Phase 7: Advanced Catalog & Review (UC02, UC03, UC08)** | RRF k=60 Hybrid Search, Audio Teaser WAV, Đánh giá đơn PAID & Profanity filter | ✅ Xong | ✅ RRF Toggle, Audio Player, Reviews | ✅ **HOÀN THÀNH** |
 | **Phase 8: Admin Services & Pipelines (UC09-UC13)** | Admin CRUD, Gemini Vision OCR Bìa, FSM Order, Dashboard Realtime, Vector Worker | ✅ Xong | ⏳ Sắp làm Phase 10 | ✅ **HOÀN THÀNH (BE)** |
 | **Phase 9: Frontend Storefront E-Commerce (UC01-UC04, UC08)** | Trang chủ, Catalog RRF, Sách chi tiết, Audio Teaser, Giỏ hàng, Checkout Sandbox, Login & Register | ✅ Sẵn sàng | ✅ 10/10 Routes Biên dịch OK | ✅ **HOÀN THÀNH** |
-| **Phase 10: Admin Dashboard & Operation Portal (UC09-UC13)** | Admin Portal UI, Gemini Vision Bìa Sách, Quản lý đơn FSM, Giám sát doanh thu & Vector Worker | ✅ Xong | ✅ Next.js Build (13/13 OK) | ✅ **HOÀN THÀNH** |
+| **Phase 10: Admin Operations & Extended Modules (UC09-UC13 + Users/Vouchers/DRM/Reviews)** | Admin Portal UI, Gemini Vision Bìa Sách, Quản lý đơn FSM, Giám sát doanh thu, Quản lý người dùng, Mã giảm giá, Bản quyền số DRM, Đánh giá sách | ✅ 34/34 Tests Passed | ✅ 20/20 Routes Biên dịch OK | ✅ **HOÀN THÀNH** |
 
 ---
 

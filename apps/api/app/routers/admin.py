@@ -16,6 +16,11 @@ from app.core.deps import require_staff
 from app.models.order import OrderStatus
 from app.models.user import User
 from app.schemas.admin import (
+    AdminUserListResponse,
+    AdminVoucherItem,
+    AdminVoucherCreateRequest,
+    AdminDrmListResponse,
+    AdminReviewListResponse,
     AdminBookCreateRequest,
     AdminBookDetailResponse,
     AdminBookUpdateRequest,
@@ -40,6 +45,18 @@ router = APIRouter(prefix="/admin", tags=["Admin Portal & Automated Pipelines (U
 # =============================================================================
 # UC12: Real-time Dashboard Analytics
 # =============================================================================
+@router.get(
+    "/dashboard/stats",
+    response_model=AdminDashboardMetricsResponse,
+    summary="Dashboard Metrics Alias",
+)
+async def get_dashboard_stats(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_staff)],
+) -> AdminDashboardMetricsResponse:
+    return await AdminService.get_dashboard_metrics(db)
+
+
 @router.get(
     "/dashboard/metrics",
     response_model=AdminDashboardMetricsResponse,
@@ -269,3 +286,123 @@ async def process_ebook_content(
         chunk_size_tokens=req.chunk_size_tokens,
         overlap_tokens=req.overlap_tokens,
     )
+
+
+# =============================================================================
+# Advanced Admin Endpoints (Users, Vouchers, DRM, Reviews)
+# =============================================================================
+
+# --- User Management ---
+@router.get(
+    "/users",
+    response_model=AdminUserListResponse,
+    summary="Danh sách người dùng hệ thống",
+)
+async def list_admin_users(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_staff)],
+    search: str | None = Query(None, description="Tìm theo tên hoặc email"),
+    role: str | None = Query(None, description="Lọc theo vai trò"),
+) -> AdminUserListResponse:
+    return await AdminService.list_users(db, search=search, role=role)
+
+
+@router.put(
+    "/users/{id}/status",
+    summary="Khóa hoặc mở khóa tài khoản người dùng",
+)
+async def toggle_admin_user_status(
+    id: uuid.UUID,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_staff)],
+) -> dict[str, str]:
+    return await AdminService.toggle_user_status(db, id)
+
+
+# --- Voucher Management ---
+@router.get(
+    "/vouchers",
+    response_model=list[AdminVoucherItem],
+    summary="Danh sách tất cả mã giảm giá",
+)
+async def list_admin_vouchers(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_staff)],
+) -> list[AdminVoucherItem]:
+    return await AdminService.list_vouchers(db)
+
+
+@router.post(
+    "/vouchers",
+    response_model=AdminVoucherItem,
+    status_code=status.HTTP_201_CREATED,
+    summary="Tạo mới mã giảm giá",
+)
+async def create_admin_voucher(
+    req: AdminVoucherCreateRequest,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_staff)],
+) -> AdminVoucherItem:
+    return await AdminService.create_voucher(db, req)
+
+
+@router.put(
+    "/vouchers/{id}/toggle",
+    summary="Bật hoặc tắt trạng thái kích hoạt voucher",
+)
+async def toggle_admin_voucher(
+    id: uuid.UUID,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_staff)],
+) -> dict[str, str]:
+    return await AdminService.toggle_voucher(db, id)
+
+
+# --- DRM & Licenses Management ---
+@router.get(
+    "/drm/licenses",
+    response_model=AdminDrmListResponse,
+    summary="Danh sách bản quyền E-Book DRM đang hoạt động",
+)
+async def list_admin_drm_licenses(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_staff)],
+) -> AdminDrmListResponse:
+    return await AdminService.list_drm_licenses(db)
+
+
+@router.delete(
+    "/drm/licenses/{id}",
+    summary="Thu hồi hoặc kích hoạt lại quyền truy cập DRM",
+)
+async def revoke_admin_drm_license(
+    id: uuid.UUID,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_staff)],
+) -> dict[str, str]:
+    return await AdminService.revoke_drm_license(db, id)
+
+
+# --- Customer Reviews Moderation ---
+@router.get(
+    "/reviews",
+    response_model=AdminReviewListResponse,
+    summary="Danh sách đánh giá từ độc giả",
+)
+async def list_admin_reviews(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_staff)],
+) -> AdminReviewListResponse:
+    return await AdminService.list_reviews(db)
+
+
+@router.delete(
+    "/reviews/{id}",
+    summary="Xóa đánh giá vi phạm tiêu chuẩn cộng đồng",
+)
+async def delete_admin_review(
+    id: uuid.UUID,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    current_user: Annotated[User, Depends(require_staff)],
+) -> dict[str, str]:
+    return await AdminService.delete_review(db, id)

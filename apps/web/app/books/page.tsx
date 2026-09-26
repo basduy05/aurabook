@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useTransition } from "react";
+import React, { useEffect, useState, useTransition, useCallback } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
@@ -107,7 +107,7 @@ function BooksContent() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isPending, startTransition] = useTransition();
 
-  const fetchBooks = async () => {
+  const fetchBooks = useCallback(async () => {
     setIsLoading(true);
     try {
       if (useHybridSearch && searchTerm.trim()) {
@@ -161,13 +161,13 @@ function BooksContent() {
     }
     setBooks(filtered);
     setIsLoading(false);
-  };
+  }, [searchTerm, formatFilter, useHybridSearch]);
 
   useEffect(() => {
     startTransition(() => {
       fetchBooks();
     });
-  }, [searchTerm, formatFilter, useHybridSearch]);
+  }, [fetchBooks]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-50/40 via-white to-white py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">

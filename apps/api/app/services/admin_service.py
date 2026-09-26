@@ -13,6 +13,14 @@ from app.models.catalog import Book
 from app.models.order import Order, OrderItem, OrderStatus, PaymentStatus
 from app.models.user import User, UserRole
 from app.schemas.admin import (
+    AdminUserItem,
+    AdminUserListResponse,
+    AdminVoucherItem,
+    AdminVoucherCreateRequest,
+    AdminDrmLicenseItem,
+    AdminDrmListResponse,
+    AdminReviewItem,
+    AdminReviewListResponse,
     AdminBookCreateRequest,
     AdminBookDetailResponse,
     AdminBookUpdateRequest,
@@ -677,3 +685,195 @@ class AdminService:
         db.add(audit)
         await db.commit()
         return {"message": f"Đã ẩn ấn phẩm sách '{book.title}' khỏi danh mục hiển thị."}
+
+    # =========================================================================
+    # Advanced Admin Control Methods (Users, Vouchers, DRM, Reviews)
+    # =========================================================================
+    @staticmethod
+    async def list_users(
+        db: AsyncSession,
+        search: str | None = None,
+        role: str | None = None,
+    ) -> AdminUserListResponse:
+        stmt = select(User)
+        if search:
+            stmt = stmt.where(User.email.ilike(f"%{search}%") | User.full_name.ilike(f"%{search}%"))
+        if role:
+            stmt = stmt.where(User.role == role)
+        stmt = stmt.order_by(User.created_at.desc())
+        
+        result = await db.execute(stmt)
+        users = result.scalars().all()
+        
+        items = [
+            AdminUserItem(
+                id=u.id,
+                email=u.email,
+                full_name=u.full_name,
+                phone_number=u.phone_number,
+                role=u.role.value if hasattr(u.role, "value") else str(u.role),
+                is_active=u.is_active,
+                created_at=u.created_at,
+            )
+            for u in users
+        ]
+        return AdminUserListResponse(items=items, total=len(items))
+
+    @staticmethod
+    async def toggle_user_status(db: AsyncSession, user_id: uuid.UUID) -> dict[str, str]:
+        user = await db.get(User, user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="Người dùng không tồn tại.")
+        user.is_active = not user.is_active
+        await db.commit()
+        return {"message": f"Đã {'mở khóa' if user.is_active else 'khóa'} tài khoản {user.email}"}
+
+    @staticmethod
+    async def list_vouchers(db: AsyncSession) -> list[AdminVoucherItem]:
+        from app.models.order import Voucher
+        stmt = select(Voucher).order_by(Voucher.created_at.desc())
+        result = await db.execute(stmt)
+        vouchers = result.scalars().all()
+        return [
+            AdminVoucherItem(
+                id=v.id,
+                code=v.code,
+                discount_percent=v.discount_percent,
+                min_order_value=v.min_order_value,
+                max_discount=v.max_discount,
+                usage_limit=v.usage_limit,
+                used_count=v.used_count,
+                is_active=v.is_active,
+                valid_from=v.valid_from,
+                valid_to=v.valid_to,
+            )
+            for v in vouchers
+        ]
+
+    @staticmethod
+    async def create_voucher(db: AsyncSession, req: AdminVoucherCreateRequest) -> AdminVoucherItem:
+        from app.models.order import Voucher
+        # Check duplicate
+        exists = await db.execute(select(Voucher).where(Voucher.code == req.code.upper()))
+        if exists.scalar_one_or_none():
+            raise HTTPException(status_code=400, detail="Mã voucher này đã tồn tại.")
+        
+        now = datetime.now(UTC)
+        v = Voucher(
+            id=uuid.uuid4(),
+            code=req.code.upper(),
+            discount_percent=req.discount_percent,
+            min_order_value=req.min_order_value,
+            max_discount=req.max_discount,
+            usage_limit=req.usage_limit,
+            used_count=0,
+            is_active=True,
+            valid_from=now,
+            valid_to=now + timedelta(days=req.days_valid),
+        )
+        db.add(v)
+        await db.commit()
+        await db.refresh(v)
+        return AdminVoucherItem(
+            id=v.id,
+            code=v.code,
+            discount_percent=v.discount_percent,
+            min_order_value=v.min_order_value,
+            max_discount=v.max_discount,
+            usage_limit=v.usage_limit,
+            used_count=v.used_count,
+            is_active=v.is_active,
+            valid_from=v.valid_from,
+            valid_to=v.valid_to,
+        )
+
+    @staticmethod
+    async def toggle_voucher(db: AsyncSession, voucher_id: uuid.UUID) -> dict[str, str]:
+        from app.models.order import Voucher
+        v = await db.get(Voucher, voucher_id)
+        if not v:
+            raise HTTPException(status_code=404, detail="Voucher không tồn tại.")
+        v.is_active = not v.is_active
+        await db.commit()
+        return {"message": f"Đã {'kích hoạt' if v.is_active else 'vô hiệu hóa'} voucher {v.code}"}
+
+    @staticmethod
+    async def list_drm_licenses(db: AsyncSession) -> AdminDrmListResponse:
+        from app.models.ebook import EbookAccess, ReadingProgress
+        stmt = (
+            select(EbookAccess)
+            .options(selectinload(EbookAccess.user), selectinload(EbookAccess.book))
+            .order_by(EbookAccess.granted_at.desc())
+        )
+        res = await db.execute(stmt)
+        accesses = res.scalars().all()
+        
+        items = []
+        for a in accesses:
+            # Query reading progress
+            prog_res = await db.execute(
+                select(ReadingProgress).where(
+                    ReadingProgress.user_id == a.user_id,
+                    ReadingProgress.book_id == a.book_id,
+                )
+            )
+            prog = prog_res.scalar_one_or_none()
+            items.append(
+                AdminDrmLicenseItem(
+                    id=a.id,
+                    user_email=a.user.email if a.user else "N/A",
+                    user_name=a.user.full_name if a.user else "N/A",
+                    book_title=a.book.title if a.book else "N/A",
+                    book_id=a.book_id,
+                    granted_at=a.granted_at,
+                    is_active=a.is_active,
+                    current_page=prog.current_page if prog else 1,
+                    total_pages=prog.total_pages if prog else 1,
+                    progress_percent=prog.progress_percent if prog else 0.0,
+                )
+            )
+        return AdminDrmListResponse(items=items, total=len(items))
+
+    @staticmethod
+    async def revoke_drm_license(db: AsyncSession, license_id: uuid.UUID) -> dict[str, str]:
+        from app.models.ebook import EbookAccess
+        lic = await db.get(EbookAccess, license_id)
+        if not lic:
+            raise HTTPException(status_code=404, detail="Bản quyền không tồn tại.")
+        lic.is_active = not lic.is_active
+        await db.commit()
+        return {"message": f"Đã {'kích hoạt lại' if lic.is_active else 'thu hồi'} bản quyền số"}
+
+    @staticmethod
+    async def list_reviews(db: AsyncSession) -> AdminReviewListResponse:
+        from app.models import Review
+        stmt = (
+            select(Review)
+            .options(selectinload(Review.user), selectinload(Review.book))
+            .order_by(Review.created_at.desc())
+        )
+        res = await db.execute(stmt)
+        reviews = res.scalars().all()
+        items = [
+            AdminReviewItem(
+                id=r.id,
+                user_name=r.user.full_name if r.user else "Khách hàng",
+                user_email=r.user.email if r.user else "N/A",
+                book_title=r.book.title if r.book else "N/A",
+                rating=r.rating,
+                comment=r.comment,
+                created_at=r.created_at,
+            )
+            for r in reviews
+        ]
+        return AdminReviewListResponse(items=items, total=len(items))
+
+    @staticmethod
+    async def delete_review(db: AsyncSession, review_id: uuid.UUID) -> dict[str, str]:
+        from app.models import Review
+        rev = await db.get(Review, review_id)
+        if not rev:
+            raise HTTPException(status_code=404, detail="Đánh giá không tồn tại.")
+        await db.delete(rev)
+        await db.commit()
+        return {"message": "Đã xóa đánh giá thành công"}

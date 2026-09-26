@@ -2,6 +2,7 @@
 
 import React, { useState, Suspense } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Lock,
@@ -13,7 +14,6 @@ import {
   AlertCircle,
   Loader2,
   CheckCircle2,
-  BookOpen,
   ArrowLeft,
   Sparkles,
 } from "lucide-react";
@@ -131,13 +131,15 @@ function RegisterForm() {
           Trở về Trang chủ
         </Link>
         <div className="flex justify-center">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-sky-500 via-sky-600 to-blue-700 flex items-center justify-center text-white shadow-lg shadow-sky-500/25 group-hover:scale-105 transition-transform">
-              <BookOpen className="w-6 h-6" />
-            </div>
-            <span className="text-2xl font-black tracking-tight text-slate-900">
-              AURA<span className="text-sky-600">BOOK</span>
-            </span>
+          <Link href="/" className="flex items-center group">
+            <Image
+              src="/logo.png"
+              alt="AuraBook"
+              width={200}
+              height={50}
+              className="h-12 w-auto object-contain hover:opacity-90 transition-opacity"
+              priority
+            />
           </Link>
         </div>
         <h2 className="mt-4 text-center text-2xl font-extrabold tracking-tight text-slate-900">

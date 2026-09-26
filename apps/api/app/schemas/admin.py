@@ -227,3 +227,76 @@ class ProcessEbookResponse(BaseModel):
     total_tokens: int
     elapsed_seconds: float
     sample_chunks: list[ChunkSample]
+
+
+# --- Advanced Admin Control Schemas ---
+class AdminUserItem(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: uuid.UUID
+    email: str
+    full_name: str
+    phone_number: str | None = None
+    role: str
+    is_active: bool
+    created_at: datetime
+
+
+class AdminUserListResponse(BaseModel):
+    items: list[AdminUserItem]
+    total: int
+
+
+class AdminVoucherItem(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: uuid.UUID
+    code: str
+    discount_percent: int
+    min_order_value: Decimal
+    max_discount: Decimal
+    usage_limit: int
+    used_count: int
+    is_active: bool
+    valid_from: datetime
+    valid_to: datetime
+
+
+class AdminVoucherCreateRequest(BaseModel):
+    code: str = Field(min_length=3, max_length=20)
+    discount_percent: int = Field(ge=1, le=100)
+    min_order_value: Decimal = Field(default=Decimal("0.00"), ge=0)
+    max_discount: Decimal = Field(default=Decimal("100000.00"), ge=0)
+    usage_limit: int = Field(default=500, ge=1)
+    days_valid: int = Field(default=30, ge=1)
+
+
+class AdminDrmLicenseItem(BaseModel):
+    id: uuid.UUID
+    user_email: str
+    user_name: str
+    book_title: str
+    book_id: uuid.UUID
+    granted_at: datetime
+    is_active: bool
+    current_page: int
+    total_pages: int
+    progress_percent: float
+
+
+class AdminDrmListResponse(BaseModel):
+    items: list[AdminDrmLicenseItem]
+    total: int
+
+
+class AdminReviewItem(BaseModel):
+    id: uuid.UUID
+    user_name: str
+    user_email: str
+    book_title: str
+    rating: int
+    comment: str | None = None
+    created_at: datetime
+
+
+class AdminReviewListResponse(BaseModel):
+    items: list[AdminReviewItem]
+    total: int

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useState } from "react";
@@ -7,11 +8,16 @@ import {
   LayoutDashboard,
   BookOpen,
   ShoppingBag,
-  ArrowLeft,
+  Users,
+  Tag,
   ShieldCheck,
+  Star,
+  ArrowLeft,
   Menu,
   X,
   ExternalLink,
+  ChevronRight,
+  Shield,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,22 +25,46 @@ import { useCart } from "@/context/cart-context";
 
 const NAV_ITEMS = [
   {
-    label: "Bảng Điều Khiển (UC12)",
+    label: "Bảng Điều Khiển",
     href: "/admin",
     icon: LayoutDashboard,
     badge: "Realtime",
   },
   {
-    label: "Quản Lý Sách & OCR (UC09, UC10)",
+    label: "Kho Sách & OCR AI",
     href: "/admin/books",
     icon: BookOpen,
-    badge: "Gemini Vision",
+    badge: "Vision OCR",
   },
   {
-    label: "Quản Lý Đơn Hàng FSM (UC11)",
+    label: "Vòng Đời Đơn Hàng",
     href: "/admin/orders",
     icon: ShoppingBag,
     badge: "FSM",
+  },
+  {
+    label: "Quản Lý Người Dùng",
+    href: "/admin/users",
+    icon: Users,
+    badge: "Phân quyền",
+  },
+  {
+    label: "Mã Giảm Giá & Voucher",
+    href: "/admin/vouchers",
+    icon: Tag,
+    badge: "Ưu đãi",
+  },
+  {
+    label: "Bản Quyền Số DRM",
+    href: "/admin/drm",
+    icon: ShieldCheck,
+    badge: "WASM AES",
+  },
+  {
+    label: "Đánh Giá Độc Giả",
+    href: "/admin/reviews",
+    icon: Star,
+    badge: "Kiểm duyệt",
   },
 ];
 
@@ -44,172 +74,169 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { user, loginUser } = useCart();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  const isAdmin = user?.role === "ADMIN";
-
-  const handleGrantAdmin = () => {
-    loginUser("jwt_mock_admin_token_aura2026", {
-      id: "usr-admin-001",
-      email: "admin@aurabook.vn",
-      fullName: "Quản Trị Viên Hệ Thống",
-      role: "ADMIN",
-    });
-  };
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { user } = useCart();
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col md:flex-row">
-      {/* Mobile Header */}
-      <div className="md:hidden flex items-center justify-between p-4 bg-slate-900 border-b border-slate-800">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-600 to-blue-500 flex items-center justify-center text-white font-bold text-sm">
-            A
-          </div>
-          <span className="font-bold text-white text-sm">
-            AuraBook <span className="text-cyan-400">Admin</span>
-          </span>
-        </div>
-        <button
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="p-2 rounded-lg bg-slate-800 text-slate-300"
-        >
-          {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
-      </div>
+    <div className="min-h-screen bg-slate-50 flex text-slate-900 font-sans">
+      {/* Mobile Sidebar Overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-xs md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
 
-      {/* Sidebar */}
+      {/* Modern Luxury Admin Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-64 bg-slate-900 border-r border-slate-800 flex flex-col transition-transform duration-200 md:static md:translate-x-0 ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        className={`fixed md:sticky top-0 z-50 h-screen w-72 bg-white border-r border-slate-200/80 shadow-xl md:shadow-none flex flex-col justify-between transition-transform duration-300 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
-        {/* Brand */}
-        <div className="p-5 border-b border-slate-800 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-600 to-blue-600 flex items-center justify-center text-white font-black shadow-lg shadow-cyan-500/20">
-              A
-            </div>
-            <div>
-              <div className="text-sm font-black tracking-tight text-white">
-                Aura<span className="text-cyan-400">Book</span>
-              </div>
-              <div className="text-[10px] text-cyan-400 font-mono">
-                Admin Operation Portal
-              </div>
-            </div>
+        <div>
+          {/* Brand Header with Official Logo */}
+          <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+            <Link href="/admin" className="flex items-center gap-2 group">
+              <img
+                src="/logo.png"
+                alt="AuraBook"
+                className="h-8 w-auto object-contain hover:opacity-90 transition-opacity"
+              />
+              <Badge className="bg-amber-100 text-amber-800 border-amber-300 text-[9px] font-black px-1.5 py-0.5 ml-1">
+                ADMIN
+              </Badge>
+            </Link>
+
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
+
+          {/* Navigation Items */}
+          <nav className="p-3 space-y-1 overflow-y-auto max-h-[calc(100vh-180px)]">
+            <div className="px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              Quản Trị Nghiệp Vụ
+            </div>
+            {NAV_ITEMS.map((item) => {
+              const Icon = item.icon;
+              const isActive =
+                item.href === "/admin"
+                  ? pathname === "/admin"
+                  : pathname.startsWith(item.href);
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setSidebarOpen(false)}
+                  className={`flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-semibold transition-all duration-200 ${
+                    isActive
+                      ? "bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-md shadow-sky-500/20"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-slate-400"}`} />
+                    <span>{item.label}</span>
+                  </div>
+                  {item.badge && (
+                    <span
+                      className={`text-[9px] font-mono px-2 py-0.5 rounded-full ${
+                        isActive
+                          ? "bg-white/20 text-white font-bold"
+                          : "bg-slate-100 text-slate-500 border border-slate-200/60"
+                      }`}
+                    >
+                      {item.badge}
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto">
-          <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider px-3 mb-2">
-            Quản trị hệ thống
-          </div>
-          {NAV_ITEMS.map((item) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setIsSidebarOpen(false)}
-                className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all ${
-                  isActive
-                    ? "bg-cyan-600/15 text-cyan-300 border border-cyan-500/30 shadow-sm"
-                    : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/60"
-                }`}
-              >
-                <div className="flex items-center gap-2.5">
-                  <Icon className={`w-4 h-4 ${isActive ? "text-cyan-400" : "text-slate-400"}`} />
-                  <span>{item.label}</span>
-                </div>
-                {item.badge && (
-                  <Badge
-                    variant="outline"
-                    className={`text-[9px] px-1.5 py-0 border-none ${
-                      isActive ? "bg-cyan-500/20 text-cyan-300" : "bg-slate-800 text-slate-400"
-                    }`}
-                  >
-                    {item.badge}
-                  </Badge>
-                )}
-              </Link>
-            );
-          })}
-
-          <div className="pt-4 mt-4 border-t border-slate-800">
-            <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider px-3 mb-2">
-              Khách hàng & Cửa hàng
+        {/* Footer of Sidebar */}
+        <div className="p-4 border-t border-slate-100 bg-slate-50/50 space-y-2">
+          <div className="flex items-center gap-2.5 px-2 py-1">
+            <div className="w-8 h-8 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center font-bold text-xs border border-sky-200">
+              <Shield className="w-4 h-4" />
             </div>
-            <Link
-              href="/"
-              className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/60 transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4 text-slate-400" />
-              <span>Về Sàn Sách Storefront</span>
-            </Link>
-            <a
-              href="http://localhost:8000/docs"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/60 transition-colors"
-            >
-              <div className="flex items-center gap-2.5">
-                <ExternalLink className="w-4 h-4 text-slate-400" />
-                <span>Swagger API Docs</span>
-              </div>
-              <Badge variant="outline" className="text-[9px] border-slate-700 text-slate-400">
-                v1
-              </Badge>
-            </a>
-          </div>
-        </nav>
-
-        {/* User Card */}
-        <div className="p-4 border-t border-slate-800 bg-slate-900/50">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center text-xs font-bold">
-                {isAdmin ? "AD" : "GU"}
-              </div>
-              <div className="overflow-hidden">
-                <div className="text-xs font-medium text-white truncate max-w-[120px]">
-                  {user?.fullName || "Khách Vãng Lai"}
-                </div>
-                <div className="text-[10px] text-slate-400 truncate max-w-[120px]">
-                  {user?.email || "Chưa đăng nhập"}
-                </div>
-              </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-bold text-slate-800 truncate">
+                {user?.fullName || "Quản Trị Viên"}
+              </p>
+              <p className="text-[10px] text-slate-400 truncate">
+                {user?.email || "admin@aurabook.vn"}
+              </p>
             </div>
-            <Badge
-              variant={isAdmin ? "default" : "secondary"}
-              className={`text-[9px] px-1.5 py-0 ${
-                isAdmin
-                  ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-                  : "bg-amber-500/20 text-amber-300 border border-amber-500/30"
-              }`}
-            >
-              {isAdmin ? "ADMIN" : "GUEST"}
-            </Badge>
           </div>
 
-          {!isAdmin && (
+          <Link href="/" className="w-full block">
             <Button
+              variant="outline"
               size="sm"
-              onClick={handleGrantAdmin}
-              className="w-full bg-cyan-600 hover:bg-cyan-500 text-white text-[11px] h-7 font-semibold"
+              className="w-full rounded-xl text-xs text-slate-600 hover:text-sky-600 border-slate-200 bg-white shadow-xs flex items-center justify-center gap-1.5"
             >
-              <ShieldCheck className="w-3.5 h-3.5 mr-1" /> Kích Hoạt Quyền Admin
+              <ArrowLeft className="w-3.5 h-3.5" />
+              Về Trang Khách Hàng
             </Button>
-          )}
+          </Link>
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-        {children}
-      </main>
+      {/* Main Container */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        {/* Top Navbar */}
+        <header className="bg-white/80 backdrop-blur-md border-b border-slate-200/80 px-6 py-3.5 flex items-center justify-between sticky top-0 z-30 shadow-xs">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="md:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 border border-slate-200"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+
+            <div className="hidden sm:flex items-center gap-2 text-xs text-slate-400 font-medium">
+              <span>Cổng Quản Trị</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+              <span className="text-slate-800 font-semibold">
+                {NAV_ITEMS.find((n) =>
+                  n.href === "/admin"
+                    ? pathname === "/admin"
+                    : pathname.startsWith(n.href)
+                )?.label || "Trung Tâm Điều Hành"}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="hidden lg:flex items-center gap-1.5 text-xs text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/80 font-semibold">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              Hệ thống hoạt động ổn định (Local SQLite DB)
+            </div>
+
+            <Link href="/books" target="_blank">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1"
+              >
+                <span>Xem Cửa Hàng</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </Button>
+            </Link>
+          </div>
+        </header>
+
+        {/* Content Body */}
+        <main className="flex-1 p-6 md:p-8 overflow-y-auto bg-slate-50/60">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

@@ -1,87 +1,98 @@
 import React from "react";
 import Link from "next/link";
-import {
-  ExternalLink,
-  Heart,
-} from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export function Footer() {
   return (
-    <footer className="bg-slate-50 border-t border-slate-200 text-slate-600 text-xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
-          {/* Brand Info */}
-          <div className="space-y-3 md:col-span-1">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-sky-600 to-blue-700 flex items-center justify-center text-white font-bold text-sm shadow-sm">
-                A
-              </div>
-              <span className="text-xl font-black text-slate-900">
-                Aura<span className="text-amber-500">Book</span>
-              </span>
-            </div>
-            <p className="text-slate-500 text-[11px] leading-relaxed">
-              Hệ thống xuất bản & phân phối sách in, sách điện tử bản quyền WebAssembly Canvas DRM (AES-256-GCM) tích hợp trợ lý AI RAG đa tác tử.
-            </p>
-            <div className="flex items-center gap-2 pt-1">
-              <Badge className="bg-sky-100 text-sky-800 border-sky-200 text-[10px] font-semibold">
-                Next.js 15
-              </Badge>
-              <Badge className="bg-amber-100 text-amber-800 border-amber-200 text-[10px] font-semibold">
-                Gemini 768d
-              </Badge>
-            </div>
-          </div>
+    <footer className="bg-[#0A0D14] border-t border-slate-800 text-slate-400 text-xs">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        {/* Top Brand Showcase & Tagline */}
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-12 border-b border-slate-800/80">
+          <Link href="/" className="flex items-center group">
+            <img
+              src="/logo.png"
+              alt="AuraBook"
+              className="h-9 sm:h-10 w-auto object-contain hover:opacity-90 transition-opacity"
+            />
+          </Link>
 
-          {/* Quick Links */}
-          <div className="space-y-2.5">
-            <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider">
-              Khám Phá Sách
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge className="bg-slate-900 text-sky-400 border-slate-700 text-[10px] font-bold">
+              Next.js 15
+            </Badge>
+            <Badge className="bg-slate-900 text-amber-400 border-slate-700 text-[10px] font-bold">
+              WASM Canvas DRM
+            </Badge>
+            <Badge className="bg-slate-900 text-sky-400 border-slate-700 text-[10px] font-bold">
+              Gemini 2.0 Flash
+            </Badge>
+            <Badge className="bg-slate-900 text-amber-400 border-slate-700 text-[10px] font-bold">
+              Hybrid Search RRF k=60
+            </Badge>
+          </div>
+        </div>
+
+        {/* 6-Column Mega Footer Navigation (LottieFiles Blueprint) */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 py-12">
+          {/* Col 1: Products */}
+          <div className="space-y-3">
+            <h4 className="font-bold text-white text-xs uppercase tracking-wider">
+              Sản Phẩm
             </h4>
-            <ul className="space-y-1.5 text-slate-500">
+            <ul className="space-y-2 text-[11px] text-slate-400">
               <li>
-                <Link href="/books" className="hover:text-sky-600 transition-colors">
-                  Toàn bộ danh mục sách
+                <Link href="/books" className="hover:text-amber-400 transition-colors">
+                  Toàn Bộ Danh Mục
                 </Link>
               </li>
               <li>
-                <Link href="/books?q=AI" className="hover:text-sky-600 transition-colors">
-                  Sách Trí Tuệ Nhân Tạo & LLM
+                <Link href="/books?format=EBOOK" className="hover:text-amber-400 transition-colors">
+                  Sách Điện Tử DRM
                 </Link>
               </li>
               <li>
-                <Link href="/books?q=Architecture" className="hover:text-sky-600 transition-colors">
-                  Sách Kiến Trúc Phần Mềm
+                <Link href="/books?format=PHYSICAL" className="hover:text-amber-400 transition-colors">
+                  Sách In Bìa Cứng
                 </Link>
               </li>
               <li>
-                <Link href="/books?format=EBOOK" className="hover:text-sky-600 transition-colors">
-                  Sách điện tử E-Book DRM
+                <Link href="/books?q=AI" className="hover:text-amber-400 transition-colors">
+                  AI & Machine Learning
+                </Link>
+              </li>
+              <li>
+                <Link href="/books?q=Architecture" className="hover:text-amber-400 transition-colors">
+                  Kiến Trúc Phần Mềm
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Technology & Research */}
-          <div className="space-y-2.5">
-            <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider">
-              Nền Tảng Công Nghệ
+          {/* Col 2: Integrations & Tools */}
+          <div className="space-y-3">
+            <h4 className="font-bold text-white text-xs uppercase tracking-wider">
+              Công Nghệ & DRM
             </h4>
-            <ul className="space-y-1.5 text-slate-500">
+            <ul className="space-y-2 text-[11px] text-slate-400">
               <li>
-                <Link href="/intro" className="hover:text-sky-600 transition-colors flex items-center gap-1">
-                  <span>Kiến trúc WebAssembly Canvas DRM</span>
+                <Link href="/intro" className="hover:text-amber-400 transition-colors">
+                  WebAssembly Canvas
                 </Link>
               </li>
               <li>
-                <Link href="/intro" className="hover:text-sky-600 transition-colors">
-                  Thuật toán RRF k=60 Hybrid Search
+                <Link href="/intro" className="hover:text-amber-400 transition-colors">
+                  Khóa Phiên AES-256-GCM
                 </Link>
               </li>
               <li>
-                <Link href="/intro" className="hover:text-sky-600 transition-colors">
-                  Trợ lý Voice AI & Function Calling
+                <Link href="/intro" className="hover:text-amber-400 transition-colors">
+                  Gemini Vision OCR Bìa
+                </Link>
+              </li>
+              <li>
+                <Link href="/intro" className="hover:text-amber-400 transition-colors">
+                  60s AI Audio Teaser
                 </Link>
               </li>
               <li>
@@ -89,39 +100,149 @@ export function Footer() {
                   href="http://localhost:8000/docs"
                   target="_blank"
                   rel="noreferrer"
-                  className="hover:text-sky-600 transition-colors flex items-center gap-1 text-sky-600 font-semibold"
+                  className="hover:text-amber-400 transition-colors flex items-center gap-1"
                 >
-                  <span>Tài liệu Swagger API RESTful</span>
+                  <span>OpenAPI Swagger v1</span>
                   <ExternalLink className="w-3 h-3" />
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* Customer Support */}
-          <div className="space-y-2.5">
-            <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider">
-              Hỗ Trợ Khách Hàng
+          {/* Col 3: Customers */}
+          <div className="space-y-3">
+            <h4 className="font-bold text-white text-xs uppercase tracking-wider">
+              Độc Giả & Thư Viện
             </h4>
-            <ul className="space-y-1.5 text-slate-500">
-              <li>Hotline: <strong className="text-slate-800">1900 2026 (Miễn phí)</strong></li>
-              <li>Email: <span className="text-sky-600">hotro@aurabook.vn</span></li>
-              <li>Địa chỉ: Khu Công Nghệ Cao Hòa Lạc, Hà Nội</li>
-              <li className="pt-1 text-[11px] text-amber-700 font-medium">
-                Voucher ưu đãi tháng 9: <code className="bg-amber-100 px-1 py-0.5 rounded text-amber-900 font-bold">AURA2026</code>
+            <ul className="space-y-2 text-[11px] text-slate-400">
+              <li>
+                <Link href="/library" className="hover:text-amber-400 transition-colors">
+                  Tủ Sách Số Cá Nhân
+                </Link>
+              </li>
+              <li>
+                <Link href="/cart" className="hover:text-amber-400 transition-colors">
+                  Giỏ Hàng & Mã Ưu Đãi
+                </Link>
+              </li>
+              <li>
+                <Link href="/checkout" className="hover:text-amber-400 transition-colors">
+                  Cổng Thanh Toán Sandbox
+                </Link>
+              </li>
+              <li>
+                <Link href="/login" className="hover:text-amber-400 transition-colors">
+                  Đăng Nhập Khách Hàng
+                </Link>
+              </li>
+              <li>
+                <Link href="/register" className="hover:text-amber-400 transition-colors">
+                  Đăng Ký Thành Viên Mới
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Col 4: Resources */}
+          <div className="space-y-3">
+            <h4 className="font-bold text-white text-xs uppercase tracking-wider">
+              Quản Trị Hệ Thống
+            </h4>
+            <ul className="space-y-2 text-[11px] text-slate-400">
+              <li>
+                <Link href="/admin" className="hover:text-amber-400 transition-colors font-bold text-amber-300">
+                  Cổng Quản Trị (Admin)
+                </Link>
+              </li>
+              <li>
+                <Link href="/admin/books" className="hover:text-amber-400 transition-colors">
+                  Quản Trị Sách & OCR
+                </Link>
+              </li>
+              <li>
+                <Link href="/admin/orders" className="hover:text-amber-400 transition-colors">
+                  Vòng Đời Đơn Hàng FSM
+                </Link>
+              </li>
+              <li>
+                <Link href="/admin/users" className="hover:text-amber-400 transition-colors">
+                  Quản Lý Người Dùng
+                </Link>
+              </li>
+              <li>
+                <Link href="/admin/vouchers" className="hover:text-amber-400 transition-colors">
+                  Mã Giảm Giá Voucher
+                </Link>
+              </li>
+              <li>
+                <Link href="/admin/drm" className="hover:text-amber-400 transition-colors">
+                  Giấy Phép DRM Ebook
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Col 5: Company */}
+          <div className="space-y-3">
+            <h4 className="font-bold text-white text-xs uppercase tracking-wider">
+              Về AuraBook
+            </h4>
+            <ul className="space-y-2 text-[11px] text-slate-400">
+              <li>
+                <Link href="/intro" className="hover:text-amber-400 transition-colors">
+                  Đề Tài Luận Văn Tốt Nghiệp
+                </Link>
+              </li>
+              <li>
+                <span className="text-slate-500">filev45.tex Specification</span>
+              </li>
+              <li>
+                <span className="text-slate-500">AuraBook Lab Research</span>
+              </li>
+              <li>
+                <span className="text-slate-500">Đội Ngũ Kỹ Thuật</span>
+              </li>
+              <li>
+                <span className="text-slate-500">Hợp Tác Xuất Bản</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* Col 6: Terms and Policies */}
+          <div className="space-y-3">
+            <h4 className="font-bold text-white text-xs uppercase tracking-wider">
+              Điều Khoản & Bảo Mật
+            </h4>
+            <ul className="space-y-2 text-[11px] text-slate-400">
+              <li>
+                <span className="text-slate-500">Chính Sách Bản Quyền DRM</span>
+              </li>
+              <li>
+                <span className="text-slate-500">Bảo Mật Bộ Nhớ Zero-RAM</span>
+              </li>
+              <li>
+                <span className="text-slate-500">Điều Khoản Mua Hàng</span>
+              </li>
+              <li>
+                <span className="text-slate-500">Xác Thực HMAC-SHA256</span>
+              </li>
+              <li>
+                <span className="text-slate-500">Quyền Riêng Tư Độc Giả</span>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="pt-6 border-t border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-400 text-[11px]">
-          <div>
-            © 2026 AuraBook Ecosystem. Bản quyền phần mềm & nghiên cứu khoa học.
+        {/* Bottom Legal Bar (LottieFiles Blueprint) */}
+        <div className="pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+          <div className="flex items-center gap-2">
+            <span>© 2026 AuraBook Inc. Tất cả quyền được bảo lưu.</span>
           </div>
-          <div className="flex items-center gap-1 text-slate-500">
-            <span>Thiết kế hiện đại với công nghệ</span>
-            <Heart className="w-3 h-3 text-red-500 fill-current" />
-            <span>Next.js 15 & Tailwind CSS</span>
+
+          <div className="flex items-center gap-1 text-slate-400">
+            <span>Thiết kế theo chuẩn mực mỹ thuật</span>
+            <span className="text-amber-400 font-bold">LottieFiles & Taste-Skill</span>
+            <span>dành cho Độc giả & Kỹ sư</span>
           </div>
         </div>
       </div>
