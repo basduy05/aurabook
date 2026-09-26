@@ -69,15 +69,37 @@ Khi một phiên chat bị dừng giữa chừng (hết token, ngắt kết nố
 | Mã UC | Tên nghiệp vụ chuẩn | Trạng thái Backend | Trạng thái Frontend | Ghi chú kỹ thuật |
 | :---: | :--- | :---: | :---: | :--- |
 | **UC01** | Đăng ký & Đăng nhập JWT | ✅ **100% Hoàn thành** | ⏳ Chưa ghép Form UI | Bcrypt, Access (1d) + Refresh (7d), RBAC |
-| **UC02** | Tìm kiếm lai RRF (BM25 + 768d Vector) | 🟡 **Đã có tìm kiếm cơ bản** | ⏳ Chưa có Search Bar UI | Cần bổ sung thuật toán RRF k=60 song song |
-| **UC03** | Nghe thử âm thanh tóm tắt AI Teaser | ⏳ **Chưa triển khai** | ⏳ Chưa có Audio Player | Cần endpoint GET /api/v1/books/{id}/audio-teaser |
+| **UC02** | Tìm kiếm lai RRF (BM25 + 768d Vector) | ✅ **100% Hoàn thành** | ⏳ Chưa có Search Bar UI | Hợp nhất điểm RRF k=60 song song Lexical + 768d Cosine |
+| **UC03** | Nghe thử âm thanh tóm tắt AI Teaser | ✅ **100% Hoàn thành** | ⏳ Chưa có Audio Player | Endpoint GET /api/v1/books/{id}/audio-teaser (WAV data URI) |
 | **UC04** | Đặt hàng & Thanh toán Sandbox | ✅ **100% Hoàn thành** | 🟡 Đã có Simulator HTML | SELECT FOR UPDATE, Hold 15m, Webhook IPN |
 | **UC05** | Đọc E-book WASM Canvas DRM | ✅ **100% Hoàn thành** | ✅ **100% Hoàn thành** | Khóa phiên AES-GCM AEAD Tag, Canvas RAM zero-out |
 | **UC06** | Tác tử RAG Companion đối thoại | ✅ **100% Hoàn thành** | ✅ **100% Hoàn thành** | 768d Cosine Search, SSE Stream, Dẫn chứng trang |
 | **UC07** | Tác tử Thoại Voice AI Function Calling | ✅ **100% Hoàn thành** | ✅ **100% Hoàn thành** | Gemini Function Calling, Hoàn kho, Audit Log |
-| **UC08** | Đánh giá & Bình luận sách đã mua | 🟡 **Đã có Model Review** | ⏳ Chưa có Review UI | Cần Router kiểm tra đơn PAID & tính avg_rating |
+| **UC08** | Đánh giá & Bình luận sách đã mua | ✅ **100% Hoàn thành** | ⏳ Chưa có Review UI | Xác thực đơn PAID, lọc từ cấm thô tục, tính avg_rating |
 | **UC09** | Quản trị danh mục ấn phẩm (Admin) | 🟡 **Đã có Model & Read** | ⏳ Chưa có Admin UI | Cần Router Admin Create/Update/Delete/Stock |
 | **UC10** | Quét ảnh bìa Vision OCR qua Gemini | ⏳ **Chưa triển khai** | ⏳ Chưa có UI Upload bìa | Cần Gemini Flash Vision OCR autofill |
 | **UC11** | Quản trị vòng đời đơn hàng (Admin) | 🟡 **Đã có Model & Flow** | ⏳ Chưa có Admin Orders UI | Cần Router Admin cập nhật trạng thái đơn |
 | **UC12** | Giám sát Dashboard thời gian thực | ⏳ **Chưa triển khai** | ⏳ Chưa có Dashboard UI | Cần Router Admin thống kê doanh thu, KPI |
 | **UC13** | Tự động Chunking & Vector hóa Embeddings | 🟡 **Đã có thuật toán** | ⏳ Chưa có Upload E-book | Cần Background Worker cắt 512 tokens, embed 768d |
+
+---
+
+## 🔍 Chi Tiết Kỹ Thuật Phase 7 (UC02, UC03, UC08 - Advanced User & Catalog Services)
+1. **Tìm kiếm lai kết hợp thuật toán RRF k=60 (UC02)**:
+   - **Nhánh từ vựng (Lexical Branch)**: Truy vấn chuỗi ký tự trên `title`, `author`, `description` và xếp hạng ứng viên theo độ phù hợp.
+   - **Nhánh ngữ nghĩa (Semantic Branch)**: Vector hóa từ khóa tìm kiếm thành vector 768 chiều qua `AiService.generate_embedding(q)` và tính khoảng cách Cosine trên các phân đoạn sách `book_chunks.embedding`.
+   - **Thuật toán Reciprocal Rank Fusion**:
+     $$RRF(d) = \sum_{m \in \{lexical, semantic\}} \frac{1}{60 + rank_m(d)}$$
+   - Phân loại kết quả rõ ràng theo thuộc tính `match_type` (`HYBRID` khi khớp cả hai nhánh, `LEXICAL` hoặc `SEMANTIC`).
+   - Endpoint: `GET /api/v1/books/search/hybrid`.
+
+2. **Nghe thử âm thanh tóm tắt sách AI Audio Teaser (UC03)**:
+   - Endpoint: `GET /api/v1/books/{id}/audio-teaser`.
+   - Kịch bản âm thanh 60 giây được biên soạn tự động từ siêu dữ liệu xuất bản và nội dung sách.
+   - Bộ sinh âm thanh độc lập định dạng RIFF/WAV (PCM 16-bit, 22.05kHz) với hòa âm ngũ cung dẫn truyền (Acoustic Intro Chime) trả về chuỗi Data URI chuẩn `data:audio/wav;base64,...` hỗ trợ phát trực tiếp 100% trên giao diện người dùng.
+
+3. **Gửi đánh giá số sao và bình luận ấn phẩm đã mua (UC08)**:
+   - **Ràng buộc kiểm tra quyền sở hữu**: Chỉ cho phép độc giả có đơn hàng ở trạng thái `PAID` hoặc đã sở hữu `EbookAccess` gửi đánh giá (Ngoại lệ 6a - trả về `403 Forbidden` nếu chưa mua).
+   - **Bộ lọc kiểm duyệt từ ngữ thô tục (Profanity Filter)**: Tự động chặn các bình luận chứa từ ngữ thô tục, spam, lừa đảo (trả về `400 Bad Request`).
+   - **Cập nhật điểm trung bình**: Tự động tính lại `average_rating` và `total_reviews` trên model `Book` ngay khi độc giả gửi hoặc chỉnh sửa nhận xét.
+   - Endpoint: `POST /api/v1/books/{id}/reviews` và `GET /api/v1/books/{id}/reviews` (kèm thống kê phân bổ số sao từ 1 đến 5).

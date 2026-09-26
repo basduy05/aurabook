@@ -69,6 +69,9 @@ class BookListItemResponse(BookBase):
     held_quantity: int = 0
     available_stock: int = 0
     view_count: int = 0
+    average_rating: Decimal = Decimal("0.0")
+    total_reviews: int = 0
+    audio_teaser_url: str | None = None
 
 
 class BookDetailResponse(BookListItemResponse):
@@ -81,3 +84,34 @@ class PaginatedBooksResponse(BaseModel):
     page: int
     limit: int
     total_pages: int
+
+
+class HybridSearchResultItem(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID
+    title: str
+    slug: str
+    author: str
+    cover_url: str | None = None
+    sale_price: Decimal
+    format: BookFormat
+    rrf_score: float = Field(description="Điểm hợp nhất Reciprocal Rank Fusion k=60")
+    lexical_rank: int | None = Field(None, description="Thứ hạng tìm kiếm từ khóa")
+    semantic_rank: int | None = Field(None, description="Thứ hạng tìm kiếm ngữ nghĩa véc-tơ")
+    match_type: str = Field(description="HYBRID | LEXICAL | SEMANTIC")
+
+
+class HybridSearchResponse(BaseModel):
+    query: str
+    total_results: int
+    items: list[HybridSearchResultItem]
+
+
+class AudioTeaserResponse(BaseModel):
+    book_id: uuid.UUID
+    book_title: str
+    duration_seconds: int = 60
+    script_text: str
+    audio_url: str
+    voice_model: str = "gemini-2.0-flash-audio-vi"

@@ -195,3 +195,7 @@ class Review(Base, TimestampMixin):
         Text,
         nullable=True,
     )
+
+    # Relationships
+    user: Mapped["User"] = relationship()
+    book: Mapped["Book"] = relationship(back_populates="reviews")

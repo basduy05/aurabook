@@ -20,7 +20,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.base import Base, TimestampMixin
 
 if TYPE_CHECKING:
-    from app.models.ebook import BookChunk, EbookAccess, ReadingProgress
+    from app.models.ebook import BookChunk, EbookAccess, ReadingProgress, Review
     from app.models.order import CartItem, OrderItem
 
 
@@ -142,6 +142,29 @@ class Book(Base, TimestampMixin):
         String(500),
         nullable=True,
     )
+    view_count: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
+        nullable=False,
+    )
+    average_rating: Mapped[Decimal] = mapped_column(
+        Numeric(3, 2),
+        default=Decimal("0.0"),
+        nullable=False,
+    )
+    total_reviews: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
+        nullable=False,
+    )
+    audio_teaser_url: Mapped[str | None] = mapped_column(
+        String(500),
+        nullable=True,
+    )
+
+    @property
+    def available_stock(self) -> int:
+        return max(0, self.stock_quantity - self.held_quantity)
 
     # Relationships
     category: Mapped["Category"] = relationship(back_populates="books")
@@ -156,6 +179,10 @@ class Book(Base, TimestampMixin):
         cascade="all, delete-orphan",
     )
     book_chunks: Mapped[list["BookChunk"]] = relationship(
+        back_populates="book",
+        cascade="all, delete-orphan",
+    )
+    reviews: Mapped[list["Review"]] = relationship(
         back_populates="book",
         cascade="all, delete-orphan",
     )

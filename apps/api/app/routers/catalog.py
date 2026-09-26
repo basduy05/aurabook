@@ -1,3 +1,4 @@
+import uuid
 from decimal import Decimal
 from typing import Annotated
 
@@ -9,13 +10,17 @@ from app.core.deps import require_staff
 from app.models.catalog import BookFormat
 from app.models.user import User
 from app.schemas.catalog import (
+    AudioTeaserResponse,
     BookCreate,
     BookDetailResponse,
     CategoryCreate,
     CategoryResponse,
+    HybridSearchResponse,
     PaginatedBooksResponse,
 )
+from app.services.audio_service import AudioService
 from app.services.catalog_service import CatalogService
+from app.services.search_service import SearchService
 
 router = APIRouter(tags=["Catalog & Books"])
 
@@ -88,6 +93,38 @@ async def list_books(
         search=search,
         sort_by=sort_by,
     )
+
+
+# --- UC02: Hybrid Search (BM25 + 768d Vector with RRF k=60) ---
+@router.get(
+    "/books/search/hybrid",
+    response_model=HybridSearchResponse,
+    summary="Tìm kiếm sách lai kết hợp thuật toán RRF k=60 (UC02)",
+)
+async def search_hybrid(
+    db: Annotated[AsyncSession, Depends(get_db)],
+    q: str = Query(..., min_length=1, description="Từ khóa tìm kiếm"),
+    limit: int = Query(10, ge=1, le=30, description="Số lượng kết quả tối đa"),
+    min_similarity: float = Query(
+        0.40, ge=0.0, le=1.0, description="Ngưỡng tương đồng cosine tối thiểu"
+    ),
+) -> HybridSearchResponse:
+    return await SearchService.search_hybrid(
+        db=db, q=q, limit=limit, min_similarity=min_similarity
+    )
+
+
+# --- UC03: AI Audio Teaser (60s) ---
+@router.get(
+    "/books/{id}/audio-teaser",
+    response_model=AudioTeaserResponse,
+    summary="Nghe thử âm thanh tóm tắt sách AI Audio Teaser 60s (UC03)",
+)
+async def get_audio_teaser(
+    id: uuid.UUID,
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> AudioTeaserResponse:
+    return await AudioService.get_or_create_audio_teaser(db=db, book_id=id)
 
 
 @router.get(

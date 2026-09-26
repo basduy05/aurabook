@@ -24,6 +24,11 @@ from app.schemas.order import (
     OrderResponse,
     WebhookIPNRequest,
 )
+from app.schemas.review import (
+    ReviewCreate,
+    ReviewListResponse,
+    ReviewResponse,
+)
 from app.schemas.user import UserBase, UserResponse, UserUpdateRequest
 
 __all__ = [
@@ -51,4 +56,7 @@ __all__ = [
     "EbookContentResponse",
     "ReadingProgressUpdateRequest",
     "ReadingProgressResponse",
+    "ReviewCreate",
+    "ReviewResponse",
+    "ReviewListResponse",
 ]

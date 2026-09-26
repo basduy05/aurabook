@@ -9,7 +9,7 @@
 - **Nhánh hoạt động**: `main` (Up to date with origin/main)
 - **Git Author & Committer**: `basduy05 <basduygame@gmail.com>` (Đã cấu hình chuẩn 100%)
 - **Hệ thống Kiểm thử**:
-  - `apps/api`: **19/19 tests Pytest PASSED**, Ruff linter đạt **0 lỗi, 0 cảnh báo**.
+  - `apps/api`: **25/25 tests Pytest PASSED**, Ruff linter đạt **0 lỗi, 0 cảnh báo**.
   - `apps/web`: **TypeScript `tsc --noEmit` PASSED**, ESLint đạt **0 lỗi, 0 cảnh báo**.
 
 ---
@@ -63,13 +63,13 @@ Tác tử sẽ tự động đọc tài liệu này và tiếp tục ngay lập 
 | Mã UC | Tên nghiệp vụ chuẩn | Backend Status | Frontend Status | Trạng thái tổng |
 | :---: | :--- | :---: | :---: | :---: |
 | **UC01** | Đăng ký & Đăng nhập JWT | ✅ Xong | ⏳ Chưa ghép Form UI | **Backend Xong** |
-| **UC02** | Tìm kiếm lai RRF (BM25 + 768d Vector) | 🟡 Đã có tìm kiếm cơ bản | ⏳ Chưa có Search Bar | **Cần nâng cấp RRF** |
-| **UC03** | Nghe thử âm thanh tóm tắt AI Teaser | ⏳ Chưa có router | ⏳ Chưa có Audio Player | **Chưa triển khai** |
+| **UC02** | Tìm kiếm lai RRF (BM25 + 768d Vector) | ✅ Xong | ⏳ Chưa có Search Bar | **Backend Xong** |
+| **UC03** | Nghe thử âm thanh tóm tắt AI Teaser | ✅ Xong | ⏳ Chưa có Audio Player | **Backend Xong** |
 | **UC04** | Đặt hàng & Thanh toán Sandbox | ✅ Xong | 🟡 Đã có Simulator HTML | **Backend Xong** |
 | **UC05** | Đọc E-book WASM Canvas DRM | ✅ Xong | ✅ Xong | ✅ **HOÀN THÀNH 100%** |
 | **UC06** | Tác tử RAG Companion đối thoại | ✅ Xong | ✅ Xong | ✅ **HOÀN THÀNH 100%** |
 | **UC07** | Tác tử Thoại Voice AI Function Calling | ✅ Xong | ✅ Xong | ✅ **HOÀN THÀNH 100%** |
-| **UC08** | Đánh giá & Bình luận sách đã mua | 🟡 Đã có Model Review | ⏳ Chưa có Review UI | **Cần Router** |
+| **UC08** | Đánh giá & Bình luận sách đã mua | ✅ Xong | ⏳ Chưa có Review UI | **Backend Xong** |
 | **UC09** | Quản trị danh mục ấn phẩm (Admin) | 🟡 Đã có Model & Read | ⏳ Chưa có Admin UI | **Cần Router Admin** |
 | **UC10** | Quét ảnh bìa Vision OCR qua Gemini | ⏳ Chưa có router | ⏳ Chưa có Upload bìa | **Chưa triển khai** |
 | **UC11** | Quản trị vòng đời đơn hàng (Admin) | 🟡 Đã có Model & Flow | ⏳ Chưa có Admin Orders | **Cần Router Admin** |
