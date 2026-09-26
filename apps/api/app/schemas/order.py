@@ -1,16 +1,19 @@
+import uuid
 from datetime import datetime
 from decimal import Decimal
-import uuid
-from typing import Any, Dict, List, Optional
+from typing import Any
+
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.models.order import OrderStatus, PaymentProvider, PaymentStatus
+from app.models.order import OrderStatus, PaymentStatus
 
 
 # --- Cart Schemas ---
 class CartItemAddRequest(BaseModel):
     book_id: uuid.UUID
-    format: str = Field(default="PHYSICAL", description="Định dạng: PHYSICAL hoặc EBOOK")
+    format: str = Field(
+        default="PHYSICAL", description="Định dạng: PHYSICAL hoặc EBOOK"
+    )
     quantity: int = Field(default=1, ge=1, le=100, description="Số lượng sách cần mua")
 
 
@@ -25,7 +28,7 @@ class CartItemResponse(BaseModel):
     book_id: uuid.UUID
     title: str
     author: str
-    cover_url: Optional[str] = None
+    cover_url: str | None = None
     format: str
     unit_price: Decimal
     quantity: int
@@ -34,18 +37,18 @@ class CartItemResponse(BaseModel):
 
 
 class CartResponse(BaseModel):
-    items: List[CartItemResponse]
+    items: list[CartItemResponse]
     total_amount: Decimal
     total_items: int
 
 
 # --- Order Schemas ---
 class OrderCreateRequest(BaseModel):
-    shipping_address: Optional[Dict[str, Any]] = Field(
+    shipping_address: dict[str, Any] | None = Field(
         None,
         description="Địa chỉ nhận hàng đối với sách in (Họ tên, SĐT, Địa chỉ)",
     )
-    voucher_code: Optional[str] = Field(None, description="Mã khuyến mãi giảm giá")
+    voucher_code: str | None = Field(None, description="Mã khuyến mãi giảm giá")
 
 
 class OrderItemResponse(BaseModel):
@@ -53,7 +56,7 @@ class OrderItemResponse(BaseModel):
 
     id: uuid.UUID
     book_id: uuid.UUID
-    book_title: Optional[str] = None
+    book_title: str | None = None
     format: str
     unit_price: Decimal
     quantity: int
@@ -71,11 +74,11 @@ class OrderResponse(BaseModel):
     discount_amount: Decimal
     shipping_fee: Decimal
     final_amount: Decimal
-    voucher_code: Optional[str] = None
-    shipping_address: Optional[Dict[str, Any]] = None
+    voucher_code: str | None = None
+    shipping_address: dict[str, Any] | None = None
     expires_at: datetime
     created_at: datetime
-    items: List[OrderItemResponse] = []
+    items: list[OrderItemResponse] = []
 
 
 class CheckoutResponse(BaseModel):

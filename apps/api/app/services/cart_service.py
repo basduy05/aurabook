@@ -1,6 +1,6 @@
-from decimal import Decimal
 import uuid
-from typing import List
+from decimal import Decimal
+
 from fastapi import HTTPException, status
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -31,7 +31,7 @@ class CartService:
         res = await db.execute(stmt)
         items = res.scalars().all()
 
-        cart_items_res: List[CartItemResponse] = []
+        cart_items_res: list[CartItemResponse] = []
         total_amount = Decimal("0.00")
         total_items = 0
 
@@ -68,7 +68,9 @@ class CartService:
     ) -> CartResponse:
         """Add a book to the user's cart or increment its quantity."""
         # 1. Fetch book
-        stmt = select(Book).where((Book.id == req.book_id) & (Book.is_available.is_(True)))
+        stmt = select(Book).where(
+            (Book.id == req.book_id) & (Book.is_available.is_(True))
+        )
         res = await db.execute(stmt)
         book = res.scalar_one_or_none()
         if not book:
@@ -126,7 +128,10 @@ class CartService:
 
     @staticmethod
     async def update_item(
-        db: AsyncSession, user_id: uuid.UUID, item_id: uuid.UUID, req: CartItemUpdateRequest
+        db: AsyncSession,
+        user_id: uuid.UUID,
+        item_id: uuid.UUID,
+        req: CartItemUpdateRequest,
     ) -> CartResponse:
         """Update the quantity of an item in the cart."""
         stmt = (
@@ -157,7 +162,9 @@ class CartService:
         db: AsyncSession, user_id: uuid.UUID, item_id: uuid.UUID
     ) -> CartResponse:
         """Remove a specific item from cart."""
-        stmt = delete(CartItem).where((CartItem.id == item_id) & (CartItem.user_id == user_id))
+        stmt = delete(CartItem).where(
+            (CartItem.id == item_id) & (CartItem.user_id == user_id)
+        )
         await db.execute(stmt)
         await db.commit()
         return await CartService.get_cart(db, user_id)

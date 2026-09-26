@@ -1,9 +1,9 @@
-from datetime import datetime, timedelta, timezone
-from decimal import Decimal
 import hashlib
 import hmac
 import uuid
-from typing import List, Optional
+from datetime import UTC, datetime, timedelta
+from decimal import Decimal
+
 from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -26,15 +26,15 @@ from app.models.user import User
 from app.schemas.order import (
     CheckoutResponse,
     OrderCreateRequest,
-    OrderItemResponse,
-    OrderResponse,
     WebhookIPNRequest,
 )
 
 
 def generate_hmac_signature(data: str, secret: str) -> str:
     """Generate SHA256 HMAC signature for payment tampering prevention."""
-    return hmac.new(secret.encode("utf-8"), data.encode("utf-8"), hashlib.sha256).hexdigest()
+    return hmac.new(
+        secret.encode("utf-8"), data.encode("utf-8"), hashlib.sha256
+    ).hexdigest()
 
 
 class PaymentService:
@@ -67,9 +67,7 @@ class PaymentService:
         # Apply SELECT ... FOR UPDATE to lock rows
         if physical_book_ids:
             lock_stmt = (
-                select(Book)
-                .where(Book.id.in_(physical_book_ids))
-                .with_for_update()
+                select(Book).where(Book.id.in_(physical_book_ids)).with_for_update()
             )
             lock_res = await db.execute(lock_stmt)
             locked_books = {b.id: b for b in lock_res.scalars().all()}
@@ -97,7 +95,7 @@ class PaymentService:
 
         # Voucher calculation
         discount_amount = Decimal("0.00")
-        applied_voucher_code: Optional[str] = None
+        applied_voucher_code: str | None = None
         if req.voucher_code:
             v_code = req.voucher_code.strip().upper()
             v_stmt = select(Voucher).where(Voucher.code == v_code)
@@ -106,7 +104,9 @@ class PaymentService:
             if voucher and voucher.is_valid(subtotal_amount):
                 applied_voucher_code = voucher.code
                 if voucher.discount_percent:
-                    discount_amount = (subtotal_amount * voucher.discount_percent) / Decimal("100")
+                    discount_amount = (
+                        subtotal_amount * voucher.discount_percent
+                    ) / Decimal("100")
                     if voucher.max_discount and discount_amount > voucher.max_discount:
                         discount_amount = voucher.max_discount
                 elif voucher.discount_amount:
@@ -114,10 +114,10 @@ class PaymentService:
                 voucher.used_count += 1
 
         final_amount = max(Decimal("0.00"), subtotal_amount - discount_amount)
-        expires_at = datetime.now(timezone.utc) + timedelta(minutes=15)
+        expires_at = datetime.now(UTC) + timedelta(minutes=15)
 
         # 4. Generate unique order code
-        timestamp_prefix = datetime.now(timezone.utc).strftime("%y%m%d%H%M%S")
+        timestamp_prefix = datetime.now(UTC).strftime("%y%m%d%H%M%S")
         order_code = f"AB{timestamp_prefix}{uuid.uuid4().hex[:4].upper()}"
 
         order = Order(
@@ -233,7 +233,8 @@ class PaymentService:
                 elif item.format == "EBOOK":
                     # Check if access already granted
                     chk_stmt = select(EbookAccess).where(
-                        (EbookAccess.user_id == order.user_id) & (EbookAccess.book_id == item.book_id)
+                        (EbookAccess.user_id == order.user_id)
+                        & (EbookAccess.book_id == item.book_id)
                     )
                     chk_res = await db.execute(chk_stmt)
                     if not chk_res.scalar_one_or_none():
@@ -246,7 +247,11 @@ class PaymentService:
                         db.add(access)
 
             await db.commit()
-            return {"status": "SUCCESS", "order_code": order.order_code, "payment_status": "PAID"}
+            return {
+                "status": "SUCCESS",
+                "order_code": order.order_code,
+                "payment_status": "PAID",
+            }
 
         # 4. Handle Payment FAILED / CANCELLED
         else:
@@ -256,15 +261,21 @@ class PaymentService:
             # Release held stock
             for item in order.items:
                 if item.format == "PHYSICAL":
-                    item.book.held_quantity = max(0, item.book.held_quantity - item.quantity)
+                    item.book.held_quantity = max(
+                        0, item.book.held_quantity - item.quantity
+                    )
 
             await db.commit()
-            return {"status": "FAILED", "order_code": order.order_code, "payment_status": "FAILED"}
+            return {
+                "status": "FAILED",
+                "order_code": order.order_code,
+                "payment_status": "FAILED",
+            }
 
     @staticmethod
     async def sweep_expired_orders(db: AsyncSession) -> int:
         """Scan and cancel all expired PENDING orders, releasing held inventory."""
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         stmt = (
             select(Order)
             .options(selectinload(Order.items).selectinload(OrderItem.book))
@@ -278,7 +289,9 @@ class PaymentService:
             order.status = OrderStatus.CANCELLED
             for item in order.items:
                 if item.format == "PHYSICAL":
-                    item.book.held_quantity = max(0, item.book.held_quantity - item.quantity)
+                    item.book.held_quantity = max(
+                        0, item.book.held_quantity - item.quantity
+                    )
             count += 1
 
         if count > 0:

@@ -1,4 +1,5 @@
-﻿import uuid
+import uuid
+
 from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -22,21 +23,19 @@ from app.schemas.user import UserResponse
 
 
 class AuthService:
-    "Core Authentication & User Identity Service."
+    """Core Authentication & User Identity Service."""
 
     @staticmethod
     async def register(db: AsyncSession, req: UserRegisterRequest) -> TokenResponse:
-        "Register a new customer account and return authenticated tokens."
-        # 1. Check existing email
+        """Register a new customer account and return authenticated tokens."""
         stmt = select(User).where(User.email == req.email.lower().strip())
         res = await db.execute(stmt)
         if res.scalar_one_or_none():
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=Email này đã được sử dụng. Vui lòng đăng nhập hoặc dùng email khác.,
+                detail="Email này đã được sử dụng. Vui lòng đăng nhập hoặc dùng email khác.",
             )
 
-        # 2. Create user with hashed password
         user = User(
             email=req.email.lower().strip(),
             hashed_password=get_password_hash(req.password),
@@ -49,12 +48,11 @@ class AuthService:
         await db.commit()
         await db.refresh(user)
 
-        # 3. Generate tokens
         return AuthService.build_token_response(user)
 
     @staticmethod
     async def login(db: AsyncSession, req: UserLoginRequest) -> TokenResponse:
-        "Authenticate user credentials and return authenticated tokens."
+        """Authenticate user credentials and return authenticated tokens."""
         stmt = select(User).where(User.email == req.email.lower().strip())
         res = await db.execute(stmt)
         user = res.scalar_one_or_none()
@@ -62,36 +60,38 @@ class AuthService:
         if not user or not verify_password(req.password, user.hashed_password):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=Email hoặc mật khẩu không chính xác.,
-                headers={WWW-Authenticate: Bearer},
+                detail="Email hoặc mật khẩu không chính xác.",
+                headers={"WWW-Authenticate": "Bearer"},
             )
 
         if not user.is_active:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail=Tài khoản này đã bị khóa. Vui lòng liên hệ quản trị viên.,
+                detail="Tài khoản này đã bị khóa. Vui lòng liên hệ quản trị viên.",
             )
 
         return AuthService.build_token_response(user)
 
     @staticmethod
-    async def refresh_tokens(db: AsyncSession, req: RefreshTokenRequest) -> TokenResponse:
-        "Issue new access and refresh tokens from a valid refresh token."
+    async def refresh_tokens(
+        db: AsyncSession, req: RefreshTokenRequest
+    ) -> TokenResponse:
+        """Issue new access and refresh tokens from a valid refresh token."""
         payload = decode_token(req.refresh_token)
-        if not payload or payload.get(type) != refresh:
+        if not payload or payload.get("type") != "refresh":
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=Refresh token không hợp lệ hoặc đã hết hạn.,
-                headers={WWW-Authenticate: Bearer},
+                detail="Refresh token không hợp lệ hoặc đã hết hạn.",
+                headers={"WWW-Authenticate": "Bearer"},
             )
 
-        user_id_str = payload.get(sub)
+        user_id_str = payload.get("sub")
         try:
             user_uuid = uuid.UUID(user_id_str)
         except (ValueError, TypeError):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=Token payload không hợp lệ.,
+                detail="Token payload không hợp lệ.",
             )
 
         stmt = select(User).where(User.id == user_uuid)
@@ -101,14 +101,14 @@ class AuthService:
         if not user or not user.is_active:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=Người dùng không hợp lệ hoặc đã bị vô hiệu hóa.,
+                detail="Người dùng không hợp lệ hoặc đã bị vô hiệu hóa.",
             )
 
         return AuthService.build_token_response(user)
 
     @staticmethod
     def build_token_response(user: User) -> TokenResponse:
-        "Generate JWT Access + Refresh tokens and format standard TokenResponse."
+        """Generate JWT Access + Refresh tokens and format standard TokenResponse."""
         access_token = create_access_token(
             subject=user.id,
             role=user.role.value,
@@ -118,7 +118,7 @@ class AuthService:
 
         return TokenResponse(
             access_token=access_token,
-            token_type=bearer,
+            token_type="bearer",
             expires_in=expires_in,
             refresh_token=refresh_token,
             user=UserResponse.model_validate(user),

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -98,13 +99,19 @@ export default function Home() {
         </p>
 
         <div className="flex flex-wrap justify-center gap-4 pt-4">
+          <Link href="/library">
+            <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg shadow-purple-500/25 font-semibold">
+              Mở Thư Viện Số E-Book DRM <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </Link>
+
           <a
             href="http://localhost:8000/docs"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Button size="lg" className="bg-purple-600 hover:bg-purple-700 text-white shadow-lg shadow-purple-500/25">
-              Explore API Docs <ArrowRight className="w-4 h-4 ml-2" />
+            <Button size="lg" variant="outline" className="border-slate-700 bg-slate-900/60 hover:bg-slate-800">
+              API Docs (Swagger)
             </Button>
           </a>
 

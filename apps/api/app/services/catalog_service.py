@@ -3,7 +3,7 @@ import re
 import unicodedata
 import uuid
 from decimal import Decimal
-from typing import List, Optional
+
 from fastapi import HTTPException, status
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,7 +14,6 @@ from app.schemas.catalog import (
     BookCreate,
     BookDetailResponse,
     BookListItemResponse,
-    BookUpdate,
     CategoryCreate,
     CategoryResponse,
     PaginatedBooksResponse,
@@ -31,13 +30,15 @@ def slugify(text: str) -> str:
 
 class CatalogService:
     @staticmethod
-    async def get_categories(db: AsyncSession) -> List[CategoryResponse]:
+    async def get_categories(db: AsyncSession) -> list[CategoryResponse]:
         stmt = (
             select(
                 Category,
                 func.count(Book.id).label("book_count"),
             )
-            .outerjoin(Book, (Book.category_id == Category.id) & (Book.is_available.is_(True)))
+            .outerjoin(
+                Book, (Book.category_id == Category.id) & (Book.is_available.is_(True))
+            )
             .where(Category.is_active.is_(True))
             .group_by(Category.id)
             .order_by(Category.name.asc())
@@ -61,7 +62,9 @@ class CatalogService:
     @staticmethod
     async def create_category(db: AsyncSession, req: CategoryCreate) -> Category:
         slug = req.slug or slugify(req.name)
-        stmt = select(Category).where((Category.slug == slug) | (Category.name == req.name))
+        stmt = select(Category).where(
+            (Category.slug == slug) | (Category.name == req.name)
+        )
         res = await db.execute(stmt)
         if res.scalar_one_or_none():
             raise HTTPException(
@@ -85,18 +88,22 @@ class CatalogService:
         db: AsyncSession,
         page: int = 1,
         limit: int = 12,
-        category_slug: Optional[str] = None,
-        book_format: Optional[BookFormat] = None,
-        min_price: Optional[Decimal] = None,
-        max_price: Optional[Decimal] = None,
-        search: Optional[str] = None,
+        category_slug: str | None = None,
+        book_format: BookFormat | None = None,
+        min_price: Decimal | None = None,
+        max_price: Decimal | None = None,
+        search: str | None = None,
         sort_by: str = "created_at_desc",
     ) -> PaginatedBooksResponse:
         page = max(1, page)
         limit = min(max(1, limit), 50)
         offset = (page - 1) * limit
 
-        query = select(Book).options(selectinload(Book.category)).where(Book.is_available.is_(True))
+        query = (
+            select(Book)
+            .options(selectinload(Book.category))
+            .where(Book.is_available.is_(True))
+        )
         count_query = select(func.count(Book.id)).where(Book.is_available.is_(True))
 
         if category_slug:

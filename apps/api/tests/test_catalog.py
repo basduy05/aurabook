@@ -1,4 +1,5 @@
 from decimal import Decimal
+
 import pytest
 from pydantic import ValidationError
 
@@ -9,7 +10,10 @@ from app.services.catalog_service import slugify
 
 def test_slugify_vietnamese():
     assert slugify("Công Nghệ & Lập Trình") == "cong-nghe-lap-trinh"
-    assert slugify("Clean Architecture: Kiến Trúc Phần Mềm") == "clean-architecture-kien-truc-phan-mem"
+    assert (
+        slugify("Clean Architecture: Kiến Trúc Phần Mềm")
+        == "clean-architecture-kien-truc-phan-mem"
+    )
     assert slugify("Đắc Nhân Tâm 2026!") == "dac-nhan-tam-2026"
 
 
@@ -25,6 +29,7 @@ def test_category_schema_validation():
 
 def test_book_schema_validation():
     import uuid
+
     cat_id = uuid.uuid4()
     book = BookCreate(
         category_id=cat_id,

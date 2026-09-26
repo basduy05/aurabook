@@ -1,25 +1,27 @@
-﻿import enum
+import enum
 import uuid
-from typing import TYPE_CHECKING, List, Optional
-from sqlalchemy import Boolean, Enum as SQLEnum, String
+from typing import TYPE_CHECKING
+
+from sqlalchemy import Boolean, String
+from sqlalchemy import Enum as SQLEnum
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base, TimestampMixin
 
 if TYPE_CHECKING:
-    from app.models.order import CartItem, Order
     from app.models.ebook import EbookAccess, ReadingProgress
+    from app.models.order import CartItem, Order
 
 
 class UserRole(str, enum.Enum):
-    CUSTOMER = CUSTOMER
-    STAFF = STAFF
-    ADMIN = ADMIN
+    CUSTOMER = "CUSTOMER"
+    STAFF = "STAFF"
+    ADMIN = "ADMIN"
 
 
 class User(Base, TimestampMixin):
-    __tablename__ = users
+    __tablename__ = "users"
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -40,12 +42,12 @@ class User(Base, TimestampMixin):
         String(150),
         nullable=False,
     )
-    phone_number: Mapped[Optional[str]] = mapped_column(
+    phone_number: Mapped[str | None] = mapped_column(
         String(20),
         nullable=True,
     )
     role: Mapped[UserRole] = mapped_column(
-        SQLEnum(UserRole, name=user_role_enum),
+        SQLEnum(UserRole, name="user_role_enum"),
         default=UserRole.CUSTOMER,
         nullable=False,
     )
@@ -54,28 +56,21 @@ class User(Base, TimestampMixin):
         default=True,
         nullable=False,
     )
-    avatar_url: Mapped[Optional[str]] = mapped_column(
-        String(500),
-        nullable=True,
-    )
 
     # Relationships
-    orders: Mapped[List[Order]] = relationship(
-        back_populates=user,
-        cascade=all, delete-orphan,
+    orders: Mapped[list["Order"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
     )
-    cart_items: Mapped[List[CartItem]] = relationship(
-        back_populates=user,
-        cascade=all, delete-orphan,
+    cart_items: Mapped[list["CartItem"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
     )
-    ebook_accesses: Mapped[List[EbookAccess]] = relationship(
-        back_populates=user,
-        cascade=all, delete-orphan,
+    ebook_accesses: Mapped[list["EbookAccess"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
     )
-    reading_progresses: Mapped[List[ReadingProgress]] = relationship(
-        back_populates=user,
-        cascade=all, delete-orphan,
+    reading_progresses: Mapped[list["ReadingProgress"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
     )
-
-    def __repr__(self) -> str:
-        return f<User {self.email} ({self.role.value})>

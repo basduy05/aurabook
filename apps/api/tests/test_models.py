@@ -1,6 +1,7 @@
 from app.models import Base
-print('Discovered tables:')
+
+print("Discovered tables:")
 for t in sorted(Base.metadata.tables.keys()):
-    print('  -', t)
+    print("  -", t)
 assert len(Base.metadata.tables) >= 11
-print('ALL MODELS VERIFIED SUCCESSFULLY!')
+print("ALL MODELS VERIFIED SUCCESSFULLY!")

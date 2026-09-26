@@ -1,6 +1,7 @@
 from decimal import Decimal
 from typing import Annotated
-from fastapi import APIRouter, Depends, Query, status
+
+from fastapi import APIRouter, Depends, Query
 from fastapi.responses import HTMLResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -37,7 +38,10 @@ async def sweep_expired_orders(
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> dict:
     cancelled_count = await PaymentService.sweep_expired_orders(db)
-    return {"message": "Đã quét và hủy các đơn hết hạn", "cancelled_orders": cancelled_count}
+    return {
+        "message": "Đã quét và hủy các đơn hết hạn",
+        "cancelled_orders": cancelled_count,
+    }
 
 
 @router.get(
@@ -85,10 +89,10 @@ async def sandbox_simulator_page(
             </div>
             <div class="amount">{amount:,.0f} VNĐ</div>
             <p style="color: #cbd5e1; font-size: 0.9rem;">Chọn kịch bản kết quả để gửi Webhook IPN về hệ thống Backend:</p>
-            
+
             <button class="btn btn-success" onclick="sendWebhook('SUCCESS', '{success_sig}')">✅ Thanh Toán Thành Công (Thẻ hợp lệ)</button>
             <button class="btn btn-danger" onclick="sendWebhook('FAILED', '{fail_sig}')">❌ Thanh Toán Thất Bại (Hết tiền / Hủy giao dịch)</button>
-            
+
             <div id="result" style="margin-top: 1.25rem; font-size: 0.9rem;"></div>
         </div>
 

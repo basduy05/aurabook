@@ -1,5 +1,6 @@
 import uuid
-from typing import Annotated, List
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -42,13 +43,13 @@ async def checkout(
 
 @router.get(
     "",
-    response_model=List[OrderResponse],
+    response_model=list[OrderResponse],
     summary="Lịch sử đơn hàng của người dùng",
 )
 async def get_my_orders(
     current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
-) -> List[OrderResponse]:
+) -> list[OrderResponse]:
     stmt = (
         select(Order)
         .options(selectinload(Order.items).selectinload(OrderItem.book))

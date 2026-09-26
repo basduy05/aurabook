@@ -1,6 +1,6 @@
-﻿from decimal import Decimal
 import uuid
-from typing import List, Optional
+from decimal import Decimal
+
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.models.catalog import BookFormat
@@ -8,8 +8,8 @@ from app.models.catalog import BookFormat
 
 class CategoryBase(BaseModel):
     name: str = Field(min_length=2, max_length=100)
-    slug: Optional[str] = None
-    description: Optional[str] = None
+    slug: str | None = None
+    description: str | None = None
     is_active: bool = True
 
 
@@ -27,10 +27,10 @@ class CategoryResponse(CategoryBase):
 class BookBase(BaseModel):
     title: str = Field(min_length=2, max_length=255)
     author: str = Field(min_length=2, max_length=150)
-    publisher: Optional[str] = Field(None, max_length=150)
-    description: Optional[str] = None
-    cover_url: Optional[str] = None
-    isbn: Optional[str] = None
+    publisher: str | None = Field(None, max_length=150)
+    description: str | None = None
+    cover_url: str | None = None
+    isbn: str | None = None
     format: BookFormat = BookFormat.PHYSICAL
     original_price: Decimal = Field(ge=0)
     sale_price: Decimal = Field(ge=0)
@@ -40,22 +40,22 @@ class BookBase(BaseModel):
 
 class BookCreate(BookBase):
     category_id: uuid.UUID
-    slug: Optional[str] = None
+    slug: str | None = None
 
 
 class BookUpdate(BaseModel):
-    category_id: Optional[uuid.UUID] = None
-    title: Optional[str] = None
-    author: Optional[str] = None
-    publisher: Optional[str] = None
-    description: Optional[str] = None
-    cover_url: Optional[str] = None
-    isbn: Optional[str] = None
-    format: Optional[BookFormat] = None
-    original_price: Optional[Decimal] = None
-    sale_price: Optional[Decimal] = None
-    stock_quantity: Optional[int] = None
-    is_available: Optional[bool] = None
+    category_id: uuid.UUID | None = None
+    title: str | None = None
+    author: str | None = None
+    publisher: str | None = None
+    description: str | None = None
+    cover_url: str | None = None
+    isbn: str | None = None
+    format: BookFormat | None = None
+    original_price: Decimal | None = None
+    sale_price: Decimal | None = None
+    stock_quantity: int | None = None
+    is_available: bool | None = None
 
 
 class BookListItemResponse(BookBase):
@@ -64,8 +64,8 @@ class BookListItemResponse(BookBase):
     id: uuid.UUID
     slug: str
     category_id: uuid.UUID
-    category_name: Optional[str] = None
-    category_slug: Optional[str] = None
+    category_name: str | None = None
+    category_slug: str | None = None
     held_quantity: int = 0
     available_stock: int = 0
     view_count: int = 0
@@ -76,7 +76,7 @@ class BookDetailResponse(BookListItemResponse):
 
 
 class PaginatedBooksResponse(BaseModel):
-    items: List[BookListItemResponse]
+    items: list[BookListItemResponse]
     total: int
     page: int
     limit: int

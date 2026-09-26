@@ -1,5 +1,6 @@
-from datetime import datetime, timezone
 import time
+from datetime import UTC, datetime
+
 from fastapi import APIRouter
 from sqlalchemy import text
 
@@ -54,7 +55,7 @@ async def health_check() -> HealthCheckResponse:
         app_name=settings.APP_NAME,
         environment=settings.ENVIRONMENT,
         version="0.1.0",
-        timestamp=datetime.now(timezone.utc),
+        timestamp=datetime.now(UTC),
         services=services,
     )
 

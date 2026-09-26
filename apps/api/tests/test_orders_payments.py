@@ -1,5 +1,6 @@
-from decimal import Decimal
 import hmac
+from decimal import Decimal
+
 import pytest
 from pydantic import ValidationError
 
@@ -29,6 +30,7 @@ def test_hmac_signature_generation_and_tampering():
 
 def test_cart_item_schema_validation():
     import uuid
+
     req = CartItemAddRequest(
         book_id=uuid.uuid4(),
         format="PHYSICAL",

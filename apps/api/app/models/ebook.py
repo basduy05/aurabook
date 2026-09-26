@@ -1,6 +1,7 @@
-﻿from datetime import datetime, timezone
 import uuid
-from typing import TYPE_CHECKING, List, Optional
+from datetime import UTC, datetime
+from typing import TYPE_CHECKING
+
 from sqlalchemy import (
     Boolean,
     DateTime,
@@ -17,15 +18,15 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.base import Base, TimestampMixin
 
 if TYPE_CHECKING:
-    from app.models.user import User
     from app.models.catalog import Book
     from app.models.order import Order
+    from app.models.user import User
 
 
 class EbookAccess(Base, TimestampMixin):
-    __tablename__ = ebook_accesses
+    __tablename__ = "ebook_accesses"
     __table_args__ = (
-        UniqueConstraint(user_id, book_id, name=uq_user_book_access),
+        UniqueConstraint("user_id", "book_id", name="uq_user_book_access"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(
@@ -35,25 +36,25 @@ class EbookAccess(Base, TimestampMixin):
     )
     user_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
-        ForeignKey(users.id, ondelete=CASCADE),
+        ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
     book_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
-        ForeignKey(books.id, ondelete=RESTRICT),
+        ForeignKey("books.id", ondelete="RESTRICT"),
         nullable=False,
         index=True,
     )
     order_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
-        ForeignKey(orders.id, ondelete=CASCADE),
+        ForeignKey("orders.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
     granted_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
         nullable=False,
     )
     is_active: Mapped[bool] = mapped_column(
@@ -63,15 +64,15 @@ class EbookAccess(Base, TimestampMixin):
     )
 
     # Relationships
-    user: Mapped[User] = relationship(back_populates=ebook_accesses)
-    book: Mapped[Book] = relationship(back_populates=ebook_accesses)
-    order: Mapped[Order] = relationship(back_populates=ebook_accesses)
+    user: Mapped["User"] = relationship(back_populates="ebook_accesses")
+    book: Mapped["Book"] = relationship(back_populates="ebook_accesses")
+    order: Mapped["Order"] = relationship(back_populates="ebook_accesses")
 
 
 class ReadingProgress(Base, TimestampMixin):
-    __tablename__ = reading_progresses
+    __tablename__ = "reading_progresses"
     __table_args__ = (
-        UniqueConstraint(user_id, book_id, name=uq_user_book_progress),
+        UniqueConstraint("user_id", "book_id", name="uq_user_book_progress"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(
@@ -81,13 +82,13 @@ class ReadingProgress(Base, TimestampMixin):
     )
     user_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
-        ForeignKey(users.id, ondelete=CASCADE),
+        ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
     book_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
-        ForeignKey(books.id, ondelete=CASCADE),
+        ForeignKey("books.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
@@ -106,23 +107,23 @@ class ReadingProgress(Base, TimestampMixin):
         default=0.0,
         nullable=False,
     )
-    last_cfi_or_location: Mapped[Optional[str]] = mapped_column(
+    last_cfi_or_location: Mapped[str | None] = mapped_column(
         String(255),
         nullable=True,
     )
     last_read_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
         nullable=False,
     )
 
     # Relationships
-    user: Mapped[User] = relationship(back_populates=reading_progresses)
-    book: Mapped[Book] = relationship(back_populates=reading_progresses)
+    user: Mapped["User"] = relationship(back_populates="reading_progresses")
+    book: Mapped["Book"] = relationship(back_populates="reading_progresses")
 
 
 class BookChunk(Base, TimestampMixin):
-    __tablename__ = book_chunks
+    __tablename__ = "book_chunks"
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -131,7 +132,7 @@ class BookChunk(Base, TimestampMixin):
     )
     book_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
-        ForeignKey(books.id, ondelete=CASCADE),
+        ForeignKey("books.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
@@ -143,11 +144,11 @@ class BookChunk(Base, TimestampMixin):
         Text,
         nullable=False,
     )
-    page_number: Mapped[Optional[int]] = mapped_column(
+    page_number: Mapped[int | None] = mapped_column(
         Integer,
         nullable=True,
     )
-    chapter_title: Mapped[Optional[str]] = mapped_column(
+    chapter_title: Mapped[str | None] = mapped_column(
         String(255),
         nullable=True,
     )
@@ -158,11 +159,11 @@ class BookChunk(Base, TimestampMixin):
     )
 
     # Relationships
-    book: Mapped[Book] = relationship(back_populates=book_chunks)
+    book: Mapped["Book"] = relationship(back_populates="book_chunks")
 
 
 class Review(Base, TimestampMixin):
-    __tablename__ = reviews
+    __tablename__ = "reviews"
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -171,13 +172,13 @@ class Review(Base, TimestampMixin):
     )
     user_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
-        ForeignKey(users.id, ondelete=CASCADE),
+        ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
     book_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
-        ForeignKey(books.id, ondelete=CASCADE),
+        ForeignKey("books.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
     )
@@ -185,7 +186,7 @@ class Review(Base, TimestampMixin):
         Integer,
         nullable=False,
     )
-    comment: Mapped[Optional[str]] = mapped_column(
+    comment: Mapped[str | None] = mapped_column(
         Text,
         nullable=True,
     )

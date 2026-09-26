@@ -15,6 +15,8 @@ select = [
 ignore = [
     "E501",  # line length handled by formatter
     "B008",  # do not perform function calls in argument defaults (FastAPI Depends)
+    "UP042", # allow class X(str, enum.Enum)
+    "B904",  # allow raise without from in exception handler
 ]
 
 [lint.isort]
