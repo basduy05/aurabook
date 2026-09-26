@@ -76,11 +76,11 @@ Khi một phiên chat bị dừng giữa chừng (hết token, ngắt kết nố
 | **UC06** | Tác tử RAG Companion đối thoại | ✅ **100% Hoàn thành** | ✅ **100% Hoàn thành** | 768d Cosine Search, SSE Stream, Dẫn chứng trang |
 | **UC07** | Tác tử Thoại Voice AI Function Calling | ✅ **100% Hoàn thành** | ✅ **100% Hoàn thành** | Gemini Function Calling, Hoàn kho, Audit Log |
 | **UC08** | Đánh giá & Bình luận sách đã mua | ✅ **100% Hoàn thành** | ⏳ Chưa có Review UI | Xác thực đơn PAID, lọc từ cấm thô tục, tính avg_rating |
-| **UC09** | Quản trị danh mục ấn phẩm (Admin) | 🟡 **Đã có Model & Read** | ⏳ Chưa có Admin UI | Cần Router Admin Create/Update/Delete/Stock |
-| **UC10** | Quét ảnh bìa Vision OCR qua Gemini | ⏳ **Chưa triển khai** | ⏳ Chưa có UI Upload bìa | Cần Gemini Flash Vision OCR autofill |
-| **UC11** | Quản trị vòng đời đơn hàng (Admin) | 🟡 **Đã có Model & Flow** | ⏳ Chưa có Admin Orders UI | Cần Router Admin cập nhật trạng thái đơn |
-| **UC12** | Giám sát Dashboard thời gian thực | ⏳ **Chưa triển khai** | ⏳ Chưa có Dashboard UI | Cần Router Admin thống kê doanh thu, KPI |
-| **UC13** | Tự động Chunking & Vector hóa Embeddings | 🟡 **Đã có thuật toán** | ⏳ Chưa có Upload E-book | Cần Background Worker cắt 512 tokens, embed 768d |
+| **UC09** | Quản trị danh mục ấn phẩm (Admin) | ✅ **100% Hoàn thành** | ⏳ Chưa có Admin UI | CRUD ấn phẩm, điều chỉnh tồn kho, kiểm soát hiển thị |
+| **UC10** | Quét ảnh bìa Vision OCR qua Gemini | ✅ **100% Hoàn thành** | ⏳ Chưa có UI Upload bìa | Gemini 2.0 Flash Vision bóc tách ISBN, tựa đề, tác giả autofill |
+| **UC11** | Quản trị vòng đời đơn hàng (Admin) | ✅ **100% Hoàn thành** | ⏳ Chưa có Admin Orders UI | Máy trạng thái FSM, hoàn kho khi hủy, ghi AuditLog |
+| **UC12** | Giám sát Dashboard thời gian thực | ✅ **100% Hoàn thành** | ⏳ Chưa có Dashboard UI | Thống kê doanh thu, 7 ngày gần nhất, top bán chạy, cảnh báo kho |
+| **UC13** | Tự động Chunking & Vector hóa Embeddings | ✅ **100% Hoàn thành** | ⏳ Chưa có Upload E-book | Recursive chunking 512 tokens, overlap 64, sinh vector 768d |
 
 ---
 
@@ -103,3 +103,28 @@ Khi một phiên chat bị dừng giữa chừng (hết token, ngắt kết nố
    - **Bộ lọc kiểm duyệt từ ngữ thô tục (Profanity Filter)**: Tự động chặn các bình luận chứa từ ngữ thô tục, spam, lừa đảo (trả về `400 Bad Request`).
    - **Cập nhật điểm trung bình**: Tự động tính lại `average_rating` và `total_reviews` trên model `Book` ngay khi độc giả gửi hoặc chỉnh sửa nhận xét.
    - Endpoint: `POST /api/v1/books/{id}/reviews` và `GET /api/v1/books/{id}/reviews` (kèm thống kê phân bổ số sao từ 1 đến 5).
+
+---
+
+## ⚙️ Chi Tiết Kỹ Thuật Phase 8 (UC09, UC10, UC11, UC12, UC13 - Admin Portal & Automated Pipelines)
+1. **Quản trị danh mục ấn phẩm sách Admin CRUD & Tồn kho (UC09)**:
+   - Các API quản trị: `GET /api/v1/admin/books`, `POST /api/v1/admin/books`, `PUT /api/v1/admin/books/{id}`, `PATCH /api/v1/admin/books/{id}/stock`, `DELETE /api/v1/admin/books/{id}`.
+   - Hỗ trợ nhập thêm sách, xuất kho với lý do điều chỉnh và ghi nhật ký kiểm toán `audit_logs`.
+
+2. **Tác tử Catalog Vision bóc tách ảnh bìa sách qua Gemini Vision OCR (UC10)**:
+   - Endpoint: `POST /api/v1/admin/books/vision-extract` tiếp nhận ảnh bìa (file upload hoặc Base64).
+   - Mô hình Gemini 2.0 Flash Vision tự động bóc tách: ISBN-13, Tựa đề, Tác giả, Nhà xuất bản, Thể loại và Tóm tắt bìa sau với độ tin cậy $\ge 0.90$.
+
+3. **Quản trị và điều phối vòng đời đơn hàng Admin FSM (UC11)**:
+   - Các API: `GET /api/v1/admin/orders`, `GET /api/v1/admin/orders/{id}`, `PATCH /api/v1/admin/orders/{id}/status`.
+   - Máy trạng thái an toàn: `PENDING` $\rightarrow$ `PAID` $\rightarrow$ `PROCESSING` $\rightarrow$ `SHIPPED` $\rightarrow$ `COMPLETED` hoặc `CANCELLED`.
+   - Khi hủy đơn, hệ thống tự động hoàn trả số lượng tồn kho khả dụng và ghi nhật ký `audit_logs`.
+
+4. **Bảng điều khiển Giám sát Chỉ số Kinh doanh Thời gian Thực (UC12)**:
+   - Endpoint: `GET /api/v1/admin/dashboard/metrics`.
+   - Thống kê thời gian thực: Tổng doanh thu, doanh thu hôm nay, tỷ lệ hoàn tất đơn hàng, số khách hàng, biểu đồ doanh thu 7 ngày gần nhất, top 5 sách bán chạy nhất và danh sách cảnh báo sách sắp hết hàng (`stock_quantity <= 5`).
+
+5. **Tiến trình ngầm Tự động Chunking & Vector hóa Embeddings (UC13)**:
+   - Endpoint: `POST /api/v1/admin/books/{id}/process-ebook`.
+   - Thuật toán phân đoạn đệ quy Recursive Chunking ($512\text{ tokens}$, $\text{overlap}=64\text{ tokens}$).
+   - Tự động gọi `AiService.generate_embedding` sinh vector 768 chiều cho từng phân đoạn và bulk insert vào bảng `book_chunks` phục vụ tác tử RAG.

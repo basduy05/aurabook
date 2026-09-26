@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from app.routers import (
+    admin,
     ai,
     auth,
     cart,
@@ -40,3 +41,6 @@ api_v1_router.include_router(ai.router)
 
 # 9. Reviews & Ratings (UC08)
 api_v1_router.include_router(reviews.router)
+
+# 10. Admin Management & Automated Pipelines (UC09 - UC13)
+api_v1_router.include_router(admin.router)

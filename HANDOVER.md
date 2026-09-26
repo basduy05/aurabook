@@ -9,7 +9,7 @@
 - **Nhánh hoạt động**: `main` (Up to date with origin/main)
 - **Git Author & Committer**: `basduy05 <basduygame@gmail.com>` (Đã cấu hình chuẩn 100%)
 - **Hệ thống Kiểm thử**:
-  - `apps/api`: **25/25 tests Pytest PASSED**, Ruff linter đạt **0 lỗi, 0 cảnh báo**.
+  - `apps/api`: **30/30 tests Pytest PASSED**, Ruff linter đạt **0 lỗi, 0 cảnh báo**.
   - `apps/web`: **TypeScript `tsc --noEmit` PASSED**, ESLint đạt **0 lỗi, 0 cảnh báo**.
 
 ---
@@ -70,8 +70,8 @@ Tác tử sẽ tự động đọc tài liệu này và tiếp tục ngay lập 
 | **UC06** | Tác tử RAG Companion đối thoại | ✅ Xong | ✅ Xong | ✅ **HOÀN THÀNH 100%** |
 | **UC07** | Tác tử Thoại Voice AI Function Calling | ✅ Xong | ✅ Xong | ✅ **HOÀN THÀNH 100%** |
 | **UC08** | Đánh giá & Bình luận sách đã mua | ✅ Xong | ⏳ Chưa có Review UI | **Backend Xong** |
-| **UC09** | Quản trị danh mục ấn phẩm (Admin) | 🟡 Đã có Model & Read | ⏳ Chưa có Admin UI | **Cần Router Admin** |
-| **UC10** | Quét ảnh bìa Vision OCR qua Gemini | ⏳ Chưa có router | ⏳ Chưa có Upload bìa | **Chưa triển khai** |
-| **UC11** | Quản trị vòng đời đơn hàng (Admin) | 🟡 Đã có Model & Flow | ⏳ Chưa có Admin Orders | **Cần Router Admin** |
-| **UC12** | Giám sát Dashboard thời gian thực | ⏳ Chưa có router | ⏳ Chưa có Dashboard UI | **Chưa triển khai** |
-| **UC13** | Tự động Chunking & Vector hóa | 🟡 Đã có thuật toán | ⏳ Chưa có Upload E-book | **Cần Background Worker** |
+| **UC09** | Quản trị danh mục ấn phẩm (Admin) | ✅ Xong | ⏳ Chưa có Admin UI | **Backend Xong** |
+| **UC10** | Quét ảnh bìa Vision OCR qua Gemini | ✅ Xong | ⏳ Chưa có Upload bìa | **Backend Xong** |
+| **UC11** | Quản trị vòng đời đơn hàng (Admin) | ✅ Xong | ⏳ Chưa có Admin Orders | **Backend Xong** |
+| **UC12** | Giám sát Dashboard thời gian thực | ✅ Xong | ⏳ Chưa có Dashboard UI | **Backend Xong** |
+| **UC13** | Tự động Chunking & Vector hóa | ✅ Xong | ⏳ Chưa có Upload E-book | **Backend Xong** |
