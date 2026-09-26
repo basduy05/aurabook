@@ -76,11 +76,11 @@ Khi một phiên chat bị dừng giữa chừng (hết token, ngắt kết nố
 | **UC06** | Tác tử RAG Companion đối thoại | ✅ **100% Hoàn thành** | ✅ **100% Hoàn thành** | 768d Cosine Search, SSE Stream, Dẫn chứng trang |
 | **UC07** | Tác tử Thoại Voice AI Function Calling | ✅ **100% Hoàn thành** | ✅ **100% Hoàn thành** | Gemini Function Calling, Hoàn kho, Audit Log |
 | **UC08** | Đánh giá & Bình luận sách đã mua | ✅ **100% Hoàn thành** | ✅ **100% Hoàn thành** | Xác thực đơn PAID, lọc từ cấm thô tục, tính avg_rating |
-| **UC09** | Quản trị danh mục ấn phẩm (Admin) | ✅ **100% Hoàn thành** | ⏳ Chưa có Admin UI | CRUD ấn phẩm, điều chỉnh tồn kho, kiểm soát hiển thị |
-| **UC10** | Quét ảnh bìa Vision OCR qua Gemini | ✅ **100% Hoàn thành** | ⏳ Chưa có UI Upload bìa | Gemini 2.0 Flash Vision bóc tách ISBN, tựa đề, tác giả autofill |
-| **UC11** | Quản trị vòng đời đơn hàng (Admin) | ✅ **100% Hoàn thành** | ⏳ Chưa có Admin Orders UI | Máy trạng thái FSM, hoàn kho khi hủy, ghi AuditLog |
-| **UC12** | Giám sát Dashboard thời gian thực | ✅ **100% Hoàn thành** | ⏳ Chưa có Dashboard UI | Thống kê doanh thu, 7 ngày gần nhất, top bán chạy, cảnh báo kho |
-| **UC13** | Tự động Chunking & Vector hóa Embeddings | ✅ **100% Hoàn thành** | ⏳ Chưa có Upload E-book | Recursive chunking 512 tokens, overlap 64, sinh vector 768d |
+| **UC09** | Quản trị danh mục ấn phẩm (Admin) | ✅ **100% Hoàn thành** | ✅ **100% Hoàn thành** | CRUD ấn phẩm, điều chỉnh tồn kho, kiểm soát hiển thị |
+| **UC10** | Quét ảnh bìa Vision OCR qua Gemini | ✅ **100% Hoàn thành** | ✅ **100% Hoàn thành** | Gemini 2.0 Flash Vision bóc tách ISBN, tựa đề, tác giả autofill |
+| **UC11** | Quản trị vòng đời đơn hàng (Admin) | ✅ **100% Hoàn thành** | ✅ **100% Hoàn thành** | Máy trạng thái FSM, hoàn kho khi hủy, ghi AuditLog |
+| **UC12** | Giám sát Dashboard thời gian thực | ✅ **100% Hoàn thành** | ✅ **100% Hoàn thành** | Thống kê doanh thu, 7 ngày gần nhất, top bán chạy, cảnh báo kho |
+| **UC13** | Tự động Chunking & Vector hóa Embeddings | ✅ **100% Hoàn thành** | ✅ **100% Hoàn thành** | Recursive chunking 512 tokens, overlap 64, sinh vector 768d |
 
 ---
 
@@ -176,3 +176,32 @@ Khi một phiên chat bị dừng giữa chừng (hết token, ngắt kết nố
    - Nút đăng nhập 1-chạm tài khoản Demo Khách Hàng (`customer@aurabook.vn`) & Quản Trị Viên (`admin@aurabook.vn`).
    - Kết nối trực tiếp API `POST /api/v1/auth/login` và `POST /api/v1/auth/register`, tự động lưu trữ Access Token và hồ sơ người dùng.
    - Đóng gói trong `<Suspense>` boundary để xử lý `useSearchParams()` chuẩn Next.js 15.
+
+---
+
+## 🛡️ Chi Tiết Kỹ Thuật Phase 10 (Admin Dashboard & Operation Portal - UC09 đến UC13)
+
+1. **Admin Portal Layout & RBAC Protection (`apps/web/app/admin/layout.tsx`)**:
+   - Sidebar responsive với các module quản trị: Bảng điều khiển (`/admin`), Quản lý ấn phẩm & Gemini OCR (`/admin/books`), Quản lý vòng đời đơn FSM (`/admin/orders`).
+   - Tích hợp liên kết Swagger API v1, shortcut quay về sàn sách (`/`) và nút 1-chạm kích hoạt tài khoản Admin cho người kiểm thử.
+
+2. **Bảng Điều Khiển Giám Sát Doanh Thu Thời Gian Thực (UC12 - `apps/web/app/admin/page.tsx`)**:
+   - 4 Thẻ KPI Realtime: Tổng doanh thu (VNĐ), Tổng đơn hàng, Tác phẩm đang bán, Độc giả đăng ký.
+   - Biểu đồ cột trực quan hóa xu hướng doanh thu 7 ngày gần nhất kèm số lượng đơn mỗi ngày.
+   - Hộp cảnh báo tồn kho thấp (`low_stock_alerts`) cho sách in dưới 5 cuốn với nút "Nhập kho nhanh (+25)".
+   - Bảng xếp hạng Top ấn phẩm bán chạy nhất (`top_selling_books`) theo doanh thu và số lượng.
+
+3. **Quản Trị Danh Mục & Quét Bìa Sách Gemini 2.0 Flash Vision OCR (UC09, UC10 - `apps/web/app/admin/books/page.tsx`)**:
+   - Bảng danh mục ấn phẩm toàn diện: Bìa sách, Tiêu đề, Tác giả, ISBN, Định dạng, Tồn kho (với nút +/- tăng giảm trực tiếp), Giá bán, Trạng thái RAG và Trạng thái hiển thị.
+   - Modal thêm sách mới tích hợp **Gemini 2.0 Flash Vision OCR**:
+     - Cho phép nhập URL ảnh bìa hoặc dùng ảnh mẫu.
+     - Bấm nút "Quét Bìa AI", AI phân tích ảnh và tự động điền 100% các trường: Tựa sách, Tác giả, ISBN, Nhà xuất bản, Giá bán đề xuất, Thể loại và Mô tả tóm tắt.
+   - Tích hợp nút kích hoạt Worker băm nhỏ E-book (512 tokens, 64 overlap) và tạo vector đặc trưng 768 chiều (UC13).
+
+4. **Quản Lý Vòng Đời Đơn Hàng Bằng Máy Trạng Thái FSM (UC11 - `apps/web/app/admin/orders/page.tsx`)**:
+   - Danh sách đơn hàng với bộ lọc trạng thái: Tất cả, PENDING, PAID, SHIPPING, DELIVERED, CANCELLED.
+   - Thao tác chuyển đổi trạng thái FSM thời gian thực:
+     - `PENDING` -> `PAID` (Xác nhận thu tiền & kích hoạt bản quyền DRM E-book).
+     - `PAID` -> `SHIPPING` (Bắt đầu điều phối giao vận bưu tá).
+     - `SHIPPING` -> `DELIVERED` (Giao thành công đến tay độc giả).
+     - Bất kỳ trạng thái nào -> `CANCELLED`: Tự động hoàn lại số lượng tồn kho sách in vào cơ sở dữ liệu và ghi vết vào `AuditLog`.

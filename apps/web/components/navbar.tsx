@@ -79,6 +79,7 @@ export function Navbar() {
             <Layers className="w-3.5 h-3.5 text-pink-400" />
             <span className="hidden sm:inline">Thư Viện Số</span>
           </Link>
+                  <Link href="/admin" onClick={() => setShowUserMenu(false)} className="block px-3 py-1.5 hover:bg-cyan-950/50 text-cyan-300 font-medium transition-colors">Bảng Quản Trị Admin</Link>
 
           {/* Cart Icon Button */}
           <button

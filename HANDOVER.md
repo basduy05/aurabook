@@ -27,7 +27,7 @@
 | **Phase 7: Advanced Catalog & Review (UC02, UC03, UC08)** | RRF k=60 Hybrid Search, Audio Teaser WAV, Đánh giá đơn PAID & Profanity filter | ✅ Xong | ✅ RRF Toggle, Audio Player, Reviews | ✅ **HOÀN THÀNH** |
 | **Phase 8: Admin Services & Pipelines (UC09-UC13)** | Admin CRUD, Gemini Vision OCR Bìa, FSM Order, Dashboard Realtime, Vector Worker | ✅ Xong | ⏳ Sắp làm Phase 10 | ✅ **HOÀN THÀNH (BE)** |
 | **Phase 9: Frontend Storefront E-Commerce (UC01-UC04, UC08)** | Trang chủ, Catalog RRF, Sách chi tiết, Audio Teaser, Giỏ hàng, Checkout Sandbox, Login & Register | ✅ Sẵn sàng | ✅ 10/10 Routes Biên dịch OK | ✅ **HOÀN THÀNH** |
-| **Phase 10: Admin Dashboard & Operation Portal (UC09-UC13)** | Admin Portal UI, Gemini Vision Bìa Sách, Quản lý đơn FSM, Giám sát doanh thu & Vector Worker | ✅ Sẵn sàng | ⏳ Sắp thực hiện | ⏳ **PENDING** |
+| **Phase 10: Admin Dashboard & Operation Portal (UC09-UC13)** | Admin Portal UI, Gemini Vision Bìa Sách, Quản lý đơn FSM, Giám sát doanh thu & Vector Worker | ✅ Xong | ✅ Next.js Build (13/13 OK) | ✅ **HOÀN THÀNH** |
 
 ---
 
@@ -44,6 +44,11 @@
 10. `apps/web/app/login/page.tsx` & `apps/web/app/register/page.tsx`: Thẻ đăng nhập và đăng ký bảo mật với nút 1-chạm tài khoản Demo Khách Hàng / Quản Trị Viên, lưu JWT vào Context và chuyển hướng thông minh.
 11. `apps/web/app/reader/[bookId]/page.tsx`: Trình đọc sách WASM Canvas DRM chống trích xuất text DOM, giải mã AES-256-GCM và zero-out RAM.
 12. `apps/web/app/library/page.tsx`: Thư viện số cá nhân hiển thị toàn bộ sách đã mua và thanh tiến độ đọc.
+13. `apps/web/app/admin/layout.tsx`: Layout thanh điều hướng Admin Portal và cơ chế chuyển đổi tài khoản Admin một chạm.
+14. `apps/web/app/admin/page.tsx`: Bảng điều khiển giám sát doanh thu Realtime, biểu đồ 7 ngày, cảnh báo kho thấp và danh sách bestseller (UC12).
+15. `apps/web/app/admin/books/page.tsx`: Quản trị ấn phẩm sách, chỉnh sửa tồn kho tức thì, quét bìa sách tự động điền form bằng Gemini 2.0 Flash Vision OCR (UC10) và kích hoạt worker băm nhỏ vector hóa (UC13).
+16. `apps/web/app/admin/orders/page.tsx`: Quản trị vòng đời đơn hàng bằng máy trạng thái FSM (UC11) kiểm soát PENDING → PAID → SHIPPING → DELIVERED và hủy hoàn kho an toàn.
+
 
 ---
 
