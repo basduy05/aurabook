@@ -1,0 +1,3259 @@
+\documentclass[11pt, a4paper]{report}
+
+% --- UNIVERSAL PREAMBLE BLOCK ---
+\usepackage[a4paper, top=2.5cm, bottom=2.5cm, left=2.5cm, right=2cm]{geometry}
+\usepackage{fontspec}
+
+\usepackage[vietnamese]{babel}
+\setmainfont{Arial}
+
+% Ensure list bullets render correctly
+\usepackage{enumitem}
+\setlist[itemize]{label=-}
+
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{needspace}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric, shapes.multipart, fit, backgrounds, calc}
+
+\definecolor{brandblue}{RGB}{30, 64, 175}
+\definecolor{brandindigo}{RGB}{67, 56, 202}
+\definecolor{brandteal}{RGB}{13, 148, 136}
+\definecolor{brandorange}{RGB}{234, 88, 12}
+\definecolor{brandred}{RGB}{220, 38, 38}
+
+\tikzset{
+    actor_node/.style={rectangle, rounded corners=3pt, draw=blue!70!black, fill=blue!8, line width=0.8pt, align=center, font=\scriptsize\bfseries, inner sep=4pt, text width=2.0cm},
+    system_box/.style={rectangle, draw=black!60, dashed, line width=0.8pt, inner sep=8pt},
+    usecase_node/.style={ellipse, draw=orange!80!black, fill=orange!8, line width=0.7pt, align=center, font=\tiny\bfseries, inner sep=2pt, minimum height=0.82cm, text width=2.5cm},
+    lifeline_node/.style={rectangle, draw=black!80, fill=gray!15, line width=0.8pt, align=center, font=\scriptsize\bfseries, inner sep=3pt, minimum width=2.2cm, minimum height=0.65cm},
+    lifeline_line/.style={draw=black!40, dashed, line width=0.6pt},
+    activation_box/.style={rectangle, draw=black!70, fill=white, line width=0.6pt, minimum width=0.28cm},
+    msg_arrow/.style={-Stealth, line width=0.7pt, draw=blue!80!black},
+    reply_arrow/.style={-Stealth, dashed, line width=0.7pt, draw=black!70},
+    self_call/.style={-Stealth, line width=0.7pt, draw=blue!80!black},
+    activity_start/.style={circle, fill=black, inner sep=0pt, minimum size=0.4cm},
+    activity_end/.style={circle, draw=black, line width=1pt, inner sep=0pt, minimum size=0.5cm},
+    activity_end_inner/.style={circle, fill=black, inner sep=0pt, minimum size=0.3cm},
+    activity_step/.style={rectangle, rounded corners=4pt, draw=teal!80!black, fill=teal!8, line width=0.8pt, align=center, font=\scriptsize, inner sep=4pt, text width=3.4cm},
+    activity_decision/.style={diamond, aspect=1.8, draw=red!75!black, fill=red!8, line width=0.8pt, align=center, font=\tiny\bfseries, inner sep=2pt, text width=2.4cm},
+    class_box/.style={rectangle, draw=black!80, line width=0.8pt, align=left, font=\tiny, fill=white, inner sep=4pt, text width=4.1cm},
+    erd_entity/.style={rectangle, draw=brandindigo!80!black, line width=0.8pt, align=left, font=\tiny, fill=brandindigo!5, inner sep=4pt, text width=4.0cm},
+    arch_box/.style={rectangle, rounded corners=4pt, draw=black!70, fill=white, line width=0.8pt, align=center, font=\small, inner sep=5pt},
+    state_box/.style={rectangle, rounded corners=5pt, draw=brandblue!80!black, fill=brandblue!8, line width=0.85pt, align=center, font=\scriptsize\bfseries, inner sep=3.5pt, text width=2.85cm, minimum height=1.05cm},
+    deploy_node/.style={rectangle, draw=black!80, fill=gray!8, line width=0.9pt, align=left, font=\scriptsize, inner sep=6pt}
+}
+
+\usepackage[hidelinks, unicode]{hyperref}
+
+\setcounter{chapter}{2}
+
+\begin{document}
+
+\chapter{PHÂN TÍCH THIẾT KẾ}
+
+\section{KHẢO SÁT VÀ XÁC ĐỊNH YÊU CẦU}
+
+\subsection{Khảo sát thực trạng và ý tưởng}
+
+\subsubsection{a) Khảo sát các nền tảng phân phối và đọc sách hiện hành}
+
+Trong kỷ nguyên phát triển bùng nổ của xuất bản số và thương mại điện tử, ngành kinh doanh sách trực tuyến đã chứng kiến sự định hình của nhiều mô hình phân phối từ truyền thống đến hiện đại. Nhằm xác định chính xác bài toán kỹ thuật cần giải quyết và thiết lập cơ sở khoa học cho hệ thống AuraBook, đề tài tiến hành khảo sát toàn diện các nền tảng thương mại điện tử và dịch vụ đọc sách phổ biến bao gồm Amazon (Kindle/Audible), Tiki, Fahasa và Waka. Quá trình khảo sát không chỉ dừng lại ở góc độ trải nghiệm người dùng bề mặt mà tập trung mổ xẻ cấu trúc kiến trúc phần mềm, thuật toán tìm kiếm, mô hình hỗ trợ đọc hiểu và cơ chế bảo vệ tài sản số:
+
+\begin{itemize}
+    \item \textbf{Amazon Kindle \& Audible:}
+    \begin{itemize}
+        \item \textit{Mô hình vận hành:} Là nền tảng tiên phong và dẫn đầu thị trường toàn cầu về phân phối xuất bản phẩm số (E-book) kết hợp sách nói (Audiobook) thông qua dịch vụ Audible, được tích hợp chặt chẽ vào hệ sinh thái phần cứng chuyên dụng (Kindle Paperwhite, Kindle Oasis, Fire Tablet) và các ứng dụng di động độc quyền.
+        \item \textit{Hạn chế kỹ thuật:} Cơ chế tìm kiếm của Amazon tuy đã áp dụng các mô hình học máy để cá nhân hóa gợi ý (Recommendation Systems), nhưng đối với thao tác tìm kiếm ấn phẩm theo nhu cầu cụ thể của người dùng vẫn phụ thuộc chủ yếu vào việc khớp từ khóa từ vựng kết hợp hệ thống danh mục phân loại tĩnh (Hierarchical Taxonomy Filters). Khi độc giả đưa vào các câu truy vấn phức tạp mang tính khái niệm học thuật trừu tượng hoặc truy vấn mô tả nội dung tình tiết, hệ thống gặp phải hiện tượng nghẽn ngữ nghĩa (Semantic Gap), chỉ trả về các ấn phẩm có chứa cụm từ khóa đó trong tiêu đề hoặc phần mô tả ngắn. Ngoài ra, tính năng hỗ trợ đọc hiểu X-Ray của Kindle chỉ trích xuất được danh mục thực thể tĩnh chứ hoàn toàn thiếu năng lực đối thoại động, không thể giải thích suy luận sâu theo ngữ cảnh câu hỏi độc giả hoặc tổng hợp luận điểm liên trang sách. Về mặt phân phối, việc phụ thuộc nặng nề vào các định dạng độc quyền (.azw3, .kfx) và phần cứng chuyên biệt tạo ra rào cản chuyển đổi lớn đối với người dùng phổ thông trên môi trường web mở.
+    \end{itemize}
+    \item \textbf{Tiki \& Fahasa (Thị trường Thương mại điện tử Việt Nam):}
+    \begin{itemize}
+        \item \textit{Mô hình vận hành:} Đại diện tiêu biểu cho các sàn thương mại điện tử bán sách vật lý quy mô lớn tại Việt Nam, sở hữu hệ thống kho vận rộng khắp và quy trình thanh toán, giao vận hoàn thiện.
+        \item \textit{Hạn chế kỹ thuật:} Động cơ tìm kiếm của Tiki và Fahasa dựa trên nền tảng Elasticsearch kết hợp các thuật toán so khớp từ khóa truyền thống (như BM25, TF-IDF hoặc phép so khớp chuỗi ký tự cơ bản). Điểm yếu cốt tử của cơ chế tìm kiếm từ vựng (Lexical Search) là vấn đề bất đồng từ vựng (Vocabulary Mismatch Problem): nếu độc giả sử dụng các từ đồng nghĩa, từ địa phương, hoặc diễn đạt ý niệm bằng văn phong đời thường khác với bộ từ khóa được người bán nhập liệu trong tiêu đề, kết quả trả về thường là danh sách rỗng ($0$ kết quả) hoặc các đầu sách hoàn toàn lệch ngữ cảnh. Đồng thời, cả hai nền tảng này thuần túy là các kênh thương mại bán lẻ hàng hóa vật lý; hoàn toàn thiếu vắng không gian số hóa trải nghiệm nội dung và dịch vụ sau bán hàng vẫn dựa trên mô hình tổng đài viên hoặc chatbot kịch bản tĩnh (Rule-based Chatbot) trả lời theo cây phân nhánh xơ cứng.
+    \end{itemize}
+    \item \textbf{Waka (Nền tảng E-book \& Audiobook thuê bao tại Việt Nam):}
+    \begin{itemize}
+        \item \textit{Mô hình vận hành:} Nền tảng phát hành sách điện tử và sách nói bản quyền theo hình thức gói thuê bao định kỳ (Subscription) kết hợp bán lẻ ấn phẩm số, sở hữu lượng độc giả trung thành tương đối lớn trên ứng dụng di động.
+        \item \textit{Hạn chế kỹ thuật:} Trình đọc E-book trên giao diện web của Waka vận hành dựa trên cơ chế giải mã và kết xuất mã nguồn văn bản trực tiếp lên cây cấu trúc DOM của trình duyệt (HTML/CSS DOM Rendering). Cơ chế này bộc lộ lỗ hổng bảo mật nghiêm trọng: người dùng am hiểu kỹ thuật chỉ cần mở công cụ gỡ lỗi có sẵn của trình duyệt (Chrome DevTools hoặc Inspect Element) là có thể dễ dàng sao chép toàn bộ văn bản sách thô hoặc chạy các đoạn mã JavaScript tự động bóc tách (Scraping) toàn bộ nội dung ấn phẩm. Về mặt trải nghiệm học thuật, Waka thiếu hoàn toàn các công cụ tương tác thông minh hỗ trợ người đọc tra cứu thuật ngữ chuyên sâu. Thêm vào đó, quy trình nhập liệu xuất bản sách mới trên hệ thống quản trị vẫn đòi hỏi nhân viên phải bóc tách metadata, tạo mục lục và nhập biểu mẫu hoàn toàn thủ công.
+    \end{itemize}
+\end{itemize}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.1. Ma trận so sánh tính năng kỹ thuật chuyên sâu giữa các giải pháp hiện hành và AuraBook}
+
+\begin{longtable}{p{2.5cm} p{2.5cm} p{3.0cm} p{2.5cm} p{3.5cm}}
+\toprule
+\textbf{Tiêu chí} & \textbf{Tiki / Fahasa} & \textbf{Amazon Kindle} & \textbf{Waka} & \textbf{Hệ thống AuraBook} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Tiêu chí} & \textbf{Tiki / Fahasa} & \textbf{Amazon Kindle} & \textbf{Waka} & \textbf{Hệ thống AuraBook} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Hình thức} & Sách vật lý truyền thống & Sách in, E-book, Sách nói & E-book, Sách nói & Sách vật lý \& E-book số hóa \\
+\midrule
+\textbf{Tìm kiếm} & Lexical Matching (BM25 / Full-Text) & Khớp từ vựng + Lọc đa tầng & Khớp từ khóa danh mục & Tìm kiếm lai: BM25 + Vector Cosine trên \texttt{pgvector} \\
+\midrule
+\textbf{Ngữ nghĩa} & Thấp (Khớp chuỗi bề mặt) & Trung bình (Dựa trên siêu dữ liệu) & Thấp (Phụ thuộc tiêu đề) & Cao (Vector 768 chiều với Gemini Embeddings) \\
+\midrule
+\textbf{Trình đọc} & Không hỗ trợ E-book & Từ điển tĩnh, tra cứu X-Ray & Đánh dấu trang, chỉnh cỡ chữ & Tác tử AI RAG đối thoại, dẫn chứng số trang \\
+\midrule
+\textbf{CSKH} & Chatbot tĩnh / Tổng đài viên & Chatbot cây quyết định / Ticket & Biểu mẫu liên hệ / Email & Tác tử thoại Voice AI tự hành tiếp nhận giọng nói \\
+\midrule
+\textbf{Nhập liệu} & Nhập biểu mẫu thủ công qua CMS & Nhập tập trung có hỗ trợ API & Nhập thủ công từng trường & Tác tử Catalog Vision nhận diện ảnh bìa, tạo JSON \\
+\midrule
+\textbf{DRM} & Không áp dụng & DRM phần cứng chuyên dụng & DRM DOM / Token phiên & WebAssembly cô lập + AES-256-GCM + HTML5 Canvas \\
+\midrule
+\textbf{Hạ tầng} & Rất cao (Phân tán đồ sộ) & Cực cao (Đám mây riêng AWS) & Trung bình (Máy chủ thuê bao) & Tối ưu hóa (Hợp nhất SQL \& Vector trên PostgreSQL) \\
+\bottomrule
+\end{longtable}
+
+\subsubsection{b) Khảo sát thực tế nhu cầu người dùng (User Survey \& Questionnaire)}
+
+Nhằm xây dựng luận cứ khoa học thực chứng cho các quyết định thiết kế kiến trúc phần mềm, đề tài đã thiết lập một cuộc điều tra xã hội học định lượng kết hợp phỏng vấn sâu người tiêu dùng:
+
+\begin{itemize}
+    \item \textbf{Mục đích khảo sát:}
+    \begin{enumerate}
+        \item Đo lường mức độ phổ biến của thói quen đọc kết hợp giữa sách in truyền thống và sách số (Hybrid Reading) để xác thực tính khả thi của mô hình phân phối hợp nhất.
+        \item Định lượng mức độ nghiêm trọng của điểm nghẽn tìm kiếm từ vựng (Vocabulary Mismatch) và nhu cầu cấp thiết về tìm kiếm ngữ nghĩa theo ý niệm.
+        \item Đánh giá mức độ sẵn sàng tiếp nhận và kỳ vọng của người dùng đối với các tác tử AI thế hệ mới (Trợ lý RAG giải thích theo ngữ cảnh trang sách và Trợ lý điều khiển đơn hàng bằng giọng nói Voice AI).
+    \end{enumerate}
+    \item \textbf{Phương pháp thu thập dữ liệu:} Khảo sát trực tuyến qua Google Forms kết hợp lấy mẫu phân tầng ngẫu nhiên (Stratified Random Sampling) tại các trường đại học, nhà sách và không gian làm việc số tại Hà Nội.
+    \item \textbf{Quy mô mẫu điều tra:} Thu thập $N = 185$ phản hồi hợp lệ (đã làm sạch dữ liệu loại bỏ các phiếu trả lời thiếu hoặc không nhất quán logic). Toàn bộ dữ liệu thô dạng bảng tính Google Sheets (\texttt{survey\_responses.csv}) được lưu trữ tại phụ lục tài liệu đồ án để phục vụ công tác đối soát và kiểm chứng tính xác thực.
+    \item \textbf{Cơ cấu nhân khẩu học:} Sinh viên khối ngành Công nghệ, Kinh tế, Xã hội chiếm $52.4\%$ ($97$ người); Nhân viên văn phòng, chuyên viên tri thức trẻ (23--35 tuổi) chiếm $34.6\%$ ($64$ người); Giảng viên, nghiên cứu sinh và các đối tượng độc giả khác chiếm $13.0\%$ ($24$ người).
+    \item \textbf{Thời gian triển khai điều tra:} Khảo sát được thực hiện trong 2 tuần (từ ngày 05/08/2026 đến ngày 20/08/2026, giai đoạn tiền trạm thu thập yêu cầu người dùng trước khi chính thức bước vào các Sprint phân tích thiết kế hệ thống).
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  \framebox{\parbox{0.85\textwidth}{\centering
+    \vspace{2.0cm}
+    \textbf{Minh chứng khảo sát: Giao diện biểu mẫu Google Forms và biểu đồ phân tích kết quả} \\
+    \small\textit{Ảnh chụp giao diện thu thập dữ liệu trực tuyến ($N=185$) và phân bố câu trả lời của độc giả.} \\
+    \footnotesize\textit{(Toàn bộ dữ liệu phản hồi khảo sát được lưu trữ tại tệp \texttt{survey\_responses.csv} trong Phụ lục đính kèm đề tài)}
+    \vspace{2.0cm}
+  }}
+  \caption{Giao diện khảo sát trực tuyến qua Google Forms và thống kê kết quả ($N=185$)}
+  \label{fig:survey_form}
+\end{figure}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.2. Tổng hợp bảng hỏi khảo sát định lượng và phân tích kết quả nhu cầu người dùng ($N = 185$)}
+
+\begin{longtable}{p{0.8cm} p{6.2cm} p{5.0cm} p{1.3cm} p{1.0cm}}
+\toprule
+\textbf{STT} & \textbf{Nội dung câu hỏi khảo sát} & \textbf{Các phương án lựa chọn} & \textbf{Số lượng} & \textbf{Tỷ lệ} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{STT} & \textbf{Nội dung câu hỏi khảo sát} & \textbf{Các phương án lựa chọn} & \textbf{Số lượng} & \textbf{Tỷ lệ} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{1} & \textbf{Phương thức đọc sách chính của bạn hiện nay là gì?} & - Sách in truyền thống\newline - Sách điện tử (E-book / Audiobook)\newline - Đọc kết hợp linh hoạt cả hai & 52\newline 31\newline 102 & 28.1\%\newline 16.8\%\newline \textbf{55.1\%} \\
+\midrule
+\textbf{2} & \textbf{Bạn có thường gặp khó khăn khi tìm sách do chỉ nhớ ý tưởng mà quên từ khóa?} & - Rất thường xuyên (nhớ ý nhưng quên từ)\newline - Thỉnh thoảng gặp phải\newline - Hiếm khi hoặc không bao giờ & 114\newline 53\newline 18 & \textbf{61.6\%}\newline 28.6\%\newline 9.7\% \\
+\midrule
+\textbf{3} & \textbf{Khi đọc sách chuyên ngành, việc phải chuyển ứng dụng tra cứu gây ảnh hưởng thế nào?} & - Rất phiền toái, làm đứt mạch đọc\newline - Bình thường, có thể chấp nhận\newline - Không ảnh hưởng & 139\newline 38\newline 8 & \textbf{75.1\%}\newline 20.5\%\newline 4.3\% \\
+\midrule
+\textbf{4} & \textbf{Đánh giá về tính năng Trợ lý AI (RAG) giải thích nội dung và trích dẫn số trang?} & - Rất cần thiết, nâng cao tiếp thu\newline - Cần thiết, là tính năng bổ trợ tốt\newline - Không cần thiết, thích tự tra cứu & 128\newline 46\newline 11 & \textbf{69.2\%}\newline 24.9\%\newline 5.9\% \\
+\midrule
+\textbf{5} & \textbf{Trải nghiệm khi tra cứu trạng thái đơn hàng hoặc hủy đơn trên sàn TMĐT hiện nay?} & - Ức chế vì chatbot vòng vo\newline - Tạm chấp nhận dù tốn thời gian\newline - Rất nhanh chóng và hài lòng & 122\newline 49\newline 14 & \textbf{65.9\%}\newline 26.5\%\newline 7.6\% \\
+\midrule
+\textbf{6} & \textbf{Sẵn sàng dùng điều khiển giọng nói (Voice AI) tra cứu hoặc hủy đơn tức thì?} & - Sẵn sàng sử dụng ngay\newline - Sẽ thử nghiệm kiểm tra\newline - Không thích dùng giọng nói & 108\newline 57\newline 20 & \textbf{58.4\%}\newline 30.8\%\newline 10.8\% \\
+\midrule
+\textbf{7} & \textbf{Sẵn lòng chi trả bản quyền cho sách số bảo mật cao, không bị sao chép lậu?} & - Hoàn toàn ủng hộ bảo vệ tác quyền\newline - Sẵn lòng chi trả nếu giá hợp lý\newline - Không có ý định mua sách số & 94\newline 76\newline 15 & \textbf{50.8\%}\newline 41.1\%\newline 8.1\% \\
+\bottomrule
+\end{longtable}
+
+\paragraph{Phân tích chuyên sâu kết quả điều tra thực tế:}
+\begin{enumerate}
+    \item \textbf{Xu hướng đọc lai (Hybrid Reading Paradigm):} Hơn một nửa số người được khảo sát ($55.1\%$) duy trì thói quen đọc song song cả sách in và E-book. Độc giả thường mua sách in cho các tác phẩm kinh điển cần lưu giữ lâu dài trên kệ sách gia đình, nhưng lại ưa chuộng E-book khi cần tra cứu nhanh, đọc sách khi di chuyển công tác hoặc học tập ban đêm. Điều này khẳng định quyết định kiến trúc của AuraBook: xây dựng một sàn giao dịch hợp nhất phân phối song song cả sản phẩm vật lý và bản quyền số E-book là một hướng đi chiến lược hoàn toàn đúng đắn.
+    \item \textbf{Điểm nghẽn tìm kiếm ngữ nghĩa:} Tỷ lệ người dùng gặp rào cản tìm kiếm từ khóa lên tới $90.3\%$ ($167/185$ phản hồi, bao gồm rất thường xuyên và thỉnh thoảng). Điều này chỉ ra rằng công nghệ tìm kiếm toàn văn truyền thống (Full-Text Search) trên các sàn thương mại điện tử hiện nay đã chạm tới giới hạn phục vụ. Độc giả khao khát một cơ chế tìm kiếm thông minh có khả năng tiếp nhận câu lệnh bằng ngôn ngữ tự nhiên, hiểu được các khái niệm trừu tượng thông qua không gian véc-tơ đa chiều.
+    \item \textbf{Mức độ sẵn sàng đón nhận AI tương tác:} Con số $94.1\%$ độc giả đánh giá cao tính năng Tác tử RAG đồng hành giải thích ngữ cảnh và $89.2\%$ người dùng cởi mở với trợ lý giọng nói Voice AI chứng minh rằng: Trí tuệ nhân tạo tạo sinh trong phần mềm không còn là một tính năng trình diễn mà đã trở thành một nhu cầu tiện ích thiết thực, trực tiếp tháo gỡ điểm nghẽn nhận thức và vận hành của người dùng.
+\end{enumerate}
+
+\subsubsection{c) Phân tích các điểm nghẽn trải nghiệm người dùng (User Pain Points)}
+
+Dựa trên kết quả khảo sát định lượng, phỏng vấn định tính và phân tích hành vi người dùng, đề tài đúc kết 4 điểm nghẽn nghiêm trọng trong hệ sinh thái xuất bản và kinh doanh sách hiện nay:
+\begin{enumerate}
+    \item \textbf{Rào cản tìm kiếm nhận thức (Cognitive Search Barrier \& Lexical Chasm):} Người đọc ghi nhớ ấn phẩm dựa trên ấn tượng cảm xúc hoặc luận điểm trừu tượng. Các cỗ máy tìm kiếm dựa trên từ khóa khớp chuỗi bắt buộc người dùng phải biết chính xác từ vựng nằm trong tiêu đề hoặc tác giả, dẫn đến tỷ lệ từ bỏ tìm kiếm (Search Abandonment Rate) tăng cao.
+    \item \textbf{Quá tải nhận thức khi đọc sách chuyên ngành (Academic Cognitive Overload):} Người đọc phải liên tục rời khỏi ngữ cảnh trang sách để tra cứu tài liệu ngoài, tạo ra hiện tượng phân mảnh chú ý (Attention Fragmentation) và tiêu hao tải nhận thức ngoại lai (Extraneous Cognitive Load).
+    \item \textbf{Độ trễ vận hành trong chu trình dịch vụ sau bán hàng (Post-Purchase Operational Friction):} Tổng đài thường xuyên quá tải và chatbot kịch bản phân nhánh cứng nhắc làm tăng thời gian chờ đợi của khách hàng khi cần tra cứu hoặc hủy đơn.
+    \item \textbf{Nguy cơ rò rỉ bản quyền số (Digital Piracy Vulnerability):} Các ứng dụng đọc sách trên nền web kết xuất văn bản rõ vào DOM khiến sách dễ bị bóc tách tự động (scraping), gây tâm lý dè dặt cho các nhà xuất bản khi phát hành phiên bản số.
+\end{enumerate}
+
+\subsubsection{d) Ý tưởng kiến tạo nền tảng AuraBook}
+
+Hệ thống AuraBook định vị bốn giá trị đột phá cốt lõi:
+\begin{enumerate}
+    \item \textbf{Tìm kiếm lai thông minh (Hybrid Semantic-Lexical Search):} Hợp nhất sức mạnh của tìm kiếm toàn văn BM25 và tìm kiếm không gian vector ngữ nghĩa Cosine trên \texttt{pgvector}.
+    \item \textbf{Không gian đọc tương tác sâu với Tác tử RAG (RAG Companion Agent):} Hỗ trợ độc giả đối thoại trực tiếp trong ngữ cảnh trang sách, giải thích thuật ngữ và dẫn chứng số trang chính xác.
+    \item \textbf{Chăm sóc khách hàng tự hành qua Tác tử thoại (Voice Telephony Agent):} Ứng dụng Web Speech API kết hợp Function Calling của Gemini 2.0 Flash để tự động thực thi các hàm CSDL theo khẩu lệnh.
+    \item \textbf{Bảo mật bản quyền E-book bằng WebAssembly:} Giải mã AES-256-GCM trong bộ nhớ RAM cô lập và vẽ trực tiếp lên HTML5 Canvas, vô hiệu hóa việc sao chép nội dung qua DOM.
+\end{enumerate}
+
+\subsection{Mô tả bài toán}
+
+\subsubsection{a) Mô tả chi tiết luồng nghiệp vụ theo từng tác nhân}
+
+Hệ thống AuraBook là một hệ sinh thái phần mềm tích hợp hoàn chỉnh, phục vụ đồng thời hai nhóm đối tượng người dùng có thẩm quyền là Khách hàng (Người mua/Độc giả) và Quản trị viên hệ thống (Admin/Nhà phân phối), dưới sự trợ lực vận hành chạy ngầm liên tục của Cụm Tác tử Trí tuệ Nhân tạo Đa phương thức:
+
+\begin{enumerate}
+    \item \textbf{Khách hàng vãng lai (Guest User):}
+    \begin{itemize}
+        \item Khách vãng lai truy cập hệ thống qua trình duyệt web trên thiết bị di động hoặc máy tính để bàn.
+        \item Được phép duyệt xem trang chủ, tra cứu phân cấp thể loại sách, xem chi tiết sách in và sách điện tử.
+        \item Sử dụng thanh tìm kiếm lai để tìm sách theo từ khóa hoặc câu mô tả trừu tượng, nghe đoạn tóm tắt âm thanh ngắn ($60\text{s}$) biên soạn sẵn bởi AI.
+        \item Được quyền thêm sách vào giỏ hàng cục bộ (Local Cart lưu trong bộ nhớ máy khách). Khi tiến hành thanh toán hoặc lưu trữ giỏ hàng lâu dài, hệ thống điều hướng yêu cầu Đăng ký hoặc Đăng nhập.
+    \end{itemize}
+    \item \textbf{Khách hàng đã xác thực / Độc giả (Registered Customer / Reader):}
+    \begin{itemize}
+        \item Kế thừa toàn bộ quyền hạn của khách vãng lai, đồng bộ giỏ hàng cục bộ vào cơ sở dữ liệu trên máy chủ.
+        \item Thực hiện quy trình đặt hàng: chọn địa chỉ giao nhận hàng, nhập mã voucher khuyến mãi hợp lệ, chọn phương thức thanh toán trực tuyến qua cổng Sandbox.
+        \item Khi đặt hàng, hệ thống thực thi khóa dòng bi quan (\texttt{SELECT ... FOR UPDATE}) kiểm tra số lượng tồn kho và tạm giữ số lượng tương ứng, khởi tạo đơn hàng với trạng thái \texttt{PENDING} kèm thời hạn thanh toán 15 phút.
+        \item Sau khi thanh toán thành công qua cổng Sandbox, Webhook IPN kích hoạt giao dịch CSDL chuyển trạng thái đơn sang \texttt{PAID}, xác nhận trừ kho vĩnh viễn và cấp phát bản quyền đọc sách điện tử vào bảng \texttt{ebook\_accesses}.
+        \item Độc giả truy cập Thư viện số cá nhân, mở không gian đọc E-book bảo mật DRM (WASM Canvas). Trong quá trình đọc, độc giả có thể tùy chỉnh cỡ chữ, nền đọc (Sáng/Sepia/Tối), lưu tiến độ đọc dở dang và kích hoạt khung chat đối thoại với Tác tử RAG Companion để hỏi đáp chuyên sâu kèm dẫn chứng số trang.
+        \item Khách hàng có thể kích hoạt biểu tượng Micro nổi trên màn hình để ra lệnh thoại cho Tác tử Voice AI thực hiện tra cứu hành trình hoặc gửi yêu cầu hủy đơn hàng (nếu đơn chưa chuyển sang \texttt{SHIPPING}).
+        \item Sau khi hoàn tất đơn hàng, khách hàng có thể gửi đánh giá xếp hạng sao và bình luận nhận xét về ấn phẩm.
+    \end{itemize}
+    \item \textbf{Quản trị viên hệ thống (System Administrator):}
+    \begin{itemize}
+        \item Đăng nhập vào cổng quản trị chuyên biệt (\texttt{/admin}) với vai trò \texttt{Admin}.
+        \item Giám sát Dashboard thời gian thực: thống kê doanh thu, đơn hàng mới tiếp nhận, số lượng sách bán chạy, biến động tồn kho và lưu lượng người đọc E-book.
+        \item Quản lý danh mục ấn phẩm: thêm mới, cập nhật giá bán, điều chỉnh tồn kho, bật/tắt lưu hành sách.
+        \item Nhập liệu sách tự động bằng Tác tử Catalog Vision: Admin tải ảnh chụp bìa sách lên, AI phân tích OCR bóc tách metadata (Tiêu đề, Tác giả, ISBN, Năm xuất bản, Tóm tắt) và tự động điền vào biểu mẫu.
+        \item Quản lý vòng đời đơn hàng: theo dõi tiến trình và cập nhật các trạng thái từ \texttt{PAID} sang \texttt{SHIPPING} và \texttt{COMPLETED}.
+        \item Kích hoạt Background Worker xử lý tệp sách điện tử tải lên: tự động bóc tách văn bản, thực thi chia nhỏ phân đoạn (Recursive Chunking) và gọi API nhúng lưu trữ vector 768 chiều vào PostgreSQL.
+    \end{itemize}
+    \item \textbf{Cụm Tác tử Trí tuệ Nhân tạo chạy ngầm (Autonomous AI Agent System Actor):}
+    \begin{itemize}
+        \item \textit{Tác tử RAG:} Tiếp nhận câu hỏi, vector hóa câu hỏi qua mô hình nhúng, quét chỉ mục đồ thị HNSW trên \texttt{pgvector} để lấy Top-3 đoạn trích liên quan nhất có độ tương đồng Cosine $\ge 0.70$ và truyền luồng phản hồi về Client qua Server-Sent Events (SSE).
+        \item \textit{Tác tử thoại (Voice Telephony):} Tiếp nhận văn bản bóc tách từ Web Speech STT, phân giải ý định bằng cơ chế Gemini Function Calling, tự hành gọi các hàm nghiệp vụ CSDL nội bộ (\texttt{get\_order\_status}, \texttt{cancel\_order}) và ghi log vào \texttt{audit\_logs}; kết quả sinh câu thoại tự nhiên phát ra loa máy khách qua Web Speech TTS.
+        \item \textit{Tác tử thị giác (Catalog Vision):} Xử lý ảnh bìa sách dạng Base64 Payload, áp dụng ràng buộc JSON Schema đầu ra nghiêm ngặt để trích xuất dữ liệu có cấu trúc phục vụ Admin nhập liệu.
+        \item \textit{Background Worker:} Chạy ngầm lập chỉ mục vector và tự động hủy các đơn hàng \texttt{PENDING} quá hạn 15 phút, giải phóng số lượng tồn kho đã tạm giữ.
+    \end{itemize}
+\end{enumerate}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.3. Ma trận phân quyền tác nhân và khả năng thực thi chức năng trên hệ thống AuraBook}
+
+\begin{longtable}{p{4.2cm} p{1.6cm} p{2.2cm} p{2.0cm} p{3.2cm}}
+\toprule
+\textbf{Nhóm chức năng nghiệp vụ} & \textbf{Khách vãng lai} & \textbf{Độc giả (Customer)} & \textbf{Quản trị viên (Admin)} & \textbf{Cụm Tác tử AI (Agent System)} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Nhóm chức năng nghiệp vụ} & \textbf{Khách vãng lai} & \textbf{Độc giả (Customer)} & \textbf{Quản trị viên (Admin)} & \textbf{Cụm Tác tử AI (Agent System)} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Xem danh mục, tìm kiếm lai, nghe audio teaser & Cho phép & Cho phép & Cho phép & Hỗ trợ Vector Search \\
+\midrule
+Quản lý giỏ hàng trực tuyến & LocalStorage & Đồng bộ CSDL & Không áp dụng & Không tham gia \\
+\midrule
+Đặt hàng \& Thanh toán Sandbox & Chặn (y/c login) & Toàn quyền & Không áp dụng & Hỗ trợ Hold tồn kho \\
+\midrule
+Đọc sách E-book Canvas DRM & Chặn truy cập & Toàn quyền & Toàn quyền & Cấp Ephemeral Key \\
+\midrule
+Hỏi đáp RAG ngữ cảnh trang sách & Chặn truy cập & Toàn quyền & Toàn quyền & Tự hành sinh lời giải \\
+\midrule
+Tra cứu / Hủy đơn bằng Voice AI & Chặn truy cập & Toàn quyền & Không áp dụng & Function Calling DB \\
+\midrule
+Đánh giá \& Nhận xét ấn phẩm & Chặn truy cập & Sau khi mua hàng & Quản duyệt xóa & Không tham gia \\
+\midrule
+Quản trị danh mục sách \& Tồn kho & Chặn truy cập & Chặn truy cập & Toàn quyền CRUD & Worker Chunking \\
+\midrule
+Quét ảnh bìa Catalog Vision OCR & Chặn truy cập & Chặn truy cập & Toàn quyền & Vision OCR Schema \\
+\midrule
+Quản lý vòng đời đơn hàng & Chặn truy cập & Xem đơn cá nhân & Điều phối trạng thái & Tự động hủy quá hạn 15p \\
+\midrule
+Giám sát Dashboard báo cáo KPI & Chặn truy cập & Chặn truy cập & Toàn quyền & Tự động kết xuất số liệu \\
+\bottomrule
+\end{longtable}
+
+\subsubsection{b) Phân tích yêu cầu chức năng (Functional Requirements - FR)}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.4. Bảng đặc tả chi tiết các yêu cầu chức năng của hệ thống AuraBook}
+
+\begin{longtable}{p{1.0cm} p{3.0cm} p{1.0cm} p{5.0cm} p{4.0cm}}
+\toprule
+\textbf{Mã FR} & \textbf{Nhóm chức năng} & \textbf{Mã con} & \textbf{Nội dung đặc tả chi tiết} & \textbf{Tiêu chí nghiệm thu (SLO Target)} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Mã FR} & \textbf{Nhóm chức năng} & \textbf{Mã con} & \textbf{Nội dung đặc tả chi tiết} & \textbf{Tiêu chí nghiệm thu (SLO Target)} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{FR1} & \textbf{Xác thực \& Người dùng} & FR1.1 & Đăng ký tài khoản bằng Email và Mật khẩu ($\ge 8$ ký tự, chữ hoa, thường, số). & Mật khẩu được băm an toàn qua thuật toán \texttt{bcrypt} (cost 12). \\
+\cmidrule{3-5}
+& & FR1.2 & Đăng nhập hệ thống, cấp phát JWT (Access Token 30 phút, Refresh Token 7 ngày). & Refresh Token lưu trong HttpOnly Cookie; Access Token xác thực Bearer. \\
+\cmidrule{3-5}
+& & FR1.3 & Phân quyền truy cập theo mô hình RBAC cho \texttt{Customer} và \texttt{Admin}. & Chặn truy cập trái phép vào các API quản trị (\texttt{/api/v1/admin/*}). \\
+\midrule
+\textbf{FR2} & \textbf{Sản phẩm \& Tìm kiếm} & FR2.1 & Hiển thị danh mục sách phân loại theo thể loại, định dạng, mức giá và đánh giá. & Phân trang cấu hình linh hoạt (mặc định 12 sách/trang). \\
+\cmidrule{3-5}
+& & FR2.2 & Tìm kiếm toàn văn (Lexical) dựa trên chỉ mục \texttt{tsvector} của PostgreSQL. & Trả về kết quả chính xác khi nhập đúng từ khóa hoặc mã ISBN. \\
+\cmidrule{3-5}
+& & FR2.3 & Tìm kiếm ngữ nghĩa vector (Semantic) trên \texttt{pgvector} đo khoảng cách Cosine 768 chiều. & Trả về sách liên quan về khái niệm dù tiêu đề không chứa từ khóa. \\
+\cmidrule{3-5}
+& & FR2.4 & Tìm kiếm lai kết hợp (Hybrid Search) bằng thuật toán Reciprocal Rank Fusion (RRF). & Cân bằng giữa độ chính xác từ khóa và độ bao phủ ngữ nghĩa. \\
+\cmidrule{3-5}
+& & FR2.5 & Nghe thử âm thanh tóm tắt ngắn ($60\text{s}$) biên soạn tự động bởi AI. & Tích hợp audio player kèm visualizer sóng âm thanh. \\
+\midrule
+\textbf{FR3} & \textbf{Giỏ hàng \& Thanh toán} & FR3.1 & Quản lý giỏ hàng: Thêm, sửa số lượng, xóa sản phẩm, đồng bộ CSDL khi đăng nhập. & Kiểm tra tồn kho khả dụng trước khi thêm vào giỏ. \\
+\cmidrule{3-5}
+& & FR3.2 & Khởi tạo đơn hàng, tính phí giao hàng, kiểm tra và áp dụng voucher khuyến mãi. & Khởi tạo đơn \texttt{PENDING}, giữ tồn kho tạm thời trong 15 phút. \\
+\cmidrule{3-5}
+& & FR3.3 & Xử lý thanh toán qua cổng Sandbox: Điều hướng và tiếp nhận Webhook IPN. & Giao dịch ACID: xác nhận trừ kho vĩnh viễn, đổi trạng thái \texttt{PAID} và cấp quyền E-book. \\
+\midrule
+\textbf{FR4} & \textbf{Không gian Đọc E-book} & FR4.1 & Giao diện đọc phân trang, chỉnh cỡ chữ ($12\text{px} - 28\text{px}$), 3 chế độ nền, lưu vị trí đọc dở. & Lưu trạng thái đọc vào bảng \texttt{reading\_progress} theo từng người dùng. \\
+\cmidrule{3-5}
+& & FR4.2 & Tải phân đoạn nhị phân mã hóa khối AES-256-GCM kèm thẻ xác thực 128-bit. & Ngăn chặn trích xuất tệp sách thô qua đường truyền mạng. \\
+\cmidrule{3-5}
+& & FR4.3 & Module WebAssembly giải mã trong RAM cô lập và vẽ Glyphs lên HTML5 Canvas. & Không đưa văn bản thô vào DOM; vô hiệu hóa sao chép văn bản. \\
+\midrule
+\textbf{FR5} & \textbf{Hệ thống AI Đa tác tử} & FR5.1 & \textbf{Tác tử RAG:} Nhận câu hỏi, tìm Top-3 chunks ($\mathcal{S}_{\text{Cosine}} \ge 0.70$), gọi Gemini sinh lời giải kèm trang. & Luồng câu trả lời truyền theo thời gian thực qua Server-Sent Events (SSE). \\
+\cmidrule{3-5}
+& & FR5.2 & \textbf{Tác tử thoại Voice AI:} Nhận âm thanh qua Web Speech STT, gọi Gemini Function Calling. & Xử lý trọn vẹn yêu cầu kiểm tra/hủy đơn qua giọng nói tiếng Việt. \\
+\cmidrule{3-5}
+& & FR5.3 & \textbf{Tác tử Catalog Vision:} Tiếp nhận ảnh bìa, gọi Gemini Vision OCR bóc tách metadata. & Mục tiêu bóc tách chính xác $\ge 95\%$ (nghiệm thu thực nghiệm Chương 4). \\
+\midrule
+\textbf{FR6} & \textbf{Quản trị \& Tương tác} & FR6.1 & Biểu đồ số liệu kinh doanh: Doanh thu, đơn hàng mới, sách bán chạy, lượt đọc E-book. & Cập nhật số liệu thống kê thời gian thực từ cơ sở dữ liệu. \\
+\cmidrule{3-5}
+& & FR6.2 & Quản lý vòng đời đơn hàng: Cập nhật trạng thái từ \texttt{PENDING} đến \texttt{COMPLETED}. & Đồng bộ thông báo cập nhật trạng thái tới khách hàng. \\
+\cmidrule{3-5}
+& & FR6.3 & Quản lý kho sách: Thêm mới, sửa giá, cập nhật tồn kho, nạp dữ liệu Chunking RAG. & Kích hoạt Background Worker lập chỉ mục HNSW tự động. \\
+\cmidrule{3-5}
+& & FR6.4 & Đánh giá \& Bình luận: Khách hàng đã mua sách được gửi số sao (1--5) và lời nhận xét. & Bản ghi đánh giá lưu vào bảng \texttt{reviews}, cập nhật điểm trung bình sách. \\
+\bottomrule
+\end{longtable}
+
+\subsubsection{c) Phân tích yêu cầu phi chức năng (Non-Functional Requirements - NFR)}
+
+\textit{Ghi chú phương pháp luận:} Toàn bộ các chỉ số định lượng trong phần này được xác lập dưới dạng \textbf{Chỉ tiêu thiết kế hệ thống (System Design Benchmarks / SLO Targets)}. Đây là hệ tiêu chí kỹ thuật ràng buộc xuyên suốt quá trình thiết kế và sẽ được tiến hành đo lường, kiểm chứng bằng các kịch bản đo kiểm thực nghiệm tự động tại Chương 4.
+
+\begin{itemize}
+    \item \textbf{NFR1 - Hiệu năng và Thời gian đáp ứng (Performance \& Latency Benchmarks):}
+    \begin{itemize}
+        \item Thời gian phản hồi phân vị 95 ($P95$) của API nghiệp vụ thông thường: mục tiêu $< 200\text{ ms}$.
+        \item Thời gian tìm kiếm lai (Hybrid Search) hoàn tất trong mục tiêu: $P95 < 450\text{ ms}$.
+        \item Độ trễ sinh token đầu tiên (Time to First Token - TTFT) của Tác tử RAG: mục tiêu $\text{TTFT} < 800\text{ ms}$ qua Server-Sent Events (SSE).
+        \item Độ trễ xử lý âm thanh đầu-cuối của Tác tử thoại kiểm soát dưới $1.5\text{ s}$.
+    \end{itemize}
+    \item \textbf{NFR2 - Tính sẵn sàng và Độ tin cậy AI (Reliability \& AI Safety Benchmarks):}
+    \begin{itemize}
+        \item Hệ thống cam kết chỉ số sẵn sàng tối thiểu $99.5\%$ trong giai đoạn thử nghiệm PoC.
+        \item Tỷ lệ tuân thủ lược đồ JSON Schema của Gemini Function Calling: mục tiêu thiết kế $\ge 98\%$.
+        \item Kiểm soát ảo giác tri thức (Hallucination) cho RAG: Thiết lập $\text{Temperature} \le 0.2$ kèm ràng buộc phủ định nghiêm ngặt trong System Prompt, chỉ chấp nhận ngữ cảnh có độ tương đồng Cosine $\mathcal{S}_{\text{Cosine}} \ge 0.70$.
+    \end{itemize}
+    \item \textbf{NFR3 - An toàn thông tin và Bảo mật (Security \& Cryptography):}
+    \begin{itemize}
+        \item $100\%$ lưu lượng truy cập mạng thực thi qua giao thức bảo mật HTTPS / TLS 1.3.
+        \item Mật khẩu được băm bằng thuật toán \texttt{bcrypt} với hệ số phức tạp $\text{Cost Factor} = 12$.
+        \item Refresh Token lưu trữ trong Cookie với cờ \texttt{HttpOnly}, \texttt{Secure}, \texttt{SameSite=Strict}.
+        \item Quá trình giải mã E-book diễn ra trong bộ nhớ tuyến tính cô lập của WebAssembly và xóa sạch bộ nhớ (Zero-out Memory) ngay sau khi vẽ lên Canvas.
+        \item Mọi tương tác thay đổi trạng thái nhạy cảm (như hủy đơn hàng qua Voice AI) đều bắt buộc ghi vết vào bảng nhật ký kiểm toán \texttt{audit\_logs}.
+    \end{itemize}
+    \item \textbf{NFR4 - Tính khả dụng và Tương thích giao diện (Usability):}
+    \begin{itemize}
+        \item Giao diện thích ứng (Responsive) trên màn hình Mobile ($375\text{px} - 640\text{px}$), Tablet ($641\text{px} - 1024\text{px}$) và Desktop ($\ge 1025\text{px}$).
+        \item Chỉ số Core Web Vitals mục tiêu: $\text{LCP} < 1.5\text{ s}$, $\text{CLS} = 0$, $\text{INP} < 100\text{ ms}$.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Lên kế hoạch dự án}
+
+\subsubsection{a) Phương pháp luận quản lý dự án}
+Dự án áp dụng phương pháp luận \textbf{Agile/Scrum rút gọn}, chia thành các vòng lặp phát triển ngắn hạn (Sprints) kéo dài 1 tuần nhằm linh hoạt tích hợp các công nghệ mới và liên tục kiểm thử các rủi ro kỹ thuật.
+
+\subsubsection{b) Phân rã cấu trúc công việc (WBS)}
+Dự án phân chia thành 5 gói công việc chính: (1) Khảo sát \& Đặc tả yêu cầu; (2) Phân tích \& Thiết kế hệ thống; (3) Phát triển phần mềm lõi; (4) Tích hợp Hệ đa tác tử \& E-book DRM; (5) Kiểm thử, Tối ưu \& Hoàn thiện báo cáo.
+
+\subsubsection{c) Ma trận phân tích và quản trị rủi ro (Risk Management Matrix)}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.5. Ma trận phân tích và kiểm soát rủi ro kỹ thuật toàn diện}
+
+\begin{longtable}{p{1.0cm} p{3.5cm} p{1.4cm} p{1.4cm} p{6.8cm}}
+\toprule
+\textbf{Mã RR} & \textbf{Rủi ro nhận diện} & \textbf{Xác suất} & \textbf{Tác động} & \textbf{Chiến lược kiểm soát và phương án dự phòng} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Mã RR} & \textbf{Rủi ro nhận diện} & \textbf{Xác suất} & \textbf{Tác động} & \textbf{Chiến lược kiểm soát và phương án dự phòng} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{R1} & Vượt giới hạn gọi API Gemini (HTTP 429) & Trung bình & Rất Cao & Cài đặt In-Memory Cache cho các truy vấn trùng lặp; áp dụng cơ chế Exponential Backoff with Jitter; hàng đợi điều tiết tại FastAPI. \\
+\midrule
+\textbf{R2} & Ảo giác (Hallucination) từ Tác tử RAG & Cao & Trung bình & Đặt $\text{Temperature} \le 0.2$; lọc độ tương đồng Cosine $\mathcal{S}_{\text{Cosine}} \ge 0.70$ (tương đương khoảng cách $\mathcal{D} \le 0.30$); System Prompt phủ định nghiêm ngặt; bắt buộc trích dẫn số trang. \\
+\midrule
+\textbf{R3} & Web Speech API không đồng nhất giữa các trình duyệt & Cao & Thấp & Bổ sung hàm kiểm tra năng lực \texttt{hasSpeechRecognitionSupport()}; khuyến nghị dùng Chromium; xây dựng giao diện gõ chữ dự phòng. \\
+\midrule
+\textbf{R4} & Suy hao bộ nhớ RAM khi tạo chỉ mục HNSW & Trung bình & Trung bình & Tinh chỉnh tham số đồ thị tối ưu ($m = 16$, \texttt{ef\_construction} = 64); chọn mô hình \texttt{text-embedding-004} 768 chiều. \\
+\midrule
+\textbf{R5} & Rò rỉ bộ nhớ trong vùng nhớ WebAssembly & Thấp & Cao & Viết module WASM bằng Rust với cơ chế Ownership; cài đặt hàm \texttt{wasm\_free()}; gọi lệnh ghi đè byte 0 sau khi vẽ Canvas. \\
+\midrule
+\textbf{R6} & Xung đột giao dịch khi thanh toán đồng thời & Thấp & Rất Cao & Áp dụng cơ chế khóa bi quan (\texttt{SELECT ... FOR UPDATE}) trong PostgreSQL; hold tồn kho 15 phút tại \texttt{PENDING}, tự động rollback nếu quá hạn. \\
+\midrule
+\textbf{R7} & Trình duyệt chặn tự động phát âm thanh (Autoplay) & Cao & Thấp & Chỉ kích hoạt \texttt{window.speechSynthesis} sau khi người dùng đã có tương tác nhấp chuột đầu tiên vào nút Micro. \\
+\bottomrule
+\end{longtable}
+
+\section{PHÂN TÍCH HỆ THỐNG}
+
+\subsection{Phân tích các tác nhân của hệ thống (Actors \& Entities)}
+
+Hệ thống AuraBook tương tác chặt chẽ với 4 tác nhân chính:
+\begin{enumerate}
+    \item \textbf{Khách hàng vãng lai (Guest User):} Người dùng chưa đăng nhập hệ thống. Quyền hạn: Duyệt danh mục, xem chi tiết sách, tìm kiếm sách lai, nghe tóm tắt âm thanh ngắn ($60\text{s}$), quản lý giỏ hàng cục bộ trên trình duyệt.
+    \item \textbf{Khách hàng đã xác thực / Độc giả (Registered Customer / Reader):} Người dùng sở hữu vai trò \texttt{Customer}. Quyền hạn: Kế thừa quyền của khách vãng lai, đồng bộ giỏ hàng lên CSDL, đặt hàng và thanh toán Sandbox, đọc sách E-book bảo mật DRM, đối thoại với Tác tử RAG, ra lệnh thoại cho Tác tử Voice AI, quản lý tiến độ đọc dở dang và gửi đánh giá, bình luận ấn phẩm.
+    \item \textbf{Quản trị viên hệ thống (System Administrator):} Nhân sự vận hành sở hữu vai trò \texttt{Admin}. Quyền hạn: Theo dõi Dashboard thống kê, quản trị danh mục sách, dùng Tác tử Catalog Vision quét ảnh bìa sách nhập liệu tự động, quản lý vòng đời đơn hàng, kích hoạt worker chunking dữ liệu.
+    \item \textbf{Cụm Tác tử AI (Autonomous AI Agent System Actor):} Tác nhân hệ thống đại diện cho cụm trí tuệ nhân tạo Backend: Tác tử RAG (phân tích nội dung và trích dẫn số trang), Tác tử thoại (thực thi Function Calling CSDL), Tác tử thị giác (bóc tách JSON Schema từ ảnh bìa), và Background Worker (lập chỉ mục HNSW, tự động dọn đơn hết hạn).
+\end{enumerate}
+
+\subsection{Xây dựng biểu đồ Use Case}
+
+\subsubsection{a) Biểu đồ Use Case tổng quát hệ thống}
+
+Biểu đồ Use Case tổng quát (Hình \ref{fig:usecase_tong_quat}) mô hình hóa toàn bộ các tương tác giữa 4 tác nhân chính và 13 trường hợp sử dụng cốt lõi của hệ thống AuraBook.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \draw[system_box] (-3.4,-6.2) rectangle (3.4,5.4);
+    \node[anchor=north, font=\scriptsize\bfseries] at (0,5.25) {HỆ THỐNG THƯƠNG MẠI ĐIỆN TỬ VÀ ĐỌC SÁCH AURABOOK};
+
+    % Left Actors
+    \node[actor_node] (guest) at (-5.3, 3.4) {Khách Hàng\\Vãng Lai};
+    \node[actor_node] (reader) at (-5.3, -0.6) {Độc Giả\\(Customer)};
+
+    % Right Actors
+    \node[actor_node] (admin) at (5.3, 2.7) {Quản Trị Viên\\(Admin)};
+    \node[actor_node] (agent) at (5.3, -2.1) {Cụm Tác Tử AI\\(Gemini Engine)};
+
+    % Left Column Use Cases
+    \node[usecase_node] (uc_auth) at (-1.7, 4.4) {UC01: Đăng ký / Đăng nhập JWT};
+    \node[usecase_node] (uc_search) at (-1.7, 3.1) {UC02: Tìm kiếm lai (BM25 + Vector)};
+    \node[usecase_node] (uc_audio) at (-1.7, 1.8) {UC03: Nghe thử tóm tắt âm thanh AI};
+    \node[usecase_node] (uc_order) at (-1.7, 0.5) {UC04: Đặt hàng \& Thanh toán Sandbox};
+    \node[usecase_node] (uc_drm) at (-1.7, -0.8) {UC05: Đọc E-book WASM Canvas DRM};
+    \node[usecase_node] (uc_rag) at (-1.7, -2.1) {UC06: Đối thoại RAG dẫn chứng trang};
+    \node[usecase_node] (uc_voice) at (-1.7, -3.4) {UC07: Tra cứu/Hủy đơn qua Voice AI};
+    \node[usecase_node] (uc_review) at (-1.7, -4.7) {UC08: Đánh giá \& Bình luận sách};
+
+    % Right Column Use Cases
+    \node[usecase_node] (uc_catalog) at (1.7, 3.8) {UC09: Quản trị danh mục ấn phẩm};
+    \node[usecase_node] (uc_vision) at (1.7, 2.4) {UC10: Quét ảnh bìa Vision OCR};
+    \node[usecase_node] (uc_orders_mgt) at (1.7, 1.0) {UC11: Quản trị vòng đời đơn hàng};
+    \node[usecase_node] (uc_dashboard) at (1.7, -0.4) {UC12: Giám sát Dashboard thời gian thực};
+    \node[usecase_node] (uc_vectorize) at (1.7, -1.8) {UC13: Tự động Chunking \& Embeddings};
+
+    % Connectors: Guest
+    \draw[msg_arrow] (guest.east) -- (uc_auth.west);
+    \draw[msg_arrow] (guest.east) -- (uc_search.west);
+    \draw[msg_arrow] (guest.east) -- (uc_audio.west);
+
+    % Connectors: Reader
+    \draw[msg_arrow] (reader.east) -- (uc_search.west);
+    \draw[msg_arrow] (reader.east) -- (uc_order.west);
+    \draw[msg_arrow] (reader.east) -- (uc_drm.west);
+    \draw[msg_arrow] (reader.east) -- (uc_rag.west);
+    \draw[msg_arrow] (reader.east) -- (uc_voice.west);
+    \draw[msg_arrow] (reader.east) -- (uc_review.west);
+
+    % Intra-Use Case Relationships
+    \draw[reply_arrow] (uc_order.north west) to[out=140, in=220] node[left, font=\tiny] {<<include>>} (uc_auth.south west);
+    \draw[reply_arrow] (uc_drm.north) -- node[right, font=\tiny] {<<include>>} (uc_order.south);
+    \draw[reply_arrow] (uc_rag.north) -- node[right, font=\tiny] {<<extend>>} (uc_drm.south);
+
+    % Connectors: Admin
+    \draw[msg_arrow] (admin.west) -- (uc_catalog.east);
+    \draw[msg_arrow] (admin.west) -- (uc_vision.east);
+    \draw[msg_arrow] (admin.west) -- (uc_orders_mgt.east);
+    \draw[msg_arrow] (admin.west) -- (uc_dashboard.east);
+
+    % Connectors: AI Agent (using smooth routes to prevent line overlap)
+    \draw[msg_arrow] (agent.west) -- (uc_vectorize.east);
+    \draw[msg_arrow] (agent.south west) to[out=210, in=340] (uc_voice.east);
+    \draw[msg_arrow] (agent.south west) to[out=200, in=350] (uc_rag.east);
+    \draw[msg_arrow] (agent.north west) -- (uc_vision.south east);
+\end{tikzpicture}
+\caption{Biểu đồ Use Case tổng quát hệ thống AuraBook (13 Use Cases cốt lõi)}
+\label{fig:usecase_tong_quat}
+\end{figure}
+
+\subsubsection{b) Biểu đồ Use Case chi tiết các phân hệ nghiệp vụ}
+
+Hệ thống được phân rã thành hai nhóm phân hệ chính: (1) Phân hệ E-Commerce \& Khách hàng và (2) Phân hệ Không gian đọc E-book \& Quản trị AI (Hình \ref{fig:usecase_subsystems}).
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    % Boundary 1: E-Commerce Subsystem
+    \draw[system_box] (-6.6,-3.2) rectangle (-0.2,3.2);
+    \node[anchor=north, font=\tiny\bfseries] at (-3.4,3.05) {PHÂN HỆ E-COMMERCE \& KHÁCH HÀNG};
+    
+    \node[actor_node] (act_cust) at (-5.4, 0.0) {Khách Hàng\\(Customer)};
+    \node[usecase_node, text width=2.3cm] (sub_cart) at (-2.0, 2.0) {UC-C1: Quản lý giỏ hàng \& Voucher};
+    \node[usecase_node, text width=2.3cm] (sub_checkout) at (-2.0, 0.7) {UC-C2: Đặt hàng \& Sandbox};
+    \node[usecase_node, text width=2.3cm] (sub_track) at (-2.0, -0.6) {UC-C3: Tra cứu tiến độ đơn};
+    \node[usecase_node, text width=2.3cm] (sub_review) at (-2.0, -1.9) {UC-C4: Gửi đánh giá sách};
+
+    \draw[msg_arrow] (act_cust.east) -- (sub_cart.west);
+    \draw[msg_arrow] (act_cust.east) -- (sub_checkout.west);
+    \draw[msg_arrow] (act_cust.east) -- (sub_track.west);
+    \draw[msg_arrow] (act_cust.east) -- (sub_review.west);
+    \draw[reply_arrow] (sub_checkout.north) -- node[right, font=\tiny] {<<include>>} (sub_cart.south);
+
+    % Boundary 2: AI & DRM Subsystem
+    \draw[system_box] (0.2,-3.2) rectangle (6.6,3.2);
+    \node[anchor=north, font=\tiny\bfseries] at (3.4,3.05) {PHÂN HỆ AI AGENTS \& DRM BẢO MẬT};
+
+    \node[actor_node] (act_ai) at (5.4, 0.0) {Cụm Tác Tử\\AI Gemini};
+    \node[usecase_node, text width=2.3cm] (sub_rag) at (2.0, 2.0) {UC-A1: Đối thoại RAG ngữ cảnh};
+    \node[usecase_node, text width=2.3cm] (sub_voice) at (2.0, 0.7) {UC-A2: Gọi hàm tự hành Voice};
+    \node[usecase_node, text width=2.3cm] (sub_vision) at (2.0, -0.6) {UC-A3: OCR ảnh bìa Catalog};
+    \node[usecase_node, text width=2.3cm] (sub_embed) at (2.0, -1.9) {UC-A4: Vectorize HNSW};
+
+    \draw[msg_arrow] (act_ai.west) -- (sub_rag.east);
+    \draw[msg_arrow] (act_ai.west) -- (sub_voice.east);
+    \draw[msg_arrow] (act_ai.west) -- (sub_vision.east);
+    \draw[msg_arrow] (act_ai.west) -- (sub_embed.east);
+\end{tikzpicture}
+\caption{Biểu đồ Use Case chi tiết các phân hệ nghiệp vụ chính}
+\label{fig:usecase_subsystems}
+\end{figure}
+
+\subsubsection{c) Bảng đặc tả chi tiết toàn bộ 13 trường hợp sử dụng (Use Case Specifications)}
+
+Nhằm bảo đảm tính đầy đủ và rõ ràng của hồ sơ phân tích yêu cầu phần mềm, hệ thống tiến hành xây dựng bảng đặc tả chi tiết cho toàn bộ 13 Use Cases (từ UC01 đến UC13):
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.6. Đặc tả chi tiết Use Case: Đăng ký và Đăng nhập hệ thống (UC01)}
+
+\begin{longtable}{p{3.8cm} p{10.5cm}}
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Mã Use Case} & \textbf{UC01} \\
+\midrule
+\textbf{Tên Use Case} & Đăng ký tài khoản và Đăng nhập hệ thống cấp phát JSON Web Token (JWT) \\
+\midrule
+\textbf{Tác nhân chính} & Khách hàng vãng lai (Guest User), Khách hàng (Customer), Quản trị viên (Admin) \\
+\midrule
+\textbf{Mô tả tóm tắt} & Người dùng đăng ký tài khoản mới hoặc đăng nhập bằng Email và Mật khẩu; hệ thống xác thực và cấp phát cặp khóa Access Token (30 phút) và Refresh Token (7 ngày). \\
+\midrule
+\textbf{Điều kiện tiên quyết} & Người dùng có kết nối Internet và mở giao diện trang chủ AuraBook. \\
+\midrule
+\textbf{Điều kiện sau} & Cấp phát thành công phiên xác thực; Refresh Token lưu trong HttpOnly Cookie; chuyển hướng người dùng về trang trước đó. \\
+\midrule
+\textbf{Luồng sự kiện chính} & 
+1. Người dùng mở modal Đăng ký/Đăng nhập và nhập Email kèm Mật khẩu.\newline
+2. Trình duyệt gửi yêu cầu \texttt{POST /api/v1/auth/login} tới FastAPI Core.\newline
+3. Backend truy vấn bảng \texttt{users} theo \texttt{email}, lấy ra trường \texttt{password\_hash}.\newline
+4. Backend gọi hàm \texttt{bcrypt.checkpw} xác thực mật khẩu thô với mã băm.\newline
+5. Mật khẩu khớp: Backend sinh Access Token (chứa \texttt{user\_id}, \texttt{role}) và Refresh Token ngẫu nhiên.\newline
+6. Backend lưu Refresh Token băm vào CSDL và đính kèm vào tiêu đề \texttt{Set-Cookie: HttpOnly; Secure; SameSite=Strict}.\newline
+7. Backend trả về Access Token trong JSON Payload; giao diện Next.js cập nhật trạng thái đã đăng nhập. \\
+\midrule
+\textbf{Luồng ngoại lệ} & 
+\textbf{4a. Email không tồn tại hoặc sai mật khẩu:} Backend trả về HTTP 401; hiển thị thông báo: \textit{"Email hoặc mật khẩu không chính xác."}\newline
+\textbf{1a. Đăng ký với Email đã tồn tại:} Backend trả về HTTP 409; thông báo: \textit{"Email này đã được sử dụng."} \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.7. Đặc tả chi tiết Use Case: Tìm kiếm sách lai (UC02)}
+
+\begin{longtable}{p{3.8cm} p{10.5cm}}
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Mã Use Case} & \textbf{UC02} \\
+\midrule
+\textbf{Tên Use Case} & Tìm kiếm sách lai kết hợp từ khóa toàn văn và không gian véc-tơ (Hybrid Search) \\
+\midrule
+\textbf{Tác nhân chính} & Khách hàng vãng lai, Độc giả (Customer) \\
+\midrule
+\textbf{Mô tả tóm tắt} & Người dùng nhập câu truy vấn tìm kiếm tự nhiên; hệ thống đồng thời kích hoạt tìm kiếm từ khóa BM25 và tìm kiếm vector 768 chiều trên \texttt{pgvector}, hợp nhất xếp hạng bằng thuật toán RRF. \\
+\midrule
+\textbf{Điều kiện tiên quyết} & Khách hàng mở trang chủ hoặc trang danh mục sách. \\
+\midrule
+\textbf{Điều kiện sau} & Danh sách ấn phẩm sách phù hợp nhất hiển thị trực quan kèm mức độ phù hợp. \\
+\midrule
+\textbf{Luồng sự kiện chính} & 
+1. Người dùng nhập câu truy vấn vào ô tìm kiếm (ví dụ: \textit{"sách tâm lý đầu tư chứng khoán"}).\newline
+2. Trình duyệt gửi \texttt{GET /api/v1/books/search?q=...} tới Backend.\newline
+3. Backend gọi API \texttt{text-embedding-004} chuyển câu truy vấn thành vector 768 chiều $\vec{q}$.\newline
+4. Backend thực thi truy vấn SQL hợp nhất: quét chỉ mục toàn văn GIN trên cột \texttt{lexical\_tsv} và quét chỉ mục đồ thị HNSW trên cột \texttt{embedding} bằng toán tử khoảng cách Cosine (\texttt{<=>}).\newline
+5. PostgreSQL tính toán điểm số đối ứng Reciprocal Rank Fusion: $\text{RRF\_Score} = \frac{0.5}{60 + \text{Rank}_{\text{BM25}}} + \frac{0.5}{60 + \text{Rank}_{\text{Vector}}}$.\newline
+6. Backend trả về danh sách Top-K ấn phẩm đạt điểm cao nhất.\newline
+7. Giao diện Next.js hiển thị danh sách thẻ sách trực quan cho người dùng. \\
+\midrule
+\textbf{Luồng ngoại lệ} & 
+\textbf{3a. API nhúng gặp sự cố:} Backend tự động chuyển hướng chỉ thực thi tìm kiếm từ khóa thuần túy (Lexical Fallback). \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.8. Đặc tả chi tiết Use Case: Nghe thử âm thanh tóm tắt ngắn AI (UC03)}
+
+\begin{longtable}{p{3.8cm} p{10.5cm}}
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Mã Use Case} & \textbf{UC03} \\
+\midrule
+\textbf{Tên Use Case} & Nghe thử âm thanh tóm tắt sách ngắn ($60\text{s}$) biên soạn tự động bởi AI \\
+\midrule
+\textbf{Tác nhân chính} & Khách hàng vãng lai, Độc giả (Customer) \\
+\midrule
+\textbf{Mô tả tóm tắt} & Khách hàng bấm nút phát âm thanh tại trang chi tiết sách; hệ thống phát trực tiếp đoạn âm thanh tóm tắt 60 giây tích hợp sóng âm visualizer sinh động. \\
+\midrule
+\textbf{Điều kiện tiên quyết} & Khách hàng đang mở xem trang chi tiết ấn phẩm sách có trường \texttt{summary\_audio\_url}. \\
+\midrule
+\textbf{Điều kiện sau} & Âm thanh phát mượt mà qua loa thiết bị; biểu đồ sóng âm dao động theo giai điệu. \\
+\midrule
+\textbf{Luồng sự kiện chính} & 
+1. Khách hàng nhấn nút "Nghe tóm tắt 60s" trên thẻ sách hoặc trang chi tiết.\newline
+2. Giao diện gọi Audio Player phát luồng âm thanh từ đường dẫn \texttt{summary\_audio\_url}.\newline
+3. Audio Context API của trình duyệt bóc tách dữ liệu tần số âm thanh (Fast Fourier Transform).\newline
+4. Giao diện vẽ sóng âm visualizer dao động thời gian thực trên Canvas mini.\newline
+5. Khách hàng có thể tạm dừng, điều chỉnh âm lượng hoặc tua nhanh trong phạm vi 60 giây. \\
+\midrule
+\textbf{Luồng ngoại lệ} & 
+\textbf{2a. Tệp âm thanh không tồn tại hoặc lỗi mạng:} Trình duyệt báo lỗi; hiển thị thông báo: \textit{"Bản tóm tắt âm thanh hiện đang được cập nhật."} \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.9. Đặc tả chi tiết Use Case: Đặt hàng và Thanh toán trực tuyến Sandbox (UC04)}
+
+\begin{longtable}{p{3.8cm} p{10.5cm}}
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Mã Use Case} & \textbf{UC04} \\
+\midrule
+\textbf{Tên Use Case} & Khởi tạo đơn hàng, tạm giữ kho và Xử lý thanh toán qua cổng Sandbox \\
+\midrule
+\textbf{Tác nhân chính} & Độc giả đã đăng nhập (Customer), Cổng thanh toán Sandbox \\
+\midrule
+\textbf{Mô tả tóm tắt} & Khách hàng thực hiện đặt mua giỏ hàng; hệ thống khóa bi quan tạm giữ tồn kho, chuyển hướng cổng Sandbox thanh toán và tự động kích hoạt quyền đọc E-book khi thanh toán thành công. \\
+\midrule
+\textbf{Điều kiện tiên quyết} & Độc giả đã đăng nhập, giỏ hàng có ít nhất một sản phẩm hợp lệ. \\
+\midrule
+\textbf{Điều kiện sau} & Trạng thái đơn chuyển thành \texttt{PAID}; số lượng tồn kho bị trừ vĩnh viễn; quyền đọc số được cấp trong bảng \texttt{ebook\_accesses}. \\
+\midrule
+\textbf{Luồng sự kiện chính} & 
+1. Khách hàng kiểm tra giỏ hàng, nhập địa chỉ nhận hàng và nhấn "Thanh toán".\newline
+2. Trình duyệt gửi \texttt{POST /api/v1/orders} kèm \texttt{voucher\_code} (nếu có).\newline
+3. Backend mở Transaction: thực thi \texttt{SELECT stock\_quantity FROM books WHERE id = ... FOR UPDATE} để khóa các dòng sản phẩm.\newline
+4. Backend kiểm tra tồn kho khả dụng $\ge$ số lượng mua: tạm trừ tồn kho khả dụng, tạo bản ghi đơn hàng với trạng thái \texttt{PENDING} (hạn thanh toán 15 phút).\newline
+5. Backend gọi API cổng Sandbox tạo giao dịch thanh toán và trả về Checkout URL.\newline
+6. Trình duyệt chuyển hướng khách hàng sang cổng thanh toán Sandbox.\newline
+7. Khách hàng nhập thông tin thẻ test và xác nhận thanh toán.\newline
+8. Cổng thanh toán gửi Webhook IPN (\texttt{POST /api/v1/payments/webhook}) tới Backend thông báo giao dịch thành công.\newline
+9. Backend xác thực chữ ký Webhook: chuyển trạng thái đơn hàng thành \texttt{PAID}, xác nhận trừ kho vĩnh viễn, tạo bản ghi cấp quyền E-book trong \texttt{ebook\_accesses} (nếu đơn có sách số).\newline
+10. Commit Transaction; chuyển hướng khách hàng về trang xác nhận đơn hàng thành công. \\
+\midrule
+\textbf{Luồng ngoại lệ} & 
+\textbf{4a. Tồn kho không đủ:} Rollback Transaction; trả về HTTP 400 kèm thông báo hết hàng.\newline
+\textbf{8a. Quá 15 phút khách không thanh toán hoặc giao dịch thất bại:} Background Worker quét đơn \texttt{PENDING} hết hạn: chuyển trạng thái thành \texttt{CANCELLED} và hoàn trả số lượng tồn kho khả dụng đã tạm giữ. \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.10. Đặc tả chi tiết Use Case: Đọc E-book bảo mật DRM WebAssembly Canvas (UC05)}
+
+\begin{longtable}{p{3.8cm} p{10.5cm}}
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Mã Use Case} & \textbf{UC05} \\
+\midrule
+\textbf{Tên Use Case} & Đọc sách điện tử bảo mật DRM bằng WebAssembly giải mã trong RAM và vẽ lên HTML5 Canvas \\
+\midrule
+\textbf{Tác nhân chính} & Độc giả sở hữu bản quyền sách (Customer) \\
+\midrule
+\textbf{Mô tả tóm tắt} & Độc giả mở đọc cuốn E-book; hệ thống cấp khóa phiên dùng một lần (Ephemeral Key); module WebAssembly giải mã nhị phân AES-256-GCM trong vùng nhớ cô lập và vẽ trực tiếp nét chữ lên Canvas. \\
+\midrule
+\textbf{Điều kiện tiên quyết} & Độc giả đã đăng nhập và tồn tại bản ghi trong bảng \texttt{ebook\_accesses}. \\
+\midrule
+\textbf{Điều kiện sau} & Nội dung trang sách hiển thị hoàn chỉnh trên Canvas; văn bản thô được xóa sạch khỏi bộ nhớ RAM; lưu vị trí đọc vào \texttt{reading\_progress}. \\
+\midrule
+\textbf{Luồng sự kiện chính} & 
+1. Độc giả nhấn "Mở đọc sách" từ Thư viện số cá nhân.\newline
+2. Trình duyệt gửi yêu cầu \texttt{GET /api/v1/ebooks/\{book\_id\}/session-key} kèm Access Token.\newline
+3. Backend kiểm tra quyền sở hữu trong \texttt{ebook\_accesses}: cấp khóa phiên tạm thời (Ephemeral Key) mã hóa.\newline
+4. Trình duyệt tải tệp nhị phân phân đoạn sách đã mã hóa AES-256-GCM từ máy chủ.\newline
+5. Trình duyệt khởi tạo WebAssembly Runtime trong RAM cô lập, nạp khóa phiên và tệp nhị phân vào bộ nhớ tuyến tính WASM.\newline
+6. Module WASM kiểm tra thẻ xác thực AEAD Tag 128-bit và giải mã dữ liệu byte văn bản thô.\newline
+7. Module WASM sử dụng engine vẽ ký tự nội bộ vẽ trực tiếp các điểm ảnh lên thẻ HTML5 \texttt{<canvas>}.\newline
+8. WASM lập tức thực thi ghi đè byte 0 (Zero-out Memory) xóa sạch dữ liệu văn bản thô khỏi RAM.\newline
+9. Giao diện hiển thị trang sách cho Độc giả; tự động cập nhật số trang đọc dở dang vào bảng \texttt{reading\_progress}. \\
+\midrule
+\textbf{Luồng ngoại lệ} & 
+\textbf{3a. Chưa mua sách:} Backend trả về HTTP 403 Forbidden; giao diện thông báo yêu cầu mua bản quyền.\newline
+\textbf{6a. Tệp sách bị can thiệp lén (Sai thẻ Tag 128-bit):} WASM hủy phiên giải mã, báo lỗi tệp bị giả mạo. \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.11. Đặc tả chi tiết Use Case: Đối thoại RAG Companion ngữ cảnh trang sách (UC06)}
+
+\begin{longtable}{p{3.8cm} p{10.5cm}}
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Mã Use Case} & \textbf{UC06} \\
+\midrule
+\textbf{Tên Use Case} & Đối thoại hỏi đáp nội dung sách với Tác tử RAG Companion dẫn chứng số trang \\
+\midrule
+\textbf{Tác nhân chính} & Độc giả đang đọc sách (Reader), Cụm Tác tử AI (Gemini 2.0 Flash) \\
+\midrule
+\textbf{Mô tả tóm tắt} & Độc giả đặt câu hỏi về nội dung cuốn sách đang mở; hệ thống truy xuất các phân đoạn có độ tương đồng Cosine $\ge 0.70$ và sinh lời giải thích dạng luồng kèm huy hiệu dẫn chứng số trang. \\
+\midrule
+\textbf{Điều kiện tiên quyết} & Độc giả đang mở giao diện Trình đọc E-book bảo mật. \\
+\midrule
+\textbf{Điều kiện sau} & Lời giải hiển thị dạng hiệu ứng gõ chữ; đính kèm liên kết tới trang sách dẫn chứng. \\
+\midrule
+\textbf{Luồng sự kiện chính} & 
+1. Độc giả mở thanh Trợ lý AI bên phải màn hình và nhập câu hỏi thắc mắc.\newline
+2. Trình duyệt gửi \texttt{POST /api/v1/ai/rag-stream} kèm \texttt{book\_id} và \texttt{query}.\newline
+3. Backend gọi API \texttt{text-embedding-004} chuyển câu hỏi thành vector đặc trưng 768 chiều $\vec{q}$.\newline
+4. Backend truy vấn CSDL: tìm Top-3 bản ghi trong \texttt{book\_chunks} có khoảng cách Cosine nhỏ nhất so với $\vec{q}$ thuộc đúng \texttt{book\_id} hiện tại.\newline
+5. Backend kiểm tra điều kiện tương đồng: $\mathcal{S}_{\text{Cosine}} = (1 - \mathcal{D}_{\text{Cosine}}) \ge 0.70$ (tương đương $\mathcal{D} \le 0.30$).\newline
+6. PostgreSQL trả về 3 đoạn văn bản kèm số trang (\texttt{page\_number}).\newline
+7. Backend đóng gói Context vào System Prompt với chỉ thị an toàn nghiêm ngặt (nhiệt độ $\le 0.2$).\newline
+8. Backend gọi Gemini 2.0 Flash Streaming API; nhận luồng tokens phản hồi.\newline
+9. Backend chuyển tiếp luồng dữ liệu thời gian thực về Client qua Server-Sent Events (SSE); đồng thời lưu lịch sử đối thoại vào bảng \texttt{ai\_conversations}.\newline
+10. Giao diện Next.js hiển thị chữ chạy thời gian thực và gắn huy hiệu \texttt{[Trang X]}. \\
+\midrule
+\textbf{Luồng ngoại lệ} & 
+\textbf{5a. Độ tương đồng Cosine thấp ($\mathcal{S}_{\text{Cosine}} < 0.70$):} Hệ thống phản hồi: \textit{"Nội dung câu hỏi của bạn không được đề cập trực tiếp trong cuốn sách này. Vui lòng đặt câu hỏi liên quan hơn."}\newline
+\textbf{8a. Giới hạn tần suất gọi API (HTTP 429):} Kích hoạt bộ đệm In-Memory hoặc thông báo người dùng thử lại sau 30 giây. \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.12. Đặc tả chi tiết Use Case: Tra cứu và hủy đơn hàng qua Tác tử thoại Voice AI (UC07)}
+
+\begin{longtable}{p{3.8cm} p{10.5cm}}
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Mã Use Case} & \textbf{UC07} \\
+\midrule
+\textbf{Tên Use Case} & Tra cứu và hủy đơn hàng bằng giọng nói tự nhiên qua Tác tử thoại Voice AI \\
+\midrule
+\textbf{Tác nhân chính} & Khách hàng đã đăng nhập (Customer), Tác tử thoại (Voice Telephony Agent) \\
+\midrule
+\textbf{Mô tả tóm tắt} & Khách hàng nhấn micro và nói khẩu lệnh tự nhiên; hệ thống nhận diện âm thanh, phân giải ý định bằng Function Calling, tự động thực thi CSDL, ghi nhật ký kiểm toán và phản hồi bằng giọng nói. \\
+\midrule
+\textbf{Điều kiện tiên quyết} & Khách hàng đã đăng nhập và cấp quyền Microphone cho trình duyệt. \\
+\midrule
+\textbf{Điều kiện sau} & Trạng thái đơn hàng trong CSDL được cập nhật (nếu là lệnh hủy hợp lệ); ghi log vào \texttt{audit\_logs}; phát âm thanh phản hồi ra loa. \\
+\midrule
+\textbf{Luồng sự kiện chính} & 
+1. Khách hàng nhấn biểu tượng Micro nổi trên màn hình.\newline
+2. Trình duyệt gọi Web Speech API (\texttt{SpeechRecognition}), chuyển âm thanh thành chuỗi văn bản tiếng Việt.\newline
+3. Trình duyệt gửi chuỗi văn bản tới \texttt{POST /api/v1/ai/voice-agent}.\newline
+4. Backend cấu hình Gemini 2.0 Flash kèm danh mục Tools: \texttt{get\_order\_status} và \texttt{cancel\_order}.\newline
+5. Gemini phân tích văn bản, trích xuất Intent và phát chỉ lệnh gọi hàm \texttt{cancel\_order(order\_id="DH1024")}.\newline
+6. Backend truy vấn bảng \texttt{orders}: kiểm tra quyền sở hữu đơn hàng và trạng thái \texttt{PENDING} hoặc \texttt{PAID}.\newline
+7. Backend thực thi cập nhật trạng thái đơn thành \texttt{CANCELLED}, hoàn trả tồn kho.\newline
+8. Backend ghi bản ghi vào bảng \texttt{audit\_logs} để lưu vết hành động hủy đơn qua Voice AI.\newline
+9. Backend gửi kết quả JSON thực thi ngược lại cho Gemini để sinh câu thoại tự nhiên.\newline
+10. Trình duyệt gọi \texttt{SpeechSynthesis} phát âm thanh tiếng Việt cho khách hàng nghe. \\
+\midrule
+\textbf{Luồng ngoại lệ} & 
+\textbf{6a. Đơn hàng đã ở trạng thái \texttt{SHIPPING}:} Backend trả về lỗi nghiệp vụ; Gemini thông báo: \textit{"Đơn hàng đã được bàn giao vận chuyển nên không thể hủy trực tiếp."}\newline
+\textbf{6b. Đơn hàng không thuộc quyền sở hữu:} Trả về lỗi bảo mật HTTP 403. \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.13. Đặc tả chi tiết Use Case: Đánh giá và bình luận ấn phẩm sách (UC08)}
+
+\begin{longtable}{p{3.8cm} p{10.5cm}}
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Mã Use Case} & \textbf{UC08} \\
+\midrule
+\textbf{Tên Use Case} & Gửi đánh giá số sao và bình luận nhận xét về ấn phẩm đã mua \\
+\midrule
+\textbf{Tác nhân chính} & Độc giả đã mua sách (Customer) \\
+\midrule
+\textbf{Mô tả tóm tắt} & Khách hàng đã hoàn tất đơn hàng (hoặc đã kích hoạt quyền đọc E-book) được quyền gửi đánh giá từ 1 đến 5 sao kèm lời bình luận; hệ thống lưu trữ và tính lại điểm đánh giá trung bình của cuốn sách. \\
+\midrule
+\textbf{Điều kiện tiên quyết} & Độc giả đã đăng nhập và sở hữu đơn hàng chứa cuốn sách đó đã hoàn tất (trạng thái \texttt{COMPLETED} đối với sách in hoặc đã thanh toán kích hoạt quyền truy cập đọc số \texttt{PAID} / \texttt{COMPLETED} đối với sách điện tử E-book). \\
+\midrule
+\textbf{Điều kiện sau} & Bản ghi đánh giá mới được thêm vào bảng \texttt{reviews}; điểm số trung bình hiển thị tức thì trên thẻ sách. \\
+\midrule
+\textbf{Luồng sự kiện chính} & 
+1. Độc giả mở tab "Đánh giá từ cộng đồng" tại trang chi tiết sách và bấm "Viết đánh giá".\newline
+2. Độc giả chọn số sao ($1 - 5$), nhập nội dung nhận xét và bấm "Gửi đánh giá".\newline
+3. Trình duyệt gửi \texttt{POST /api/v1/books/\{id\}/reviews} kèm Access Token.\newline
+4. Backend kiểm tra điều kiện: xác thực người dùng đã mua sách thông qua bảng \texttt{orders}/\texttt{order\_items} (\texttt{COMPLETED}) hoặc đã sở hữu bản quyền số trong bảng \texttt{ebook\_accesses}.\newline
+5. Backend thêm bản ghi vào bảng \texttt{reviews}.\newline
+6. Backend tính toán lại điểm trung bình: $\text{AvgRating} = \frac{1}{M}\sum_{i=1}^M \text{rating}_i$.\newline
+7. Giao diện hiển thị nhận xét mới và cập nhật số sao trung bình trên giao diện. \\
+\midrule
+\textbf{Luồng ngoại lệ} & 
+\textbf{4a. Khách hàng chưa mua ấn phẩm này:} Backend trả về HTTP 403 Forbidden; thông báo: \textit{"Bạn cần mua ấn phẩm này trước khi gửi đánh giá."} \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.14. Đặc tả chi tiết Use Case: Quản trị danh mục ấn phẩm sách (UC09)}
+
+\begin{longtable}{p{3.8cm} p{10.5cm}}
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Mã Use Case} & \textbf{UC09} \\
+\midrule
+\textbf{Tên Use Case} & Quản trị danh mục ấn phẩm sách (Thêm, sửa giá, cập nhật kho, ẩn/hiện) \\
+\midrule
+\textbf{Tác nhân chính} & Quản trị viên hệ thống (Admin) \\
+\midrule
+\textbf{Mô tả tóm tắt} & Quản trị viên thực hiện các thao tác CRUD danh mục sách, cập nhật số lượng tồn kho vật lý, chỉnh sửa giá bán và tải lên tệp E-book số. \\
+\midrule
+\textbf{Điều kiện tiên quyết} & Quản trị viên đã đăng nhập thành công với vai trò \texttt{Admin}. \\
+\midrule
+\textbf{Điều kiện sau} & Cơ sở dữ liệu bảng \texttt{books} được cập nhật; hiển thị thông báo thành công. \\
+\midrule
+\textbf{Luồng sự kiện chính} & 
+1. Admin truy cập \texttt{/admin/books}, xem danh sách sách có phân trang và bộ lọc.\newline
+2. Admin chọn chỉnh sửa một cuốn sách: thay đổi giá bán, cập nhật số lượng tồn kho khả dụng.\newline
+3. Trình duyệt gửi \texttt{PUT /api/v1/admin/books/\{id\}} tới Backend.\newline
+4. Backend kiểm tra quyền Admin qua Middleware RBAC; kiểm tra tính hợp lệ dữ liệu bằng Pydantic.\newline
+5. Backend cập nhật bản ghi trong bảng \texttt{books} và ghi nhật ký vào \texttt{audit\_logs}.\newline
+6. Giao diện hiển thị thông báo cập nhật thành công và làm mới bảng dữ liệu. \\
+\midrule
+\textbf{Luồng ngoại lệ} & 
+\textbf{4a. Giá bán hoặc tồn kho âm:} Backend từ chối với HTTP 422 Unprocessable Entity; hiển thị cảnh báo lỗi dữ liệu. \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.15. Đặc tả chi tiết Use Case: Bóc tách ảnh bìa tự động bằng Tác tử Catalog Vision (UC10)}
+
+\begin{longtable}{p{3.8cm} p{10.5cm}}
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Mã Use Case} & \textbf{UC10} \\
+\midrule
+\textbf{Tên Use Case} & Bóc tách thông tin sách tự động từ ảnh bìa bằng Tác tử Catalog Vision \\
+\midrule
+\textbf{Tác nhân chính} & Quản trị viên (Admin), Tác tử thị giác (Catalog Vision Agent) \\
+\midrule
+\textbf{Mô tả tóm tắt} & Quản trị viên tải lên tệp ảnh bìa sách; Tác tử thị giác phân tích quang học, trích xuất siêu dữ liệu và tự động điền các trường thông tin vào form nhập liệu. \\
+\midrule
+\textbf{Điều kiện tiên quyết} & Quản trị viên đã đăng nhập vào trang Quản trị (\texttt{/admin/books/new}). \\
+\midrule
+\textbf{Điều kiện sau} & Các trường dữ liệu (Tiêu đề, Tác giả, Nhà XB, ISBN, Năm XB, Tóm tắt) được điền tự động vào biểu mẫu. \\
+\midrule
+\textbf{Luồng sự kiện chính} & 
+1. Quản trị viên kéo thả tệp ảnh bìa sách (.jpg, .png, .webp) vào vùng tải ảnh.\newline
+2. Giao diện gửi tệp ảnh \texttt{multipart/form-data} tới \texttt{POST /api/v1/admin/ai/vision-catalog}.\newline
+3. Backend tiếp nhận ảnh, chuẩn hóa kích thước và chuyển đổi thành chuỗi Base64 Payload.\newline
+4. Backend cấu hình System Prompt và JSON Schema đầu ra bắt buộc.\newline
+5. Backend gửi Payload ảnh và Prompt tới Gemini 2.0 Flash Vision API.\newline
+6. Mô hình phân tích quang học và trả về đối tượng JSON chuẩn xác.\newline
+7. Giao diện Next.js tự động gán dữ liệu vào các ô nhập liệu tương ứng trên biểu mẫu. \\
+\midrule
+\textbf{Luồng ngoại lệ} & 
+\textbf{5a. Ảnh quá mờ hoặc không phải sách:} Mô hình báo lỗi; giao diện hiển thị thông báo: \textit{"Hình ảnh tải lên không hợp lệ hoặc quá mờ. Vui lòng tải lại ảnh bìa rõ nét hơn."} \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.16. Đặc tả chi tiết Use Case: Quản trị vòng đời đơn hàng (UC11)}
+
+\begin{longtable}{p{3.8cm} p{10.5cm}}
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Mã Use Case} & \textbf{UC11} \\
+\midrule
+\textbf{Tên Use Case} & Quản trị và điều phối trạng thái vòng đời đơn hàng hệ thống \\
+\midrule
+\textbf{Tác nhân chính} & Quản trị viên hệ thống (Admin) \\
+\midrule
+\textbf{Mô tả tóm tắt} & Admin duyệt danh sách đơn hàng, cập nhật chuyển đổi trạng thái từ \texttt{PAID} sang \texttt{SHIPPING} và \texttt{COMPLETED}, hoặc can thiệp xử lý sự cố đơn hàng. \\
+\midrule
+\textbf{Điều kiện tiên quyết} & Admin đã đăng nhập và truy cập trang quản lý đơn hàng (\texttt{/admin/orders}). \\
+\midrule
+\textbf{Điều kiện sau} & Trạng thái đơn hàng trong bảng \texttt{orders} thay đổi; gửi thông báo cập nhật hành trình cho khách hàng. \\
+\midrule
+\textbf{Luồng sự kiện chính} & 
+1. Admin lọc các đơn hàng có trạng thái \texttt{PAID} cần bàn giao vận chuyển.\newline
+2. Admin chọn đơn hàng cụ thể, in phiếu gửi và nhấn "Xác nhận xuất kho giao hàng".\newline
+3. Trình duyệt gửi \texttt{PATCH /api/v1/admin/orders/\{id\}/status} với body \texttt{\{"status": "SHIPPING"\}}.\newline
+4. Backend kiểm tra điều kiện chuyển đổi trạng thái hợp lệ trên máy trạng thái đơn hàng.\newline
+5. Backend cập nhật \texttt{status = 'SHIPPING'} và ghi nhật ký vào \texttt{audit\_logs}.\newline
+6. Đơn vị vận chuyển hoàn tất giao hàng: Admin chuyển trạng thái sang \texttt{COMPLETED}. \\
+\midrule
+\textbf{Luồng ngoại lệ} & 
+\textbf{4a. Cố gắng cập nhật đơn hàng đã bị hủy (\texttt{CANCELLED}):} Backend từ chối yêu cầu với HTTP 400 Bad Request; cảnh báo: \textit{"Không thể thay đổi trạng thái đơn hàng đã hủy."} \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.17. Đặc tả chi tiết Use Case: Giám sát Dashboard báo cáo KPI thời gian thực (UC12)}
+
+\begin{longtable}{p{3.8cm} p{10.5cm}}
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Mã Use Case} & \textbf{UC12} \\
+\midrule
+\textbf{Tên Use Case} & Giám sát bảng điều khiển chỉ số kinh doanh và hiệu năng thời gian thực \\
+\midrule
+\textbf{Tác nhân chính} & Quản trị viên hệ thống (Admin) \\
+\midrule
+\textbf{Mô tả tóm tắt} & Hệ thống tổng hợp dữ liệu từ cơ sở dữ liệu quan hệ, kết xuất các chỉ số doanh thu trong ngày, đơn hàng mới, sách bán chạy và lưu lượng đọc E-book số. \\
+\midrule
+\textbf{Điều kiện tiên quyết} & Quản trị viên đã đăng nhập và truy cập \texttt{/admin/dashboard}. \\
+\midrule
+\textbf{Điều kiện sau} & Các biểu đồ và thẻ KPI hiển thị số liệu trực quan, chính xác theo thời gian thực. \\
+\midrule
+\textbf{Luồng sự kiện chính} & 
+1. Admin truy cập trang chủ bảng điều khiển quản trị.\newline
+2. Giao diện gửi yêu cầu \texttt{GET /api/v1/admin/dashboard/metrics} tới Backend.\newline
+3. Backend thực thi các truy vấn SQL tổng hợp (Aggregations): tính tổng doanh thu đơn \texttt{PAID}/\texttt{COMPLETED}, đếm số lượng người đọc sách trong ngày từ \texttt{reading\_progress}.\newline
+4. Backend trả về payload JSON chứa các chỉ số KPI và chuỗi thời gian doanh số.\newline
+5. Giao diện hiển thị các biểu đồ đường (Line Chart), biểu đồ cột và thẻ KPI số liệu. \\
+\midrule
+\textbf{Luồng ngoại lệ} & 
+\textbf{3a. Cơ sở dữ liệu quá tải truy vấn tổng hợp:} Kích hoạt bộ nhớ đệm In-Memory Cache nội bộ tại Backend (TTL = 60s) để giảm tải trực tiếp cho PostgreSQL. \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.18. Đặc tả chi tiết Use Case: Tự động phân đoạn (Chunking) và Vector hóa Embeddings (UC13)}
+
+\begin{longtable}{p{3.8cm} p{10.5cm}}
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Thuộc tính đặc tả} & \textbf{Nội dung chi tiết} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\textbf{Mã Use Case} & \textbf{UC13} \\
+\midrule
+\textbf{Tên Use Case} & Tự động bóc tách phân đoạn văn bản đệ quy và lập chỉ mục Vector HNSW \\
+\midrule
+\textbf{Tác nhân chính} & Cụm Tác tử AI (Background Worker Actor) \\
+\midrule
+\textbf{Mô tả tóm tắt} & Khi Admin tải lên tệp E-book gốc, Background Worker tự động kích hoạt bóc tách văn bản, cắt phân đoạn đệ quy ($512\text{ tokens}, \Delta=64$), gọi mô hình nhúng và lưu vào bảng \texttt{book\_chunks}. \\
+\midrule
+\textbf{Điều kiện tiên quyết} & Admin đã hoàn tất tải lên tệp E-book hợp lệ (.epub, .pdf). \\
+\midrule
+\textbf{Điều kiện sau} & Toàn bộ nội dung sách được lập chỉ mục vector 768 chiều hoàn tất trong PostgreSQL, sẵn sàng cho RAG. \\
+\midrule
+\textbf{Luồng sự kiện chính} & 
+1. Hệ thống tiếp nhận sự kiện tệp E-book mới được lưu trữ.\newline
+2. Background Worker đọc luồng tệp, bóc tách văn bản thô theo cấu trúc từng trang sách.\newline
+3. Worker thực thi thuật toán Recursive Character Splitting với kích thước $ChunkSize = 512\text{ tokens}$ và độ gối đầu $ChunkOverlap = 64\text{ tokens}$.\newline
+4. Worker gom cụm phân đoạn theo từng mảng (Batch size = 32 chunks) và gọi API \texttt{text-embedding-004}.\newline
+5. Google AI trả về mảng các vector đặc trưng 768 chiều.\newline
+6. Worker thực thi câu lệnh SQL chèn hàng loạt (Bulk Insert) vào bảng \texttt{book\_chunks}.\newline
+7. PostgreSQL tự động cập nhật chỉ mục đồ thị phân cấp HNSW trên cột \texttt{embedding}.\newline
+8. Worker gửi thông báo hoàn tất xử lý về bảng điều khiển quản trị. \\
+\midrule
+\textbf{Luồng ngoại lệ} & 
+\textbf{4a. Tệp sách bị mã hóa hoặc lỗi cấu trúc:} Worker ghi nhận log lỗi vào \texttt{audit\_logs}, gửi thông báo lỗi định dạng cho Admin. \\
+\bottomrule
+\end{longtable}
+
+\subsection{Biểu đồ tuần tự (Sequence Diagram)}
+
+Nhằm mô hình hóa tường minh toàn bộ các chu trình tương tác thời gian thực giữa tác nhân người dùng, tầng giao diện máy khách Next.js, tầng điều phối xử lý FastAPI Core, hệ cơ sở dữ liệu PostgreSQL và các dịch vụ AI bên ngoài, hệ thống xây dựng đầy đủ 13 biểu đồ tuần tự tương ứng với 13 Use Cases cốt lõi của nền tảng AuraBook (từ UC01 đến UC13).
+
+\subsubsection{a) Quy trình Đăng ký và Đăng nhập hệ thống cấp phát JWT (UC01)}
+
+Quy trình xác thực người dùng cấp phát cặp khóa Access Token và Refresh Token bảo mật trong HttpOnly Cookie được minh họa trên Hình \ref{fig:seq_auth}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[lifeline_node] (u) at (0, 0.4) {Người Dùng};
+    \node[lifeline_node] (f) at (3.0, 0.4) {Frontend Next.js};
+    \node[lifeline_node] (b) at (6.8, 0.4) {FastAPI Core};
+    \node[lifeline_node] (d) at (10.6, 0.4) {PostgreSQL Users};
+
+    \draw[lifeline_line] (u) -- (0, -6.2);
+    \draw[lifeline_line] (f) -- (3.0, -6.2);
+    \draw[lifeline_line] (b) -- (6.8, -6.2);
+    \draw[lifeline_line] (d) -- (10.6, -6.2);
+
+    \node[activation_box, minimum height=5.2cm] at (3.0, -3.2) {};
+    \node[activation_box, minimum height=4.2cm] at (6.8, -3.5) {};
+    \node[activation_box, minimum height=1.0cm] at (10.6, -2.6) {};
+
+    \draw[msg_arrow] (0, -0.6) -- node[above, font=\tiny\bfseries] {1. Nhập Email \& Password} (3.0, -0.6);
+    \draw[msg_arrow] (3.0, -1.3) -- node[above, font=\tiny\bfseries] {2. POST /api/v1/auth/login} (6.8, -1.3);
+    \draw[msg_arrow] (6.8, -2.0) -- node[above, font=\tiny\bfseries] {3. SELECT * FROM users WHERE email=...} (10.6, -2.0);
+    \draw[reply_arrow] (10.6, -2.8) -- node[above, font=\tiny\bfseries] {4. Trả thông tin user \& password\_hash} (6.8, -2.8);
+
+    \draw[self_call] (6.8, -3.3) -- ++(1.0, 0) -- ++(0, -0.5) -- node[right, font=\tiny\bfseries, align=left] {5. bcrypt.checkpw() \&\\Sinh Access/Refresh Token} (6.8, -3.8);
+
+    \draw[reply_arrow] (6.8, -4.5) -- node[above, font=\tiny\bfseries] {6. Trả Access Token + Set-Cookie (HttpOnly)} (3.0, -4.5);
+    \draw[reply_arrow] (3.0, -5.3) -- node[above, font=\tiny\bfseries] {7. Chuyển hướng \& Hiển thị trạng thái đăng nhập} (0, -5.3);
+\end{tikzpicture}
+\caption{Biểu đồ tuần tự quy trình Đăng nhập hệ thống và cấp phát JWT}
+\label{fig:seq_auth}
+\end{figure}
+
+\subsubsection{b) Quy trình Tìm kiếm sách lai (Hybrid Search: Lexical + Semantic Vector) (UC02)}
+
+Quy trình tìm kiếm sách lai kết hợp giữa tìm kiếm từ khóa toàn văn (BM25) và tìm kiếm ngữ nghĩa vector 768 chiều với tiện ích \texttt{pgvector} được thể hiện trên Hình \ref{fig:seq_hybrid_search}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[lifeline_node] (c) at (0, 0.4) {Khách Hàng};
+    \node[lifeline_node] (f) at (2.8, 0.4) {Frontend (Next.js)};
+    \node[lifeline_node] (b) at (6.0, 0.4) {FastAPI Core};
+    \node[lifeline_node] (g) at (9.4, 0.4) {Gemini Embed};
+    \node[lifeline_node] (d) at (12.8, 0.4) {Postgres pgvector};
+
+    \draw[lifeline_line] (c) -- (0, -6.6);
+    \draw[lifeline_line] (f) -- (2.8, -6.6);
+    \draw[lifeline_line] (b) -- (6.0, -6.6);
+    \draw[lifeline_line] (g) -- (9.4, -6.6);
+    \draw[lifeline_line] (d) -- (12.8, -6.6);
+
+    \node[activation_box, minimum height=5.5cm] at (2.8, -3.5) {};
+    \node[activation_box, minimum height=4.5cm] at (6.0, -3.7) {};
+    \node[activation_box, minimum height=0.8cm] at (9.4, -2.5) {};
+    \node[activation_box, minimum height=0.8cm] at (12.8, -4.1) {};
+
+    \draw[msg_arrow] (0, -0.6) -- node[above, font=\tiny\bfseries] {1. Nhập truy vấn tìm kiếm tự nhiên} (2.8, -0.6);
+    \draw[msg_arrow] (2.8, -1.3) -- node[above, font=\tiny\bfseries] {2. GET /api/v1/books/search?q=...} (6.0, -1.3);
+    \draw[msg_arrow] (6.0, -2.1) -- node[above, font=\tiny\bfseries] {3. POST /embed (text-embedding-004)} (9.4, -2.1);
+    \draw[reply_arrow] (9.4, -2.9) -- node[above, font=\tiny\bfseries] {4. Trả Vector $\vec{q}$ (768 chiều)} (6.0, -2.9);
+    \draw[msg_arrow] (6.0, -3.7) -- node[above, font=\tiny\bfseries] {5. SQL: BM25 + Cosine Index HNSW (<=>)} (12.8, -3.7);
+    \draw[reply_arrow] (12.8, -4.5) -- node[above, font=\tiny\bfseries] {6. Trả Top-K kết quả xếp hạng RRF} (6.0, -4.5);
+    \draw[reply_arrow] (6.0, -5.3) -- node[above, font=\tiny\bfseries] {7. JSON danh sách ấn phẩm tối ưu} (2.8, -5.3);
+    \draw[reply_arrow] (2.8, -6.0) -- node[above, font=\tiny\bfseries] {8. Hiển thị thẻ sách trực quan} (0, -6.0);
+\end{tikzpicture}
+\caption{Biểu đồ tuần tự quy trình Tìm kiếm sách lai (Hybrid Search)}
+\label{fig:seq_hybrid_search}
+\end{figure}
+
+\subsubsection{c) Quy trình Nghe thử âm thanh tóm tắt sách ngắn qua AI Audio Teaser (UC03)}
+
+Quy trình phát trực tuyến âm thanh tóm tắt sách ngắn ($60\text{s}$) được biên soạn và tổng hợp tự động bởi AI được thể hiện trên Hình \ref{fig:seq_audio_teaser}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[lifeline_node] (c) at (0, 0.4) {Khách Hàng};
+    \node[lifeline_node] (f) at (3.0, 0.4) {Frontend Next.js};
+    \node[lifeline_node] (b) at (6.8, 0.4) {FastAPI Core};
+    \node[lifeline_node] (s) at (10.6, 0.4) {Audio Storage CDN};
+
+    \draw[lifeline_line] (c) -- (0, -6.2);
+    \draw[lifeline_line] (f) -- (3.0, -6.2);
+    \draw[lifeline_line] (b) -- (6.8, -6.2);
+    \draw[lifeline_line] (s) -- (10.6, -6.2);
+
+    \node[activation_box, minimum height=5.2cm] at (3.0, -3.2) {};
+    \node[activation_box, minimum height=3.6cm] at (6.8, -3.0) {};
+    \node[activation_box, minimum height=1.0cm] at (10.6, -2.5) {};
+
+    \draw[msg_arrow] (0, -0.6) -- node[above, font=\tiny\bfseries] {1. Nhấn nút Nghe tóm tắt audio 60s} (3.0, -0.6);
+    \draw[msg_arrow] (3.0, -1.3) -- node[above, font=\tiny\bfseries] {2. GET /api/v1/books/{id}/audio-teaser} (6.8, -1.3);
+    \draw[msg_arrow] (6.8, -2.0) -- node[above, font=\tiny\bfseries] {3. Lấy Pre-signed CDN Audio URL} (10.6, -2.0);
+    \draw[reply_arrow] (10.6, -2.7) -- node[above, font=\tiny\bfseries] {4. Trả URL tệp âm thanh MPEG/AAC} (6.8, -2.7);
+    \draw[reply_arrow] (6.8, -3.4) -- node[above, font=\tiny\bfseries] {5. Trả phản hồi JSON kèm Audio URL} (3.0, -3.4);
+    \draw[msg_arrow] (3.0, -4.1) -- node[above, font=\tiny\bfseries] {6. HTTP Range Request (Streaming audio)} (10.6, -4.1);
+    \draw[reply_arrow] (10.6, -4.8) -- node[above, font=\tiny\bfseries] {7. Trả nhị phân âm thanh theo phân đoạn} (3.0, -4.8);
+    \draw[reply_arrow] (3.0, -5.5) -- node[above, font=\tiny\bfseries] {8. Web Audio API phát loa kèm sóng visualizer} (0, -5.5);
+\end{tikzpicture}
+\caption{Biểu đồ tuần tự quy trình Nghe thử âm thanh tóm tắt sách ngắn (UC03)}
+\label{fig:seq_audio_teaser}
+\end{figure}
+
+\subsubsection{d) Quy trình Đặt hàng và Xử lý Thanh toán Sandbox (UC04)}
+
+Quy trình giao dịch thương mại điện tử đảm bảo tính toàn vẹn dữ liệu ACID thông qua cơ chế khóa bi quan (\texttt{FOR UPDATE}) và xác thực Webhook IPN được mô tả trên Hình \ref{fig:seq_order_payment}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[lifeline_node] (c) at (0, 0.4) {Khách Hàng};
+    \node[lifeline_node] (f) at (2.8, 0.4) {Frontend (Next.js)};
+    \node[lifeline_node] (b) at (6.0, 0.4) {FastAPI Core};
+    \node[lifeline_node] (d) at (9.4, 0.4) {PostgreSQL DB};
+    \node[lifeline_node] (p) at (12.8, 0.4) {Cổng Sandbox};
+
+    \draw[lifeline_line] (c) -- (0, -7.8);
+    \draw[lifeline_line] (f) -- (2.8, -7.8);
+    \draw[lifeline_line] (b) -- (6.0, -7.8);
+    \draw[lifeline_line] (d) -- (9.4, -7.8);
+    \draw[lifeline_line] (p) -- (12.8, -7.8);
+
+    \node[activation_box, minimum height=7.0cm] at (2.8, -4.0) {};
+    \node[activation_box, minimum height=6.2cm] at (6.0, -4.1) {};
+    \node[activation_box, minimum height=1.3cm] at (9.4, -2.1) {};
+    \node[activation_box, minimum height=1.3cm] at (9.4, -5.9) {};
+    \node[activation_box, minimum height=2.2cm] at (12.8, -4.0) {};
+
+    \draw[msg_arrow] (0, -0.6) -- node[above, font=\tiny\bfseries] {1. Nh\`{a}n n\'{u}t Thanh to\'{a}n} (2.8, -0.6);
+    \draw[msg_arrow] (2.8, -1.2) -- node[above, font=\tiny\bfseries] {2. POST /api/v1/orders} (6.0, -1.2);
+    \draw[msg_arrow] (6.0, -1.8) -- node[above, font=\tiny\bfseries] {3. BEGIN \& SELECT ... FOR UPDATE} (9.4, -1.8);
+    \draw[msg_arrow] (6.0, -2.4) -- node[above, font=\tiny\bfseries] {4. INSERT orders (Status='PENDING', Hold kho)} (9.4, -2.4);
+    \draw[msg_arrow] (6.0, -3.0) -- node[above, font=\tiny\bfseries] {5. Khởi tạo giao dịch thanh toán Sandbox} (12.8, -3.0);
+    \draw[reply_arrow] (12.8, -3.6) -- node[above, font=\tiny\bfseries] {6. Trả Checkout URL điều hướng} (2.8, -3.6);
+    \draw[msg_arrow] (0, -4.3) -- node[above, font=\tiny\bfseries] {7. Nhập thông tin thẻ test và xác nhận} (12.8, -4.3);
+    \draw[msg_arrow] (12.8, -5.0) -- node[above, font=\tiny\bfseries] {8. Webhook IPN (Giao dịch thành công)} (6.0, -5.0);
+    \draw[msg_arrow] (6.0, -5.7) -- node[above, font=\tiny\bfseries] {9. UPDATE Status='PAID', trừ kho vĩnh viễn, cấp E-book} (9.4, -5.7);
+    \draw[reply_arrow] (9.4, -6.3) -- node[above, font=\tiny\bfseries] {10. COMMIT TRANSACTION} (6.0, -6.3);
+    \draw[reply_arrow] (6.0, -6.9) -- node[above, font=\tiny\bfseries] {11. Thông báo đơn hàng thành công} (2.8, -6.9);
+    \draw[reply_arrow] (2.8, -7.4) -- node[above, font=\tiny\bfseries] {12. Mở khóa thư viện số E-book} (0, -7.4);
+\end{tikzpicture}
+\caption{Biểu đồ tuần tự quy trình Đặt hàng và Xử lý Thanh toán Sandbox}
+\label{fig:seq_order_payment}
+\end{figure}
+
+\subsubsection{e) Quy trình Đọc E-book bảo mật DRM WebAssembly Canvas (UC05)}
+
+Quy trình cấp khóa phiên dùng một lần, giải mã AES-256-GCM trong RAM cô lập và kết xuất Canvas được minh họa trên Hình \ref{fig:seq_drm}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[lifeline_node] (u) at (0, 0.4) {Độc Giả};
+    \node[lifeline_node] (w) at (2.8, 0.4) {WASM Canvas};
+    \node[lifeline_node] (b) at (6.0, 0.4) {FastAPI Core};
+    \node[lifeline_node] (d) at (9.4, 0.4) {Postgres Access};
+    \node[lifeline_node] (s) at (12.8, 0.4) {Storage Binary};
+
+    \draw[lifeline_line] (u) -- (0, -6.8);
+    \draw[lifeline_line] (w) -- (2.8, -6.8);
+    \draw[lifeline_line] (b) -- (6.0, -6.8);
+    \draw[lifeline_line] (d) -- (9.4, -6.8);
+    \draw[lifeline_line] (s) -- (12.8, -6.8);
+
+    \node[activation_box, minimum height=6.0cm] at (2.8, -3.5) {};
+    \node[activation_box, minimum height=4.2cm] at (6.0, -3.0) {};
+    \node[activation_box, minimum height=0.8cm] at (9.4, -2.0) {};
+    \node[activation_box, minimum height=0.8cm] at (12.8, -3.4) {};
+
+    \draw[msg_arrow] (0, -0.6) -- node[above, font=\tiny\bfseries] {1. Nhấn mở đọc cuốn E-book} (2.8, -0.6);
+    \draw[msg_arrow] (2.8, -1.2) -- node[above, font=\tiny\bfseries] {2. GET /session-key (Bearer JWT)} (6.0, -1.2);
+    \draw[msg_arrow] (6.0, -1.8) -- node[above, font=\tiny\bfseries] {3. SELECT * FROM ebook\_accesses} (9.4, -1.8);
+    \draw[reply_arrow] (9.4, -2.4) -- node[above, font=\tiny\bfseries] {4. Quyền đọc hợp lệ} (6.0, -2.4);
+    \draw[reply_arrow] (6.0, -2.9) -- node[above, font=\tiny\bfseries] {5. Trả Ephemeral Key dùng 1 lần} (2.8, -2.9);
+    \draw[msg_arrow] (2.8, -3.4) -- node[above, font=\tiny\bfseries] {6. Tải tệp nhị phân mã hóa (.bin)} (12.8, -3.4);
+    \draw[reply_arrow] (12.8, -4.1) -- node[above, font=\tiny\bfseries] {7. Trả AES-256-GCM Payload} (2.8, -4.1);
+
+    \draw[self_call] (2.8, -4.6) -- ++(1.0, 0) -- ++(0, -0.5) -- node[right, font=\tiny\bfseries, align=left] {8. WASM giải mã trong RAM cô lập\\\& Vẽ điểm ảnh lên HTML5 Canvas} (2.8, -5.1);
+
+    \draw[self_call] (2.8, -5.5) -- ++(1.0, 0) -- ++(0, -0.4) -- node[right, font=\tiny\bfseries] {9. Zero-out RAM xóa sạch văn bản} (2.8, -5.9);
+    \draw[reply_arrow] (2.8, -6.3) -- node[above, font=\tiny\bfseries] {10. Hiển thị trang sách sắc nét} (0, -6.3);
+\end{tikzpicture}
+\caption{Biểu đồ tuần tự quy trình Đọc E-book bảo mật DRM WebAssembly Canvas}
+\label{fig:seq_drm}
+\end{figure}
+
+\subsubsection{f) Quy trình Tác tử RAG Companion phân tích ngữ cảnh sách (UC06)}
+
+Quy trình truy xuất phân đoạn văn bản liên quan ($\mathcal{S}_{\text{Cosine}} \ge 0.70$) và sinh câu trả lời dạng luồng qua giao thức SSE được minh họa trên Hình \ref{fig:seq_rag}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[lifeline_node] (r) at (0, 0.4) {Độc Giả};
+    \node[lifeline_node] (e) at (2.8, 0.4) {Trình Đọc Canvas};
+    \node[lifeline_node] (b) at (6.0, 0.4) {FastAPI Core};
+    \node[lifeline_node] (d) at (9.4, 0.4) {Postgres Chunks};
+    \node[lifeline_node] (g) at (12.8, 0.4) {Gemini 2.0 Flash};
+
+    \draw[lifeline_line] (r) -- (0, -7.0);
+    \draw[lifeline_line] (e) -- (2.8, -7.0);
+    \draw[lifeline_line] (b) -- (6.0, -7.0);
+    \draw[lifeline_line] (d) -- (9.4, -7.0);
+    \draw[lifeline_line] (g) -- (12.8, -7.0);
+
+    \node[activation_box, minimum height=6.0cm] at (2.8, -3.6) {};
+    \node[activation_box, minimum height=5.2cm] at (6.0, -3.8) {};
+    \node[activation_box, minimum height=0.8cm] at (9.4, -3.2) {};
+    \node[activation_box, minimum height=1.0cm] at (12.8, -4.6) {};
+
+    \draw[msg_arrow] (0, -0.6) -- node[above, font=\tiny\bfseries] {1. Nhập câu hỏi thắc mắc nội dung} (2.8, -0.6);
+    \draw[msg_arrow] (2.8, -1.2) -- node[above, font=\tiny\bfseries] {2. POST /api/v1/ai/rag-stream} (6.0, -1.2);
+    
+    \draw[self_call] (6.0, -1.8) -- ++(1.0, 0) -- ++(0, -0.5) -- node[right, font=\tiny\bfseries, align=left] {3. Vector hóa câu hỏi:\\$\vec{q} = \text{Embed}(query)$} (6.0, -2.3);
+
+    \draw[msg_arrow] (6.0, -2.8) -- node[above, font=\tiny\bfseries] {4. SELECT Top-3 Chunks (emb <=> q, Sim >= 0.70)} (9.4, -2.8);
+    \draw[reply_arrow] (9.4, -3.6) -- node[above, font=\tiny\bfseries] {5. Trả văn bản kèm page\_number} (6.0, -3.6);
+    \draw[msg_arrow] (6.0, -4.3) -- node[above, font=\tiny\bfseries] {6. Đóng gói Context + Prompt vào Stream API} (12.8, -4.3);
+    \draw[reply_arrow] (12.8, -5.0) -- node[above, font=\tiny\bfseries] {7. Trả luồng Token phản hồi thời gian thực} (6.0, -5.0);
+    \draw[reply_arrow] (6.0, -5.7) -- node[above, font=\tiny\bfseries] {8. Server-Sent Events (SSE Stream)} (2.8, -5.7);
+    \draw[reply_arrow] (2.8, -6.4) -- node[above, font=\tiny\bfseries] {9. Hiệu ứng gõ chữ kèm [Trang X]} (0, -6.4);
+\end{tikzpicture}
+\caption{Biểu đồ tuần tự quy trình Tác tử RAG Companion đối thoại nội dung sách}
+\label{fig:seq_rag}
+\end{figure}
+
+\subsubsection{g) Quy trình Tác tử thoại Voice AI thực thi Function Calling (UC07)}
+
+Quy trình tự động hóa tiếp nhận giọng nói, phân tích ý định và kích hoạt hàm CSDL được minh họa trên Hình \ref{fig:seq_voice_agent}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[lifeline_node] (c) at (0, 0.4) {Khách Hàng};
+    \node[lifeline_node] (s) at (2.8, 0.4) {Web Speech API};
+    \node[lifeline_node] (b) at (6.0, 0.4) {FastAPI Core};
+    \node[lifeline_node] (g) at (9.4, 0.4) {Gemini 2.0 Flash};
+    \node[lifeline_node] (d) at (12.8, 0.4) {PostgreSQL Orders};
+
+    \draw[lifeline_line] (c) -- (0, -7.6);
+    \draw[lifeline_line] (s) -- (2.8, -7.6);
+    \draw[lifeline_line] (b) -- (6.0, -7.6);
+    \draw[lifeline_line] (g) -- (9.4, -7.6);
+    \draw[lifeline_line] (d) -- (12.8, -7.6);
+
+    \node[activation_box, minimum height=6.6cm] at (2.8, -3.8) {};
+    \node[activation_box, minimum height=5.2cm] at (6.0, -4.4) {};
+    \node[activation_box, minimum height=1.0cm] at (9.4, -3.2) {};
+    \node[activation_box, minimum height=1.0cm] at (9.4, -5.9) {};
+    \node[activation_box, minimum height=0.8cm] at (12.8, -4.7) {};
+
+    \draw[msg_arrow] (0, -0.6) -- node[above, font=\tiny\bfseries] {1. Nhấn micro và nói khẩu lệnh} (2.8, -0.6);
+    
+    \draw[self_call] (2.8, -1.1) -- ++(1.0, 0) -- ++(0, -0.5) -- node[right, font=\tiny\bfseries, align=left] {2. STT: Âm thanh\\$\rightarrow$ Chuỗi tiếng Việt} (2.8, -1.6);
+
+    \draw[msg_arrow] (2.8, -2.1) -- node[above, font=\tiny\bfseries] {3. POST /api/v1/ai/voice-agent (Text)} (6.0, -2.1);
+    \draw[msg_arrow] (6.0, -2.8) -- node[above, font=\tiny\bfseries] {4. Prompt kèm Tool (\texttt{cancel\_order})} (9.4, -2.8);
+    \draw[reply_arrow] (9.4, -3.5) -- node[above, font=\tiny\bfseries] {5. Function Call: \texttt{cancel\_order("DH1024")}} (6.0, -3.5);
+    \draw[msg_arrow] (6.0, -4.3) -- node[above, font=\tiny\bfseries] {6. Kiểm tra quyền \& UPDATE Status='CANCELLED'} (12.8, -4.3);
+    \draw[reply_arrow] (12.8, -5.0) -- node[above, font=\tiny\bfseries] {7. Cập nhật trạng thái CSDL thành công} (6.0, -5.0);
+    \draw[msg_arrow] (6.0, -5.6) -- node[above, font=\tiny\bfseries] {8. Gửi Tool result JSON: \{"status": "success"\}} (9.4, -5.6);
+    \draw[reply_arrow] (9.4, -6.3) -- node[above, font=\tiny\bfseries] {9. Sinh câu thoại tự nhiên hoàn chỉnh} (6.0, -6.3);
+    \draw[reply_arrow] (6.0, -6.8) -- node[above, font=\tiny\bfseries] {10. Trả Text phản hồi} (2.8, -6.8);
+    \draw[reply_arrow] (2.8, -7.2) -- node[above, font=\tiny\bfseries] {11. TTS phát âm thanh qua loa} (0, -7.2);
+\end{tikzpicture}
+\caption{Biểu đồ tuần tự quy trình Tác tử thoại Voice AI kích hoạt Function Calling}
+\label{fig:seq_voice_agent}
+\end{figure}
+
+\subsubsection{h) Quy trình Gửi đánh giá số sao và bình luận nhận xét ấn phẩm (UC08)}
+
+Quy trình kiểm tra điều kiện quyền mua sách thực tế và lưu trữ đánh giá số sao kèm bình luận được thể hiện trên Hình \ref{fig:seq_review}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[lifeline_node] (c) at (0, 0.4) {Khách Hàng};
+    \node[lifeline_node] (f) at (3.0, 0.4) {Frontend Next.js};
+    \node[lifeline_node] (b) at (6.8, 0.4) {FastAPI Core};
+    \node[lifeline_node] (d) at (10.6, 0.4) {PostgreSQL DB};
+
+    \draw[lifeline_line] (c) -- (0, -6.4);
+    \draw[lifeline_line] (f) -- (3.0, -6.4);
+    \draw[lifeline_line] (b) -- (6.8, -6.4);
+    \draw[lifeline_line] (d) -- (10.6, -6.4);
+
+    \node[activation_box, minimum height=5.4cm] at (3.0, -3.3) {};
+    \node[activation_box, minimum height=4.2cm] at (6.8, -3.5) {};
+    \node[activation_box, minimum height=1.0cm] at (10.6, -2.6) {};
+    \node[activation_box, minimum height=0.9cm] at (10.6, -4.5) {};
+
+    \draw[msg_arrow] (0, -0.6) -- node[above, font=\tiny\bfseries] {1. Chọn sao (1-5), nhập nội dung bình luận, gửi} (3.0, -0.6);
+    \draw[msg_arrow] (3.0, -1.3) -- node[above, font=\tiny\bfseries] {2. POST /api/v1/books/{id}/reviews (Bearer JWT)} (6.8, -1.3);
+    \draw[msg_arrow] (6.8, -2.0) -- node[above, font=\tiny\bfseries] {3. SELECT FROM orders (Kiểm tra quyền đã mua)} (10.6, -2.0);
+    \draw[reply_arrow] (10.6, -2.8) -- node[above, font=\tiny\bfseries] {4. Xác nhận đơn hàng thành công (Status='PAID')} (6.8, -2.8);
+    \draw[msg_arrow] (6.8, -3.5) -- node[above, font=\tiny\bfseries] {5. INSERT INTO reviews (rating, comment, user\_id)} (10.6, -3.5);
+    \draw[self_call] (6.8, -4.0) -- ++(1.0, 0) -- ++(0, -0.5) -- node[right, font=\tiny\bfseries, align=left] {6. Tự động cập nhật\\avg\_rating của sách} (6.8, -4.5);
+    \draw[reply_arrow] (6.8, -5.2) -- node[above, font=\tiny\bfseries] {7. Trả bản ghi Review mới tạo (HTTP 201)} (3.0, -5.2);
+    \draw[reply_arrow] (3.0, -5.8) -- node[above, font=\tiny\bfseries] {8. Cập nhật bình luận tức thì trên giao diện} (0, -5.8);
+\end{tikzpicture}
+\caption{Biểu đồ tuần tự quy trình Gửi đánh giá số sao và bình luận (UC08)}
+\label{fig:seq_review}
+\end{figure}
+
+\subsubsection{i) Quy trình Quản trị danh mục ấn phẩm sách (UC09)}
+
+Quy trình quản trị thêm mới, sửa đổi thông tin và cập nhật tồn kho ấn phẩm của Quản trị viên được minh họa trên Hình \ref{fig:seq_book_mgmt}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[lifeline_node] (a) at (0, 0.4) {Quản Trị Viên};
+    \node[lifeline_node] (f) at (3.0, 0.4) {Frontend Admin};
+    \node[lifeline_node] (b) at (6.8, 0.4) {FastAPI Core};
+    \node[lifeline_node] (d) at (10.6, 0.4) {PostgreSQL DB};
+
+    \draw[lifeline_line] (a) -- (0, -6.2);
+    \draw[lifeline_line] (f) -- (3.0, -6.2);
+    \draw[lifeline_line] (b) -- (6.8, -6.2);
+    \draw[lifeline_line] (d) -- (10.6, -6.2);
+
+    \node[activation_box, minimum height=5.2cm] at (3.0, -3.2) {};
+    \node[activation_box, minimum height=4.2cm] at (6.8, -3.5) {};
+    \node[activation_box, minimum height=1.2cm] at (10.6, -3.2) {};
+
+    \draw[msg_arrow] (0, -0.6) -- node[above, font=\tiny\bfseries] {1. Nhập thông tin sách, giá, tải ảnh bìa, lưu} (3.0, -0.6);
+    \draw[msg_arrow] (3.0, -1.3) -- node[above, font=\tiny\bfseries] {2. POST /api/v1/admin/books (Bearer Admin JWT)} (6.8, -1.3);
+    \draw[self_call] (6.8, -1.9) -- ++(1.0, 0) -- ++(0, -0.5) -- node[right, font=\tiny\bfseries, align=left] {3. Phân quyền RBAC:\\Kiểm tra role == 'ADMIN'} (6.8, -2.4);
+    \draw[msg_arrow] (6.8, -3.0) -- node[above, font=\tiny\bfseries] {4. INSERT INTO books (...) RETURNING id} (10.6, -3.0);
+    \draw[msg_arrow] (6.8, -3.7) -- node[above, font=\tiny\bfseries] {5. INSERT INTO audit\_logs (Action='CREATE\_BOOK')} (10.6, -3.7);
+    \draw[reply_arrow] (10.6, -4.4) -- node[above, font=\tiny\bfseries] {6. Trả bản ghi sách mới tạo} (6.8, -4.4);
+    \draw[reply_arrow] (6.8, -5.0) -- node[above, font=\tiny\bfseries] {7. Trả kết quả JSON sách mới (HTTP 201)} (3.0, -5.0);
+    \draw[reply_arrow] (3.0, -5.6) -- node[above, font=\tiny\bfseries] {8. Hiển thị thông báo cập nhật danh mục thành công} (0, -5.6);
+\end{tikzpicture}
+\caption{Biểu đồ tuần tự quy trình Quản trị danh mục sách (UC09)}
+\label{fig:seq_book_mgmt}
+\end{figure}
+
+\subsubsection{j) Quy trình Tác tử Catalog Vision bóc tách ảnh bìa sách (UC10)}
+
+Quy trình bóc tách quang học siêu dữ liệu từ hình ảnh bìa sách của Tác tử Catalog Vision được thể hiện trên Hình \ref{fig:seq_vision_ocr}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[lifeline_node] (a) at (0, 0.4) {Quản Trị Viên};
+    \node[lifeline_node] (f) at (3.0, 0.4) {Frontend (Admin)};
+    \node[lifeline_node] (b) at (6.6, 0.4) {FastAPI Core};
+    \node[lifeline_node] (g) at (10.6, 0.4) {Gemini 2.0 Flash Vision};
+
+    \draw[lifeline_line] (a) -- (0, -6.0);
+    \draw[lifeline_line] (f) -- (3.0, -6.0);
+    \draw[lifeline_line] (b) -- (6.6, -6.0);
+    \draw[lifeline_line] (g) -- (10.6, -6.0);
+
+    \node[activation_box, minimum height=5.0cm] at (3.0, -3.2) {};
+    \node[activation_box, minimum height=4.2cm] at (6.6, -3.5) {};
+    \node[activation_box, minimum height=1.2cm] at (10.6, -2.9) {};
+
+    \draw[msg_arrow] (0, -0.6) -- node[above, font=\tiny\bfseries] {1. Tải lên tệp ảnh bìa (.png, .jpg)} (3.0, -0.6);
+    \draw[msg_arrow] (3.0, -1.3) -- node[above, font=\tiny\bfseries] {2. POST /api/v1/admin/ai/vision-catalog} (6.6, -1.3);
+    
+    \draw[self_call] (6.6, -1.8) -- ++(1.0, 0) -- ++(0, -0.5) -- node[right, font=\tiny\bfseries, align=left] {3. Chuẩn hóa ảnh \&\\Mã hóa Base64 Payload} (6.6, -2.3);
+
+    \draw[msg_arrow] (6.6, -2.8) -- node[above, font=\tiny\bfseries] {4. Prompt JSON Schema + Base64 Image} (10.6, -2.8);
+    \draw[reply_arrow] (10.6, -3.6) -- node[above, font=\tiny\bfseries] {5. Trả JSON (title, author, isbn, year)} (6.6, -3.6);
+    \draw[reply_arrow] (6.6, -4.4) -- node[above, font=\tiny\bfseries] {6. Trả kết quả JSON siêu dữ liệu} (3.0, -4.4);
+    \draw[reply_arrow] (3.0, -5.2) -- node[above, font=\tiny\bfseries] {7. Tự động điền dữ liệu vào Form nhập liệu} (0, -5.2);
+\end{tikzpicture}
+\caption{Biểu đồ tuần tự quy trình Tác tử Catalog Vision bóc tách ảnh bìa}
+\label{fig:seq_vision_ocr}
+\end{figure}
+
+\subsubsection{k) Quy trình Quản trị và Điều phối trạng thái vòng đời đơn hàng (UC11)}
+
+Quy trình quản trị và chuyển đổi trạng thái đơn hàng của Quản trị viên tuân theo máy trạng thái được thể hiện trên Hình \ref{fig:seq_order_status}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[lifeline_node] (a) at (0, 0.4) {Quản Trị Viên};
+    \node[lifeline_node] (f) at (3.0, 0.4) {Frontend Admin};
+    \node[lifeline_node] (b) at (6.8, 0.4) {FastAPI Core};
+    \node[lifeline_node] (d) at (10.6, 0.4) {PostgreSQL DB};
+
+    \draw[lifeline_line] (a) -- (0, -6.4);
+    \draw[lifeline_line] (f) -- (3.0, -6.4);
+    \draw[lifeline_line] (b) -- (6.8, -6.4);
+    \draw[lifeline_line] (d) -- (10.6, -6.4);
+
+    \node[activation_box, minimum height=5.4cm] at (3.0, -3.3) {};
+    \node[activation_box, minimum height=4.2cm] at (6.8, -3.5) {};
+    \node[activation_box, minimum height=1.2cm] at (10.6, -3.4) {};
+
+    \draw[msg_arrow] (0, -0.6) -- node[above, font=\tiny\bfseries] {1. Chọn đơn hàng, đổi trạng thái sang 'SHIPPED'} (3.0, -0.6);
+    \draw[msg_arrow] (3.0, -1.3) -- node[above, font=\tiny\bfseries] {2. PATCH /api/v1/admin/orders/{id}/status} (6.8, -1.3);
+    \draw[self_call] (6.8, -1.9) -- ++(1.0, 0) -- ++(0, -0.5) -- node[right, font=\tiny\bfseries, align=left] {3. State Machine Guard:\\Kiểm tra chuyển trạng thái hợp lệ} (6.8, -2.4);
+    \draw[msg_arrow] (6.8, -3.0) -- node[above, font=\tiny\bfseries] {4. UPDATE orders SET status='SHIPPED', updated\_at=NOW()} (10.6, -3.0);
+    \draw[msg_arrow] (6.8, -3.7) -- node[above, font=\tiny\bfseries] {5. INSERT INTO audit\_logs (Action='UPDATE\_ORDER\_STATUS')} (10.6, -3.7);
+    \draw[reply_arrow] (10.6, -4.4) -- node[above, font=\tiny\bfseries] {6. Xác nhận cập nhật thành công} (6.8, -4.4);
+    \draw[reply_arrow] (6.8, -5.0) -- node[above, font=\tiny\bfseries] {7. Trả kết quả đơn hàng cập nhật (HTTP 200)} (3.0, -5.0);
+    \draw[reply_arrow] (3.0, -5.8) -- node[above, font=\tiny\bfseries] {8. Cập nhật thẻ trạng thái trực quan trên giao diện} (0, -5.8);
+\end{tikzpicture}
+\caption{Biểu đồ tuần tự quy trình Quản trị trạng thái đơn hàng (UC11)}
+\label{fig:seq_order_status}
+\end{figure}
+
+\subsubsection{l) Quy trình Giám sát Bảng điều khiển Chỉ số kinh doanh và Hiệu năng (UC12)}
+
+Quy trình truy vấn tổng hợp số liệu thời gian thực cho Bảng điều khiển Admin được mô tả trên Hình \ref{fig:seq_dashboard}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[lifeline_node] (a) at (0, 0.4) {Quản Trị Viên};
+    \node[lifeline_node] (f) at (3.0, 0.4) {Frontend Admin};
+    \node[lifeline_node] (b) at (6.8, 0.4) {FastAPI Core};
+    \node[lifeline_node] (d) at (10.6, 0.4) {PostgreSQL DB};
+
+    \draw[lifeline_line] (a) -- (0, -6.0);
+    \draw[lifeline_line] (f) -- (3.0, -6.0);
+    \draw[lifeline_line] (b) -- (6.8, -6.0);
+    \draw[lifeline_line] (d) -- (10.6, -6.0);
+
+    \node[activation_box, minimum height=5.0cm] at (3.0, -3.1) {};
+    \node[activation_box, minimum height=3.8cm] at (6.8, -3.3) {};
+    \node[activation_box, minimum height=1.2cm] at (10.6, -2.4) {};
+
+    \draw[msg_arrow] (0, -0.6) -- node[above, font=\tiny\bfseries] {1. Truy cập trang Bảng điều khiển (Admin Dashboard)} (3.0, -0.6);
+    \draw[msg_arrow] (3.0, -1.3) -- node[above, font=\tiny\bfseries] {2. GET /api/v1/admin/analytics/dashboard (Admin JWT)} (6.8, -1.3);
+    \draw[msg_arrow] (6.8, -2.0) -- node[above, font=\tiny\bfseries] {3. Truy vấn tổng hợp doanh thu, đơn hàng, active users} (10.6, -2.0);
+    \draw[reply_arrow] (10.6, -2.8) -- node[above, font=\tiny\bfseries] {4. Trả dữ liệu KPI aggregations và chuỗi thời gian} (6.8, -2.8);
+    \draw[self_call] (6.8, -3.4) -- ++(1.0, 0) -- ++(0, -0.5) -- node[right, font=\tiny\bfseries, align=left] {5. Đóng gói JSON:\\Doanh thu, tỉ lệ tăng trưởng} (6.8, -3.9);
+    \draw[reply_arrow] (6.8, -4.6) -- node[above, font=\tiny\bfseries] {6. Trả phản hồi thống kê phân tích (HTTP 200)} (3.0, -4.6);
+    \draw[reply_arrow] (3.0, -5.3) -- node[above, font=\tiny\bfseries] {7. Kết xuất biểu đồ đường doanh số và thẻ KPI} (0, -5.3);
+\end{tikzpicture}
+\caption{Biểu đồ tuần tự quy trình Giám sát Bảng điều khiển chỉ số kinh doanh (UC12)}
+\label{fig:seq_dashboard}
+\end{figure}
+
+\subsubsection{m) Quy trình Tự động Chunking \& Vector hóa Embeddings qua Background Worker (UC13)}
+
+Quy trình bóc tách tệp sách điện tử, phân đoạn đệ quy và lập chỉ mục không gian véc-tơ HNSW qua Background Worker được minh họa trên Hình \ref{fig:seq_worker_chunking}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[lifeline_node] (a) at (0, 0.4) {Admin / Upload};
+    \node[lifeline_node] (w) at (3.0, 0.4) {Background Worker};
+    \node[lifeline_node] (g) at (6.8, 0.4) {Gemini Embeddings};
+    \node[lifeline_node] (d) at (10.6, 0.4) {Postgres pgvector};
+
+    \draw[lifeline_line] (a) -- (0, -6.2);
+    \draw[lifeline_line] (w) -- (3.0, -6.2);
+    \draw[lifeline_line] (g) -- (6.8, -6.2);
+    \draw[lifeline_line] (d) -- (10.6, -6.2);
+
+    \node[activation_box, minimum height=5.2cm] at (3.0, -3.2) {};
+    \node[activation_box, minimum height=1.0cm] at (6.8, -3.0) {};
+    \node[activation_box, minimum height=1.2cm] at (10.6, -4.4) {};
+
+    \draw[msg_arrow] (0, -0.6) -- node[above, font=\tiny\bfseries] {1. Upload E-book (.epub/.pdf)} (3.0, -0.6);
+    
+    \draw[self_call] (3.0, -1.2) -- ++(1.0, 0) -- ++(0, -0.5) -- node[right, font=\tiny\bfseries, align=left] {2. Bóc tách text \&\\Recursive Chunking\\(512 tok, ov=64)} (3.0, -1.7);
+
+    \draw[msg_arrow] (3.0, -2.4) -- node[above, font=\tiny\bfseries] {3. Batch Embeddings (text-embedding-004)} (6.8, -2.4);
+    \draw[reply_arrow] (6.8, -3.2) -- node[above, font=\tiny\bfseries] {4. Trả mảng vector $\vec{e} \in \mathbb{R}^{768}$} (3.0, -3.2);
+
+    \draw[msg_arrow] (3.0, -3.9) -- node[above, font=\tiny\bfseries] {5. Bulk INSERT INTO book\_chunks} (10.6, -3.9);
+    \draw[reply_arrow] (10.6, -4.7) -- node[above, font=\tiny\bfseries] {6. Tự động cập nhật chỉ mục HNSW} (3.0, -4.7);
+    \draw[reply_arrow] (3.0, -5.4) -- node[above, font=\tiny\bfseries] {7. Thông báo hoàn tất lập chỉ mục} (0, -5.4);
+\end{tikzpicture}
+\caption{Biểu đồ tuần tự quy trình Tự động Chunking \& Vectorize Embeddings (UC13)}
+\label{fig:seq_worker_chunking}
+\end{figure}
+
+\subsection{Biểu đồ hoạt động (Activity Diagram)}
+
+Nhằm trực quan hóa các cấu trúc rẽ nhánh điều kiện, các điểm kiểm soát ngoại lệ, luồng dữ liệu song song và cơ chế bảo đảm toàn vẹn hệ thống, đề tài xây dựng đầy đủ các biểu đồ hoạt động (Activity Diagrams) cho các quy trình nghiệp vụ trọng yếu của AuraBook, từ các tiến trình xử lý máy khách, luồng điều phối đa tác tử AI cho đến các tiến trình nền tự động hóa.
+
+\subsubsection{a) Quy trình Đăng nhập hệ thống (UC01)}
+
+Quy trình xác thực đăng nhập kiểm tra băm mật khẩu và phân quyền RBAC được mô tả trên Hình \ref{fig:act_auth}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[activity_start] (start) at (0, 0) {};
+    \node[activity_step, below=0.45cm of start] (input) {Người dùng nhập Email và Mật khẩu};
+    \node[activity_step, below=0.45cm of input] (query) {Truy vấn CSDL lấy bản ghi User theo Email};
+    \node[activity_decision, below=0.5cm of query] (dec1) {Email tồn tại\\trong CSDL?};
+
+    \node[activity_step, right=1.2cm of dec1, fill=red!8, draw=red!80, text width=2.6cm] (err1) {Báo lỗi HTTP 401\\Tài khoản không tồn tại};
+    \node[activity_end, right=0.6cm of err1] (end1) {};
+    \node[activity_end_inner] at (end1.center) {};
+
+    \node[activity_step, below=0.6cm of dec1] (check) {So khớp mật khẩu thô qua \texttt{bcrypt.checkpw()}};
+    \node[activity_decision, below=0.5cm of check] (dec2) {Mật khẩu trùng khớp?};
+
+    \node[activity_step, right=1.2cm of dec2, fill=red!8, draw=red!80, text width=2.6cm] (err2) {Báo lỗi HTTP 401\\Sai mật khẩu};
+    \node[activity_end, right=0.6cm of err2] (end2) {};
+    \node[activity_end_inner] at (end2.center) {};
+
+    \node[activity_step, below=0.6cm of dec2] (gen) {Sinh cặp Token: Access Token \& Refresh Token};
+    \node[activity_step, below=0.45cm of gen] (cookie) {Lưu Refresh Token vào HttpOnly Cookie};
+    \node[activity_step, below=0.45cm of cookie] (redirect) {Cấp quyền RBAC \& Chuyển hướng giao diện};
+    \node[activity_end, below=0.45cm of redirect] (end_main) {};
+    \node[activity_end_inner] at (end_main.center) {};
+
+    \draw[msg_arrow] (start) -- (input);
+    \draw[msg_arrow] (input) -- (query);
+    \draw[msg_arrow] (query) -- (dec1);
+    \draw[msg_arrow] (dec1) -- node[above, font=\tiny\bfseries] {Không} (err1);
+    \draw[msg_arrow] (err1) -- (end1);
+    \draw[msg_arrow] (dec1) -- node[right, font=\tiny\bfseries] {Có} (check);
+    \draw[msg_arrow] (check) -- (dec2);
+    \draw[msg_arrow] (dec2) -- node[above, font=\tiny\bfseries] {Sai} (err2);
+    \draw[msg_arrow] (err2) -- (end2);
+    \draw[msg_arrow] (dec2) -- node[right, font=\tiny\bfseries] {Đúng} (gen);
+    \draw[msg_arrow] (gen) -- (cookie);
+    \draw[msg_arrow] (cookie) -- (redirect);
+    \draw[msg_arrow] (redirect) -- (end_main);
+\end{tikzpicture}
+\caption{Biểu đồ hoạt động quy trình Đăng nhập hệ thống (UC01)}
+\label{fig:act_auth}
+\end{figure}
+
+\subsubsection{b) Quy trình Đọc E-book bảo mật DRM bằng WebAssembly (UC05)}
+
+Quy trình giải mã an toàn trong bộ nhớ cô lập WebAssembly và kết xuất trực tiếp lên HTML5 Canvas được mô tả chi tiết trên Hình \ref{fig:act_drm}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[activity_start] (start) at (0, 0) {};
+    \node[activity_step, below=0.45cm of start] (req) {Độc giả gửi yêu cầu mở đọc cuốn sách E-book};
+    \node[activity_decision, below=0.5cm of req] (dec1) {Đã sở hữu quyền\\đọc trong CSDL?};
+    
+    \node[activity_step, right=1.2cm of dec1, fill=red!8, draw=red!80, text width=2.6cm] (err1) {Báo lỗi HTTP 403\\Yêu cầu mua bản quyền};
+    \node[activity_end, right=0.6cm of err1] (end1) {};
+    \node[activity_end_inner] at (end1.center) {};
+
+    \node[activity_step, below=0.6cm of dec1] (key) {Cấp phát khóa phiên dùng một lần (Ephemeral Key)};
+    \node[activity_step, below=0.45cm of key] (load) {Tải phân đoạn nhị phân mã hóa AES-256-GCM};
+    \node[activity_step, below=0.45cm of load] (wasm_init) {Khởi tạo Runtime WebAssembly trong RAM cô lập};
+    \node[activity_step, below=0.45cm of wasm_init] (wasm_feed) {Nạp khóa phiên \& tệp nhị phân vào bộ nhớ WASM};
+    \node[activity_decision, below=0.5cm of wasm_feed] (dec2) {Thẻ xác thực AEAD\\Tag 128-bit hợp lệ?};
+
+    \node[activity_step, right=1.2cm of dec2, fill=red!8, draw=red!80, text width=2.6cm] (err2) {Hủy phiên giải mã\\Báo lỗi tệp bị giả mạo};
+    \node[activity_end, right=0.6cm of err2] (end2) {};
+    \node[activity_end_inner] at (end2.center) {};
+
+    \node[activity_step, below=0.6cm of dec2] (draw) {WASM giải mã và vẽ trực tiếp nét chữ lên Canvas};
+    \node[activity_step, below=0.45cm of draw] (zero) {Ghi đè byte 0 (Zero-out) xóa sạch RAM};
+    \node[activity_step, below=0.45cm of zero] (view) {Hiển thị trang sách hoàn chỉnh cho Độc giả};
+    \node[activity_end, below=0.45cm of view] (end_main) {};
+    \node[activity_end_inner] at (end_main.center) {};
+
+    \draw[msg_arrow] (start) -- (req);
+    \draw[msg_arrow] (req) -- (dec1);
+    \draw[msg_arrow] (dec1) -- node[above, font=\tiny\bfseries] {Không} (err1);
+    \draw[msg_arrow] (err1) -- (end1);
+    \draw[msg_arrow] (dec1) -- node[right, font=\tiny\bfseries] {Có} (key);
+    \draw[msg_arrow] (key) -- (load);
+    \draw[msg_arrow] (load) -- (wasm_init);
+    \draw[msg_arrow] (wasm_init) -- (wasm_feed);
+    \draw[msg_arrow] (wasm_feed) -- (dec2);
+    \draw[msg_arrow] (dec2) -- node[above, font=\tiny\bfseries] {Sai Tag} (err2);
+    \draw[msg_arrow] (err2) -- (end2);
+    \draw[msg_arrow] (dec2) -- node[right, font=\tiny\bfseries] {Toàn vẹn} (draw);
+    \draw[msg_arrow] (draw) -- (zero);
+    \draw[msg_arrow] (zero) -- (view);
+    \draw[msg_arrow] (view) -- (end_main);
+\end{tikzpicture}
+\caption{Biểu đồ hoạt động quy trình Đọc E-book bảo mật DRM bằng WebAssembly}
+\label{fig:act_drm}
+\end{figure}
+
+\subsubsection{c) Quy trình Tác tử RAG Companion đối thoại ngữ cảnh trang sách (UC06)}
+
+Quy trình nhận câu hỏi từ độc giả, vector hóa truy vấn, truy xuất Top-K phân đoạn ngữ nghĩa qua HNSW và sinh câu trả lời dạng luồng SSE được mô tả trên Hình \ref{fig:act_rag}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[activity_start] (start) at (0, 0) {};
+    \node[activity_step, below=0.45cm of start] (q) {Độc giả nhập câu hỏi trong khung chat trang sách};
+    \node[activity_step, below=0.45cm of q] (embed) {Gọi \texttt{text-embedding-004} → Vector $\vec{q}$ 768 chiều};
+    \node[activity_step, below=0.45cm of embed] (hnsw) {Truy vấn HNSW: Top-3 Chunks ($\mathcal{S}_{\text{Cosine}} \ge 0.70$)};
+    \node[activity_decision, below=0.5cm of hnsw] (dec) {Tìm thấy\\phân đoạn liên quan?};
+
+    \node[activity_step, right=1.2cm of dec, fill=red!8, draw=red!80, text width=2.6cm] (noans) {Trả lời:\\Không tìm thấy nội dung liên quan};
+    \node[activity_end, right=0.6cm of noans] (end_no) {};
+    \node[activity_end_inner] at (end_no.center) {};
+
+    \node[activity_step, below=0.6cm of dec] (prompt) {Xây dựng Prompt: [Context chunks] + [Câu hỏi]};
+    \node[activity_step, below=0.45cm of prompt] (gemini) {Gọi Gemini 2.0 Flash → Sinh câu trả lời dạng SSE stream};
+    \node[activity_step, below=0.45cm of gemini] (display) {Hiển thị luồng chữ + số trang trích dẫn [Trang X]};
+    \node[activity_end, below=0.45cm of display] (end_ok) {};
+    \node[activity_end_inner] at (end_ok.center) {};
+
+    \draw[msg_arrow] (start) -- (q);
+    \draw[msg_arrow] (q) -- (embed);
+    \draw[msg_arrow] (embed) -- (hnsw);
+    \draw[msg_arrow] (hnsw) -- (dec);
+    \draw[msg_arrow] (dec) -- node[above, font=\tiny\bfseries] {Không} (noans);
+    \draw[msg_arrow] (noans) -- (end_no);
+    \draw[msg_arrow] (dec) -- node[right, font=\tiny\bfseries] {Có} (prompt);
+    \draw[msg_arrow] (prompt) -- (gemini);
+    \draw[msg_arrow] (gemini) -- (display);
+    \draw[msg_arrow] (display) -- (end_ok);
+\end{tikzpicture}
+\caption{Biểu đồ hoạt động quy trình Tác tử RAG Companion (UC06)}
+\label{fig:act_rag}
+\end{figure}
+
+\subsubsection{d) Quy trình Tác tử Voice AI nhận dạng giọng nói và thực thi Function Calling (UC07)}
+
+Quy trình chuyển giọng nói thành văn bản (STT), phân tích ý định và kích hoạt hàm CSDL tương ứng được mô tả trên Hình \ref{fig:act_voice}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[activity_start] (start) at (0, 0) {};
+    \node[activity_step, below=0.45cm of start] (mic) {Khách hàng kích hoạt micrô và phát khẩu lệnh};
+    \node[activity_step, below=0.45cm of mic] (stt) {Web Speech API chuyển đổi giọng nói → văn bản (STT)};
+    \node[activity_decision, below=0.5cm of stt] (dec1) {STT nhận dạng\\thành công?};
+
+    \node[activity_step, right=1.2cm of dec1, fill=red!8, draw=red!80, text width=2.6cm] (err1) {Yêu cầu nói lại:\\Không nghe rõ};
+    \node[activity_end, right=0.6cm of err1] (end1) {};
+    \node[activity_end_inner] at (end1.center) {};
+
+    \node[activity_step, below=0.6cm of dec1] (intent) {Gửi văn bản → Gemini Flash phân tích ý định (Intent)};
+    \node[activity_decision, below=0.5cm of intent] (dec2) {Ý định\\hợp lệ?};
+
+    \node[activity_step, right=1.2cm of dec2, fill=red!8, draw=red!80, text width=2.6cm] (err2) {Phản hồi:\\Chức năng không hỗ trợ};
+    \node[activity_end, right=0.6cm of err2] (end2) {};
+    \node[activity_end_inner] at (end2.center) {};
+
+    \node[activity_step, below=0.6cm of dec2] (fn) {Kích hoạt Function Calling: Thực thi hàm CSDL};
+    \node[activity_step, below=0.45cm of fn] (tts) {Tổng hợp kết quả → Web Speech TTS phát lời phản hồi};
+    \node[activity_end, below=0.45cm of tts] (end_ok) {};
+    \node[activity_end_inner] at (end_ok.center) {};
+
+    \draw[msg_arrow] (start) -- (mic);
+    \draw[msg_arrow] (mic) -- (stt);
+    \draw[msg_arrow] (stt) -- (dec1);
+    \draw[msg_arrow] (dec1) -- node[above, font=\tiny\bfseries] {Thất bại} (err1);
+    \draw[msg_arrow] (err1) -- (end1);
+    \draw[msg_arrow] (dec1) -- node[right, font=\tiny\bfseries] {OK} (intent);
+    \draw[msg_arrow] (intent) -- (dec2);
+    \draw[msg_arrow] (dec2) -- node[above, font=\tiny\bfseries] {Không} (err2);
+    \draw[msg_arrow] (err2) -- (end2);
+    \draw[msg_arrow] (dec2) -- node[right, font=\tiny\bfseries] {Có} (fn);
+    \draw[msg_arrow] (fn) -- (tts);
+    \draw[msg_arrow] (tts) -- (end_ok);
+\end{tikzpicture}
+\caption{Biểu đồ hoạt động quy trình Tác tử Voice AI (UC07)}
+\label{fig:act_voice}
+\end{figure}
+
+\subsubsection{e) Quy trình Đặt hàng và Kiểm tra xung đột tồn kho đồng thời (Concurrency Control)}
+
+Quy trình giao dịch kiểm soát khóa bi quan (\texttt{SELECT ... FOR UPDATE}) ngăn chặn việc bán vượt tồn kho (overselling) khi có nhiều giao dịch đặt mua đồng thời được minh họa trên Hình \ref{fig:act_concurrency}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[activity_start] (start) at (0, 0) {};
+    \node[activity_step, below=0.45cm of start] (req) {Khách hàng nhấn nút Xác nhận Đặt hàng};
+    \node[activity_step, below=0.45cm of req] (lock) {Mở Transaction CSDL \& Khóa dòng sách (\texttt{FOR UPDATE})};
+    \node[activity_decision, below=0.5cm of lock] (dec) {Số lượng tồn kho\\$\ge$ Số lượng đặt mua?};
+
+    \node[activity_step, right=1.2cm of dec, fill=red!8, draw=red!80, text width=2.6cm] (rollback) {Rollback Transaction\\Báo lỗi hết hàng};
+    \node[activity_end, right=0.6cm of rollback] (end_err) {};
+    \node[activity_end_inner] at (end_err.center) {};
+
+    \node[activity_step, below=0.6cm of dec] (deduct) {Tạm trừ tồn kho khả dụng, tạo Order \texttt{PENDING} (Hạn 15p)};
+    \node[activity_step, below=0.45cm of deduct] (commit) {Commit Transaction \& Điều hướng cổng Sandbox};
+    \node[activity_end, below=0.45cm of commit] (end_main) {};
+    \node[activity_end_inner] at (end_main.center) {};
+
+    \draw[msg_arrow] (start) -- (req);
+    \draw[msg_arrow] (req) -- (lock);
+    \draw[msg_arrow] (lock) -- (dec);
+    \draw[msg_arrow] (dec) -- node[above, font=\tiny\bfseries] {Không đủ} (rollback);
+    \draw[msg_arrow] (rollback) -- (end_err);
+    \draw[msg_arrow] (dec) -- node[right, font=\tiny\bfseries] {Đủ hàng} (deduct);
+    \draw[msg_arrow] (deduct) -- (commit);
+    \draw[msg_arrow] (commit) -- (end_main);
+\end{tikzpicture}
+\caption{Biểu đồ hoạt động quy trình Kiểm tra xung đột tồn kho khi Đặt hàng}
+\label{fig:act_concurrency}
+\end{figure}
+
+\clearpage
+\subsubsection{f) Quy trình Tìm kiếm sách lai kết hợp thuật toán RRF (UC02)}
+
+Quy trình tìm kiếm song song từ khóa toàn văn (BM25) và không gian véc-tơ HNSW kết hợp thuật toán xếp hạng hợp nhất Reciprocal Rank Fusion (RRF) được mô tả trên Hình \ref{fig:act_hybrid_search}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[activity_start] (start) at (0, 0) {};
+    \node[activity_step, below=0.35cm of start, text width=5.6cm] (q) {Khách hàng nhập chuỗi truy vấn tìm kiếm};
+    
+    % Split Fork Bar
+    \node[rectangle, fill=black, minimum width=6.2cm, minimum height=0.12cm, below=0.5cm of q] (fork) {};
+    
+    % Two parallel branches
+    \node[activity_step, text width=2.8cm] (bm25) at (-1.9, -2.5) {BM25 Full-text:\\Postgres GIN tsvector};
+    \node[activity_step, text width=2.8cm] (vec) at (1.9, -2.5) {Embeddings 768d:\\HNSW Cosine ($<\!=\!>$)};
+    
+    % Join Bar
+    \node[rectangle, fill=black, minimum width=6.2cm, minimum height=0.12cm] (join) at (0, -3.6) {};
+    
+    \node[activity_step, below=0.5cm of join, text width=5.6cm] (rrf) {Hợp nhất điểm số qua thuật toán RRF ($k=60$)};
+    \node[activity_decision, below=0.6cm of rrf] (dec) {Tìm thấy\\ấn phẩm?};
+    
+    \node[activity_step, right=1.2cm of dec, fill=orange!10, draw=orange!80, text width=2.6cm] (empty) {Gợi ý từ khóa tương tự\\và sách thịnh hành};
+    \node[activity_end, right=0.5cm of empty] (end_empty) {};
+    \node[activity_end_inner] at (end_empty.center) {};
+    
+    \node[activity_step, below=0.7cm of dec, text width=5.2cm] (render) {Hiển thị lưới thẻ sách xếp hạng chuẩn xác};
+    \node[activity_end, below=0.4cm of render] (end_ok) {};
+    \node[activity_end_inner] at (end_ok.center) {};
+
+    \draw[msg_arrow] (start) -- (q);
+    \draw[msg_arrow] (q) -- (fork);
+    \draw[msg_arrow] (fork.south -| bm25.north) -- (bm25.north);
+    \draw[msg_arrow] (fork.south -| vec.north) -- (vec.north);
+    \draw[msg_arrow] (bm25.south) -- (join.north -| bm25.south);
+    \draw[msg_arrow] (vec.south) -- (join.north -| vec.south);
+    \draw[msg_arrow] (join) -- (rrf);
+    \draw[msg_arrow] (rrf) -- (dec);
+    \draw[msg_arrow] (dec) -- node[above, font=\tiny\bfseries] {Không} (empty);
+    \draw[msg_arrow] (empty) -- (end_empty);
+    \draw[msg_arrow] (dec) -- node[right, font=\tiny\bfseries] {Có} (render);
+    \draw[msg_arrow] (render) -- (end_ok);
+\end{tikzpicture}
+\caption{Biểu đồ hoạt động quy trình Tìm kiếm sách lai (UC02)}
+\label{fig:act_hybrid_search}
+\end{figure}
+
+\subsubsection{g) Quy trình Gửi đánh giá và Bình luận ấn phẩm đã mua (UC08)}
+
+Quy trình xác minh quyền sở hữu ấn phẩm và kiểm duyệt nội dung đánh giá được thể hiện trên Hình \ref{fig:act_review}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[activity_start] (start) at (0, 0) {};
+    \node[activity_step, below=0.45cm of start] (input) {Độc giả chọn số sao (1-5) và nhập nội dung nhận xét};
+    \node[activity_decision, below=0.5cm of input] (dec_order) {Đã mua ấn phẩm\\(Status='PAID')?};
+    
+    \node[activity_step, right=1.2cm of dec_order, fill=red!8, draw=red!80, text width=2.6cm] (err_buy) {Báo lỗi HTTP 403:\\Chỉ độc giả đã mua mới được đánh giá};
+    \node[activity_end, right=0.6cm of err_buy] (end_buy) {};
+    \node[activity_end_inner] at (end_buy.center) {};
+
+    \node[activity_step, below=0.6cm of dec_order] (filter) {Kiểm duyệt ngôn từ qua bộ lọc nội dung};
+    \node[activity_decision, below=0.5cm of filter] (dec_profanity) {Chứa từ cấm\\thô tục?};
+
+    \node[activity_step, right=1.2cm of dec_profanity, fill=red!8, draw=red!80, text width=2.6cm] (err_filter) {Yêu cầu chỉnh sửa:\\Nội dung vi phạm tiêu chuẩn};
+    \node[activity_end, right=0.6cm of err_filter] (end_filter) {};
+    \node[activity_end_inner] at (end_filter.center) {};
+
+    \node[activity_step, below=0.6cm of dec_profanity] (save) {Lưu bản ghi vào bảng \texttt{reviews}};
+    \node[activity_step, below=0.45cm of save] (recalc) {Tính lại \texttt{average\_rating} và cập nhật bảng \texttt{books}};
+    \node[activity_step, below=0.45cm of recalc] (show) {Hiển thị bình luận mới tức thời trên giao diện};
+    \node[activity_end, below=0.45cm of show] (end_ok) {};
+    \node[activity_end_inner] at (end_ok.center) {};
+
+    \draw[msg_arrow] (start) -- (input);
+    \draw[msg_arrow] (input) -- (dec_order);
+    \draw[msg_arrow] (dec_order) -- node[above, font=\tiny\bfseries] {Chưa mua} (err_buy);
+    \draw[msg_arrow] (err_buy) -- (end_buy);
+    \draw[msg_arrow] (dec_order) -- node[right, font=\tiny\bfseries] {Đã mua} (filter);
+    \draw[msg_arrow] (filter) -- (dec_profanity);
+    \draw[msg_arrow] (dec_profanity) -- node[above, font=\tiny\bfseries] {Có} (err_filter);
+    \draw[msg_arrow] (err_filter) -- (end_filter);
+    \draw[msg_arrow] (dec_profanity) -- node[right, font=\tiny\bfseries] {Hợp lệ} (save);
+    \draw[msg_arrow] (save) -- (recalc);
+    \draw[msg_arrow] (recalc) -- (show);
+    \draw[msg_arrow] (show) -- (end_ok);
+\end{tikzpicture}
+\caption{Biểu đồ hoạt động quy trình Gửi đánh giá và bình luận (UC08)}
+\label{fig:act_review}
+\end{figure}
+
+\subsubsection{h) Quy trình Bóc tách thông tin sách từ ảnh bìa qua Catalog Vision (UC10)}
+
+Quy trình nhận diện quang học và bóc tách siêu dữ liệu xuất bản bằng mô hình đa phương thức Gemini Vision được mô tả trên Hình \ref{fig:act_catalog_vision}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[activity_start] (start) at (0, 0) {};
+    \node[activity_step, below=0.45cm of start] (upload) {Quản trị viên tải lên tệp ảnh bìa sách};
+    \node[activity_decision, below=0.5cm of upload] (dec_size) {Định dạng ảnh hợp lệ\\và dung lượng $\le 5$MB?};
+    
+    \node[activity_step, right=1.2cm of dec_size, fill=red!8, draw=red!80, text width=2.6cm] (err_size) {Báo lỗi tệp ảnh:\\Không đúng định dạng};
+    \node[activity_end, right=0.6cm of err_size] (end_size) {};
+    \node[activity_end_inner] at (end_size.center) {};
+
+    \node[activity_step, below=0.6cm of dec_size] (base64) {Chuẩn hóa kích thước ảnh và mã hóa Base64};
+    \node[activity_step, below=0.45cm of base64] (gemini) {Gửi Payload sang Gemini 2.0 Flash Vision kèm JSON Schema};
+    \node[activity_decision, below=0.5cm of gemini] (dec_ocr) {Bóc tách thành công\\đầy đủ siêu dữ liệu?};
+
+    \node[activity_step, right=1.2cm of dec_ocr, fill=red!8, draw=red!80, text width=2.6cm] (err_ocr) {Thông báo ảnh mờ:\\Yêu cầu chụp lại rõ nét};
+    \node[activity_end, right=0.6cm of err_ocr] (end_ocr) {};
+    \node[activity_end_inner] at (end_ocr.center) {};
+
+    \node[activity_step, below=0.6cm of dec_ocr] (autofill) {Tự động điền (Autofill) Tên sách, Tác giả, ISBN, Năm xuất bản};
+    \node[activity_step, below=0.45cm of autofill] (confirm) {Admin xác nhận và lưu vào CSDL};
+    \node[activity_end, below=0.45cm of confirm] (end_ok) {};
+    \node[activity_end_inner] at (end_ok.center) {};
+
+    \draw[msg_arrow] (start) -- (upload);
+    \draw[msg_arrow] (upload) -- (dec_size);
+    \draw[msg_arrow] (dec_size) -- node[above, font=\tiny\bfseries] {Sai} (err_size);
+    \draw[msg_arrow] (err_size) -- (end_size);
+    \draw[msg_arrow] (dec_size) -- node[right, font=\tiny\bfseries] {Đúng} (base64);
+    \draw[msg_arrow] (base64) -- (gemini);
+    \draw[msg_arrow] (gemini) -- (dec_ocr);
+    \draw[msg_arrow] (dec_ocr) -- node[above, font=\tiny\bfseries] {Thất bại} (err_ocr);
+    \draw[msg_arrow] (err_ocr) -- (end_ocr);
+    \draw[msg_arrow] (dec_ocr) -- node[right, font=\tiny\bfseries] {Thành công} (autofill);
+    \draw[msg_arrow] (autofill) -- (confirm);
+    \draw[msg_arrow] (confirm) -- (end_ok);
+\end{tikzpicture}
+\caption{Biểu đồ hoạt động quy trình Bóc tách ảnh bìa Catalog Vision (UC10)}
+\label{fig:act_catalog_vision}
+\end{figure}
+
+\subsubsection{i) Quy trình Tự động Chunking và Vector hóa Embeddings (UC13)}
+
+Quy trình tiến trình nền bóc tách văn bản đệ quy, tính vector embeddings và lập chỉ mục HNSW được mô tả trên Hình \ref{fig:act_chunking}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[activity_start] (start) at (0, 0) {};
+    \node[activity_step, below=0.45cm of start] (receive) {Background Worker nhận sự kiện tải lên tệp E-book};
+    \node[activity_step, below=0.45cm of receive] (extract) {Bóc tách văn bản thô từ tệp EPUB/PDF và làm sạch Unicode};
+    \node[activity_step, below=0.45cm of extract] (chunk) {Phân đoạn đệ quy ($512\text{ tokens}, \text{overlap}=64$)};
+    \node[activity_step, below=0.45cm of chunk] (batch) {Gom nhóm lô phân đoạn (Batch 16 chunks)};
+    \node[activity_step, below=0.45cm of batch] (embed) {Gọi \texttt{text-embedding-004} sinh véc-tơ $\vec{e} \in \mathbb{R}^{768}$};
+    \node[activity_decision, below=0.5cm of embed] (dec_api) {Gọi API\\thành công?};
+
+    \node[activity_step, right=1.2cm of dec_api, fill=red!8, draw=red!80, text width=2.6cm] (retry) {Retry Exponential Backoff\\(Thử lại tối đa 3 lần)};
+    \node[activity_end, right=0.6cm of retry] (end_err) {};
+    \node[activity_end_inner] at (end_err.center) {};
+
+    \node[activity_step, below=0.6cm of dec_api] (insert) {Bulk INSERT vào bảng \texttt{book\_chunks}};
+    \node[activity_step, below=0.45cm of insert] (hnsw) {Tự động cập nhật đồ thị chỉ mục HNSW};
+    \node[activity_step, below=0.45cm of hnsw] (notify) {Bắn WebSocket thông báo Admin lập chỉ mục hoàn tất};
+    \node[activity_end, below=0.45cm of notify] (end_ok) {};
+    \node[activity_end_inner] at (end_ok.center) {};
+
+    \draw[msg_arrow] (start) -- (receive);
+    \draw[msg_arrow] (receive) -- (extract);
+    \draw[msg_arrow] (extract) -- (chunk);
+    \draw[msg_arrow] (chunk) -- (batch);
+    \draw[msg_arrow] (batch) -- (embed);
+    \draw[msg_arrow] (embed) -- (dec_api);
+    \draw[msg_arrow] (dec_api) -- node[above, font=\tiny\bfseries] {Lỗi} (retry);
+    \draw[msg_arrow] (retry) -- (end_err);
+    \draw[msg_arrow] (dec_api) -- node[right, font=\tiny\bfseries] {OK} (insert);
+    \draw[msg_arrow] (insert) -- (hnsw);
+    \draw[msg_arrow] (hnsw) -- (notify);
+    \draw[msg_arrow] (notify) -- (end_ok);
+\end{tikzpicture}
+\caption{Biểu đồ hoạt động quy trình Phân đoạn và Vector hóa Embeddings (UC13)}
+\label{fig:act_chunking}
+\end{figure}
+
+\subsection{Biểu đồ máy trạng thái (State Machine Diagram)}
+
+Biểu đồ máy trạng thái (State Machine Diagram) mô tả các chu trình biến đổi trạng thái động, các điều kiện biên và sự kiện kích hoạt (triggers) đối với các thực thể miền dữ liệu cốt lõi cũng như các tiến trình tương tác phức hợp trong hệ thống AuraBook. Nhằm đặc tả toàn diện kiến trúc vận hành, hệ thống mô hình hóa 4 máy trạng thái then chốt đại diện cho các trụ cột nghiệp vụ: Quản lý vòng đời đơn hàng thương mại điện tử, Điều phối bản quyền số và phiên đọc E-book bảo mật DRM Canvas, Pipeline xử lý nền bóc tách vector hóa ấn phẩm (UC13), và Phiên đàm thoại thời gian thực của Tác tử thoại Voice AI (UC07).
+
+\subsubsection{a) Vòng đời Đơn hàng (Order State Machine)}
+
+Vòng đời chuyển dịch trạng thái của thực thể đơn hàng (\texttt{Order}) được mô hình hóa chặt chẽ theo Hình \ref{fig:state_order}. Quy trình xử lý đảm bảo tính toàn vẹn dữ liệu giao dịch ACID và giải quyết bài toán xung đột tồn kho:
+\begin{itemize}
+    \item \textbf{Trạng thái \texttt{PENDING} (Chờ thanh toán):} Khởi tạo ngay khi người dùng nhấn đặt hàng. Hệ thống thực thi khóa dòng bi quan (\texttt{SELECT ... FOR UPDATE}) trên bảng \texttt{books}, tạm giữ số lượng tồn kho tương ứng và thiết lập bộ đếm thời gian hết hạn trong 15 phút. Nếu người dùng chủ động hủy hoặc quá hạn 15 phút mà chưa nhận được tín hiệu thanh toán, đơn hàng tự động chuyển sang \texttt{CANCELLED} và giải phóng tồn kho.
+    \item \textbf{Trạng thái \texttt{PAID} (Đã thanh toán):} Được kích hoạt khi cổng thanh toán Sandbox gửi Webhook IPN hợp lệ xác nhận giao dịch thành công. CSDL chính thức trừ kho vĩnh viễn và ghi vết giao dịch.
+    \item \textbf{Nhánh xuất bản vật lý $\rightarrow$ \texttt{SHIPPING} $\rightarrow$ \texttt{COMPLETED}:} Đối với đơn hàng chứa ấn phẩm sách giấy, bộ phận kho tiến hành đóng gói, bàn giao đơn vị vận chuyển và chuyển trạng thái sang \texttt{SHIPPING}. Khi khách hàng nhận ấn phẩm và ký nhận thành công, đơn hàng được cập nhật thành \texttt{COMPLETED}.
+    \item \textbf{Nhánh kích hoạt tự động đối với E-book số:} Nếu đơn hàng chỉ chứa các ấn phẩm thuần sách điện tử (E-book), ngay tại thời điểm chuyển dịch sang \texttt{PAID}, hệ thống lập tức kích hoạt bản quyền số trong bảng \texttt{ebook\_accesses} và tự động chuyển thẳng sang \texttt{COMPLETED}, cho phép độc giả mở đọc tức thì mà không cần chờ điều phối vận chuyển.
+    \item \textbf{Trạng thái \texttt{CANCELLED} (Đã hủy đơn):} Ngoài việc hủy tự động do quá hạn, đơn hàng ở trạng thái \texttt{PAID} vẫn có thể chuyển sang \texttt{CANCELLED} nếu khách hàng thực hiện cuộc gọi yêu cầu hủy đơn thông qua Tác tử thoại Voice AI (trước khi hàng xuất kho). Thao tác này kích hoạt hoàn trả tiền qua cổng thanh toán và hoàn lại tồn kho ấn phẩm.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[activity_start] (init) at (-6.2, 0) {};
+    \node[state_box] (pending) at (-4.0, 0) {PENDING\\{\normalfont\tiny Chờ thanh toán (15p)}};
+    \node[state_box] (paid) at (0.5, 0) {PAID\\{\normalfont\tiny Đã quyết toán IPN}};
+    \node[state_box] (shipping) at (5.0, 0) {SHIPPING\\{\normalfont\tiny Đang vận chuyển}};
+    
+    \node[state_box, fill=brandred!10, draw=brandred!80] (cancelled) at (-4.0, -2.8) {CANCELLED\\{\normalfont\tiny Đã hủy \& hoàn tồn}};
+    \node[state_box, fill=brandteal!10, draw=brandteal!80] (completed) at (5.0, -2.8) {COMPLETED\\{\normalfont\tiny Hoàn tất đơn hàng}};
+
+    \node[activity_end] (end_cancel) at (-6.2, -2.8) {};
+    \node[activity_end_inner] at (end_cancel.center) {};
+    \node[activity_end] (end_done) at (7.0, -2.8) {};
+    \node[activity_end_inner] at (end_done.center) {};
+
+    % Transitions
+    \draw[msg_arrow] (init) -- (pending);
+    \draw[msg_arrow] (pending) -- node[above=1pt, font=\tiny\bfseries] {Thanh toán OK} (paid);
+    \draw[msg_arrow] (paid) -- node[above=1pt, font=\tiny\bfseries] {Xuất kho vật lý} (shipping);
+    \draw[msg_arrow] (shipping) -- node[right=1pt, font=\tiny\bfseries] {Khách nhận hàng} (completed);
+    \draw[msg_arrow] (completed) -- (end_done);
+
+    \draw[msg_arrow] (pending) -- node[left=1pt, font=\tiny\bfseries, align=right] {Quá hạn 15p\\hoặc hủy} (cancelled);
+    \draw[msg_arrow] (paid.south) to[out=225, in=45] node[pos=0.5, above, sloped, font=\tiny\bfseries] {Voice AI hủy đơn} (cancelled.north east);
+    \draw[msg_arrow] (paid.south) to[out=315, in=135] node[pos=0.5, above, sloped, font=\tiny\bfseries] {Đơn thuần E-book} (completed.north west);
+    \draw[msg_arrow] (cancelled) -- (end_cancel);
+\end{tikzpicture}
+\caption{Biểu đồ trạng thái Vòng đời Đơn hàng (Order State Machine)}
+\label{fig:state_order}
+\end{figure}
+
+\subsubsection{b) Vòng đời Cấp quyền và Phiên Đọc E-book Bảo mật DRM (E-book DRM Access \& Reading Session State Machine)}
+
+Nhằm bảo vệ tuyệt đối tài sản trí tuệ của tác giả và nhà xuất bản, hệ thống AuraBook áp dụng công nghệ DRM đa tầng kết hợp mã hóa AES-256-GCM với môi trường giải mã cô lập WebAssembly Canvas. Chu trình quản lý quyền truy cập số và điều phối phiên đọc trực tuyến được mô hình hóa theo Hình \ref{fig:state_drm}:
+\begin{itemize}
+    \item \textbf{\texttt{LOCKED} (Khóa bản quyền):} Trạng thái mặc định đối với mọi người dùng khi chưa thanh toán ấn phẩm. Thuộc tính truy cập \texttt{is\_accessible = false} ngăn chặn triệt để hành vi tải tệp trực tiếp.
+    \item \textbf{\texttt{GRANTED} (Đã cấp bản quyền số):} Khi đơn hàng được quyết toán thành công, hệ thống sinh bản ghi hợp lệ trong bảng \texttt{ebook\_accesses}, kích hoạt quyền truy cập vĩnh viễn và tạo chữ ký xác thực số (HMAC).
+    \item \textbf{\texttt{WASM\_LOADING} (Khởi tạo môi trường bảo mật):} Khi độc giả nhấn ``Đọc sách'', trình duyệt Client tải về gói tệp phân mảnh đã mã hóa từ máy chủ lưu trữ đối tượng và nạp module runtime WebAssembly biên dịch từ Rust.
+    \item \textbf{\texttt{READING\_ACTIVE} (Đọc tương tác an toàn):} Module WASM tiến hành giải mã dữ liệu từng trang trực tiếp trong bộ nhớ tuyến tính cô lập (Linear Memory) và kết xuất thẳng lên phần tử HTML5 Canvas. Trình duyệt không lưu trữ văn bản thô trên DOM Tree, vô hiệu hóa hoàn toàn hành vi bôi đen sao chép (Copy-Paste) hoặc trích xuất DOM. Độc giả thực hiện tương tác lật trang, tra cứu ngữ cảnh cùng Tác tử RAG Companion, đồng thời tiến trình ngầm thực hiện đồng bộ vị trí đọc vào bảng \texttt{reading\_progress}.
+    \item \textbf{\texttt{SECURITY\_ALERT} (Cảnh báo vi phạm bảo mật):} Kích hoạt ngay khi hệ thống phát hiện các hành vi xâm phạm bản quyền bao gồm: mở Developer Tools (F12/Inspect Element), kích hoạt phần mềm chụp màn hình (PrintScreen/Snipping Tool) hoặc tiêm mã can thiệp bộ nhớ. Hệ thống lập tức kích hoạt quy trình xóa sạch bộ nhớ (Zero-out memory), khóa màn hình Canvas và ghi nhận sự kiện cảnh báo vào bảng \texttt{audit\_logs}.
+    \item \textbf{\texttt{PURGED\_CLOSED} (Đóng phiên an toàn):} Khi độc giả chủ động thoát giao diện đọc hoặc khi hệ thống cưỡng bức kết thúc sau vi phạm bảo mật, toàn bộ vùng nhớ giải mã của WASM được giải phóng hoàn toàn (Zeroized Memory Buffer) để ngăn chặn tấn công trích xuất RAM (Memory Dump).
+    \item \textbf{\texttt{REVOKED} (Thu hồi quyền truy cập):} Xảy ra khi giao dịch mua sách bị hoàn trả (Refund), đơn hàng bị hủy bỏ hoặc tài khoản bị khóa do tái phạm vi phạm bản quyền số có hệ thống. Bản ghi trong \texttt{ebook\_accesses} bị vô hiệu hóa vĩnh viễn.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[activity_start] (init_drm) at (-4.2, 1.2) {};
+    \node[state_box] (locked) at (-4.2, 0) {LOCKED\\{\normalfont\tiny Chưa sở hữu bản quyền}};
+    \node[state_box] (granted) at (-4.2, -2.6) {GRANTED\\{\normalfont\tiny Cấp quyền vĩnh viễn}};
+    \node[state_box, fill=brandred!10, draw=brandred!80] (revoked) at (-4.2, -5.2) {REVOKED\\{\normalfont\tiny Thu hồi quyền số}};
+
+    \node[state_box] (wasm) at (0.8, -2.6) {WASM\_LOADING\\{\normalfont\tiny Tải gói mã hóa \& runtime}};
+    \node[state_box] (reading) at (0.8, -5.2) {READING\_ACTIVE\\{\normalfont\tiny Giải mã Canvas \& RAG}};
+
+    \node[state_box, fill=brandorange!15, draw=brandorange!90] (breach) at (5.5, -5.2) {SECURITY\_ALERT\\{\normalfont\tiny Phát hiện vi phạm DRM}};
+    \node[state_box, fill=brandteal!10, draw=brandteal!80] (closed) at (3.15, -7.8) {PURGED\_CLOSED\\{\normalfont\tiny Xóa RAM \& Lưu vị trí}};
+
+    \node[activity_end] (end_rev) at (-6.2, -5.2) {};
+    \node[activity_end_inner] at (end_rev.center) {};
+    \node[activity_end] (end_norm) at (3.15, -9.2) {};
+    \node[activity_end_inner] at (end_norm.center) {};
+
+    % Transitions
+    \draw[msg_arrow] (init_drm) -- (locked);
+    \draw[msg_arrow] (locked) -- node[left=1pt, font=\tiny\bfseries] {Thanh toán đơn} (granted);
+    \draw[msg_arrow] (granted) -- node[left=1pt, font=\tiny\bfseries] {Hoàn tiền / Hủy} (revoked);
+    \draw[msg_arrow] (revoked) -- (end_rev);
+
+    \draw[msg_arrow] (granted) -- node[midway, above=1pt, font=\tiny\bfseries] {Độc giả mở đọc} (wasm);
+    \draw[msg_arrow] (wasm) -- node[left=1pt, font=\tiny\bfseries] {Giải mã AES OK} (reading);
+    \draw[msg_arrow] (reading.south) to[out=270, in=180] node[left=1pt, font=\tiny\bfseries] {Thoát bình thường} (closed.west);
+
+    \draw[msg_arrow] (reading) -- node[midway, above=1pt, font=\tiny\bfseries, align=center] {DevTools /\\Chụp màn hình} (breach);
+    \draw[msg_arrow] (breach.south) to[out=270, in=0] node[right=1pt, font=\tiny\bfseries] {Zero-out \& Khóa phiên} (closed.east);
+    \draw[msg_arrow] (closed) -- (end_norm);
+\end{tikzpicture}
+\caption{Biểu đồ trạng thái Vòng đời Cấp quyền và Phiên đọc E-book Bảo mật DRM}
+\label{fig:state_drm}
+\end{figure}
+
+\subsubsection{c) Vòng đời Xử lý Tệp Sách và Lập chỉ mục Vector RAG (E-book Ingestion \& Vector Indexing State Machine)}
+
+Tiến trình tiếp nhận tệp ấn phẩm điện tử từ lúc Quản trị viên tải lên cho đến khi hoàn tất phân rã đoạn (Chunking) và xây dựng đồ thị tìm kiếm vector HNSW được điều phối tự động bởi Background Worker theo Hình \ref{fig:state_indexing}:
+\begin{itemize}
+    \item \textbf{\texttt{DRAFT\_UPLOADED} (Tiếp nhận tệp tải lên):} Tệp gốc PDF/EPUB được tải lên kho lưu trữ đối tượng an toàn MinIO/S3. Sách được khởi tạo với trạng thái sơ bộ và gửi một Message Job vào hàng đợi nền (Task Queue).
+    \item \textbf{\texttt{PARSING\_EXTRACT} (Bóc tách văn bản \& OCR):} Background Worker tiếp nhận Job, tiến hành trích xuất văn bản thô, nhận diện cấu trúc tiêu đề, chương mục và kích hoạt mô hình OCR đối với những trang sách scan chất lượng thấp.
+    \item \textbf{\texttt{CHUNKING} (Phân đoạn văn bản đệ quy):} Áp dụng giải thuật Recursive Token Splitting để chia nhỏ văn bản thành các phân đoạn 512 tokens kèm tỷ lệ gối đầu (overlap) 10\% (khoảng 50 tokens) nhằm duy trì ngữ cảnh toàn vẹn ở ranh giới giữa hai phân đoạn liên tiếp.
+    \item \textbf{\texttt{EMBEDDING\_BATCH} (Vector hóa Embeddings):} Các phân đoạn được đóng gói thành từng batch (32 phân đoạn/lần) gửi tới API Google \texttt{text-embedding-004} để sinh vector đặc trưng ngữ nghĩa 768 chiều.
+    \item \textbf{\texttt{RETRY\_WAIT} (Xử lý lỗi tạm thời):} Trường hợp gặp sự cố nghẽn mạng hoặc vượt ngưỡng giới hạn tần suất yêu cầu (HTTP 429 Rate Limit), hệ thống chuyển sang trạng thái chờ với thuật toán Exponential Backoff và thử lại tối đa 3 lần.
+    \item \textbf{\texttt{HNSW\_INDEXING} (Lập chỉ mục đồ thị):} Khi có đầy đủ các vector nhúng, hệ thống thực thi lệnh Bulk Insert lưu trữ đồng loạt vào bảng \texttt{book\_chunks}, đồng thời kích hoạt tiện ích mở rộng \texttt{pgvector} trên PostgreSQL để xây dựng và cập nhật đồ thị chỉ mục HNSW ($M=16, ef\_construction=64$).
+    \item \textbf{\texttt{INDEXED\_READY} (Xuất bản ấn phẩm):} Toàn bộ quy trình hoàn tất thành công. Hệ thống cập nhật cờ hoạt động của sách, phát tín hiệu WebSocket thông báo hoàn tất tới Dashboard của Admin và chính thức mở quyền phục vụ tìm kiếm ngữ nghĩa (Hybrid Search) cũng như Tác tử RAG Companion.
+    \item \textbf{\texttt{PROCESSING\_FAILED} (Lỗi xử lý):} Xảy ra khi tệp tải lên bị hỏng mã hóa không thể bóc tách, hoặc vượt quá 3 lần thử lại API tạo vector. Hệ thống ghi vết chi tiết vào nhật ký kiểm toán và thông báo cảnh báo lỗi trên giao diện quản trị.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[activity_start] (init_rag) at (-2.5, 1.2) {};
+    \node[state_box] (upload) at (-2.5, 0) {DRAFT\_UPLOADED\\{\normalfont\tiny Tiếp nhận PDF/EPUB}};
+    \node[state_box] (extract) at (-2.5, -2.2) {PARSING\_EXTRACT\\{\normalfont\tiny Bóc tách văn bản \& OCR}};
+    \node[state_box] (chunk) at (-2.5, -4.4) {CHUNKING\\{\normalfont\tiny Recursive Split 512t}};
+    \node[state_box] (embed) at (-2.5, -6.6) {EMBEDDING\_BATCH\\{\normalfont\tiny Gọi API Gemini 768d}};
+    \node[state_box] (indexing) at (-2.5, -8.8) {HNSW\_INDEXING\\{\normalfont\tiny Bulk Insert \& Index}};
+    \node[state_box, fill=brandteal!10, draw=brandteal!80] (ready) at (-2.5, -11.0) {INDEXED\_READY\\{\normalfont\tiny Sẵn sàng tra cứu RAG}};
+
+    \node[state_box, fill=brandred!10, draw=brandred!80] (failed) at (3.5, -3.3) {PROCESSING\_FAILED\\{\normalfont\tiny Ghi log \& Báo Admin}};
+    \node[state_box, fill=brandorange!15, draw=brandorange!90] (retry) at (3.5, -6.6) {RETRY\_WAIT\\{\normalfont\tiny Exponential Backoff}};
+
+    \node[activity_end] (end_rag) at (-2.5, -12.3) {};
+    \node[activity_end_inner] at (end_rag.center) {};
+    \node[activity_end] (end_fail) at (3.5, -1.8) {};
+    \node[activity_end_inner] at (end_fail.center) {};
+
+    % Main Pipeline
+    \draw[msg_arrow] (init_rag) -- (upload);
+    \draw[msg_arrow] (upload) -- node[left=1pt, font=\tiny\bfseries] {Worker nhận} (extract);
+    \draw[msg_arrow] (extract) -- node[left=1pt, font=\tiny\bfseries] {Bóc tách OK} (chunk);
+    \draw[msg_arrow] (chunk) -- node[left=1pt, font=\tiny\bfseries] {512t/chunk} (embed);
+    \draw[msg_arrow] (embed) -- node[left=1pt, font=\tiny\bfseries] {Vector 768d OK} (indexing);
+    \draw[msg_arrow] (indexing) -- node[left=1pt, font=\tiny\bfseries] {Tạo đồ thị HNSW} (ready);
+    \draw[msg_arrow] (ready) -- (end_rag);
+
+    % Error & Retry Paths
+    \draw[msg_arrow] (extract.east) to[out=0, in=180] node[above=1pt, sloped, font=\tiny\bfseries] {Tệp hỏng/Lỗi format} (failed.west);
+    
+    \draw[msg_arrow] (embed.north east) to[out=25, in=155] node[above=1pt, font=\tiny\bfseries] {Lỗi 429/Timeout} (retry.north west);
+    \draw[msg_arrow] (retry.south west) to[out=205, in=335] node[below=1pt, font=\tiny\bfseries] {Thử lại $\le$ 3 lần} (embed.south east);
+
+    \draw[msg_arrow] (retry) -- node[right=1pt, font=\tiny\bfseries] {Quá 3 lần thử} (failed);
+    \draw[msg_arrow] (failed) -- (end_fail);
+\end{tikzpicture}
+\caption{Biểu đồ trạng thái Vòng đời Xử lý Tệp Sách và Lập chỉ mục Vector RAG}
+\label{fig:state_indexing}
+\end{figure}
+
+\subsubsection{d) Vòng đời Phiên Tương tác Tác tử Thoại Voice AI (Voice AI Session State Machine)}
+
+Tác tử thoại Voice AI hỗ trợ khách hàng điều khiển và mua sắm thông qua giọng nói theo thời gian thực (Real-time Full-duplex Streaming). Vòng đời tương tác từ lúc bắt đầu đàm thoại đến khi hoàn thành các lệnh nghiệp vụ được mô hình hóa theo Hình \ref{fig:state_voice}:
+\begin{itemize}
+    \item \textbf{\texttt{STANDBY} (Chế độ chờ):} Tác tử hiển thị dưới dạng nút thoại nổi (Floating Voice Telephony Modal) ở góc màn hình, sẵn sàng tiếp nhận tương tác từ khách hàng.
+    \item \textbf{\texttt{CONNECTING} (Khởi tạo kết nối thời gian thực):} Khi khách hàng nhấn vào biểu tượng micro, hệ thống yêu cầu cấp quyền Microphone từ trình duyệt và thiết lập kênh truyền WebSocket/WebRTC full-duplex tới máy chủ Backend Voice Agent.
+    \item \textbf{\texttt{LISTENING\_VAD} (Lắng nghe \& Phát hiện giọng nói):} Client liên tục truyền các gói tin âm thanh (PCM Chunk) qua WebSocket. Bộ phát hiện giọng nói Voice Activity Detection (VAD) hoạt động theo thời gian thực để phân tách tiếng nói của khách hàng khỏi tiếng ồn nền.
+    \item \textbf{\texttt{TRANSCRIBING} (Nhận diện giọng nói):} Khi thuật toán VAD phát hiện khoảng lặng kéo dài quá 600ms (dấu hiệu khách hàng dứt câu nói), luồng âm thanh được chuyển tức thì tới mô hình Speech-to-Text Whisper để phân tích và chuyển đổi thành câu truy vấn văn bản.
+    \item \textbf{\texttt{INTENT\_EXEC} (Suy luận ý định \& Function Calling):} Mô hình ngôn ngữ lớn (LLM) phân tích ý định của khách hàng. Nếu câu hỏi liên quan đến dữ liệu hệ thống (tìm kiếm sách, tra cứu tình trạng đơn hàng, yêu cầu hủy đơn hàng), LLM phát tín hiệu Function Calling gọi các API Backend nội bộ, xác thực quyền hạn và tổng hợp câu trả lời ngắn gọn.
+    \item \textbf{\texttt{TTS\_SPEAKING} (Tổng hợp \& Phát âm thanh phản hồi):} Câu trả lời được đưa qua mô hình Text-to-Speech (TTS) để tổng hợp thành luồng âm thanh tự nhiên và stream ngược về trình duyệt để phát qua loa cho khách hàng. Ngay sau khi phát xong stream âm thanh, hệ thống lập tức tự động quay lại trạng thái \texttt{LISTENING\_VAD} để tiếp tục lắng nghe phản hồi của người dùng trong cuộc hội thoại đa lượt (Multi-turn Conversation).
+    \item \textbf{\texttt{SESSION\_CLOSED} (Kết thúc phiên thoại):} Phiên thoại được đóng an toàn khi khách hàng nhấn nút gác máy, khi không phát hiện âm thanh trong 30 giây (Timeout), hoặc khi khách hàng nói khẩu lệnh kết thúc (ví dụ: ``Tạm biệt'', ``Kết thúc''). Hệ thống ngắt kết nối WebSocket và ghi vết toàn bộ tiến trình vào bảng \texttt{audit\_logs}.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[activity_start] (init_voice) at (-4.8, 1.2) {};
+    \node[state_box] (standby) at (-4.8, 0) {STANDBY\\{\normalfont\tiny Chờ kích hoạt thoại}};
+    \node[state_box] (connect) at (0, 0) {CONNECTING\\{\normalfont\tiny Bắt tay WebRTC/WS}};
+
+    \node[state_box] (listening) at (0, -2.6) {LISTENING\_VAD\\{\normalfont\tiny Thu âm \& Lọc tạp âm}};
+    \node[state_box] (transcribing) at (4.8, -2.6) {TRANSCRIBING\\{\normalfont\tiny Nhận diện Whisper STT}};
+    \node[state_box] (intent) at (4.8, -5.2) {INTENT\_EXEC\\{\normalfont\tiny Suy luận \& Function Call}};
+    \node[state_box] (tts) at (0, -5.2) {TTS\_SPEAKING\\{\normalfont\tiny Tổng hợp âm thanh Stream}};
+
+    \node[state_box, fill=brandteal!10, draw=brandteal!80] (closed_v) at (2.4, -7.8) {SESSION\_CLOSED\\{\normalfont\tiny Đóng phiên \& Audit Log}};
+
+    \node[activity_end] (end_v) at (2.4, -9.1) {};
+    \node[activity_end_inner] at (end_v.center) {};
+
+    % Entry
+    \draw[msg_arrow] (init_voice) -- (standby);
+    \draw[msg_arrow] (standby) -- node[midway, above=1pt, font=\tiny\bfseries] {Khách nhấn gọi} (connect);
+    \draw[msg_arrow] (connect) -- node[left=1pt, font=\tiny\bfseries] {Cấp quyền Mic OK} (listening);
+
+    % Conversational Cycle
+    \draw[msg_arrow] (listening) -- node[midway, above=1pt, font=\tiny\bfseries] {Dứt câu (VAD)} (transcribing);
+    \draw[msg_arrow] (transcribing) -- node[right=1pt, font=\tiny\bfseries] {Ra text truy vấn} (intent);
+    \draw[msg_arrow] (intent) -- node[midway, above=1pt, font=\tiny\bfseries] {Gọi API / Sinh text} (tts);
+    \draw[msg_arrow] (tts) -- node[left=1pt, font=\tiny\bfseries] {Phát xong âm thanh} (listening);
+
+    % Exits
+    \draw[msg_arrow] (listening.west) to[out=190, in=170] node[left=1pt, font=\tiny\bfseries, align=right] {Gác máy /\\Timeout 30s} (closed_v.west);
+    \draw[msg_arrow] (intent.east) to[out=350, in=10] node[right=1pt, font=\tiny\bfseries] {Khách chào tạm biệt} (closed_v.east);
+    \draw[msg_arrow] (closed_v) -- (end_v);
+\end{tikzpicture}
+\caption{Biểu đồ trạng thái Vòng đời Phiên Tương tác Tác tử Thoại Voice AI}
+\label{fig:state_voice}
+\end{figure}
+
+\subsection{Biểu đồ lớp (Class Diagram)}
+
+Cấu trúc lớp miền dữ liệu của hệ thống AuraBook được thiết lập chặt chẽ theo hướng đối tượng, bao quát toàn diện đầy đủ 13 thực thể tương ứng với Từ điển dữ liệu hệ thống (Hình \ref{fig:class_diagram}).
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    x=1cm, y=1cm,
+    class_box/.style={rectangle, draw=black!80, line width=0.75pt, align=left, font=\tiny, fill=white, inner sep=3.5pt, text width=2.9cm}
+]
+    % Column centers: x = -5.7, -1.9, 1.9, 5.7
+    % Row 1 (y = 4.8)
+    \node[class_box] (cat) at (-5.7, 4.8) {
+        \textbf{Category}\\
+        \rule{\linewidth}{0.3pt}\\
+        - id: Integer\\
+        - name: String\\
+        - slug: String\\
+        \rule{\linewidth}{0.3pt}\\
+        + get\_books(): List$<$Book$>$
+    };
+
+    \node[class_box] (book) at (-1.9, 4.8) {
+        \textbf{Book}\\
+        \rule{\linewidth}{0.3pt}\\
+        - id: UUID\\
+        - category\_id: Integer\\
+        - title: String\\
+        - isbn: String\\
+        - price: Decimal\\
+        - stock\_quantity: Integer\\
+        - is\_ebook: Boolean\\
+        \rule{\linewidth}{0.3pt}\\
+        + check\_stock(qty): bool\\
+        + decrease\_stock(qty): void
+    };
+
+    \node[class_box] (voucher) at (1.9, 4.8) {
+        \textbf{Voucher}\\
+        \rule{\linewidth}{0.3pt}\\
+        - id: Integer\\
+        - code: String\\
+        - discount\_percent: Int\\
+        - max\_discount: Decimal\\
+        - valid\_until: DateTime\\
+        \rule{\linewidth}{0.3pt}\\
+        + is\_valid(): bool\\
+        + apply\_discount(amt): Dec
+    };
+
+    \node[class_box] (user) at (5.7, 4.8) {
+        \textbf{User}\\
+        \rule{\linewidth}{0.3pt}\\
+        - id: UUID\\
+        - email: String\\
+        - password\_hash: String\\
+        - role: RoleEnum\\
+        \rule{\linewidth}{0.3pt}\\
+        + verify\_pwd(raw): bool\\
+        + generate\_jwt(): TokenPair
+    };
+
+    % Row 2 (y = 1.0)
+    \node[class_box] (chunk) at (-5.7, 1.0) {
+        \textbf{BookChunk}\\
+        \rule{\linewidth}{0.3pt}\\
+        - id: UUID\\
+        - book\_id: UUID\\
+        - chunk\_index: Integer\\
+        - page\_number: Integer\\
+        - embedding: Vector(768)\\
+        \rule{\linewidth}{0.3pt}\\
+        + get\_cosine\_sim(q): float
+    };
+
+    \node[class_box] (item) at (-1.9, 1.0) {
+        \textbf{OrderItem}\\
+        \rule{\linewidth}{0.3pt}\\
+        - id: UUID\\
+        - order\_id: String\\
+        - book\_id: UUID\\
+        - price: Decimal\\
+        - quantity: Integer\\
+        \rule{\linewidth}{0.3pt}\\
+        + subtotal(): Decimal
+    };
+
+    \node[class_box] (order) at (1.9, 1.0) {
+        \textbf{Order}\\
+        \rule{\linewidth}{0.3pt}\\
+        - id: String\\
+        - user\_id: UUID\\
+        - total\_amount: Decimal\\
+        - status: OrderStatus\\
+        \rule{\linewidth}{0.3pt}\\
+        + calculate\_total(): Decimal\\
+        + update\_status(st): void
+    };
+
+    \node[class_box] (cart) at (5.7, 1.0) {
+        \textbf{CartItem}\\
+        \rule{\linewidth}{0.3pt}\\
+        - id: UUID\\
+        - user\_id: UUID\\
+        - book\_id: UUID\\
+        - quantity: Integer\\
+        \rule{\linewidth}{0.3pt}\\
+        + update\_quantity(n): void\\
+        + get\_subtotal(): Decimal
+    };
+
+    % Row 3 (y = -2.8)
+    \node[class_box] (reading) at (-5.7, -2.8) {
+        \textbf{ReadingProgress}\\
+        \rule{\linewidth}{0.3pt}\\
+        - id: UUID\\
+        - user\_id: UUID\\
+        - book\_id: UUID\\
+        - current\_page: Integer\\
+        - reading\_mode: String\\
+        \rule{\linewidth}{0.3pt}\\
+        + save\_page(p): void\\
+        + update\_mode(m): void
+    };
+
+    \node[class_box] (access) at (-1.9, -2.8) {
+        \textbf{EBookAccess}\\
+        \rule{\linewidth}{0.3pt}\\
+        - id: UUID\\
+        - user\_id: UUID\\
+        - book\_id: UUID\\
+        - encrypted\_file\_path: Str\\
+        \rule{\linewidth}{0.3pt}\\
+        + verify\_access(): bool\\
+        + get\_ephemeral\_key(): Str
+    };
+
+    \node[class_box] (review) at (1.9, -2.8) {
+        \textbf{Review}\\
+        \rule{\linewidth}{0.3pt}\\
+        - id: UUID\\
+        - user\_id: UUID\\
+        - book\_id: UUID\\
+        - rating: Integer\\
+        - comment: Text\\
+        \rule{\linewidth}{0.3pt}\\
+        + validate\_rating(): bool
+    };
+
+    \node[class_box] (ai_conv) at (5.7, -2.8) {
+        \textbf{AIConversation}\\
+        \rule{\linewidth}{0.3pt}\\
+        - id: UUID\\
+        - user\_id: UUID\\
+        - agent\_type: String\\
+        - book\_id: UUID\\
+        - cited\_pages: Int[]\\
+        \rule{\linewidth}{0.3pt}\\
+        + log\_turn(p, r): void
+    };
+
+    % Row 4 (y = -6.2)
+    \node[class_box] (audit) at (0.0, -6.2) {
+        \textbf{AuditLog}\\
+        \rule{\linewidth}{0.3pt}\\
+        - id: BigInt\\
+        - user\_id: UUID\\
+        - action: String\\
+        - endpoint: String\\
+        - ip\_address: String\\
+        - status\_code: Integer\\
+        \rule{\linewidth}{0.3pt}\\
+        + record\_action(u, a, ep): void
+    };
+
+    % Connections:
+    % 1. cat -> book (direct horizontal)
+    \draw[msg_arrow] (cat.east) -- node[above, font=\tiny] {1..*} (book.west);
+
+    % 2. book -> chunk (gutter between Col 1 & 2)
+    \draw[msg_arrow] ([yshift=-4mm]book.west) -- ++(-0.35, 0) |- node[pos=0.25, left, font=\tiny] {1..*} (chunk.east);
+
+    % 3. book -> item (direct vertical)
+    \draw[msg_arrow] (book.south) -- node[right, font=\tiny] {1..*} (item.north);
+
+    % 4. order -> item (direct horizontal)
+    \draw[msg_arrow] (order.west) -- node[above, font=\tiny] {1..*} (item.east);
+
+    % 5. voucher -> order (direct vertical)
+    \draw[msg_arrow] (voucher.south) -- node[right, font=\tiny] {0..1} (order.north);
+
+    % 6. user -> order (gutter between Col 3 & 4)
+    \draw[msg_arrow] ([yshift=-4mm]user.west) -- ++(-0.35, 0) |- node[pos=0.25, right, font=\tiny] {1..*} (order.east);
+
+    % 7. user -> cart (direct vertical)
+    \draw[msg_arrow] (user.south) -- node[right, font=\tiny] {1..*} (cart.north);
+
+    % 8. book -> cart (routed cleanly above row 1)
+    \draw[msg_arrow] (book.north) -- ++(0, 0.45) -| node[pos=0.25, above, font=\tiny] {1..*} (cart.north);
+
+    % 9. item -> access (direct vertical)
+    \draw[msg_arrow] (item.south) -- node[right, font=\tiny] {1..*} (access.north);
+
+    % 10. chunk -> reading (direct vertical)
+    \draw[msg_arrow] (chunk.south) -- node[left, font=\tiny] {1..*} (reading.north);
+
+    % 11. book -> review (through central corridor x = 0 between Col 2 & 3)
+    \draw[msg_arrow] ([yshift=-4mm]book.east) -- node[above, font=\tiny] {1..*} (0, 4.4) |- (review.west);
+
+    % 12. user -> ai_conv (margin on the right)
+    \draw[msg_arrow] ([yshift=-2mm]user.east) -- ++(0.35, 0) |- node[pos=0.4, right, font=\tiny] {1..*} (ai_conv.east);
+
+    % 13. user -> access (down right margin, across corridor at y = -4.5 to access.south)
+    \draw[msg_arrow] ([yshift=-5mm]user.east) -- ++(0.70, 0) |- (-1.9, -4.5) -- node[near end, left, font=\tiny] {1..*} (access.south);
+
+    % 14. user -> audit (down right margin to y = -6.2, across to audit.east)
+    \draw[msg_arrow] ([yshift=-8mm]user.east) -- ++(1.05, 0) |- node[near end, above, font=\tiny] {0..*} (audit.east);
+\end{tikzpicture}
+\caption{Biểu đồ lớp (Class Diagram) đầy đủ 13 thực thể miền dữ liệu AuraBook}
+\label{fig:class_diagram}
+\end{figure}
+
+\section{THIẾT KẾ HỆ THỐNG}
+
+\subsection{Thiết kế dữ liệu}
+
+\subsubsection{a) Sơ đồ thực thể liên kết mở rộng (Extended ERD)}
+
+Cơ sở dữ liệu được xây dựng trên nền tảng \textbf{PostgreSQL 16} kích hoạt tiện ích \texttt{pgvector}. Sơ đồ thực thể liên kết mở rộng (Hình \ref{fig:erd_diagram}) giải quyết triệt để bài toán phân mảnh dữ liệu (Data Silo), tích hợp hoàn hảo toàn bộ 13 bảng giao dịch quan hệ, chỉ mục không gian véc-tơ đa chiều, nhật ký kiểm toán hệ thống (\texttt{audit\_logs}) và lịch sử đối thoại trí tuệ nhân tạo (\texttt{ai\_conversations}) tương ứng với Từ điển dữ liệu.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    x=1cm, y=1cm,
+    erd_entity/.style={rectangle, draw=brandindigo!80!black, line width=0.75pt, align=left, font=\tiny, fill=brandindigo!5, inner sep=3.5pt, text width=2.9cm}
+]
+    % Row 1: Catalog & Users (y = 4.8)
+    \node[erd_entity] (e_cat) at (-5.7, 4.8) {
+        \textbf{categories}\\
+        \rule{\linewidth}{0.3pt}\\
+        \underline{PK id}: INTEGER\\
+        name: VARCHAR(100)\\
+        slug: VARCHAR(120) [UQ]
+    };
+
+    \node[erd_entity] (e_books) at (-1.9, 4.8) {
+        \textbf{books}\\
+        \rule{\linewidth}{0.3pt}\\
+        \underline{PK id}: UUID\\
+        \textbf{FK category\_id}: INTEGER\\
+        title: VARCHAR(255)\\
+        isbn: VARCHAR(20) [UQ]\\
+        price: DECIMAL(12,2)\\
+        stock\_quantity: INTEGER\\
+        is\_ebook: BOOLEAN
+    };
+
+    \node[erd_entity] (e_vouchers) at (1.9, 4.8) {
+        \textbf{vouchers}\\
+        \rule{\linewidth}{0.3pt}\\
+        \underline{PK id}: INTEGER\\
+        code: VARCHAR(50) [UQ]\\
+        discount\_percent: INT\\
+        max\_discount: DECIMAL\\
+        valid\_until: TIMESTAMPTZ
+    };
+
+    \node[erd_entity] (e_users) at (5.7, 4.8) {
+        \textbf{users}\\
+        \rule{\linewidth}{0.3pt}\\
+        \underline{PK id}: UUID\\
+        email: VARCHAR(255) [UQ]\\
+        password\_hash: VARCHAR\\
+        role: VARCHAR(20) [ENUM]\\
+        created\_at: TIMESTAMPTZ
+    };
+
+    % Row 2: Content & Transactions (y = 1.0)
+    \node[erd_entity] (e_chunks) at (-5.7, 1.0) {
+        \textbf{book\_chunks}\\
+        \rule{\linewidth}{0.3pt}\\
+        \underline{PK id}: UUID\\
+        \textbf{FK book\_id}: UUID\\
+        chunk\_index: INTEGER\\
+        page\_number: INTEGER\\
+        content: TEXT\\
+        \textbf{embedding}: VECTOR(768)
+    };
+
+    \node[erd_entity] (e_items) at (-1.9, 1.0) {
+        \textbf{order\_items}\\
+        \rule{\linewidth}{0.3pt}\\
+        \underline{PK id}: UUID\\
+        \textbf{FK order\_id}: VARCHAR(20)\\
+        \textbf{FK book\_id}: UUID\\
+        price\_at\_purchase: DEC\\
+        quantity: INTEGER
+    };
+
+    \node[erd_entity] (e_orders) at (1.9, 1.0) {
+        \textbf{orders}\\
+        \rule{\linewidth}{0.3pt}\\
+        \underline{PK id}: VARCHAR(20)\\
+        \textbf{FK user\_id}: UUID\\
+        total\_amount: DECIMAL\\
+        status: VARCHAR(20)\\
+        shipping\_address: TEXT
+    };
+
+    \node[erd_entity] (e_cart) at (5.7, 1.0) {
+        \textbf{cart\_items}\\
+        \rule{\linewidth}{0.3pt}\\
+        \underline{PK id}: UUID\\
+        \textbf{FK user\_id}: UUID\\
+        \textbf{FK book\_id}: UUID\\
+        quantity: INTEGER\\
+        updated\_at: TIMESTAMPTZ
+    };
+
+    % Row 3: Reading, Reviews & AI (y = -2.8)
+    \node[erd_entity] (e_reading) at (-5.7, -2.8) {
+        \textbf{reading\_progress}\\
+        \rule{\linewidth}{0.3pt}\\
+        \underline{PK id}: UUID\\
+        \textbf{FK user\_id}: UUID\\
+        \textbf{FK book\_id}: UUID\\
+        current\_page: INTEGER\\
+        reading\_mode: VARCHAR(20)
+    };
+
+    \node[erd_entity] (e_access) at (-1.9, -2.8) {
+        \textbf{ebook\_accesses}\\
+        \rule{\linewidth}{0.3pt}\\
+        \underline{PK id}: UUID\\
+        \textbf{FK user\_id}: UUID\\
+        \textbf{FK book\_id}: UUID\\
+        encrypted\_file\_path: TEXT\\
+        granted\_at: TIMESTAMPTZ
+    };
+
+    \node[erd_entity] (e_reviews) at (1.9, -2.8) {
+        \textbf{reviews}\\
+        \rule{\linewidth}{0.3pt}\\
+        \underline{PK id}: UUID\\
+        \textbf{FK user\_id}: UUID\\
+        \textbf{FK book\_id}: UUID\\
+        rating: INTEGER (1--5)\\
+        comment: TEXT
+    };
+
+    \node[erd_entity] (e_ai) at (5.7, -2.8) {
+        \textbf{ai\_conversations}\\
+        \rule{\linewidth}{0.3pt}\\
+        \underline{PK id}: UUID\\
+        \textbf{FK user\_id}: UUID\\
+        agent\_type: VARCHAR(20)\\
+        \textbf{FK book\_id}: UUID\\
+        cited\_pages: INTEGER[]
+    };
+
+    % Row 4: Audit Logs (y = -6.2)
+    \node[erd_entity] (e_audit) at (0.0, -6.2) {
+        \textbf{audit\_logs}\\
+        \rule{\linewidth}{0.3pt}\\
+        \underline{PK id}: BIGSERIAL\\
+        \textbf{FK user\_id}: UUID\\
+        action: VARCHAR(100)\\
+        endpoint: VARCHAR(255)\\
+        ip\_address: VARCHAR(45)\\
+        status\_code: INTEGER\\
+        created\_at: TIMESTAMPTZ
+    };
+
+    % Relationships
+    % 1. categories -> books (direct horizontal)
+    \draw[msg_arrow] (e_cat.east) -- node[above, font=\tiny\bfseries] {1 : N} (e_books.west);
+
+    % 2. books -> book_chunks (gutter between Col 1 & 2)
+    \draw[msg_arrow] ([yshift=-4mm]e_books.west) -- ++(-0.35, 0) |- node[pos=0.25, left, font=\tiny\bfseries] {1 : N} (e_chunks.east);
+
+    % 3. books -> order_items (direct vertical)
+    \draw[msg_arrow] (e_books.south) -- node[right, font=\tiny\bfseries] {1 : N} (e_items.north);
+
+    % 4. orders -> order_items (direct horizontal)
+    \draw[msg_arrow] (e_orders.west) -- node[above, font=\tiny\bfseries] {1 : N} (e_items.east);
+
+    % 5. vouchers -> orders (direct vertical)
+    \draw[msg_arrow] (e_vouchers.south) -- node[right, font=\tiny\bfseries] {0..1 : N} (e_orders.north);
+
+    % 6. users -> orders (gutter between Col 3 & 4)
+    \draw[msg_arrow] ([yshift=-4mm]e_users.west) -- ++(-0.35, 0) |- node[pos=0.25, right, font=\tiny\bfseries] {1 : N} (e_orders.east);
+
+    % 7. users -> cart_items (direct vertical)
+    \draw[msg_arrow] (e_users.south) -- node[right, font=\tiny\bfseries] {1 : N} (e_cart.north);
+
+    % 8. books -> cart_items (routed cleanly above row 1)
+    \draw[msg_arrow] (e_books.north) -- ++(0, 0.45) -| node[pos=0.25, above, font=\tiny\bfseries] {1 : N} (e_cart.north);
+
+    % 9. order_items -> ebook_accesses (direct vertical)
+    \draw[msg_arrow] (e_items.south) -- node[right, font=\tiny\bfseries] {1 : N} (e_access.north);
+
+    % 10. book_chunks -> reading_progress (direct vertical)
+    \draw[msg_arrow] (e_chunks.south) -- node[left, font=\tiny\bfseries] {1 : N} (e_reading.north);
+
+    % 11. books -> reviews (through central corridor x = 0 between Col 2 & 3)
+    \draw[msg_arrow] ([yshift=-4mm]e_books.east) -- node[above, font=\tiny\bfseries] {1 : N} (0, 4.4) |- (e_reviews.west);
+
+    % 12. users -> ai_conversations (margin on the right)
+    \draw[msg_arrow] ([yshift=-2mm]e_users.east) -- node[near start, above, font=\tiny\bfseries] {1 : N} ++(0.35, 0) |- (e_ai.east);
+
+    % 13. users -> ebook_accesses (down right margin, across corridor at y = -4.5 to e_access.south)
+    \draw[msg_arrow] ([yshift=-5mm]e_users.east) -- ++(0.70, 0) |- (-1.9, -4.5) -- node[near end, left, font=\tiny\bfseries] {1 : N} (e_access.south);
+
+    % 14. users -> audit_logs (down right margin to y = -6.2, across to e_audit.east)
+    \draw[msg_arrow] ([yshift=-8mm]e_users.east) -- ++(1.05, 0) |- node[near end, above, font=\tiny\bfseries] {0..1 : N} (e_audit.east);
+\end{tikzpicture}
+\caption{Sơ đồ thực thể liên kết mở rộng (Extended ERD) đầy đủ 13 bảng của hệ thống AuraBook}
+\label{fig:erd_diagram}
+\end{figure}
+
+\subsubsection{b) Bảng từ điển dữ liệu chi tiết (Data Dictionary - 13 Bảng)}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.19. Cấu trúc chi tiết bảng \texttt{users} (Quản lý tài khoản người dùng)}
+
+\begin{longtable}{p{3.2cm} p{2.6cm} p{4.0cm} p{4.5cm}}
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\texttt{id} & \texttt{UUID} & PK, Default \texttt{gen\_random\_uuid()} & Mã định danh duy nhất của tài khoản \\
+\midrule
+\texttt{email} & \texttt{VARCHAR(255)} & UNIQUE, NOT NULL & Địa chỉ email đăng nhập của người dùng \\
+\midrule
+\texttt{password\_hash} & \texttt{VARCHAR(255)} & NOT NULL & Chuỗi mật khẩu băm qua thuật toán \texttt{bcrypt} \\
+\midrule
+\texttt{full\_name} & \texttt{VARCHAR(100)} & NOT NULL & Họ và tên đầy đủ của người dùng \\
+\midrule
+\texttt{role} & \texttt{VARCHAR(20)} & NOT NULL, CHECK in ENUM & Vai trò phân quyền: \texttt{Customer}, \texttt{Admin} \\
+\midrule
+\texttt{created\_at} & \texttt{TIMESTAMPTZ} & Default \texttt{NOW()}, NOT NULL & Thời điểm khởi tạo tài khoản \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.20. Cấu trúc chi tiết bảng \texttt{categories} (Danh mục phân loại thể loại sách)}
+
+\begin{longtable}{p{3.2cm} p{2.6cm} p{4.0cm} p{4.5cm}}
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\texttt{id} & \texttt{INTEGER} & PK, SERIAL & Khóa chính định danh danh mục \\
+\midrule
+\texttt{name} & \texttt{VARCHAR(100)} & NOT NULL & Tên danh mục (VD: Công nghệ thông tin) \\
+\midrule
+\texttt{slug} & \texttt{VARCHAR(120)} & UNIQUE, NOT NULL & Chuỗi định danh URL thân thiện \\
+\midrule
+\texttt{description} & \texttt{TEXT} & NULL & Mô tả ngắn gọn về danh mục \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.21. Cấu trúc chi tiết bảng \texttt{books} (Quản lý ấn phẩm sách)}
+
+\begin{longtable}{p{3.2cm} p{2.6cm} p{4.0cm} p{4.5cm}}
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\texttt{id} & \texttt{UUID} & PK, Default \texttt{gen\_random\_uuid()} & Mã định danh duy nhất của cuốn sách \\
+\midrule
+\texttt{category\_id} & \texttt{INTEGER} & FK $\rightarrow$ \texttt{categories(id)}, NOT NULL & Tham chiếu danh mục thể loại sách \\
+\midrule
+\texttt{title} & \texttt{VARCHAR(255)} & NOT NULL & Tên ấn phẩm sách \\
+\midrule
+\texttt{author} & \texttt{VARCHAR(255)} & NOT NULL & Tên tác giả hoặc nhóm tác giả biên soạn \\
+\midrule
+\texttt{isbn} & \texttt{VARCHAR(20)} & UNIQUE, NOT NULL & Mã tiêu chuẩn quốc tế cho sách (ISBN) \\
+\midrule
+\texttt{price} & \texttt{DECIMAL(12, 2)} & NOT NULL, CHECK ($\ge 0$) & Giá bán niêm yết của cuốn sách (VNĐ) \\
+\midrule
+\texttt{stock\_quantity} & \texttt{INTEGER} & NOT NULL, CHECK ($\ge 0$) & Số lượng sản phẩm vật lý còn trong kho \\
+\midrule
+\texttt{is\_ebook} & \texttt{BOOLEAN} & Default \texttt{FALSE}, NOT NULL & Xác định sách có bản đọc số hay không \\
+\midrule
+\texttt{cover\_image\_url}& \texttt{TEXT} & NOT NULL & Đường dẫn ảnh bìa sách độ phân giải cao \\
+\midrule
+\texttt{summary\_audio\_url}& \texttt{TEXT} & NULL & Đường dẫn tệp tóm tắt âm thanh ngắn 60s \\
+\midrule
+\texttt{description} & \texttt{TEXT} & NULL & Giới thiệu tóm tắt nội dung cuốn sách \\
+\midrule
+\texttt{lexical\_tsv} & \texttt{TSVECTOR} & GENERATED ALWAYS AS STORED & Cột chỉ mục Full-Text Search tự động \\
+\midrule
+\texttt{created\_at} & \texttt{TIMESTAMPTZ} & Default \texttt{NOW()}, NOT NULL & Thời điểm khởi tạo bản ghi \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.22. Cấu trúc chi tiết bảng \texttt{book\_chunks} (Lưu trữ văn bản phân đoạn \& Vector RAG)}
+
+\begin{longtable}{p{3.2cm} p{2.6cm} p{4.0cm} p{4.5cm}}
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\texttt{id} & \texttt{UUID} & PK, Default \texttt{gen\_random\_uuid()} & Khóa chính định danh phân đoạn \\
+\midrule
+\texttt{book\_id} & \texttt{UUID} & FK $\rightarrow$ \texttt{books(id)} ON DELETE CASCADE & Tham chiếu tới cuốn sách sở hữu \\
+\midrule
+\texttt{chunk\_index} & \texttt{INTEGER} & NOT NULL & Thứ tự tuần tự của phân đoạn trong sách \\
+\midrule
+\texttt{page\_number} & \texttt{INTEGER} & NOT NULL & Số trang vật lý tương ứng của phân đoạn \\
+\midrule
+\texttt{content} & \texttt{TEXT} & NOT NULL & Nội dung văn bản thô của phân đoạn \\
+\midrule
+\texttt{embedding} & \texttt{VECTOR(768)} & NOT NULL & Vector đặc trưng ngữ nghĩa 768 chiều \\
+\midrule
+\texttt{created\_at} & \texttt{TIMESTAMPTZ} & Default \texttt{NOW()}, NOT NULL & Thời điểm lập chỉ mục vector \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.23. Cấu trúc chi tiết bảng \texttt{orders} (Quản lý đơn hàng)}
+
+\begin{longtable}{p{3.2cm} p{2.6cm} p{4.0cm} p{4.5cm}}
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\texttt{id} & \texttt{VARCHAR(20)} & PK (VD: 'DH1024') & Mã đơn hàng hiển thị cho người dùng \\
+\midrule
+\texttt{user\_id} & \texttt{UUID} & FK $\rightarrow$ \texttt{users(id)}, NOT NULL & Tham chiếu tới khách hàng đặt mua \\
+\midrule
+\texttt{total\_amount} & \texttt{DECIMAL(12, 2)} & NOT NULL, CHECK ($\ge 0$) & Tổng giá trị thanh toán của đơn hàng \\
+\midrule
+\texttt{status} & \texttt{VARCHAR(20)} & NOT NULL, CHECK trong ENUM & Trạng thái: \texttt{PENDING}, \texttt{PAID}, \texttt{SHIPPING}, \texttt{COMPLETED}, \texttt{CANCELLED} \\
+\midrule
+\texttt{shipping\_address}& \texttt{TEXT} & NOT NULL & Địa chỉ giao nhận hàng của khách \\
+\midrule
+\texttt{created\_at} & \texttt{TIMESTAMPTZ} & Default \texttt{NOW()}, NOT NULL & Thời điểm khởi tạo đơn hàng \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.24. Cấu trúc chi tiết bảng \texttt{order\_items} (Chi tiết từng mục trong đơn hàng)}
+
+\begin{longtable}{p{3.2cm} p{2.6cm} p{4.0cm} p{4.5cm}}
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\texttt{id} & \texttt{UUID} & PK, Default \texttt{gen\_random\_uuid()} & Khóa chính định danh dòng chi tiết \\
+\midrule
+\texttt{order\_id} & \texttt{VARCHAR(20)} & FK $\rightarrow$ \texttt{orders(id)} ON DELETE CASCADE & Tham chiếu đơn hàng tương ứng \\
+\midrule
+\texttt{book\_id} & \texttt{UUID} & FK $\rightarrow$ \texttt{books(id)}, NOT NULL & Tham chiếu cuốn sách được mua \\
+\midrule
+\texttt{price\_at\_purchase}& \texttt{DECIMAL(12, 2)}& NOT NULL, CHECK ($\ge 0$) & Giá sách tại thời điểm phát sinh giao dịch \\
+\midrule
+\texttt{quantity} & \texttt{INTEGER} & NOT NULL, CHECK ($> 0$) & Số lượng cuốn sách khách đặt mua \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\noindent\textbf{Bảng 3.25. Cấu trúc chi tiết bảng \texttt{ebook\_accesses} (Quản trị quyền truy cập E-book số)}
+
+\begin{longtable}{p{3.2cm} p{2.6cm} p{4.0cm} p{4.5cm}}
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\texttt{id} & \texttt{UUID} & PK, Default \texttt{gen\_random\_uuid()} & Khóa chính định danh quyền đọc sách \\
+\midrule
+\texttt{user\_id} & \texttt{UUID} & FK $\rightarrow$ \texttt{users(id)}, NOT NULL & Xác định người dùng sở hữu quyền \\
+\midrule
+\texttt{book\_id} & \texttt{UUID} & FK $\rightarrow$ \texttt{books(id)}, NOT NULL & Xác định cuốn E-book được cấp phép \\
+\midrule
+\texttt{encrypted\_file\_path}& \texttt{TEXT} & NOT NULL & Đường dẫn tệp nhị phân mã hóa AES-256-GCM \\
+\midrule
+\texttt{granted\_at} & \texttt{TIMESTAMPTZ} & Default \texttt{NOW()}, NOT NULL & Thời điểm kích hoạt quyền đọc số \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\Needspace{6\baselineskip}
+\noindent\textbf{Bảng 3.26. Cấu trúc chi tiết bảng \texttt{cart\_items} (Quản lý giỏ hàng trực tuyến)}
+\nopagebreak
+
+\begin{longtable}{p{3.2cm} p{2.6cm} p{4.0cm} p{4.5cm}}
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\texttt{id} & \texttt{UUID} & PK, Default \texttt{gen\_random\_uuid()} & Khóa chính định danh sản phẩm trong giỏ \\
+\midrule
+\texttt{user\_id} & \texttt{UUID} & FK $\rightarrow$ \texttt{users(id)}, NOT NULL & Tham chiếu người dùng sở hữu giỏ \\
+\midrule
+\texttt{book\_id} & \texttt{UUID} & FK $\rightarrow$ \texttt{books(id)}, NOT NULL & Tham chiếu cuốn sách được chọn \\
+\midrule
+\texttt{quantity} & \texttt{INTEGER} & NOT NULL, CHECK ($> 0$) & Số lượng sách chọn mua trong giỏ \\
+\midrule
+\texttt{updated\_at} & \texttt{TIMESTAMPTZ} & Default \texttt{NOW()}, NOT NULL & Thời điểm cập nhật mục giỏ hàng \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\Needspace{6\baselineskip}
+\noindent\textbf{Bảng 3.27. Cấu trúc chi tiết bảng \texttt{reviews} (Đánh giá và nhận xét ấn phẩm sách)}
+\nopagebreak
+
+\begin{longtable}{p{3.2cm} p{2.6cm} p{4.0cm} p{4.5cm}}
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\texttt{id} & \texttt{UUID} & PK, Default \texttt{gen\_random\_uuid()} & Khóa chính định danh nhận xét \\
+\midrule
+\texttt{user\_id} & \texttt{UUID} & FK $\rightarrow$ \texttt{users(id)}, NOT NULL & Khách hàng thực hiện đánh giá \\
+\midrule
+\texttt{book\_id} & \texttt{UUID} & FK $\rightarrow$ \texttt{books(id)}, NOT NULL & Ấn phẩm sách được đánh giá \\
+\midrule
+\texttt{rating} & \texttt{INTEGER} & NOT NULL, CHECK ($1 \le \text{rating} \le 5$) & Điểm số đánh giá từ 1 đến 5 sao \\
+\midrule
+\texttt{comment} & \texttt{TEXT} & NULL & Nội dung lời nhận xét thực tế \\
+\midrule
+\texttt{created\_at} & \texttt{TIMESTAMPTZ} & Default \texttt{NOW()}, NOT NULL & Thời điểm gửi đánh giá \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\Needspace{6\baselineskip}
+\noindent\textbf{Bảng 3.28. Cấu trúc chi tiết bảng \texttt{reading\_progress} (Lưu trữ vị trí đọc sách dở dang)}
+\nopagebreak
+
+\begin{longtable}{p{3.2cm} p{2.6cm} p{4.0cm} p{4.5cm}}
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\texttt{id} & \texttt{UUID} & PK, Default \texttt{gen\_random\_uuid()} & Khóa chính định danh tiến độ đọc \\
+\midrule
+\texttt{user\_id} & \texttt{UUID} & FK $\rightarrow$ \texttt{users(id)}, NOT NULL & Độc giả sở hữu phiên đọc \\
+\midrule
+\texttt{book\_id} & \texttt{UUID} & FK $\rightarrow$ \texttt{books(id)}, NOT NULL & Cuốn sách điện tử đang đọc \\
+\midrule
+\texttt{current\_page} & \texttt{INTEGER} & NOT NULL, CHECK ($> 0$) & Số trang hiện tại người dùng đang dừng \\
+\midrule
+\texttt{font\_size} & \texttt{INTEGER} & Default 16, NOT NULL & Kích thước phông chữ thiết lập (px) \\
+\midrule
+\texttt{reading\_mode} & \texttt{VARCHAR(20)} & Default 'LIGHT', NOT NULL & Chế độ nền: \texttt{LIGHT}, \texttt{SEPIA}, \texttt{DARK} \\
+\midrule
+\texttt{updated\_at} & \texttt{TIMESTAMPTZ} & Default \texttt{NOW()}, NOT NULL & Thời điểm đồng bộ tiến độ đọc mới nhất \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\Needspace{6\baselineskip}
+\noindent\textbf{Bảng 3.29. Cấu trúc chi tiết bảng \texttt{vouchers} (Quản lý mã ưu đãi giảm giá)}
+\nopagebreak
+
+\begin{longtable}{p{3.2cm} p{2.6cm} p{4.0cm} p{4.5cm}}
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\texttt{id} & \texttt{INTEGER} & PK, SERIAL & Khóa chính định danh mã ưu đãi \\
+\midrule
+\texttt{code} & \texttt{VARCHAR(50)} & UNIQUE, NOT NULL & Ký tự mã voucher người dùng nhập \\
+\midrule
+\texttt{discount\_percent}& \texttt{INTEGER} & NOT NULL, CHECK ($1 \le \text{disc} \le 100$) & Tỷ lệ chiết khấu giảm giá (\%) \\
+\midrule
+\texttt{max\_discount} & \texttt{DECIMAL(12, 2)} & NOT NULL, CHECK ($\ge 0$) & Mức giảm giá tối đa cho phép (VNĐ) \\
+\midrule
+\texttt{valid\_until} & \texttt{TIMESTAMPTZ} & NOT NULL & Thời hạn kết thúc hiệu lực voucher \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\Needspace{6\baselineskip}
+\noindent\textbf{Bảng 3.30. Cấu trúc chi tiết bảng \texttt{ai\_conversations} (Lưu trữ lịch sử đối thoại RAG \& Voice AI)}
+\nopagebreak
+
+\begin{longtable}{p{3.2cm} p{2.6cm} p{4.0cm} p{4.5cm}}
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\texttt{id} & \texttt{UUID} & PK, Default \texttt{gen\_random\_uuid()} & Khóa chính định danh lượt hội thoại \\
+\midrule
+\texttt{user\_id} & \texttt{UUID} & FK $\rightarrow$ \texttt{users(id)}, NOT NULL & Người dùng tham gia đối thoại \\
+\midrule
+\texttt{agent\_type} & \texttt{VARCHAR(20)} & NOT NULL, CHECK ('RAG', 'VOICE') & Phân loại tác tử tương tác \\
+\midrule
+\texttt{book\_id} & \texttt{UUID} & FK $\rightarrow$ \texttt{books(id)}, NULL & Ấn phẩm đang đọc (đối với RAG) \\
+\midrule
+\texttt{user\_prompt} & \texttt{TEXT} & NOT NULL & Nội dung câu hỏi/khẩu lệnh của người dùng \\
+\midrule
+\texttt{ai\_response} & \texttt{TEXT} & NOT NULL & Nội dung câu trả lời do AI sinh ra \\
+\midrule
+\texttt{cited\_pages} & \texttt{INTEGER[]} & NULL & Mảng các số trang được trích dẫn dẫn chứng \\
+\midrule
+\texttt{created\_at} & \texttt{TIMESTAMPTZ} & Default \texttt{NOW()}, NOT NULL & Thời điểm phát sinh tương tác \\
+\bottomrule
+\end{longtable}
+
+\vspace{0.3cm}
+\Needspace{6\baselineskip}
+\noindent\textbf{Bảng 3.31. Cấu trúc chi tiết bảng \texttt{audit\_logs} (Nhật ký kiểm toán hệ thống \& Bảo mật giao dịch)}
+\nopagebreak
+
+\begin{longtable}{p{3.2cm} p{2.6cm} p{4.0cm} p{4.5cm}}
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Tên cột} & \textbf{Kiểu dữ liệu} & \textbf{Ràng buộc toàn vẹn} & \textbf{Ý nghĩa nghiệp vụ} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\texttt{id} & \texttt{BIGSERIAL} & PK & Khóa chính tự tăng định danh log \\
+\midrule
+\texttt{user\_id} & \texttt{UUID} & FK $\rightarrow$ \texttt{users(id)}, NULL & Tài khoản thực hiện tác vụ (nếu có) \\
+\midrule
+\texttt{action} & \texttt{VARCHAR(100)} & NOT NULL & Tên hành vi (VD: 'VOICE\_CANCEL\_ORDER') \\
+\midrule
+\texttt{endpoint} & \texttt{VARCHAR(255)} & NOT NULL & Điểm cuối API được gọi \\
+\midrule
+\texttt{ip\_address} & \texttt{VARCHAR(45)} & NOT NULL & Địa chỉ IPv4/IPv6 máy khách gửi yêu cầu \\
+\midrule
+\texttt{status\_code} & \texttt{INTEGER} & NOT NULL & Mã trạng thái phản hồi HTTP \\
+\midrule
+\texttt{payload} & \texttt{JSONB} & NULL & Dữ liệu chi tiết tham số thực thi \\
+\midrule
+\texttt{created\_at} & \texttt{TIMESTAMPTZ} & Default \texttt{NOW()}, NOT NULL & Thời điểm phát sinh hành vi nghiệp vụ \\
+\bottomrule
+\end{longtable}
+
+\subsubsection{c) Chiến lược phân mảnh văn bản (Chunking) và Thiết kế chỉ mục không gian HNSW}
+
+Để mô hình RAG hoạt động tối ưu, không làm loãng ngữ cảnh và không vượt quá giới hạn Context Window, hệ thống áp dụng kỹ thuật \textbf{Phân đoạn văn bản đệ quy theo ký tự (Recursive Character Text Splitting)}:
+\begin{itemize}
+    \item \textbf{Bộ tách ký tự ưu tiên:} Thực hiện ngắt đoạn theo thứ tự: \texttt{["\textbackslash n\textbackslash n", "\textbackslash n", ". ", " ", ""]}. Đảm bảo văn bản luôn được ngắt tự nhiên ở cấp độ đoạn văn hoặc kết thúc câu, tránh cắt ngang ý.
+    \item \textbf{Kích thước đoạn văn ($ChunkSize$):} Cố định ở ngưỡng $512\text{ tokens}$ (khoảng $1500 - 1800$ ký tự tiếng Việt), đủ lớn để chứa trọn vẹn một ý niệm học thuật nhưng đủ nhỏ để vector nhúng tập trung cao độ vào chủ đề.
+    \item \textbf{Độ gối đầu ($ChunkOverlap$):} Thiết lập ở mức $\Delta = 64\text{ tokens}$ (khoảng $12.5\%$), bảo đảm các liên kết ngữ nghĩa giữa ranh giới hai phân đoạn kề nhau không bị đứt đoạn.
+\end{itemize}
+
+Về thuật toán tìm kiếm không gian vector, hệ thống sử dụng chỉ mục phân cấp đồ thị láng giềng nhỏ \textbf{Hierarchical Navigable Small World (HNSW)} trên cột \texttt{embedding} của bảng \texttt{book\_chunks}:
+
+\begin{verbatim}
+CREATE INDEX idx_book_chunks_hnsw_cosine 
+ON book_chunks 
+USING hnsw (embedding vector_cosine_ops)
+WITH (m = 16, ef_construction = 64);
+\end{verbatim}
+
+\noindent\textit{Cơ sở toán học và tham số kỹ thuật:}
+\begin{itemize}
+    \item Toán tử \texttt{vector\_cosine\_ops} trong \texttt{pgvector} tính toán khoảng cách Cosine $\mathcal{D}_{\text{Cosine}}$ giữa vector truy vấn $\vec{u}$ và vector dữ liệu $\vec{v}$:
+    \begin{equation}
+        \mathcal{D}_{\text{Cosine}}(\vec{u}, \vec{v}) = 1 - \frac{\vec{u} \cdot \vec{v}}{\|\vec{u}\|_2 \|\vec{v}\|_2} = 1 - \frac{\sum_{i=1}^{n} u_i v_i}{\sqrt{\sum_{i=1}^{n} u_i^2} \sqrt{\sum_{i=1}^{n} v_i^2}}
+    \end{equation}
+    \item Độ tương đồng Cosine tương ứng được xác định theo công thức $\mathcal{S}_{\text{Cosine}}(\vec{u}, \vec{v}) = 1 - \mathcal{D}_{\text{Cosine}}(\vec{u}, \vec{v})$. Hệ thống thiết lập ngưỡng lọc tối thiểu $\mathcal{S}_{\text{Cosine}} \ge 0.70$ (tương đương $\mathcal{D}_{\text{Cosine}} \le 0.30$) để loại bỏ các phân đoạn rác trước khi chuyển vào ngữ cảnh của Gemini.
+    \item Tham số $m = 16$: Số lượng cạnh liên kết tối đa của mỗi đỉnh trên các tầng đồ thị, giúp tối ưu hóa bộ nhớ RAM mà vẫn đảm bảo tính định hướng di chuyển cực nhanh trong không gian 768 chiều.
+    \item Tham số \texttt{ef\_construction} = 64: Kích thước danh sách các nút ứng viên được đánh giá trong quá trình dựng đồ thị. Đây là mục tiêu thiết kế nhằm đạt độ chính xác thu hồi (Recall) kỳ vọng $>98.5\%$ với độ phức tạp thời gian tìm kiếm tiệm cận $\mathcal{O}(\log N)$.
+\end{itemize}
+
+\subsection{Thiết kế các module chương trình chính}
+
+\subsubsection{a) Kiến trúc tổng thể hệ thống (Multi-Tier Clean Architecture)}
+
+Hệ thống tuân thủ nghiêm ngặt nguyên lý thiết kế Kiến trúc Sạch (Clean Architecture) phân tách thành 4 tầng ranh giới độc lập (Hình \ref{fig:arch_clean}).
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    x=1cm, y=1cm,
+    arch_box/.style={rectangle, rounded corners=5pt, draw=black!70, fill=white, line width=0.85pt, align=center, inner sep=6pt}
+]
+    % Tier 1: Presentation
+    \node[arch_box, text width=14.5cm, fill=blue!6, draw=blue!70, line width=1pt] (t1) at (0, 3.8) {
+        \textbf{\small TẦNG TRÌNH DIỄN MÁY KHÁCH (PRESENTATION TIER)}\\[3pt]
+        \scriptsize Next.js 15 App Router · Tailwind CSS · WASM AES-256-GCM Canvas DRM · Web Speech API STT/TTS
+    };
+
+    % Tier 2: Gateway/Backend
+    \node[arch_box, text width=14.5cm, fill=teal!6, draw=teal!70, line width=1pt] (t2) at (0, 1.8) {
+        \textbf{\small TẦNG CỔNG KẾT NỐI \& ĐIỀU PHỐI (GATEWAY \& CORE BACKEND)}\\[3pt]
+        \scriptsize FastAPI · Uvicorn ASGI · Pydantic V2 · JWT RBAC Middleware · SSE Controller
+    };
+
+    % Tier 3a: Storage
+    \node[arch_box, text width=6.4cm, fill=brandindigo!6, draw=brandindigo!70, line width=0.9pt] (t3a) at (-4.25, -0.6) {
+        \textbf{\small TẦNG LƯU TRỮ \& TÌM KIẾM}\\[3pt]
+        \scriptsize PostgreSQL 16 · \texttt{pgvector} 768d\\[2pt]
+        \scriptsize Chỉ mục HNSW ($m{=}16,\, ef{=}64$) · GIN Lexical
+    };
+
+    % Tier 3b: AI
+    \node[arch_box, text width=6.4cm, fill=orange!6, draw=orange!70, line width=0.9pt] (t3b) at (4.25, -0.6) {
+        \textbf{\small TẦNG TRÍ TUỆ NHÂN TẠO}\\[3pt]
+        \scriptsize Gemini 2.0 Flash · RAG Companion\\[2pt]
+        \scriptsize Voice Function Calling · Catalog Vision OCR
+    };
+
+    % Arrows: T1 -> T2
+    \draw[-Stealth, line width=0.9pt, draw=blue!75!black] (t1.south) -- node[right=2pt, font=\scriptsize\bfseries, text=black] {HTTPS / WSS / SSE} (t2.north);
+
+    % Arrows: T2 -> T3a
+    \draw[-Stealth, line width=0.85pt, draw=teal!80!black] (t2.south -| t3a.north) -- node[left=2pt, font=\scriptsize\bfseries, text=black] {Async SQLAlchemy} (t3a.north);
+
+    % Arrows: T2 -> T3b
+    \draw[-Stealth, line width=0.85pt, draw=teal!80!black] (t2.south -| t3b.north) -- node[right=2pt, font=\scriptsize\bfseries, text=black] {GenAI SDK / Tools} (t3b.north);
+
+    % Dashed: T3a <-> T3b (vector query) with clean white background label
+    \draw[Stealth-Stealth, dashed, line width=0.85pt, draw=brandindigo!80] (t3a.east) -- node[fill=white, inner sep=2.5pt, font=\scriptsize\bfseries, text=brandindigo!90!black, align=center] {Truy vấn véc-tơ\\Top-$K$} (t3b.west);
+\end{tikzpicture}
+\caption{Sơ đồ kiến trúc tổng thể hệ thống (Multi-Tier Clean Architecture)}
+\label{fig:arch_clean}
+\end{figure}
+
+\subsubsection{b) Thiết kế AI Data Pipeline \& Multi-Agent Orchestration}
+
+Đường ống nạp dữ liệu ngoại tuyến và chu trình điều phối Đa tác tử trực tuyến được biểu diễn chi tiết trên Hình \ref{fig:ai_pipeline}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm]
+    \node[anchor=west, font=\small\bfseries, text=brandblue!95!black] at (-6.8, 3.3) {1. Đường ống nạp dữ liệu ngoại tuyến (Offline Ingestion Pipeline):};
+    
+    \node[arch_box, fill=gray!10, text width=2.1cm] (p1) at (-5.6, 2.1) {\scriptsize Tệp E-book gốc\\(EPUB/PDF)};
+    \node[arch_box, fill=gray!10, text width=2.1cm] (p2) at (-2.8, 2.1) {\scriptsize Làm sạch văn bản\\\& Chuẩn hóa};
+    \node[arch_box, fill=gray!10, text width=2.1cm] (p3) at (0.0, 2.1) {\scriptsize Phân đoạn đệ quy\\(512 tok, $\Delta=64$)};
+    \node[arch_box, fill=gray!10, text width=2.1cm] (p4) at (2.8, 2.1) {\scriptsize Gemini Embed\\($\vec{e} \in \mathbb{R}^{768}$)};
+    \node[arch_box, fill=brandindigo!10, text width=2.1cm] (p5) at (5.6, 2.1) {\scriptsize Bảng \texttt{book\_chunks}\\Postgres HNSW};
+
+    \draw[msg_arrow] (p1) -- (p2);
+    \draw[msg_arrow] (p2) -- (p3);
+    \draw[msg_arrow] (p3) -- (p4);
+    \draw[msg_arrow] (p4) -- (p5);
+
+    \node[anchor=west, font=\small\bfseries, text=brandblue!95!black] at (-6.8, 0.8) {2. Chu trình điều phối Đa tác tử trực tuyến (Online Multi-Agent Orchestration):};
+    
+    % RAG Branch
+    \node[arch_box, fill=orange!8, text width=2.1cm] (r1) at (-5.6, -0.4) {\scriptsize Câu hỏi độc giả};
+    \node[arch_box, fill=orange!8, text width=2.1cm] (r2) at (-2.8, -0.4) {\scriptsize Vector hóa $\vec{q}$ 768d};
+    \node[arch_box, fill=orange!8, text width=2.1cm] (r3) at (0.0, -0.4) {\scriptsize Top-3 Chunks (<=>)};
+    \node[arch_box, fill=orange!8, text width=2.1cm] (r4) at (2.8, -0.4) {\scriptsize Gemini Flash + SSE};
+    \node[arch_box, fill=orange!8, text width=2.1cm] (r5) at (5.6, -0.4) {\scriptsize Chữ + [Trang X]};
+    \draw[msg_arrow] (r1) -- (r2);
+    \draw[msg_arrow] (r2) -- (r3);
+    \draw[msg_arrow] (r3) -- (r4);
+    \draw[msg_arrow] (r4) -- (r5);
+
+    % Voice Branch
+    \node[arch_box, fill=blue!8, text width=2.1cm] (v1) at (-5.6, -1.7) {\scriptsize Khẩu lệnh thoại};
+    \node[arch_box, fill=blue!8, text width=2.1cm] (v2) at (-2.8, -1.7) {\scriptsize Web Speech STT};
+    \node[arch_box, fill=blue!8, text width=2.1cm] (v3) at (0.0, -1.7) {\scriptsize Function Calling};
+    \node[arch_box, fill=blue!8, text width=2.1cm] (v4) at (2.8, -1.7) {\scriptsize Thực thi DB CSDL};
+    \node[arch_box, fill=blue!8, text width=2.1cm] (v5) at (5.6, -1.7) {\scriptsize Web Speech TTS};
+    \draw[msg_arrow] (v1) -- (v2);
+    \draw[msg_arrow] (v2) -- (v3);
+    \draw[msg_arrow] (v3) -- (v4);
+    \draw[msg_arrow] (v4) -- (v5);
+
+    % Vision Branch
+    \node[arch_box, fill=teal!8, text width=2.1cm] (s1) at (-5.6, -3.0) {\scriptsize Tệp ảnh bìa sách};
+    \node[arch_box, fill=teal!8, text width=2.1cm] (s2) at (-2.8, -3.0) {\scriptsize Base64 Payload};
+    \node[arch_box, fill=teal!8, text width=2.1cm] (s3) at (0.0, -3.0) {\scriptsize Gemini Vision OCR};
+    \node[arch_box, fill=teal!8, text width=2.1cm] (s4) at (2.8, -3.0) {\scriptsize JSON Schema Parse};
+    \node[arch_box, fill=teal!8, text width=2.1cm] (s5) at (5.6, -3.0) {\scriptsize Điền tự động Form};
+    \draw[msg_arrow] (s1) -- (s2);
+    \draw[msg_arrow] (s2) -- (s3);
+    \draw[msg_arrow] (s3) -- (s4);
+    \draw[msg_arrow] (s4) -- (s5);
+\end{tikzpicture}
+\caption{Sơ đồ đường ống nạp dữ liệu AI và điều phối Đa tác tử (AI Pipeline)}
+\label{fig:ai_pipeline}
+\end{figure}
+
+\subsubsection{c) Biểu đồ triển khai hệ thống (Deployment Diagram)}
+
+Kiến trúc triển khai vật lý phân tán của nền tảng AuraBook bao gồm môi trường trình duyệt máy khách (Edge Client), máy chủ Reverse Proxy, cụm dịch vụ chứa Docker và dịch vụ đám mây AI bên ngoài được mô tả trên Hình \ref{fig:deploy_diagram}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    x=1cm, y=1cm,
+    bi_arrow/.style={Stealth-Stealth, line width=0.85pt, draw=brandblue},
+    lbl/.style={fill=white, inner sep=2.5pt, font=\tiny\bfseries, align=center, text=brandblue!90!black, rounded corners=1pt, draw=black!25, line width=0.4pt},
+    dep_node/.style={
+        rectangle,
+        draw=black!75,
+        rounded corners=3.5pt,
+        line width=0.85pt,
+        align=left,
+        font=\scriptsize,
+        inner sep=6pt,
+        fill=white
+    }
+]
+    % --- CỘT 1: CLIENT & DATA ---
+    % Node Client (Top Left)
+    \node[dep_node, fill=blue!3, text width=4.5cm] (node_client) at (-4.2, 3.5) {
+        {\bfseries\color{brandblue} $\ll$device$\gg$ Trình duyệt Web}\\
+        \vspace{1.5pt}\hrule\vspace{4pt}
+        \textbullet\ Next.js Client Bundle\\
+        \textbullet\ WebAssembly Runtime (.wasm)\\
+        \textbullet\ Web Speech STT/TTS Engine\\
+        \textbullet\ HTML5 Canvas DRM Viewer
+    };
+
+    % Node Database Server (Middle Left)
+    \node[dep_node, fill=brandindigo!4, text width=4.5cm] (node_db) at (-4.2, -0.2) {
+        {\bfseries\color{brandindigo} $\ll$execution environment$\gg$}\\[-1pt]
+        {\bfseries Docker: PostgreSQL 16}\\
+        \vspace{1.5pt}\hrule\vspace{4pt}
+        \textbullet\ Relational DB Engine (:5432)\\
+        \textbullet\ \texttt{pgvector} Extension\\
+        \textbullet\ HNSW Index ($m=16, ef=64$)\\
+        \textbullet\ GIN Lexical TSVECTOR
+    };
+
+    % --- CỘT 2: INGRESS, BACKEND & CLOUD AI ---
+    % Node Gateway / Proxy (Top Right)
+    \node[dep_node, fill=gray!5, text width=4.5cm] (node_proxy) at (4.2, 3.5) {
+        {\bfseries\color{black!80} $\ll$device$\gg$ Cổng Nginx / CDN}\\
+        \vspace{1.5pt}\hrule\vspace{4pt}
+        \textbullet\ SSL/TLS 1.3 Termination\\
+        \textbullet\ Static Asset Cache\\
+        \textbullet\ Reverse Proxy Load Balancer\\
+        \textbullet\ Rate Limiter Middleware
+    };
+
+    % Node Application Server (Middle Right)
+    \node[dep_node, fill=brandteal!4, text width=4.5cm] (node_app) at (4.2, -0.2) {
+        {\bfseries\color{brandteal} $\ll$execution environment$\gg$}\\[-1pt]
+        {\bfseries Docker: FastAPI Core}\\
+        \vspace{1.5pt}\hrule\vspace{4pt}
+        \textbullet\ Uvicorn ASGI Server (:8000)\\
+        \textbullet\ Python 3.11 Runtime\\
+        \textbullet\ SQLAlchemy Async Engine\\
+        \textbullet\ Function Calling Dispatcher
+    };
+
+    % Docker Host Box enclosing DB and App
+    \begin{scope}[on background layer]
+        \node[draw=brandteal!70!black, dashed, line width=0.85pt, rounded corners=6pt, fill=teal!2,
+              fit=(node_db) (node_app), inner xsep=10pt, inner ysep=14pt,
+              label={[anchor=south west, font=\scriptsize\bfseries, text=brandteal!90!black, xshift=10pt, yshift=-1pt]north west:$\ll$node / server$\gg$ Cụm máy chủ Docker Host (Docker Container Engine)}] (docker_cluster) {};
+    \end{scope}
+
+    % Node Cloud External (Bottom Right)
+    \node[dep_node, fill=brandorange!4, text width=4.5cm] (node_cloud) at (4.2, -4.1) {
+        {\bfseries\color{brandorange} $\ll$cloud service$\gg$}\\[-1pt]
+        {\bfseries Google Cloud AI Platform}\\
+        \vspace{1.5pt}\hrule\vspace{4pt}
+        \textbullet\ Gemini 2.0 Flash API (LLM)\\
+        \textbullet\ \texttt{text-embedding-004} (Vector)\\
+        \textbullet\ Multimodal Vision Engine
+    };
+
+    % --- CONNECTIONS ---
+    % 1. Client -> Proxy (horizontal straight right)
+    \draw[msg_arrow, line width=0.85pt] (node_client.east) -- node[lbl] {HTTPS / WSS\\(Port 443)} (node_proxy.west);
+
+    % 2. Proxy -> App (vertical straight down)
+    \draw[msg_arrow, line width=0.85pt] (node_proxy.south) -- node[lbl, pos=0.32] {Proxy Pass\\(:8000)} (node_app.north);
+
+    % 3. App -> DB (horizontal straight left inside Docker Host)
+    \draw[bi_arrow] (node_app.west) -- node[lbl] {Docker Bridge :5432\\AsyncPG Connection Pool} (node_db.east);
+
+    % 4. App -> Cloud (vertical straight down)
+    \draw[bi_arrow] (node_app.south) -- node[lbl, pos=0.68] {HTTPS REST / SSE\\Gemini Streaming} (node_cloud.north);
+\end{tikzpicture}
+\caption{Biểu đồ triển khai hệ thống phân tán (Deployment Diagram)}
+\label{fig:deploy_diagram}
+\end{figure}
+
+\subsection{Thiết kế giao diện chương trình (UI/UX)}
+
+Hệ thống giao diện AuraBook được xây dựng theo ngôn ngữ thiết kế phẳng hiện đại, khoa học. Bảng màu chủ đạo gồm ba tông màu định vị thương hiệu:
+\begin{itemize}
+    \item \textbf{Màu xanh than chủ đạo (Primary Dark):} \texttt{\#0F172A} (Slate 900) tạo cảm giác tri thức, học thuật và chuyên nghiệp.
+    \item \textbf{Màu vàng ánh kim điểm nhấn (Accent Gold):} \texttt{\#F59E0B} (Amber 500) sử dụng cho các nút kêu gọi hành động (CTA), đánh giá sao và biểu tượng AI.
+    \item \textbf{Màu nền sáng dịu (Background Light):} \texttt{\#F8FAFC} (Slate 50) mang lại độ tương phản êm dịu, bảo vệ mắt độc giả trong các phiên đọc sách kéo dài.
+\end{itemize}
+
+\subsubsection{a) Màn hình Trang chủ \& Tìm kiếm ngữ nghĩa thông minh}
+\begin{itemize}
+    \item \textbf{Thanh điều hướng cố định (Sticky Header):} Logo thương hiệu, danh mục sách đa tầng, thanh tìm kiếm lai (Hybrid Search Bar) kèm biểu tượng Microphone tìm kiếm giọng nói, giỏ hàng tức thời và nút Đăng nhập/Hồ sơ.
+    \item \textbf{Khu vực Hero Banner:} Trực quan hóa thông điệp \textit{"Không gian tri thức số ứng dụng Trí tuệ Nhân tạo Đa phương thức"}, nút khám phá nhanh ấn phẩm và nghe thử tóm tắt âm thanh AI.
+    \item \textbf{Khu vực Lọc và Danh mục:} Cho phép lọc nhanh theo thể loại, khoảng giá và định dạng ấn phẩm (Sách in chuyển phát tận nơi hoặc E-book đọc ngay).
+    \item \textbf{Lưới hiển thị sách (Book Grid):} Thẻ sách trực quan hiển thị ảnh bìa, tên sách, tác giả, giá bán, nút "Thêm vào giỏ" và nút "Đọc thử / Nghe tóm tắt âm thanh".
+\end{itemize}
+
+\subsubsection{b) Màn hình Chi tiết sách \& Mua hàng}
+\begin{itemize}
+    \item \textbf{Cột bên trái:} Ảnh bìa phân giải cao kèm huy hiệu chứng nhận bản quyền DRM. Bên dưới là trình phát âm thanh tóm tắt ngắn ($60\text{s}$) tích hợp sóng âm visualizer sinh động do AI biên soạn tự động.
+    \item \textbf{Cột bên phải:} Tên sách, tác giả, nhà xuất bản, mã ISBN, điểm đánh giá. Khu vực chọn định dạng mua hàng rõ ràng: "Mua sách in" hoặc "Mua bản quyền E-book số". Hai nút hành động "Thêm vào giỏ" và "Mua ngay" nổi bật.
+    \item \textbf{Khu vực Tab thông tin:} Gồm ba tab: Tab 1 tóm tắt mục lục cuốn sách; Tab 2 đọc thử vài trang mẫu; Tab 3 đánh giá bình luận thực tế từ độc giả.
+\end{itemize}
+
+\subsubsection{c) Màn hình Trình đọc E-book tích hợp Chatbot RAG (Split-View Reader)}
+Bố cục chia đôi màn hình tương tác sâu:
+\begin{itemize}
+    \item \textbf{Khung hiển thị trang sách ($65\%$ chiều rộng):} Kết xuất hoàn toàn trên nền Canvas từ bộ nhớ cô lập WebAssembly sau khi giải mã AES-256-GCM. Thanh công cụ: lật trang, trượt cỡ chữ, 3 chế độ nền (Trắng / Sepia / Ban đêm). Vô hiệu hóa bôi đen sao chép và chuột phải kiểm tra phần tử.
+    \item \textbf{Khung Trợ lý đồng hành RAG ($35\%$ chiều rộng):} Cửa sổ đàm thoại song song. Phản hồi hiển thị dạng luồng gõ chữ thời gian thực (SSE) kèm huy hiệu dẫn chứng số trang \texttt{[Trang X]}. Khi người dùng bấm vào huy hiệu, khung sách bên trái tự động chuyển đến đúng trang tương ứng.
+\end{itemize}
+
+\subsubsection{d) Modal Tác tử thoại nổi (Floating Voice Telephony Modal)}
+Khi bấm vào biểu tượng Micro nổi ở góc màn hình, một hộp thoại bán trong suốt hiện lên với hiệu ứng sóng âm thanh chuyển động (Audio Waveform Visualizer). Hộp thoại hiển thị song song chuỗi văn bản nhận diện giọng nói (STT) và dòng phản hồi của AI kèm trạng thái gọi hàm nghiệp vụ (ví dụ: \textit{"Đang kiểm tra cơ sở dữ liệu đơn hàng DH1024..."}), mang lại cảm giác đối thoại minh bạch, tự nhiên.
+
+\subsubsection{e) Màn hình Bảng điều khiển quản trị (Admin Dashboard) \& Quét ảnh AI}
+\begin{itemize}
+    \item \textbf{Thẻ chỉ số tổng quan (KPI Cards):} Doanh thu trong ngày, đơn hàng mới, số đầu sách lưu hành, lượng độc giả trực tuyến.
+    \item \textbf{Biểu đồ trực quan:} Biểu đồ đường biểu diễn xu hướng doanh số bán sách in và E-book theo thời gian.
+    \item \textbf{Module Quét ảnh bìa Catalog Vision:} Khu vực kéo thả tệp ảnh. Khi Admin tải ảnh bìa lên, hệ thống hiển thị hiệu ứng quét laser; chỉ sau $1.5\text{ giây}$, toàn bộ các trường (Tên sách, Tác giả, ISBN, Năm xuất bản, Tóm tắt) tự động được điền vào biểu mẫu quản trị, sẵn sàng để lưu vào cơ sở dữ liệu.
+\end{itemize}
+
+\end{document}

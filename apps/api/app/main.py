@@ -1,0 +1,59 @@
+from contextlib import asynccontextmanager
+from collections.abc import AsyncGenerator
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.core.config import settings
+from app.core.redis import close_redis_pool
+from app.routers.api_v1 import api_v1_router
+from app.routers.health import router as health_router
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    """Application lifespan events (startup / shutdown)."""
+    # Startup tasks
+    yield
+    # Shutdown tasks
+    await close_redis_pool()
+
+
+def create_application() -> FastAPI:
+    """FastAPI Application Factory."""
+    app = FastAPI(
+        title=settings.APP_NAME,
+        description="AuraBook AI-powered backend service",
+        version="0.1.0",
+        docs_url="/docs" if settings.DEBUG else None,
+        redoc_url="/redoc" if settings.DEBUG else None,
+        openapi_url="/openapi.json" if settings.DEBUG else None,
+        lifespan=lifespan,
+    )
+
+    # Configure CORS
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.CORS_ORIGINS,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    # Mount base health routes
+    app.include_router(health_router)
+
+    # Mount API v1 routes
+    app.include_router(api_v1_router, prefix=settings.API_V1_PREFIX)
+
+    @app.get("/", tags=["Root"])
+    async def root() -> dict[str, str]:
+        return {
+            "message": f"Welcome to {settings.APP_NAME} API",
+            "version": "0.1.0",
+            "docs": "/docs" if settings.DEBUG else "Disabled in production",
+        }
+
+    return app
+
+
+app = create_application()
