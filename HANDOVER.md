@@ -55,3 +55,23 @@ Nếu bạn mở Conversation mới, chỉ cần gửi tin nhắn sau:
 Tiếp tục dự án AuraBook theo file HANDOVER.md và PROGRESS.md. Triển khai Phase 6 (AI RAG & Voice AI Companion).
 ```
 Tác tử sẽ tự động đọc tài liệu này và tiếp tục ngay lập tức!
+
+---
+
+## 📋 Bảng Đối Chiếu 13 Use Cases Chuẩn Luận Văn (filev45.tex)
+
+| Mã UC | Tên nghiệp vụ chuẩn | Backend Status | Frontend Status | Trạng thái tổng |
+| :---: | :--- | :---: | :---: | :---: |
+| **UC01** | Đăng ký & Đăng nhập JWT | ✅ Xong | ⏳ Chưa ghép Form UI | **Backend Xong** |
+| **UC02** | Tìm kiếm lai RRF (BM25 + 768d Vector) | 🟡 Đã có tìm kiếm cơ bản | ⏳ Chưa có Search Bar | **Cần nâng cấp RRF** |
+| **UC03** | Nghe thử âm thanh tóm tắt AI Teaser | ⏳ Chưa có router | ⏳ Chưa có Audio Player | **Chưa triển khai** |
+| **UC04** | Đặt hàng & Thanh toán Sandbox | ✅ Xong | 🟡 Đã có Simulator HTML | **Backend Xong** |
+| **UC05** | Đọc E-book WASM Canvas DRM | ✅ Xong | ✅ Xong | ✅ **HOÀN THÀNH 100%** |
+| **UC06** | Tác tử RAG Companion đối thoại | ✅ Xong | ✅ Xong | ✅ **HOÀN THÀNH 100%** |
+| **UC07** | Tác tử Thoại Voice AI Function Calling | ✅ Xong | ✅ Xong | ✅ **HOÀN THÀNH 100%** |
+| **UC08** | Đánh giá & Bình luận sách đã mua | 🟡 Đã có Model Review | ⏳ Chưa có Review UI | **Cần Router** |
+| **UC09** | Quản trị danh mục ấn phẩm (Admin) | 🟡 Đã có Model & Read | ⏳ Chưa có Admin UI | **Cần Router Admin** |
+| **UC10** | Quét ảnh bìa Vision OCR qua Gemini | ⏳ Chưa có router | ⏳ Chưa có Upload bìa | **Chưa triển khai** |
+| **UC11** | Quản trị vòng đời đơn hàng (Admin) | 🟡 Đã có Model & Flow | ⏳ Chưa có Admin Orders | **Cần Router Admin** |
+| **UC12** | Giám sát Dashboard thời gian thực | ⏳ Chưa có router | ⏳ Chưa có Dashboard UI | **Chưa triển khai** |
+| **UC13** | Tự động Chunking & Vector hóa | 🟡 Đã có thuật toán | ⏳ Chưa có Upload E-book | **Cần Background Worker** |

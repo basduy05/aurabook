@@ -61,3 +61,23 @@ Khi một phiên chat bị dừng giữa chừng (hết token, ngắt kết nố
      - `check_book_stock`: Tra cứu số lượng tồn kho khả dụng của tựa sách trong danh mục.
    - **Bảo mật & Kiểm toán**: Model `AuditLog` (`audit_logs`) ghi nhận mọi thao tác nhạy cảm với `user_id`, `action`, `entity_type`, `entity_id` và `details` JSON.
    - **Giao diện Voice Assistant toàn cục**: Component `apps/web/components/voice-assistant.tsx` gắn tại `apps/web/app/layout.tsx` với Web Speech API nhận dạng giọng nói tiếng Việt (`vi-VN`), tổng hợp giọng đọc (`speechSynthesis`) và hiển thị huy hiệu hàm thực thi minh bạch.
+
+---
+
+## 📋 Bảng Đối Chiếu Toàn Bộ 13 Use Cases Chuẩn Luận Văn (filev45.tex)
+
+| Mã UC | Tên nghiệp vụ chuẩn | Trạng thái Backend | Trạng thái Frontend | Ghi chú kỹ thuật |
+| :---: | :--- | :---: | :---: | :--- |
+| **UC01** | Đăng ký & Đăng nhập JWT | ✅ **100% Hoàn thành** | ⏳ Chưa ghép Form UI | Bcrypt, Access (1d) + Refresh (7d), RBAC |
+| **UC02** | Tìm kiếm lai RRF (BM25 + 768d Vector) | 🟡 **Đã có tìm kiếm cơ bản** | ⏳ Chưa có Search Bar UI | Cần bổ sung thuật toán RRF k=60 song song |
+| **UC03** | Nghe thử âm thanh tóm tắt AI Teaser | ⏳ **Chưa triển khai** | ⏳ Chưa có Audio Player | Cần endpoint GET /api/v1/books/{id}/audio-teaser |
+| **UC04** | Đặt hàng & Thanh toán Sandbox | ✅ **100% Hoàn thành** | 🟡 Đã có Simulator HTML | SELECT FOR UPDATE, Hold 15m, Webhook IPN |
+| **UC05** | Đọc E-book WASM Canvas DRM | ✅ **100% Hoàn thành** | ✅ **100% Hoàn thành** | Khóa phiên AES-GCM AEAD Tag, Canvas RAM zero-out |
+| **UC06** | Tác tử RAG Companion đối thoại | ✅ **100% Hoàn thành** | ✅ **100% Hoàn thành** | 768d Cosine Search, SSE Stream, Dẫn chứng trang |
+| **UC07** | Tác tử Thoại Voice AI Function Calling | ✅ **100% Hoàn thành** | ✅ **100% Hoàn thành** | Gemini Function Calling, Hoàn kho, Audit Log |
+| **UC08** | Đánh giá & Bình luận sách đã mua | 🟡 **Đã có Model Review** | ⏳ Chưa có Review UI | Cần Router kiểm tra đơn PAID & tính avg_rating |
+| **UC09** | Quản trị danh mục ấn phẩm (Admin) | 🟡 **Đã có Model & Read** | ⏳ Chưa có Admin UI | Cần Router Admin Create/Update/Delete/Stock |
+| **UC10** | Quét ảnh bìa Vision OCR qua Gemini | ⏳ **Chưa triển khai** | ⏳ Chưa có UI Upload bìa | Cần Gemini Flash Vision OCR autofill |
+| **UC11** | Quản trị vòng đời đơn hàng (Admin) | 🟡 **Đã có Model & Flow** | ⏳ Chưa có Admin Orders UI | Cần Router Admin cập nhật trạng thái đơn |
+| **UC12** | Giám sát Dashboard thời gian thực | ⏳ **Chưa triển khai** | ⏳ Chưa có Dashboard UI | Cần Router Admin thống kê doanh thu, KPI |
+| **UC13** | Tự động Chunking & Vector hóa Embeddings | 🟡 **Đã có thuật toán** | ⏳ Chưa có Upload E-book | Cần Background Worker cắt 512 tokens, embed 768d |
