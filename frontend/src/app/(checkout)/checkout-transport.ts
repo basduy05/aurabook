@@ -3,6 +3,7 @@ import {
 	initializeCheckoutTransaction,
 	initializePaymentGateways,
 	processCheckoutTransaction,
+	recordCheckoutPaymentInfo,
 	runCheckoutComplete,
 	syncCheckoutFromServer,
 	updateCheckoutBillingAddress,
@@ -22,4 +23,5 @@ export const nextCheckoutTransport: CheckoutTransport = {
 	initializeTransaction: initializeCheckoutTransaction,
 	processTransaction: processCheckoutTransaction,
 	completeCheckout: runCheckoutComplete,
+	recordPaymentInfo: recordCheckoutPaymentInfo,
 };

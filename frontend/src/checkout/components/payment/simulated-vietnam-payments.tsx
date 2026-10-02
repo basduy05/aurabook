@@ -2,26 +2,28 @@
 
 import { useState, useEffect, type FC } from "react";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
 import { type CheckoutFragment, type AddressFragment } from "@/checkout/graphql";
-import {
-	CheckCircle2,
-	RefreshCw,
-	CreditCard,
-	AlertTriangle,
-	ShieldCheck,
-	Check,
-	ArrowRight,
-} from "lucide-react";
+import { FlaskConical } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { updateCheckoutBilling } from "@/checkout/lib/payment";
 import { executeDummyPayment } from "@/checkout/lib/payment/providers/dummy-pay";
+import { getCheckoutTransport } from "@/checkout/lib/checkout-transport";
 import { useCheckoutGatewayMessages } from "@/checkout/hooks/use-checkout-gateway-messages";
+import { useCheckoutPaymentMessages } from "@/checkout/hooks/use-checkout-payment-messages";
 import { navigateToOrderConfirmation } from "@/checkout/lib/payment/navigate-to-order";
+import {
+	markPaymentCompleting,
+	clearPaymentCompleting,
+} from "@/checkout/lib/payment/checkout-payment-completion";
 import { type BillingAddressData } from "./billing-address-section";
+import { PaymentTrustSignals } from "./payment-trust-signals";
+import { LoadingSpinner } from "@/checkout/ui-kit/loading-spinner";
+import { formatMoneyWithFallback } from "@/checkout/lib/utils/money";
+import { convertToVnd, formatVnd } from "@/checkout/lib/utils/currency-converter";
 import { useTranslations } from "next-intl";
+import { cn } from "@/lib/utils";
 
-/** Decorative card surface style - matching original AuraBook card */
+/** Soft ambient sheen — corner blooms only, no diagonal stripe. Exactly matches storefront. */
 const CARD_SURFACE_STYLE = {
 	background: [
 		"radial-gradient(130% 100% at 0% 0%, rgba(255,255,255,0.11), transparent 52%)",
@@ -35,7 +37,7 @@ const CARD_SURFACE_STYLE = {
 	].join(", "),
 } as const;
 
-type PaymentMethodId = "test-card" | "vnpay" | "momo" | "zalopay" | "shopeepay";
+type PaymentMethodId = "test-card" | "vnpay" | "momo";
 
 interface PaymentMethodItem {
 	id: PaymentMethodId;
@@ -44,43 +46,78 @@ interface PaymentMethodItem {
 	logo: string;
 	logoWidth: number;
 	logoHeight: number;
+	logoClassName: string;
 }
 
-// 4 cổng thanh toán Việt Nam chính thức + Thẻ thử nghiệm
 const PAYMENT_METHODS: PaymentMethodItem[] = [
 	{
 		id: "vnpay",
-		name: "Cổng thanh toán VNPAY-QR / Thẻ ATM",
-		description: "Quét mã QR hoặc dùng thẻ ATM 40+ ngân hàng nội địa (Vietcombank, BIDV, NCB...)",
+		name: "VNPAY",
+		description: "Quét mã QR hoặc dùng thẻ ATM / thẻ quốc tế qua cổng VNPAY",
 		logo: "/images/payment/vnpay.svg",
-		logoWidth: 84,
-		logoHeight: 24,
+		logoWidth: 120,
+		logoHeight: 34,
+		logoClassName: "h-8 sm:h-9 w-auto object-contain",
 	},
 	{
 		id: "momo",
-		name: "Ví điện tử MoMo",
-		description: "Thanh toán nhanh chóng bằng ứng dụng Ví MoMo trên điện thoại",
+		name: "Ví MoMo",
+		description: "Thanh toán nhanh bằng ứng dụng MoMo (Sandbox)",
 		logo: "/images/payment/momo.svg",
-		logoWidth: 30,
-		logoHeight: 30,
-	},
-	{
-		id: "zalopay",
-		name: "Ví điện tử ZaloPay",
-		description: "Thanh toán tiện lợi bằng ví ZaloPay hoặc tài khoản Zalo liên kết",
-		logo: "/images/payment/zalopay.svg",
-		logoWidth: 80,
-		logoHeight: 20,
-	},
-	{
-		id: "shopeepay",
-		name: "Ví điện tử ShopeePay",
-		description: "Thanh toán an toàn qua ví điện tử ShopeePay",
-		logo: "/images/payment/shopeepay.svg",
-		logoWidth: 78,
-		logoHeight: 24,
+		logoWidth: 40,
+		logoHeight: 40,
+		logoClassName: "h-9 w-9 sm:h-10 sm:w-10 object-contain",
 	},
 ];
+
+/**
+ * Decorative card preview — styled exactly like storefront's TestCardMockup.
+ * Flat, non-floating, with token-driven active ring indicator.
+ */
+interface TestCardMockupProps {
+	isSelected: boolean;
+	onClick: () => void;
+}
+
+const TestCardMockup: FC<TestCardMockupProps> = ({ isSelected, onClick }) => (
+	<div
+		role="button"
+		tabIndex={0}
+		aria-label="Thẻ thanh toán thử nghiệm"
+		aria-pressed={isSelected}
+		onClick={onClick}
+		onKeyDown={(e) => {
+			if (e.key === "Enter" || e.key === " ") {
+				e.preventDefault();
+				onClick();
+			}
+		}}
+		className={cn(
+			"relative aspect-[856/520] w-full max-w-[420px] mx-auto rounded-2xl cursor-pointer transition-opacity",
+			isSelected
+				? "opacity-100 ring-2 ring-foreground ring-offset-2 ring-offset-background"
+				: "opacity-60 hover:opacity-90",
+		)}
+	>
+		<div
+			className="absolute inset-0 overflow-hidden rounded-2xl p-5 text-white sm:p-6"
+			style={CARD_SURFACE_STYLE}
+		>
+			<div className="relative z-10 flex h-full flex-col justify-between">
+				<div className="flex justify-end">
+					<span className="text-[10px] font-medium uppercase tracking-widest text-white/45 sm:text-xs">
+						Test
+					</span>
+				</div>
+				<p className="font-mono text-base tracking-[0.2em] text-white/90 sm:text-lg">•••• •••• •••• 4242</p>
+				<div className="flex items-end justify-between text-xs text-white/60 sm:text-sm">
+					<span className="uppercase tracking-wide">Test cardholder</span>
+					<span>12/28</span>
+				</div>
+			</div>
+		</div>
+	</div>
+);
 
 export interface SimulatedVietnamPaymentsProps {
 	checkout?: CheckoutFragment;
@@ -100,99 +137,75 @@ export interface SimulatedVietnamPaymentsProps {
 export const SimulatedVietnamPayments: FC<SimulatedVietnamPaymentsProps> = ({
 	checkout,
 	billing,
-	gatewayName: _gatewayName,
+	gatewayName,
 	onPaymentError,
 	onPaymentActivityChange,
 }) => {
 	const tSteps = useTranslations("checkout.steps");
+	const tActions = useTranslations("checkout.actions");
 	const gatewayMessages = useCheckoutGatewayMessages();
-	const searchParams = useSearchParams();
+	const paymentMessages = useCheckoutPaymentMessages();
 
-	// Mặc định chọn thẻ test hoặc VNPAY
 	const [selectedMethodId, setSelectedMethodId] = useState<PaymentMethodId>("test-card");
 	const [isLoading, setIsLoading] = useState(false);
-	const [isVerifyingFromBank, setIsVerifyingFromBank] = useState(false);
-	const [bankNoticeMessage, setBankNoticeMessage] = useState<string | null>(null);
 
-	const totalAmount = checkout?.totalPrice?.gross?.amount ?? 0;
-	const currency = checkout?.totalPrice?.gross?.currency ?? "VND";
+	const label = gatewayName?.trim() || paymentMessages.dummyGateway;
+	const grossPrice = checkout?.totalPrice?.gross;
+	const totalAmount = grossPrice?.amount ?? 0;
+	const currency = grossPrice?.currency?.toUpperCase() ?? "VND";
+	const isVnd = currency === "VND";
+	const vndAmount = convertToVnd(totalAmount, currency);
+	const formattedVnd = formatVnd(vndAmount);
+	const formattedTotal = formatMoneyWithFallback(grossPrice);
 
-	const formattedTotal = new Intl.NumberFormat("vi-VN", {
-		style: "currency",
-		currency,
-	}).format(totalAmount);
-
-	// TỰ ĐỘNG BẮT PHẢN HỒI XÁC NHẬN TỪ CỔNG THANH TOÁN / NGÂN HÀNG (Không dùng nút bấm tay)
+	// Detect if returning from an abandoned or failed external payment gateway redirect
 	useEffect(() => {
-		if (!checkout) return;
-
-		const vnpResponseCode = searchParams.get("vnp_ResponseCode");
-		const momoResultCode = searchParams.get("resultCode");
-		const zalopayStatus = searchParams.get("status");
-		const providerStatus = searchParams.get("provider_status");
-		const gateway = searchParams.get("gateway");
-
-		// Ngân hàng phản hồi thành công (vnpay: 00, momo: 0, zalopay: 1, provider_status: success)
-		const isSuccessFromBank =
-			vnpResponseCode === "00" ||
-			momoResultCode === "0" ||
-			zalopayStatus === "1" ||
-			zalopayStatus === "SUCCESS" ||
-			providerStatus === "success";
-
-		// Khách hàng hủy giao dịch tại cổng (vnpay: 24, momo: 1006)
-		const isCancelledByCustomer =
-			vnpResponseCode === "24" ||
-			momoResultCode === "1006" ||
-			searchParams.get("error") === "cancelled";
-
-		if (isSuccessFromBank && !isVerifyingFromBank) {
-			setIsVerifyingFromBank(true);
-			onPaymentActivityChange?.(true);
-
-			const finalizeOrderFromBank = async () => {
-				try {
-					const dummyGatewayId = checkout.availablePaymentGateways?.[0]?.id || "saleor.io.dummy-payment-app";
-					const result = await executeDummyPayment(
-						{ checkoutId: checkout.id, amount: totalAmount },
-						dummyGatewayId,
-						gatewayMessages,
+		try {
+			sessionStorage.setItem("checkout_return_path", window.location.pathname);
+			const pendingGateway = sessionStorage.getItem("checkout:pending_gateway");
+			if (pendingGateway) {
+				sessionStorage.removeItem("checkout:pending_gateway");
+				const params = new URLSearchParams(window.location.search);
+				const vnpCode = params.get("vnp_ResponseCode");
+				const momoCode = params.get("resultCode");
+				if (vnpCode !== "00" && momoCode !== "0") {
+					const name = pendingGateway === "vnpay" ? "VNPAY" : "Ví MoMo";
+					onPaymentError?.(
+						`Giao dịch thanh toán qua ${name} chưa hoàn tất hoặc cổng thanh toán gặp sự cố (Mã lỗi cổng thanh toán / Không tìm thấy website). Vui lòng thực hiện lại đơn hàng hoặc chọn phương thức khác.`,
 					);
-
-					if (!result.ok) {
-						throw new Error(result.error);
-					}
-
-					// Điều hướng sang trang xác nhận đơn hàng thành công
-					navigateToOrderConfirmation(result.orderViewToken);
-				} catch (err: unknown) {
-					const msg = err instanceof Error ? err.message : "Lỗi xác thực thanh toán từ ngân hàng";
-					setIsVerifyingFromBank(false);
-					onPaymentActivityChange?.(false);
-					onPaymentError?.(msg);
 				}
-			};
-
-			void finalizeOrderFromBank();
-		} else if (isCancelledByCustomer) {
-			setBankNoticeMessage(
-				`Giao dịch thanh toán qua ${gateway?.toUpperCase() || "cổng thanh toán"} đã bị hủy. Bạn có thể chọn phương thức khác để hoàn tất đơn hàng.`,
-			);
-		} else if (vnpResponseCode && vnpResponseCode !== "00") {
-			setBankNoticeMessage(
-				`Cổng thanh toán phản hồi: Giao dịch không thành công (Mã lỗi: ${vnpResponseCode}). Vui lòng thử lại.`,
-			);
+			}
+		} catch {
+			// ignore
 		}
-	}, [checkout, searchParams]);
+	}, [onPaymentError]);
 
-	// Xử lý khi nhấn nút tiến hành thanh toán
 	const handleProceedPayment = async () => {
 		if (!checkout) return;
 		setIsLoading(true);
 		onPaymentActivityChange?.(true);
 
+		// Synchronously pre-open new tab for real external gateways (VNPAY, MoMo) to avoid browser popup blockers
+		let paymentTab: Window | null = null;
+		if (selectedMethodId !== "test-card") {
+			try {
+				paymentTab = window.open("", "_blank");
+				if (paymentTab && !paymentTab.closed) {
+					try {
+						paymentTab.document.write(
+							`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Đang kết nối cổng thanh toán...</title><style>body{margin:0;font-family:system-ui,-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;background:#fafafa;color:#222;}p{font-size:15px;}</style></head><body><p>Đang kết nối đến cổng thanh toán, vui lòng đợi trong giây lát...</p></body></html>`,
+						);
+					} catch {
+						// ignore
+					}
+				}
+			} catch {
+				// popup blocked or not supported
+			}
+		}
+
 		try {
-			// Cập nhật thông tin billing trước
+			// Update billing first
 			if (billing) {
 				await updateCheckoutBilling({
 					checkoutId: checkout.id,
@@ -205,16 +218,41 @@ export const SimulatedVietnamPayments: FC<SimulatedVietnamPaymentsProps> = ({
 				});
 			}
 
-			// TRƯỜNG HỢP 1: DÙNG TRỰC TIẾP THẺ THỬ NGHIỆM (Card test)
+			// Test card — show completing screen immediately and finalize via dummy gateway
 			if (selectedMethodId === "test-card") {
-				const dummyGatewayId = checkout.availablePaymentGateways?.[0]?.id || "saleor.io.dummy-payment-app";
+				markPaymentCompleting(checkout.id);
+
+				const testPspRef = `TEST_CARD_${Date.now()}`;
+				const methodName = "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)";
+				const note = `Phương thức thanh toán: ${methodName} (Mã GD: ${testPspRef}, Thẻ: 4242)`;
+
+				await getCheckoutTransport().recordPaymentInfo({
+					checkoutId: checkout.id,
+					methodName,
+					gateway: "test-card",
+					note,
+					metadata: {
+						card_brand: "Visa / Mastercard Test",
+						card_last4: "4242",
+						test_reference: testPspRef,
+					},
+				});
+
+				const dummyGatewayId =
+					checkout.availablePaymentGateways?.[0]?.id ?? "saleor.io.dummy-payment-app";
 				const result = await executeDummyPayment(
 					{ checkoutId: checkout.id, amount: totalAmount },
 					dummyGatewayId,
 					gatewayMessages,
+					{
+						paymentMethodName: "Thẻ thanh toán thử nghiệm",
+						pspReference: testPspRef,
+						message: "Thanh toán thành công qua thẻ thử nghiệm",
+					},
 				);
 
 				if (!result.ok) {
+					clearPaymentCompleting();
 					throw new Error(result.error);
 				}
 
@@ -222,11 +260,72 @@ export const SimulatedVietnamPayments: FC<SimulatedVietnamPaymentsProps> = ({
 				return;
 			}
 
-			// TRƯỜNG HỢP 2: DÙNG CÁC CỔNG THANH TOÁN (VNPAY, MoMo, ZaloPay, ShopeePay)
-			// Chuyển hướng sang giao diện cổng thanh toán
-			const gatewayUrl = `/checkout/gateway?provider=${selectedMethodId}&orderId=${encodeURIComponent(checkout.id)}&amount=${totalAmount}&currency=${currency}`;
-			window.location.href = gatewayUrl;
+			// Real payment gateways (VNPAY, MoMo) — record pending state and fetch payment URL
+			try {
+				sessionStorage.setItem("checkout:pending_gateway", selectedMethodId);
+			} catch {
+				// ignore
+			}
+
+			const apiEndpointMap: Record<string, string> = {
+				vnpay: "/api/payment/vnpay/create",
+				momo: "/api/payment/momo/create",
+			};
+
+			const endpoint = apiEndpointMap[selectedMethodId];
+			if (!endpoint) {
+				if (paymentTab && !paymentTab.closed) paymentTab.close();
+				throw new Error("Phương thức thanh toán không hợp lệ");
+			}
+
+			const response = await fetch(endpoint, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					orderId: checkout.id,
+					amount: totalAmount,
+					currency,
+					orderInfo: `AuraBook - Thanh toán đơn hàng`,
+				}),
+			});
+
+			const data = (await response.json()) as {
+				success: boolean;
+				paymentUrl?: string;
+				redirectUrl?: string;
+				error?: string;
+			};
+
+			if (!data.success || (!data.paymentUrl && !data.redirectUrl)) {
+				if (paymentTab && !paymentTab.closed) paymentTab.close();
+				throw new Error(
+					data.error ??
+						`Không thể kết nối đến cổng thanh toán ${selectedMethodId.toUpperCase()}. Vui lòng kiểm tra lại cấu hình hoặc thử lại.`,
+				);
+			}
+
+			// Open in new tab without overwriting current tab
+			const targetUrl = data.paymentUrl ?? data.redirectUrl!;
+			if (paymentTab && !paymentTab.closed) {
+				paymentTab.location.href = targetUrl;
+			} else {
+				const fallbackPopup = window.open(targetUrl, "_blank");
+				if (!fallbackPopup) {
+					// Fallback only if popups are completely blocked by user's browser settings
+					window.location.href = targetUrl;
+					return;
+				}
+			}
+
+			// Show loading screen (PaymentCompletingScreen) on the current checkout tab while waiting for payment
+			markPaymentCompleting(checkout.id);
+			setIsLoading(false);
+			onPaymentActivityChange?.(false);
 		} catch (err: unknown) {
+			if (paymentTab && !paymentTab.closed) {
+				paymentTab.close();
+			}
+			clearPaymentCompleting();
 			const msg = err instanceof Error ? err.message : "Lỗi khi xử lý thanh toán";
 			onPaymentError?.(msg);
 			setIsLoading(false);
@@ -234,210 +333,124 @@ export const SimulatedVietnamPayments: FC<SimulatedVietnamPaymentsProps> = ({
 		}
 	};
 
-	// 1. MÀN HÌNH ĐANG XÁC THỰC KẾT QUẢ TỪ NGÂN HÀNG (Do ngân hàng chuyển hướng về)
-	if (isVerifyingFromBank) {
-		return (
-			<section className="space-y-6">
-				<h2 className="text-lg font-semibold">{tSteps("payment")}</h2>
-				<div className="rounded-2xl border border-sky-200 bg-sky-50/70 p-6 text-center dark:border-sky-900/50 dark:bg-sky-950/30">
-					<div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-sky-100 text-sky-600 dark:bg-sky-900/60 dark:text-sky-300">
-						<RefreshCw className="h-7 w-7 animate-spin text-sky-600" />
-					</div>
-					<h3 className="mt-4 text-base font-bold text-sky-950 dark:text-sky-100">
-						Đang xác thực kết quả thanh toán từ ngân hàng…
-					</h3>
-					<p className="mt-1.5 text-sm text-sky-700 dark:text-sky-300">
-						Hệ thống đang đối chiếu dữ liệu giao dịch và tạo đơn hàng chính thức cho bạn.
-					</p>
-					<div className="mt-4 flex items-center justify-center gap-2 text-xs font-medium text-sky-600 dark:text-sky-400">
-						<CheckCircle2 className="h-4 w-4 text-emerald-500" />
-						Ngân hàng đã xác nhận thanh toán thành công
-					</div>
-				</div>
-			</section>
-		);
-	}
-
 	return (
 		<section className="space-y-6">
-			<h2 className="text-lg font-semibold">{tSteps("payment")}</h2>
-
-			{/* Thông báo từ ngân hàng nếu có */}
-			{bankNoticeMessage && (
-				<div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 flex items-start gap-2.5 text-xs text-amber-800 dark:text-amber-200">
-					<AlertTriangle className="w-4 h-4 shrink-0 text-amber-600 mt-0.5" />
-					<div className="flex-1">{bankNoticeMessage}</div>
-				</div>
-			)}
-
-			{/* 1. KHU VỰC THẺ THỬ NGHIỆM (Clickable & Usable) */}
-			<div className="space-y-2">
-				<div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-medium">
-					<span>Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)</span>
-					{selectedMethodId === "test-card" && (
-						<span className="text-sky-600 dark:text-sky-400 font-semibold flex items-center gap-1">
-							<Check className="w-3.5 h-3.5" /> Đang chọn
-						</span>
-					)}
-				</div>
-
-				<div
-					role="button"
-					tabIndex={0}
+			{/* Storefront-exact Dummy Payment Section with TestCardMockup */}
+			<div className="space-y-3">
+				<h2 className="text-lg font-semibold">{tSteps("payment")}</h2>
+				<p className="flex items-start gap-2 text-sm text-muted-foreground">
+					<FlaskConical className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+					<span>
+						<span className="text-foreground">{label}</span>
+						{" · "}
+						{paymentMessages.dummyTestMode}
+					</span>
+				</p>
+				<TestCardMockup
+					isSelected={selectedMethodId === "test-card"}
 					onClick={() => setSelectedMethodId("test-card")}
-					onKeyDown={(e) => {
-						if (e.key === "Enter" || e.key === " ") {
-							e.preventDefault();
-							setSelectedMethodId("test-card");
-						}
-					}}
-					className={`relative aspect-[856/500] w-full max-w-[420px] mx-auto rounded-2xl cursor-pointer transition-all duration-200 ${
-						selectedMethodId === "test-card"
-							? "ring-4 ring-sky-500/80 shadow-lg scale-[1.01]"
-							: "opacity-85 hover:opacity-100 hover:scale-[1.005]"
-					}`}
-				>
-					<div
-						className="absolute inset-0 overflow-hidden rounded-2xl p-5 text-white sm:p-6"
-						style={CARD_SURFACE_STYLE}
-					>
-						<div className="relative z-10 flex h-full flex-col justify-between">
-							<div className="flex items-center justify-between">
-								<div className="flex items-center gap-2">
-									<CreditCard className="w-4 h-4 text-sky-400" />
-									<span className="text-[11px] font-semibold tracking-wider uppercase text-white/70">
-										AuraBook Test Card
-									</span>
-								</div>
-								<span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest bg-sky-500/20 text-sky-300 border border-sky-400/30">
-									Sandbox Mode
-								</span>
-							</div>
-
-							<div className="space-y-1">
-								<p className="font-mono text-base tracking-[0.25em] text-white/95 sm:text-lg">
-									•••• •••• •••• 4242
-								</p>
-								<p className="text-[10px] text-white/50">Thẻ thanh toán thử nghiệm tích hợp sẵn</p>
-							</div>
-
-							<div className="flex items-end justify-between text-xs text-white/70 sm:text-sm">
-								<span className="uppercase tracking-wide font-medium">AuraBook Tester</span>
-								<span className="font-mono">12/28</span>
-							</div>
-						</div>
-					</div>
-				</div>
+				/>
 			</div>
 
-			{/* 2. DANH SÁCH 4 CỔNG THANH TOÁN VIỆT NAM (1 CỘT, 4 HÀNG DÀI RA) */}
+			{/* PAYMENT METHOD LIST — Styled strictly following storefront selection components */}
 			<div className="space-y-3">
-				<div className="text-xs font-semibold text-slate-600 dark:text-slate-400">
+				<p className="text-sm text-muted-foreground">
 					Hoặc chọn cổng thanh toán trực tuyến:
-				</div>
+				</p>
 
-				<div className="flex flex-col gap-2.5">
+				<div className="space-y-3">
 					{PAYMENT_METHODS.map((method) => {
 						const isSelected = selectedMethodId === method.id;
 						return (
-							<div
+							<label
 								key={method.id}
-								role="button"
-								tabIndex={0}
-								onClick={() => setSelectedMethodId(method.id)}
-								onKeyDown={(e) => {
-									if (e.key === "Enter" || e.key === " ") {
-										e.preventDefault();
-										setSelectedMethodId(method.id);
-									}
-								}}
-								className={`w-full flex items-center justify-between p-3.5 sm:p-4 rounded-xl border text-left cursor-pointer transition-all ${
+								className={cn(
+									"flex cursor-pointer items-center justify-between gap-4 rounded-lg border p-4 transition-colors",
+									"focus-within:ring-2 focus-within:ring-foreground focus-within:ring-offset-2",
 									isSelected
-										? "border-sky-500 bg-sky-50/50 dark:bg-sky-950/25 ring-2 ring-sky-500/30 shadow-sm"
-										: "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700"
-								}`}
+										? "border-foreground bg-secondary/50"
+										: "border-border hover:border-muted-foreground/50",
+								)}
 							>
-								{/* Left: Official Logo + Name + Description */}
-								<div className="flex items-center gap-3.5 min-w-0 flex-1 pr-3">
-									<div className="h-9 w-24 shrink-0 flex items-center justify-center bg-white dark:bg-slate-800/80 rounded-lg p-1 border border-slate-100 dark:border-slate-800 shadow-2xs">
+								<input
+									type="radio"
+									name="payment_gateway"
+									value={method.id}
+									checked={isSelected}
+									onChange={() => setSelectedMethodId(method.id)}
+									className="sr-only"
+								/>
+
+								{/* Left: Logo without border box + Name + Description */}
+								<div className="flex items-center gap-4 min-w-0 flex-1 pr-3">
+									<div className="shrink-0 flex items-center justify-center w-28 sm:w-32">
 										<Image
 											src={method.logo}
 											alt={method.name}
 											width={method.logoWidth}
 											height={method.logoHeight}
-											className="max-h-7 w-auto object-contain"
+											className={method.logoClassName}
 										/>
 									</div>
 
 									<div className="min-w-0 flex-1">
-										<div className="text-sm font-semibold text-slate-800 dark:text-slate-100 truncate">
-											{method.name}
-										</div>
-										<div className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
+										<span className="font-medium text-foreground">{method.name}</span>
+										<p className="text-sm text-muted-foreground mt-0.5">
 											{method.description}
-										</div>
+										</p>
 									</div>
 								</div>
 
-								{/* Right: Radio selection indicator */}
-								<div className="shrink-0 flex items-center">
-									<div
-										className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
-											isSelected
-												? "border-sky-600 bg-sky-600 text-white"
-												: "border-slate-300 dark:border-slate-600"
-										}`}
-									>
-										{isSelected && <Check className="w-3 h-3 stroke-[3]" />}
-									</div>
+								{/* Right: Storefront radio indicator */}
+								<div
+									className={cn(
+										"flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
+										isSelected ? "border-foreground" : "border-muted-foreground/50",
+									)}
+								>
+									{isSelected && <div className="h-2.5 w-2.5 rounded-full bg-foreground" />}
 								</div>
-							</div>
+							</label>
 						);
 					})}
 				</div>
 			</div>
 
-			{/* 3. NÚT TIẾN HÀNH THANH TOÁN CHÍNH */}
-			<div className="pt-2 space-y-2">
+			{/* PROCEED BUTTON & TRUST SIGNALS */}
+			<div className="pt-2 space-y-3">
+				{!isVnd && selectedMethodId !== "test-card" && (
+					<div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 px-3.5 py-2.5 text-xs text-muted-foreground">
+						<span>Tỷ giá quy đổi sang cổng thanh toán:</span>
+						<span className="font-semibold text-foreground">
+							{formattedTotal} ≈ {formattedVnd}
+						</span>
+					</div>
+				)}
+
 				<Button
 					type="button"
+					size="lg"
 					onClick={handleProceedPayment}
 					disabled={isLoading}
-					className="w-full py-6 text-base font-bold shadow-md rounded-xl bg-sky-600 hover:bg-sky-700 text-white"
+					className="h-12 w-full font-medium"
 				>
 					{isLoading ? (
-						<div className="flex items-center justify-center gap-2">
-							<RefreshCw className="w-5 h-5 animate-spin" />
-							<span>Đang khởi tạo thanh toán…</span>
-						</div>
+						<span className="flex items-center justify-center gap-2">
+							<LoadingSpinner />
+							<span>{tActions("processingPayment")}</span>
+						</span>
 					) : (
-						<div className="flex items-center justify-center gap-2">
-							{selectedMethodId === "test-card" ? (
-								<>
-									<CreditCard className="w-5 h-5" />
-									<span>Thanh toán ngay bằng Thẻ thử nghiệm ({formattedTotal})</span>
-								</>
-							) : (
-								<>
-									<span>
-										Tiến hành thanh toán qua{" "}
-										{PAYMENT_METHODS.find((m) => m.id === selectedMethodId)?.name.split("/")[0] || "Cổng thanh toán"}
-									</span>
-									<ArrowRight className="w-5 h-5" />
-								</>
-							)}
-						</div>
+						<span>
+							{selectedMethodId === "test-card"
+								? tActions("payTotal", { total: formattedTotal })
+								: isVnd
+									? `Tiến hành thanh toán qua ${PAYMENT_METHODS.find((m) => m.id === selectedMethodId)?.name ?? "cổng thanh toán"}`
+									: `Tiến hành thanh toán qua ${PAYMENT_METHODS.find((m) => m.id === selectedMethodId)?.name ?? "cổng thanh toán"} (${formattedVnd})`}
+						</span>
 					)}
 				</Button>
 
-				<div className="flex items-center justify-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 text-center">
-					<ShieldCheck className="w-4 h-4 text-emerald-600" />
-					<span>
-						{selectedMethodId === "test-card"
-							? "Môi trường kiểm thử Saleor Dummy Payment an toàn"
-							: "Thanh toán bảo mật qua chuẩn mã hóa ngân hàng (Redirect Gateway)"}
-					</span>
-				</div>
+				<PaymentTrustSignals />
 			</div>
 		</section>
 	);

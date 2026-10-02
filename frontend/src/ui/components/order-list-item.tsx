@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { formatDate, formatMoney, getHrefForVariant } from "@/lib/utils";
+import { isLocalImageUrl } from "@/lib/images";
 import { type OrderDetailsFragment } from "@/gql/graphql";
 import { PaymentStatus } from "@/ui/components/payment-status";
 
@@ -70,6 +71,7 @@ export const OrderListItem = ({ order }: Props) => {
 																alt={product.thumbnail.alt ?? ""}
 																width={200}
 																height={200}
+																unoptimized={isLocalImageUrl(product.thumbnail.url)}
 																className="h-full w-full object-contain object-center"
 															/>
 														</div>

@@ -248,6 +248,82 @@ export async function updateCheckoutMarketingConsent(
 	return { ok: true };
 }
 
+export interface RecordCheckoutPaymentInfoInput {
+	checkoutId: string;
+	methodName: string;
+	gateway: "vnpay" | "momo" | "test-card";
+	note?: string;
+	metadata?: Record<string, string | number | boolean | null | undefined>;
+}
+
+/**
+ * Persists payment method name, gateway, notes, and technical metadata onto the checkout.
+ * Saleor Core automatically copies `checkout.note` to `order.customer_note` and
+ * `checkout.metadata` to `order.metadata` during order completion.
+ */
+export async function recordCheckoutPaymentInfo(
+	input: RecordCheckoutPaymentInfoInput,
+): Promise<SimpleActionResult> {
+	const { checkoutId, methodName, gateway, note, metadata } = input;
+
+	try {
+		// 1. Update customer note on checkout (shows prominently in Saleor Dashboard Customer Notes)
+		if (note && note.trim()) {
+			const noteQuery = `
+				mutation CheckoutCustomerNoteUpdate($id: ID!, $customerNote: String!) {
+					checkoutCustomerNoteUpdate(id: $id, customerNote: $customerNote) {
+						errors {
+							field
+							message
+							code
+						}
+					}
+				}
+			`;
+			await executeRawGraphQL({
+				query: noteQuery,
+				variables: {
+					id: checkoutId,
+					customerNote: note.trim(),
+				},
+			});
+		}
+
+		// 2. Build metadata items for Saleor Metadata table
+		const metadataItems: Array<{ key: string; value: string }> = [
+			{ key: "payment_method", value: methodName },
+			{ key: "payment_gateway", value: gateway },
+			{ key: "payment_status", value: "PAID" },
+			{ key: "payment_recorded_at", value: new Date().toISOString() },
+		];
+
+		if (metadata) {
+			for (const [k, v] of Object.entries(metadata)) {
+				if (v !== undefined && v !== null && String(v).trim()) {
+					metadataItems.push({ key: k, value: String(v) });
+				}
+			}
+		}
+
+		// 3. Update checkout metadata (Saleor automatically copies this to Order on complete)
+		const metaResult = await executeAuthenticatedGraphQL(checkoutMetadataUpdateDocument, {
+			variables: {
+				id: checkoutId,
+				input: metadataItems,
+			},
+			cache: "no-cache",
+		});
+
+		if (!metaResult.ok) {
+			console.warn("Could not update checkout payment metadata:", metaResult.error);
+		}
+	} catch (err) {
+		console.warn("Soft error recording checkout payment info:", err);
+	}
+
+	return { ok: true };
+}
+
 export async function updateCheckoutShippingAddress(
 	checkoutId: string,
 	shippingAddress: AddressInput,
@@ -536,11 +612,27 @@ export async function initializeCheckoutTransaction(
 		const payAmount = getCheckoutPayAmount(live.checkout) ?? variables.amount ?? 0;
 		const currency = live.checkout.totalPrice?.gross?.currency ?? "USD";
 
+		const gatewayData = variables.paymentGateway?.data as Record<string, unknown> | undefined;
+		const customMethodName =
+			typeof gatewayData?.paymentMethodName === "string" && gatewayData.paymentMethodName.trim()
+				? gatewayData.paymentMethodName.trim()
+				: "Dummy Payment";
+		const customPspRef =
+			typeof gatewayData?.pspReference === "string" && gatewayData.pspReference.trim()
+				? gatewayData.pspReference.trim()
+				: undefined;
+		const customMessage =
+			typeof gatewayData?.message === "string" && gatewayData.message.trim()
+				? gatewayData.message.trim()
+				: undefined;
+
 		const result = await executeAppGraphQL(transactionCreateDocument, {
 			variables: {
 				id: variables.checkoutId,
 				transaction: {
-					name: "Dummy Payment",
+					name: customMethodName,
+					pspReference: customPspRef,
+					message: customMessage,
 					amountCharged: {
 						amount: payAmount,
 						currency,

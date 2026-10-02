@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { SaleorThrobber } from "@/checkout/ui-kit/saleor-throbber";
 import { useCheckoutStepNumber } from "@/checkout/hooks/use-checkout-steps";
+import { abortCheckoutPaymentFlow } from "@/checkout/lib/payment/checkout-payment-completion";
 import { CheckoutPageShell } from "./checkout-page-shell";
 
 type PaymentCompletingScreenProps = {
@@ -20,6 +21,12 @@ export function PaymentCompletingScreen({
 }: PaymentCompletingScreenProps) {
 	const t = useTranslations("checkout.payment");
 	const step = useCheckoutStepNumber("PAYMENT", isShippingRequired);
+
+	const handleAbort = () => {
+		abortCheckoutPaymentFlow(
+			"Giao dịch thanh toán chưa hoàn tất. Bạn có thể chọn phương thức khác để thử lại.",
+		);
+	};
 
 	return (
 		<CheckoutPageShell
@@ -43,6 +50,16 @@ export function PaymentCompletingScreen({
 						<p className="mt-2 max-w-sm text-sm leading-relaxed text-muted-foreground">
 							{t("completingBody")}
 						</p>
+
+						<div className="mt-6">
+							<button
+								type="button"
+								onClick={handleAbort}
+								className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground transition-colors cursor-pointer"
+							>
+								{t("cancelCompleting")}
+							</button>
+						</div>
 					</div>
 				</div>
 			</main>

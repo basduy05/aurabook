@@ -531,6 +531,7 @@
 			"deliveryInvalidBody": "Please go back to the shipping step and select a valid shipping method before completing your order.",
 			"completingTitle": "Processing your order",
 			"completingBody": "We're confirming your payment and creating your order. This usually takes a few seconds — please don't close or refresh this page.",
+			"cancelCompleting": "Return to payment step",
 			"initFailed": "Failed to initialize payment system.",
 			"unavailable": "Payment system is not available. Please try again.",
 			"loadingGateway": "Loading {gateway} payment form…",

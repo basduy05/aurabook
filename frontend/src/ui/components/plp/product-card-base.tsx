@@ -4,7 +4,7 @@ import { DiscountPercentLabel, NewBadge, SaleBadge, BestsellerBadge } from "@/ui
 import { cn } from "@/lib/utils";
 import { formatProductPrice } from "./format-product-price";
 import { formatPrice } from "./utils";
-import { PLP_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
+import { PLP_IMAGE_SIZES, PRODUCT_IMAGE_QUALITY, isLocalImageUrl } from "@/lib/images";
 import { SaleorImage } from "@/ui/atoms/saleor-image";
 import type { ProductCardData } from "./product-card-data";
 import { ProductCardLink } from "./product-card-link";
@@ -46,6 +46,7 @@ export function ProductCardBase({
 							fill
 							sizes={imageSizes}
 							quality={PRODUCT_IMAGE_QUALITY}
+							unoptimized={isLocalImageUrl(product.hoverImage)}
 							className="object-cover opacity-0 transition-all duration-500 ease-out md:group-hover:scale-105 md:group-hover:opacity-100"
 						/>
 					)}

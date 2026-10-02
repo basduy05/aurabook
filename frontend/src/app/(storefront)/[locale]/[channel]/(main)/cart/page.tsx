@@ -13,6 +13,7 @@ import { buildBrowsePageMetadata } from "@/lib/seo";
 import { resolveLocaleFromSlug } from "@/config/locale";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { buttonClassName } from "@/ui/components/ui/button";
+import { isLocalImageUrl } from "@/lib/images";
 
 export async function generateMetadata(props: {
 	params: Promise<{ locale: string; channel: string }>;
@@ -87,6 +88,7 @@ async function CartContent({
 										alt={item.variant.product.thumbnail.alt ?? item.variant.product.name}
 										width={200}
 										height={200}
+										unoptimized={isLocalImageUrl(item.variant.product.thumbnail.url)}
 										className="h-full w-full object-contain object-center"
 									/>
 								)}

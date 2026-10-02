@@ -15,6 +15,43 @@ import { getLocaleDefinition } from "@/config/locale";
 import { localeConfig } from "@/config/locale";
 import { contactFieldAttributes } from "@/checkout/lib/consts/input-attributes";
 import { pickTranslatedName } from "@/lib/saleor-translations";
+import { isLocalImageUrl } from "@/lib/images";
+
+function OrderSummaryThumbnail({
+	imageUrl,
+	alt,
+	size = 56,
+	iconSize = "h-5 w-5",
+	className = "h-full w-full object-contain object-center",
+}: {
+	imageUrl?: string | null;
+	alt: string;
+	size?: number;
+	iconSize?: string;
+	className?: string;
+}) {
+	const [hasError, setHasError] = useState(false);
+
+	if (!imageUrl || hasError) {
+		return (
+			<div className="flex h-full w-full items-center justify-center text-muted-foreground">
+				<Tag className={iconSize} />
+			</div>
+		);
+	}
+
+	return (
+		<Image
+			src={imageUrl}
+			alt={alt}
+			width={size}
+			height={size}
+			className={className}
+			unoptimized={isLocalImageUrl(imageUrl)}
+			onError={() => setHasError(true)}
+		/>
+	);
+}
 
 // ============================================================================
 // Types
@@ -258,19 +295,13 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
 										idx === 1 && "z-[2] -ml-3",
 									)}
 								>
-									{line.imageUrl ? (
-										<Image
-											src={line.imageUrl}
-											alt={line.imageAlt || line.name}
-											width={32}
-											height={32}
-											className="h-full w-full object-cover"
-										/>
-									) : (
-										<div className="flex h-full w-full items-center justify-center bg-muted text-muted-foreground">
-											<Tag className="h-3 w-3" />
-										</div>
-									)}
+									<OrderSummaryThumbnail
+										imageUrl={line.imageUrl}
+										alt={line.imageAlt || line.name}
+										size={32}
+										iconSize="h-3 w-3"
+										className="h-full w-full object-cover"
+									/>
 								</div>
 							))
 						) : (
@@ -311,19 +342,13 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
 											{line.quantity}
 										</span>
 										<div className="h-14 w-14 overflow-hidden rounded-lg border border-border bg-secondary">
-											{line.imageUrl ? (
-												<Image
-													src={line.imageUrl}
-													alt={line.imageAlt || line.name}
-													width={56}
-													height={56}
-													className="h-full w-full object-contain object-center"
-												/>
-											) : (
-												<div className="flex h-full w-full items-center justify-center text-muted-foreground">
-													<Tag className="h-5 w-5" />
-												</div>
-											)}
+											<OrderSummaryThumbnail
+												imageUrl={line.imageUrl}
+												alt={line.imageAlt || line.name}
+												size={56}
+												iconSize="h-5 w-5"
+												className="h-full w-full object-contain object-center"
+											/>
 										</div>
 									</figure>
 

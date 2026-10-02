@@ -1,7 +1,7 @@
 import NextImage from "next/image";
 import { preload } from "react-dom";
 import { cn } from "@/lib/utils";
-import { PAPER_IMAGE_PIPELINE, PRODUCT_IMAGE_QUALITY } from "@/lib/images";
+import { PAPER_IMAGE_PIPELINE, PRODUCT_IMAGE_QUALITY, isLocalImageUrl } from "@/lib/images";
 
 export interface SaleorImageProps {
 	/** Largest requested rung — also the `src` fallback for browsers ignoring `srcSet`. */
@@ -56,6 +56,7 @@ export function SaleorImage({
 				priority={priority}
 				loading={loading}
 				draggable={draggable}
+				unoptimized={isLocalImageUrl(src)}
 			/>
 		);
 	}

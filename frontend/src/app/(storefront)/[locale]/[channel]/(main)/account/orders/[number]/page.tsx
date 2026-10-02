@@ -11,6 +11,7 @@ import { resolveLocaleFromSlug } from "@/config/locale";
 import { pickTranslatedName } from "@/lib/saleor-translations";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { formatDate, formatMoney } from "@/lib/utils";
+import { isLocalImageUrl } from "@/lib/images";
 import { OrderTimeline } from "@/ui/components/account/order-timeline";
 import { OrderStatusBadge } from "@/ui/components/account/order-status-badge";
 import { AccountOrderDetailSkeleton } from "@/ui/components/account/account-skeleton";
@@ -98,6 +99,7 @@ async function OrderDetailContent({ params }: Props) {
 													alt={product.thumbnail.alt ?? productName}
 													width={128}
 													height={128}
+													unoptimized={isLocalImageUrl(product.thumbnail.url)}
 													className="h-full w-full object-contain"
 												/>
 											</div>

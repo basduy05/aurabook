@@ -13,13 +13,42 @@ const allowedDevOrigins = process.env.ALLOWED_DEV_ORIGINS?.split(",")
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
-/** Host of the configured Saleor instance — self-hosted deploys serve media from it. */
-function saleorApiHostname() {
+/** Generate remote patterns for configured Saleor instance (including protocol and port). */
+function saleorApiRemotePatterns() {
+	const patterns = [
+		{ protocol: "http", hostname: "localhost", port: "8000" },
+		{ protocol: "https", hostname: "localhost", port: "8000" },
+		{ protocol: "http", hostname: "127.0.0.1", port: "8000" },
+		{ protocol: "https", hostname: "127.0.0.1", port: "8000" },
+		{ protocol: "http", hostname: "backend", port: "8000" },
+		{ hostname: "localhost" },
+		{ hostname: "127.0.0.1" },
+	];
+
 	try {
-		return new URL(process.env.NEXT_PUBLIC_SALEOR_API_URL ?? "").hostname || null;
+		const rawUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL;
+		if (rawUrl) {
+			const u = new URL(rawUrl);
+			if (u.hostname) {
+				const protocol = u.protocol ? u.protocol.replace(":", "") : undefined;
+				patterns.push(
+					{
+						protocol,
+						hostname: u.hostname,
+						port: u.port || undefined,
+					},
+					{
+						protocol,
+						hostname: u.hostname,
+					},
+				);
+			}
+		}
 	} catch {
-		return null;
+		// ignore
 	}
+
+	return patterns;
 }
 
 /**
@@ -33,12 +62,11 @@ function saleorApiHostname() {
 const imageRemotePatterns = [
 	{ hostname: "*.saleor.cloud" },
 	{ hostname: "*.media.saleor.cloud" },
-	...[saleorApiHostname()].filter(Boolean).map((hostname) => ({ hostname })),
+	...saleorApiRemotePatterns(),
 	...(process.env.IMAGE_ALLOWED_HOSTS?.split(",")
 		.map((host) => host.trim())
 		.filter(Boolean)
 		.map((hostname) => ({ hostname })) ?? []),
-	...(isDevelopment ? [{ hostname: "*" }] : []),
 ];
 
 const THIRTY_ONE_DAYS_IN_SECONDS = 2678400;
@@ -79,6 +107,8 @@ const config = {
 		// (max 3 concurrent requests; the inter-request delay applies at build time only)
 	},
 	images: {
+		// Allow local development and Docker internal IPs for image optimization
+		dangerouslyAllowLocalIP: true,
 		// WebP only: AVIF cold-encodes add ~500ms+ to first /_next/image hit on Vercel (hurts LCP).
 		formats: ["image/webp"],
 		remotePatterns: imageRemotePatterns,

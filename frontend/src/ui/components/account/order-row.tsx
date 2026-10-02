@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { type OrderDetailsFragment } from "@/gql/graphql";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { formatDate, formatMoney } from "@/lib/utils";
+import { isLocalImageUrl } from "@/lib/images";
 import { resolveLocaleFromSlug } from "@/config/locale";
 import { orderStatusStyle, defaultStatusStyle } from "./order-status-config";
 import { type OrderRowLabels } from "./order-row-labels";
@@ -41,6 +42,7 @@ export function OrderRow({ order, localeSlug, labels }: Props) {
 							alt={thumb.alt ?? ""}
 							width={96}
 							height={96}
+							unoptimized={isLocalImageUrl(thumb.url)}
 							className="h-full w-full object-contain"
 						/>
 					</div>
