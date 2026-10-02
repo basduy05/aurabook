@@ -1,65 +1,72 @@
-# AuraBook - Context Handover & Session State Machine
-*Generated automatically by @conversation-handoff-sentinel*
-*Current Time: 2026-09-26*
+# HANDOVER — AuraBook Saleor Migration
+*Cập nhật: 2026-10-02 (Phase M1 + M3 scaffold hoàn thành)*
 
 ---
 
-## 🚀 Trạng Thái Dự Án Hiện Tại (Snapshot State)
-- **Repository**: `https://github.com/basduy05/aurabook.git`
-- **Nhánh hoạt động**: `main`
-- **Git Author & Committer**: `basduy05 <basduygame@gmail.com>` (Đã cấu hình chuẩn 100%)
-- **Hệ thống Kiểm thử**:
-  - `apps/api`: **34/34 tests Pytest PASSED**, Ruff linter đạt **0 lỗi, 0 cảnh báo**.
-  - `apps/web`: **Next.js 15 Production Build (20/20 routes OK)**, TypeScript `tsc --noEmit` PASSED, ESLint đạt **0 lỗi, 0 cảnh báo**.
-- **Bộ Kỹ Năng Thiết Kế Cốt Lõi (Primary UI Frameworks)**:
-  - **Taste-Skill** (`.agents/skills/taste-skill`): Anti-slop frontend, định hướng mỹ thuật độc bản, triệt tiêu thiết kế mặc định rập khuôn.
-  - **Impeccable** (`.agents/skills/impeccable`): Chuẩn mực thủ công cao cấp (Craft Floor), 4 chế độ giao diện (Persuade, Operate, Read, Experience), trau chuốt tối đa.
-- **Nhận Diện Thương Hiệu (Brand Assets)**:
-  - Logo chính thức: Tích hợp hình ảnh nghệ thuật hình học trắng đen (`Black and White Geometric Aerial Cinematography Loghuaoso.png` -> `/logo.png`) xuyên suốt Navbar, Footer, Trang Đăng nhập, Trang Đăng ký và Cổng Quản trị Admin. Favicon được giữ nguyên vẹn theo yêu cầu.
+## 🏗️ Trạng Thái Hiện Tại
+
+**Đã hoàn thành:**
+- ✅ **Phase M1**: Restructure thư mục xong
+  - `saleor/` → `backend/`
+  - `storefront/` → `frontend/`
+  - `apps/` → `legacy/` (tham khảo, xóa sau)
+  - Tạo: `infra/`, `shared/`, `backend/aurabook_apps/`
+- ✅ **Phase M3 Scaffold**: 4 AuraBook Custom Apps đã tạo xong
+  - `backend/aurabook_apps/drm/` — AES-256-GCM DRM
+  - `backend/aurabook_apps/ai_search/` — Hybrid Search RRF + Gemini
+  - `backend/aurabook_apps/audio/` — Audio Teaser streaming
+  - `backend/aurabook_apps/reading_progress/` — Reading library
+
+**Đang làm tiếp (Phase M2):**
+- Cấu hình Saleor backend `backend/saleor/settings.py`
+- Tích hợp aurabook_apps vào INSTALLED_APPS + urls.py
+- Setup Channel "aurabook-vn" (VND)
+- Setup ProductType "Book" với attributes
+
+**Bỏ qua:**
+- ~~Phase M4~~ (Frontend branding) — Dùng Saleor Storefront nguyên bản
 
 ---
 
-## 📊 Tình Trạng Các Phân Kỳ (Phases Breakdown)
+## 📂 Cấu Trúc Mới
 
-| Phase | Trọng tâm chức năng | Tình trạng BE | Tình trạng FE | Trạng thái tổng |
-| :--- | :--- | :--- | :--- | :--- |
-| **Phase 1: Foundation** | 13 Models Async SQLAlchemy, pgvector:pg16, Seed script | ✅ Xong | ⚙️ Setup Monorepo | ✅ **HOÀN THÀNH** |
-| **Phase 2: Auth & RBAC** | JWT Access + Refresh, Bcrypt, RBAC Middleware | ✅ Xong | ✅ Form UI Login & Register | ✅ **HOÀN THÀNH** |
-| **Phase 3: Catalog & Books** | Lọc đa tiêu chí, phân trang, slug, chi tiết sách | ✅ Xong | ✅ Storefront Catalog & Details | ✅ **HOÀN THÀNH** |
-| **Phase 4: Cart & Sandbox Checkout** | Khóa bi quan SELECT FOR UPDATE, Hold 15m, Webhook IPN HMAC | ✅ Xong | ✅ Cart, Checkout & Sandbox | ✅ **HOÀN THÀNH** |
-| **Phase 5: DRM E-Book Reader (UC05)** | Cấp khóa phiên AES-256, chunk AES-GCM AEAD Tag, Tiến độ đọc | ✅ Xong | ✅ WASM Canvas Reader & Library | ✅ **HOÀN THÀNH** |
-| **Phase 6: AI RAG & Voice AI (UC06, UC07)** | Gemini 768d vector embeddings, Cosine Similarity, SSE Stream RAG, Web Speech Voice | ✅ Xong | ✅ RAG Sidebar & Global Voice | ✅ **HOÀN THÀNH** |
-| **Phase 7: Advanced Catalog & Review (UC02, UC03, UC08)** | RRF k=60 Hybrid Search, Audio Teaser WAV, Đánh giá đơn PAID & Profanity filter | ✅ Xong | ✅ RRF Toggle, Audio Player, Reviews | ✅ **HOÀN THÀNH** |
-| **Phase 8: Admin Services & Pipelines (UC09-UC13)** | Admin CRUD, Gemini Vision OCR Bìa, FSM Order, Dashboard Realtime, Vector Worker | ✅ Xong | ⏳ Sắp làm Phase 10 | ✅ **HOÀN THÀNH (BE)** |
-| **Phase 9: Frontend Storefront E-Commerce (UC01-UC04, UC08)** | Trang chủ, Catalog RRF, Sách chi tiết, Audio Teaser, Giỏ hàng, Checkout Sandbox, Login & Register | ✅ Sẵn sàng | ✅ 10/10 Routes Biên dịch OK | ✅ **HOÀN THÀNH** |
-| **Phase 10: Admin Operations & Extended Modules (UC09-UC13 + Users/Vouchers/DRM/Reviews)** | Admin Portal UI, Gemini Vision Bìa Sách, Quản lý đơn FSM, Giám sát doanh thu, Quản lý người dùng, Mã giảm giá, Bản quyền số DRM, Đánh giá sách | ✅ 34/34 Tests Passed | ✅ 20/20 Routes Biên dịch OK | ✅ **HOÀN THÀNH** |
-
----
-
-## 🎯 Chi Tiết Frontend Đã Hoàn Thiện Tại Phase 9 (`apps/web`)
-1. `apps/web/context/cart-context.tsx`: Context toàn cục quản lý giỏ hàng (`localStorage`), mã giảm giá `AURA2026` 15%, phiên xác thực độc giả.
-2. `apps/web/components/navbar.tsx`: Header dính mờ kính (Glassmorphism), ô tìm kiếm trực tiếp, huy hiệu đếm giỏ hàng, menu tài khoản người dùng.
-3. `apps/web/components/cart-drawer.tsx`: Drawer trượt mượt mà hiển thị sản phẩm tức thì, thay đổi số lượng và nút thanh toán nhanh.
-4. `apps/web/components/footer.tsx`: Chân trang hiện đại giới thiệu kiến trúc Next.js 15, AES-256-GCM DRM, Gemini 768d và liên kết Swagger.
-5. `apps/web/app/page.tsx`: Landing page ấn tượng với tìm kiếm tức thời, danh mục thẻ lọc, các tác phẩm nổi bật và máy phát 60s AI Audio Teaser.
-6. `apps/web/app/books/page.tsx`: Trang danh mục toàn diện với nút bật/tắt tìm kiếm lai RRF $k=60$, bộ lọc định dạng sách, đóng gói trong `<Suspense>`.
-7. `apps/web/app/books/[slug]/page.tsx`: Trang chi tiết ấn phẩm với `use(params)`, máy phát 60s Audio Teaser HTML5, lựa chọn định dạng, liên kết đọc DRM và động cơ Đánh giá xác thực đơn hàng (UC08).
-8. `apps/web/app/cart/page.tsx`: Trang giỏ hàng chi tiết với form áp mã khuyến mãi `AURA2026`, bảng tính tạm tính, chiết khấu và tổng thanh toán.
-9. `apps/web/app/checkout/page.tsx`: Form thanh toán đơn hàng (sách in / sách số), lựa chọn Cổng Sandbox (HMAC-SHA256) vs COD, giả lập thanh toán tức thì và chuyển quyền đọc sách.
-10. `apps/web/app/login/page.tsx` & `apps/web/app/register/page.tsx`: Thẻ đăng nhập và đăng ký bảo mật với nút 1-chạm tài khoản Demo Khách Hàng / Quản Trị Viên, lưu JWT vào Context và chuyển hướng thông minh.
-11. `apps/web/app/reader/[bookId]/page.tsx`: Trình đọc sách WASM Canvas DRM chống trích xuất text DOM, giải mã AES-256-GCM và zero-out RAM.
-12. `apps/web/app/library/page.tsx`: Thư viện số cá nhân hiển thị toàn bộ sách đã mua và thanh tiến độ đọc.
-13. `apps/web/app/admin/layout.tsx`: Layout thanh điều hướng Admin Portal và cơ chế chuyển đổi tài khoản Admin một chạm.
-14. `apps/web/app/admin/page.tsx`: Bảng điều khiển giám sát doanh thu Realtime, biểu đồ 7 ngày, cảnh báo kho thấp và danh sách bestseller (UC12).
-15. `apps/web/app/admin/books/page.tsx`: Quản trị ấn phẩm sách, chỉnh sửa tồn kho tức thì, quét bìa sách tự động điền form bằng Gemini 2.0 Flash Vision OCR (UC10) và kích hoạt worker băm nhỏ vector hóa (UC13).
-16. `apps/web/app/admin/orders/page.tsx`: Quản trị vòng đời đơn hàng bằng máy trạng thái FSM (UC11) kiểm soát PENDING → PAID → SHIPPING → DELIVERED và hủy hoàn kho an toàn.
-
+```
+aurabook/
+├── backend/                 ← Saleor Django (từ saleor/)
+│   ├── aurabook_apps/       ← Custom Apps AuraBook (MỚI)
+│   │   ├── drm/             ← AES-256-GCM DRM sessions
+│   │   ├── ai_search/       ← Gemini RAG + RRF k=60
+│   │   ├── audio/           ← Audio Teaser streaming
+│   │   └── reading_progress/← Library + progress
+│   └── saleor/              ← Saleor core (không chỉnh)
+├── frontend/                ← Saleor Storefront (từ storefront/)
+├── legacy/                  ← apps/ cũ (TẠM THỜI)
+├── infra/                   ← docker-compose, nginx, scripts
+│   ├── docker-compose.yml   ← Full Saleor stack
+│   ├── nginx/nginx.conf     ← Reverse proxy
+│   └── scripts/migrate_legacy_to_saleor.py
+└── shared/                  ← Shared assets
+```
 
 ---
 
-## 📌 Hướng Dẫn Khôi Phục Khi Khởi Động Phiên Mới
-Khi bắt đầu một phiên hội thoại mới:
-1. Orchestrator đọc trực tiếp file này (`HANDOVER.md`) và `PROGRESS.md`.
-2. Chạy `git status` và xác nhận tác giả Git: `basduy05 <basduygame@gmail.com>`.
-3. Kiểm tra các cổng: Backend `apps/api` (port 8000), Frontend `apps/web` (port 3000).
-4. Tiếp tục thực hiện **Phase 10: Admin Dashboard & Operation Portal (UC09-UC13)** theo kế hoạch tổng thể.
+## 🔧 Bước Tiếp Theo (Phase M2)
+
+1. Mở `backend/saleor/settings.py`
+2. Thêm `aurabook_apps.*` vào `INSTALLED_APPS`
+3. Thêm routes vào `backend/saleor/urls.py`
+4. Chạy `python backend/manage.py migrate`
+5. Tạo superuser: `python backend/manage.py createsuperuser`
+6. Chạy `docker compose up -d` từ root
+
+---
+
+## ⚙️ Ports
+
+| Service | Port |
+|---|---|
+| Saleor Backend (GraphQL) | 8000 |
+| Saleor Storefront | 3000 |
+| Saleor Dashboard | 9000 |
+| PostgreSQL | 5432 |
+| Redis | 6379 |

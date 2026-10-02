@@ -1,0 +1,40 @@
+# ============================================================
+# AuraBook — Dev Infrastructure Only
+# Chỉ chạy postgres + redis để develop backend local
+# Usage: docker compose -f infra/docker-compose.dev.yml up -d
+# ============================================================
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: aurabook-postgres-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: aurabook_user
+      POSTGRES_PASSWORD: aurabook_secure_password
+      POSTGRES_DB: aurabook_saleor
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aurabook_user -d aurabook_saleor"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: aurabook-redis-dev
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_dev_data:
+    driver: local

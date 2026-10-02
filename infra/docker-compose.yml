@@ -1,0 +1,142 @@
+# ============================================================
+# AuraBook — Saleor Stack (Full Platform)
+# ============================================================
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: aurabook-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-aurabook_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-aurabook_secure_password}
+      POSTGRES_DB: ${POSTGRES_DB:-aurabook_saleor}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-aurabook_user} -d ${POSTGRES_DB:-aurabook_saleor}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - aurabook-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: aurabook-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - aurabook-network
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: aurabook-backend
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    environment:
+      - SECRET_KEY=${SALEOR_SECRET_KEY:-django-insecure-aurabook-dev-key-change-in-production}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-aurabook_user}:${POSTGRES_PASSWORD:-aurabook_secure_password}@postgres:5432/${POSTGRES_DB:-aurabook_saleor}
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CACHE_URL=redis://redis:6379/1
+      - ALLOWED_HOSTS=localhost,127.0.0.1,backend
+      - ALLOWED_CLIENT_HOSTS=localhost,127.0.0.1,frontend
+      - DEFAULT_FROM_EMAIL=${DEFAULT_FROM_EMAIL:-no-reply@aurabook.vn}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - DRM_MASTER_KEY=${DRM_MASTER_KEY:-}
+      - RSA_PRIVATE_KEY=${RSA_PRIVATE_KEY:-}
+      - DEBUG=${DEBUG:-True}
+    volumes:
+      - ../backend/saleor:/app/saleor
+      - ../backend/aurabook_apps:/app/aurabook_apps
+      - backend_media:/app/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - aurabook-network
+
+  celery:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: aurabook-celery
+    restart: unless-stopped
+    command: celery -A saleor worker --loglevel=info -Q default,celery
+    environment:
+      - SECRET_KEY=${SALEOR_SECRET_KEY:-django-insecure-aurabook-dev-key-change-in-production}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-aurabook_user}:${POSTGRES_PASSWORD:-aurabook_secure_password}@postgres:5432/${POSTGRES_DB:-aurabook_saleor}
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CACHE_URL=redis://redis:6379/1
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+    volumes:
+      - ../backend/saleor:/app/saleor
+      - ../backend/aurabook_apps:/app/aurabook_apps
+      - backend_media:/app/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - aurabook-network
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: aurabook-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - NEXT_PUBLIC_SALEOR_API_URL=http://backend:8000/graphql/
+      - NEXT_PUBLIC_AURABOOK_API_URL=http://backend:8000/aurabook
+      - NEXT_PUBLIC_STOREFRONT_NAME=AuraBook
+      - NEXT_PUBLIC_DEFAULT_CHANNEL=aurabook-vn
+      - NEXT_PUBLIC_DEFAULT_LOCALE=vi-VN
+    depends_on:
+      - backend
+    networks:
+      - aurabook-network
+
+  dashboard:
+    image: ghcr.io/saleor/saleor-dashboard:latest
+    container_name: aurabook-dashboard
+    restart: unless-stopped
+    ports:
+      - "${DASHBOARD_PORT:-9000}:80"
+    environment:
+      - API_URL=http://localhost:8000/graphql/
+      - APP_MOUNT_URI=/dashboard/
+      - STATIC_URL=/dashboard/static/
+    networks:
+      - aurabook-network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  backend_media:
+    driver: local
+
+networks:
+  aurabook-network:
+    driver: bridge
