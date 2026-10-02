@@ -103,7 +103,9 @@ export function StorefrontRegionPicker({
 
 	const allowedLocales = getLocalesForChannel(channel);
 	const visibleLocales =
-		allowedLocales === null ? locales : locales.filter((item) => allowedLocales.includes(item.slug));
+		allowedLocales === null || allowedLocales.length <= 1
+			? locales
+			: locales.filter((item) => allowedLocales.includes(item.slug));
 
 	const currentLocale =
 		visibleLocales.find((item) => item.slug === locale) ?? locales.find((item) => item.slug === locale);

@@ -110,6 +110,9 @@ importers:
       urql:
         specifier: 4.0.6
         version: 4.0.6(graphql@16.8.1)(react@19.2.7)
+      vnpay:
+        specifier: 2.5.0
+        version: 2.5.0
       xss:
         specifier: 1.0.15
         version: 1.0.15
@@ -3176,6 +3179,9 @@ packages:
   dataloader@2.2.3:
     resolution: {integrity: sha512-y2krtASINtPFS1rSDjacrFgn1dcUuoREVabwlOGOe4SdxenREqwjwjElAdwvbGM7kgZz9a3KVicWR7vcz8rnzA==}
 
+  dayjs@1.11.23:
+    resolution: {integrity: sha512-QDTCU0M0MxR3hQfnlDJfwekQiaanm1ubOD231u73WBckQ/fsamwRLiE2GBz6D3a/xF1NgfiDLJjXBa1hYOYTtQ==}
+
   debounce@2.2.0:
     resolution: {integrity: sha512-Xks6RUDLZFdz8LIdR6q0MTH44k7FikOmnh5xkSjMig6ch45afc8sjTjRQf3P6ax8dMgcQrYO/AR2RGWURrruqw==}
     engines: {node: '>=18'}
@@ -5295,6 +5301,9 @@ packages:
         optional: true
       jsdom:
         optional: true
+
+  vnpay@2.5.0:
+    resolution: {integrity: sha512-kyUYxG0pyEnRu/ha0gSVqkPCajmql523W2PQzgCkH4ct4XdEuzdiQnssi/k9XMcv+TvoPzuweEJG+4hWNU2DAQ==}
 
   wcwidth@1.0.1:
     resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}
@@ -8474,6 +8483,8 @@ snapshots:
 
   dataloader@2.2.3: {}
 
+  dayjs@1.11.23: {}
+
   debounce@2.2.0: {}
 
   debug@3.2.7:
@@ -10774,6 +10785,10 @@ snapshots:
       '@types/node': 24.12.4
     transitivePeerDependencies:
       - msw
+
+  vnpay@2.5.0:
+    dependencies:
+      dayjs: 1.11.23
 
   wcwidth@1.0.1:
     dependencies:

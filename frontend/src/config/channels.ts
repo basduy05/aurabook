@@ -86,17 +86,49 @@ export type ChannelSelectOption = {
 	currencyCode: string;
 };
 
+export function getChannelFallback(slug: string): { name: string; currencyCode: string } {
+	if (slug === "channel-vnd") return { name: "Việt Nam (VND)", currencyCode: "VND" };
+	if (slug === "channel-pln") return { name: "Ba Lan (PLN)", currencyCode: "PLN" };
+	if (slug === "default-channel") return { name: "Hoa Kỳ / Quốc tế (USD)", currencyCode: "USD" };
+	return {
+		name: slug,
+		currencyCode: "USD",
+	};
+}
+
 /** Active storefront channels only — slim shape for the footer client selector. */
 export function toChannelSelectOptions(
-	channels: Array<ChannelSelectOption & { isActive?: boolean | null }>,
+	channels: Array<ChannelSelectOption & { isActive?: boolean | null }> | null | undefined,
 	allowedSlugs: readonly string[],
 ): ChannelSelectOption[] {
-	return filterToStorefrontChannels(channels, allowedSlugs).map(({ id, name, slug, currencyCode }) => ({
-		id,
-		name,
-		slug,
-		currencyCode,
-	}));
+	const activeList = channels ? filterToStorefrontChannels(channels, allowedSlugs) : [];
+	const found = new Set<string>();
+	const options: ChannelSelectOption[] = [];
+
+	for (const item of activeList) {
+		found.add(item.slug);
+		const fallback = getChannelFallback(item.slug);
+		options.push({
+			id: item.id,
+			name: item.name || fallback.name,
+			slug: item.slug,
+			currencyCode: item.currencyCode || fallback.currencyCode,
+		});
+	}
+
+	for (const slug of allowedSlugs) {
+		if (!found.has(slug)) {
+			const fallback = getChannelFallback(slug);
+			options.push({
+				id: `channel-${slug}`,
+				name: fallback.name,
+				slug,
+				currencyCode: fallback.currencyCode,
+			});
+		}
+	}
+
+	return options;
 }
 
 /** Whether the footer needs channel metadata from Saleor (multi-channel + app token). */

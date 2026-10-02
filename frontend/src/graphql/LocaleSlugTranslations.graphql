@@ -5,6 +5,9 @@
 # Used for hreflang alternates and zero-hop language switching (ADR 0004 phase 2).
 
 fragment ProductLocaleSlugTranslations on Product {
+	slugVI: translation(languageCode: VI) {
+		slug
+	}
 	slugEN: translation(languageCode: EN) {
 		slug
 	}
@@ -32,6 +35,9 @@ fragment ProductLocaleSlugTranslations on Product {
 }
 
 fragment CategoryLocaleSlugTranslations on Category {
+	slugVI: translation(languageCode: VI) {
+		slug
+	}
 	slugEN: translation(languageCode: EN) {
 		slug
 	}
@@ -59,6 +65,9 @@ fragment CategoryLocaleSlugTranslations on Category {
 }
 
 fragment CollectionLocaleSlugTranslations on Collection {
+	slugVI: translation(languageCode: VI) {
+		slug
+	}
 	slugEN: translation(languageCode: EN) {
 		slug
 	}
@@ -86,6 +95,9 @@ fragment CollectionLocaleSlugTranslations on Collection {
 }
 
 fragment PageLocaleSlugTranslations on Page {
+	slugVI: translation(languageCode: VI) {
+		slug
+	}
 	slugEN: translation(languageCode: EN) {
 		slug
 	}

@@ -15,6 +15,7 @@ export {
 } from "./payment-trust-signals";
 
 export { DummyPaymentPlaceholder, type DummyPaymentPlaceholderProps } from "./dummy-payment-placeholder";
+export { SimulatedVietnamPayments, type SimulatedVietnamPaymentsProps } from "./simulated-vietnam-payments";
 
 export {
 	BillingAddressSection,

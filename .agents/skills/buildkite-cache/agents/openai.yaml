@@ -1,6 +1,0 @@
-interface:
-  display_name: "Buildkite Cache"
-  short_description: "File-based caching with buildkite-agent cache save/restore and .buildkite/cache.yml"
-  icon_small: "./assets/buildkite-icon-small.png"
-  icon_large: "./assets/buildkite-icon-large.png"
-  brand_color: "#00D974"

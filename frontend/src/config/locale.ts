@@ -24,6 +24,12 @@ export type LocaleDefinition = {
  * `/translations/PL/…` in Saleor admin.
  */
 export const LOCALE_DEFINITIONS = {
+	vi: {
+		bcp47: "vi-VN",
+		graphqlLanguageCode: "VI",
+		htmlLang: "vi",
+		ogLocale: "vi_VN",
+	},
 	en: {
 		bcp47: "en-US",
 		graphqlLanguageCode: "EN",

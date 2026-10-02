@@ -34,8 +34,8 @@ export async function Footer({ locale, channel }: { locale: string; channel: str
 	const footerMenuItems = menuItems ?? [];
 	const localeOptions = getStorefrontLocaleOptions();
 	const selectorChannels =
-		channels?.channels && resolvedSlugs.length > 0
-			? toChannelSelectOptions(channels.channels, resolvedSlugs)
+		resolvedSlugs.length > 0
+			? toChannelSelectOptions(channels?.channels, resolvedSlugs)
 			: [];
 
 	return (

@@ -4,7 +4,7 @@ import { type FC } from "react";
 import { type AddressFragment, type CheckoutFragment } from "@/checkout/graphql";
 import { isIntegratedPaymentProvider, type ResolvedPaymentProvider } from "@/checkout/lib/payment";
 import { type CheckoutPriceChangeNotice } from "@/checkout/lib/payment/checkout-pay-amount";
-import { DummyPaymentPlaceholder } from "./dummy-payment-placeholder";
+import { SimulatedVietnamPayments } from "./simulated-vietnam-payments";
 import { StripePayment } from "./stripe/stripe-payment";
 import { type BillingAddressData } from "./billing-address-section";
 
@@ -44,7 +44,15 @@ export const IntegratedPaymentUi: FC<IntegratedPaymentUiProps> = ({
 
 	switch (provider.type) {
 		case "dummy":
-			return <DummyPaymentPlaceholder gatewayName={provider.gateway.name} />;
+			return (
+				<SimulatedVietnamPayments
+					checkout={checkout}
+					billing={billing}
+					gatewayName={provider.gateway.name}
+					onPaymentError={onPaymentError}
+					onPaymentActivityChange={onPaymentActivityChange}
+				/>
+			);
 		case "stripe":
 			if (!checkout || !billing || !onPaymentError || !onBillingErrors || !onPriceChangeNotice) {
 				return null;

@@ -51,14 +51,19 @@ export function middleware(request: NextRequest) {
 	const defaultLocale = getDefaultLocaleSlug();
 	const defaultChannel = DefaultChannelSlug ?? getStaticStorefrontChannelSlugs()[0];
 
+	// User-selected cookie preference if set, otherwise default locale
+	const cookieLocale = request.cookies.get(BROWSE_LOCALE_COOKIE)?.value;
+	const resolvedLocale = cookieLocale && isStorefrontLocaleSlug(cookieLocale) ? cookieLocale : defaultLocale;
+	const resolvedChannel = defaultChannel ?? getStaticStorefrontChannelSlugs()[0];
+
 	// Root → default browse home
 	if (segments.length === 0) {
-		if (!defaultChannel) {
+		if (!resolvedChannel) {
 			return NextResponse.next();
 		}
 		const url = request.nextUrl.clone();
-		url.pathname = buildStorefrontPath(defaultLocale, defaultChannel);
-		return withBrowseLocaleCookie(request, NextResponse.redirect(url, 308), defaultLocale);
+		url.pathname = buildStorefrontPath(resolvedLocale, resolvedChannel);
+		return withBrowseLocaleCookie(request, NextResponse.redirect(url, 308), resolvedLocale);
 	}
 
 	const [first, second, ...rest] = segments;
