@@ -40,6 +40,8 @@ import {
 	PDP_LAYOUT_CLASSES,
 	type Product,
 } from "@/ui/components/pdp";
+import { ProductRatingSummary } from "@/ui/components/reviews/product-rating-summary";
+import { ProductReviewsSection } from "@/ui/components/reviews/product-reviews-section";
 
 // Prefetch: default (auto). With global `partialPrefetching`, product-card links prefetch only
 // the App Shell. Do not use `prefetch={true}` on PLP cards — a per-link runtime prefetch would
@@ -268,6 +270,7 @@ async function ProductShell({
 						)}
 
 						<h1 className="order-2 text-balance text-h1">{product.name}</h1>
+						<ProductRatingSummary productSlug={product.slug} />
 
 						<ErrorBoundary FallbackComponent={VariantSectionError}>
 							<Suspense fallback={variantSectionFallback}>
@@ -289,6 +292,12 @@ async function ProductShell({
 						<div className={layout.attributesGalleryBlock}>{productAttributesNode}</div>
 					)}
 				</div>
+
+				<ProductReviewsSection
+					productSlug={product.slug}
+					productId={product.id}
+					productName={product.name}
+				/>
 			</div>
 		</div>
 	);

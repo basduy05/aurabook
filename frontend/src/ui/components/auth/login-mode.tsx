@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { loginWithBff, syncAuthSurfacesAfterSignIn } from "@/lib/auth";
@@ -17,6 +17,7 @@ export function LoginMode() {
 	const t = useTranslations("account");
 	const params = useParams<{ locale: string; channel: string }>();
 	const router = useRouter();
+	const searchParams = useSearchParams();
 
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -64,8 +65,14 @@ export function LoginMode() {
 			}
 
 			if (result.ok) {
+				const nextParam = searchParams.get("next");
+				const targetRedirect =
+					nextParam && nextParam.startsWith("/")
+						? nextParam
+						: buildStorefrontPath(params.locale, params.channel);
+
 				await syncAuthSurfacesAfterSignIn(params.channel, router, {
-					redirectTo: buildStorefrontPath(params.locale, params.channel),
+					redirectTo: targetRedirect,
 				});
 				return;
 			}
@@ -128,7 +135,11 @@ export function LoginMode() {
 					<p className="mt-2 text-sm text-muted-foreground">
 						{t("login.noAccount")}{" "}
 						<Link
-							href={buildStorefrontPath(params.locale, params.channel, "/signup")}
+							href={
+								searchParams.get("next")
+									? `${buildStorefrontPath(params.locale, params.channel, "/signup")}?next=${encodeURIComponent(searchParams.get("next")!)}`
+									: buildStorefrontPath(params.locale, params.channel, "/signup")
+							}
 							className="font-medium text-foreground underline underline-offset-2 hover:no-underline"
 						>
 							{t("login.signUp")}

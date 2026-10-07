@@ -19,6 +19,21 @@ const defaultFooterLinks = {
 	],
 };
 
+const defaultFooterLinksVi = {
+	support: [
+		{ label: "Liên hệ chúng tôi", href: "/contact" },
+		{ label: "Câu hỏi thường gặp", href: "/faq" },
+		{ label: "Chính sách vận chuyển", href: "/shipping" },
+		{ label: "Chính sách đổi trả", href: "/returns" },
+	],
+	company: [
+		{ label: "Giới thiệu AuraBook", href: "/about" },
+		{ label: "Phát triển bền vững", href: "/sustainability" },
+		{ label: "Cơ hội nghề nghiệp", href: "/careers" },
+		{ label: "Báo chí & Truyền thông", href: "/press" },
+	],
+};
+
 function FooterMenuChildLink({ child }: { child: MenuItem }) {
 	const href = getMenuItemHref(child);
 	const label = getMenuItemLabel(child);
@@ -47,14 +62,19 @@ function FooterMenuChildLink({ child }: { child: MenuItem }) {
 	);
 }
 
-export function FooterMenuColumns({ items }: { items: MenuItem[] }) {
+export function FooterMenuColumns({ items, locale }: { items: MenuItem[]; locale?: string }) {
+	const isVi = locale === "vi";
+	const currentLinks = isVi ? defaultFooterLinksVi : defaultFooterLinks;
+	const supportTitle = isVi ? "Hỗ trợ khách hàng" : "Support";
+	const companyTitle = isVi ? "Về chúng tôi" : "Company";
+
 	if (items.length === 0) {
 		return (
 			<>
 				<div>
-					<h4 className="mb-4 text-sm font-medium text-inverse">Support</h4>
+					<h4 className="mb-4 text-sm font-medium text-inverse">{supportTitle}</h4>
 					<ul className="space-y-3">
-						{defaultFooterLinks.support.map((link) => (
+						{currentLinks.support.map((link) => (
 							<li key={link.href}>
 								<Link
 									href={link.href}
@@ -68,9 +88,9 @@ export function FooterMenuColumns({ items }: { items: MenuItem[] }) {
 					</ul>
 				</div>
 				<div>
-					<h4 className="mb-4 text-sm font-medium text-inverse">Company</h4>
+					<h4 className="mb-4 text-sm font-medium text-inverse">{companyTitle}</h4>
 					<ul className="space-y-3">
-						{defaultFooterLinks.company.map((link) => (
+						{currentLinks.company.map((link) => (
 							<li key={link.href}>
 								<Link
 									href={link.href}

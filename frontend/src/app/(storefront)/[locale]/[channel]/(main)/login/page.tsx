@@ -58,7 +58,7 @@ async function LoginPageEntry({ params: paramsPromise, searchParams: searchParam
 
 	return (
 		<Suspense fallback={<LoginSkeleton />}>
-			<LoginContent locale={locale} channel={channel} />
+			<LoginContent locale={locale} channel={channel} searchParams={searchParams} />
 		</Suspense>
 	);
 }
@@ -92,7 +92,15 @@ function LoginSkeleton() {
 	);
 }
 
-async function LoginContent({ locale, channel }: { locale: string; channel: string }) {
+async function LoginContent({
+	locale,
+	channel,
+	searchParams,
+}: {
+	locale: string;
+	channel: string;
+	searchParams: Record<string, string | string[] | undefined>;
+}) {
 	// Uncaught — `hasAuthSession` swallows `cookies()` throws and can hide this hole.
 	await cookies();
 
@@ -101,7 +109,9 @@ async function LoginContent({ locale, channel }: { locale: string; channel: stri
 	);
 
 	if (auth.status === "authenticated") {
-		redirect(buildStorefrontPath(locale, channel));
+		const nextParam =
+			typeof searchParams.next === "string" && searchParams.next.startsWith("/") ? searchParams.next : null;
+		redirect(nextParam ?? buildStorefrontPath(locale, channel));
 	}
 
 	if (auth.status === "unavailable") {

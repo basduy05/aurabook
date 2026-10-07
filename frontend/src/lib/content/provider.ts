@@ -1,4 +1,4 @@
-import { defaultStorefrontContent } from "@/lib/content/defaults";
+import { getLocalizedStorefrontContent } from "@/lib/content/defaults";
 import { saleorContentProvider } from "@/lib/content/saleor/saleor-provider";
 import type { ContentProviderId, StorefrontContent, StorefrontContentRequest } from "@/lib/content/types";
 
@@ -9,8 +9,8 @@ export type ContentProvider = {
 
 const codeProvider: ContentProvider = {
 	id: "code",
-	async load() {
-		return defaultStorefrontContent;
+	async load(request: StorefrontContentRequest) {
+		return getLocalizedStorefrontContent(request.locale, request.channel);
 	},
 };
 

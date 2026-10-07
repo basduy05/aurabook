@@ -48,10 +48,12 @@ export async function Footer({ locale, channel }: { locale: string; channel: str
 						<Link href={buildStorefrontPath(locale, channel)} className="mb-4 inline-block">
 							<Logo className="h-7 w-auto" inverted />
 						</Link>
-						<p className="mt-4 max-w-xs text-sm leading-relaxed text-inverse-subtle">{brandConfig.tagline}</p>
+						<p className="mt-4 max-w-xs text-sm leading-relaxed text-inverse-subtle">
+							{locale === "vi" ? "Khám phá bộ sưu tập sách và sản phẩm độc đáo." : brandConfig.tagline}
+						</p>
 					</div>
 
-					<FooterMenuColumns items={footerMenuItems} />
+					<FooterMenuColumns items={footerMenuItems} locale={locale} />
 				</div>
 
 				{/* Language + market — hidden when only one option on each axis */}
@@ -76,14 +78,14 @@ export async function Footer({ locale, channel }: { locale: string; channel: str
 							prefetch={false}
 							className="text-xs text-inverse-muted transition-colors hover:text-inverse-subtle"
 						>
-							Privacy Policy
+							{locale === "vi" ? "Chính sách bảo mật" : "Privacy Policy"}
 						</Link>
 						<Link
 							href="/terms"
 							prefetch={false}
 							className="text-xs text-inverse-muted transition-colors hover:text-inverse-subtle"
 						>
-							Terms of Service
+							{locale === "vi" ? "Điều khoản dịch vụ" : "Terms of Service"}
 						</Link>
 					</div>
 				</div>

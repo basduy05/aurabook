@@ -342,6 +342,7 @@ INSTALLED_APPS = [
     "aurabook_apps.ai_search",
     "aurabook_apps.audio",
     "aurabook_apps.reading_progress",
+    "aurabook_apps.catalog_automation",
 ]
 
 ENABLE_DJANGO_EXTENSIONS = get_bool_from_env("ENABLE_DJANGO_EXTENSIONS", False)

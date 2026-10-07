@@ -16,6 +16,7 @@ import { OrderTimeline } from "@/ui/components/account/order-timeline";
 import { OrderStatusBadge } from "@/ui/components/account/order-status-badge";
 import { AccountOrderDetailSkeleton } from "@/ui/components/account/account-skeleton";
 import { type AddressDetailsFragment } from "@/gql/graphql";
+import { OrderLineReviewButton } from "@/ui/components/reviews/order-line-review-button";
 
 type Props = {
 	params: Promise<{ locale: string; number: string }>;
@@ -117,6 +118,13 @@ async function OrderDetailContent({ params }: Props) {
 											<p className="text-[13px] text-muted-foreground">
 												{tCommon("qty", { count: line.quantity })}
 											</p>
+											<div className="mt-2">
+												<OrderLineReviewButton
+													productSlug={product.slug}
+													productName={productName}
+													productId={product.id}
+												/>
+											</div>
 										</div>
 										{lineTotal != null && currency && (
 											<span className="text-sm font-medium tabular-nums">

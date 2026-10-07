@@ -38,6 +38,7 @@ export async function logout() {
 			continue;
 		}
 		await Checkout.detachCustomer(cookie.value);
+		cookieStore.delete(cookie.name);
 	}
 
 	await signOutSession();

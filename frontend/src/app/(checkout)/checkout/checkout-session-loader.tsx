@@ -17,6 +17,7 @@ import {
 	getCheckoutSessionCountries,
 	getCheckoutSessionUser,
 } from "@/checkout/lib/server/get-checkout-session-data";
+import { buildStorefrontPath } from "@/lib/storefront-path";
 import * as Checkout from "@/lib/checkout";
 
 /** Server-visible checkout URL params. `step` is client-only (shallow `?step=` updates). */
@@ -59,6 +60,20 @@ export async function CheckoutSessionLoader({
 		getCheckoutSessionUser(),
 		checkoutIdFromUrl ? getCheckoutSessionCheckout(checkoutIdFromUrl, browseLocale) : Promise.resolve(null),
 	]);
+
+	if (!initialUser) {
+		const checkout = checkoutResult && checkoutResult.ok ? checkoutResult.checkout : null;
+		const targetChannel =
+			checkout?.channel.slug ??
+			(await Checkout.getChannelSlugFromCartCookies()) ??
+			DefaultChannelSlug ??
+			"channel-vnd";
+		const loginPath = buildStorefrontPath(browseLocale, targetChannel, "/login");
+		const checkoutTarget = checkoutIdFromUrl
+			? buildCheckoutPath({ checkoutId: checkoutIdFromUrl, browseLocale })
+			: "/checkout";
+		redirect(`${loginPath}?next=${encodeURIComponent(checkoutTarget)}`);
+	}
 
 	let loadState: CheckoutLoadState = "none";
 	let channelSlug: string | null = null;

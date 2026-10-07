@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { DefaultChannelSlug } from "@/app/config";
 import { getStaticStorefrontChannelSlugs, isAllowedStorefrontChannel } from "@/config/channels";
 import { getDefaultLocaleSlug, isLocaleSlug, isStorefrontLocaleSlug } from "@/config/locale";
+import { getPairedChannelForLocale } from "@/config/locale-channel";
 import { BROWSE_LOCALE_COOKIE, getBrowseLocaleCookieOptions } from "@/lib/browse-locale";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 
@@ -58,11 +59,12 @@ export function middleware(request: NextRequest) {
 
 	// Root → default browse home
 	if (segments.length === 0) {
-		if (!resolvedChannel) {
+		const targetChannel = getPairedChannelForLocale(resolvedLocale, resolvedChannel);
+		if (!targetChannel) {
 			return NextResponse.next();
 		}
 		const url = request.nextUrl.clone();
-		url.pathname = buildStorefrontPath(resolvedLocale, resolvedChannel);
+		url.pathname = buildStorefrontPath(resolvedLocale, targetChannel);
 		return withBrowseLocaleCookie(request, NextResponse.redirect(url, 308), resolvedLocale);
 	}
 
@@ -89,10 +91,11 @@ export function middleware(request: NextRequest) {
 			return withBrowseLocaleCookie(request, NextResponse.next(), first);
 		}
 
-		// /{locale} only → add default channel
+		// /{locale} only → add default/paired channel
 		if (!second && defaultChannel) {
+			const targetChannel = getPairedChannelForLocale(first, defaultChannel);
 			const url = request.nextUrl.clone();
-			url.pathname = buildStorefrontPath(first, defaultChannel);
+			url.pathname = buildStorefrontPath(first, targetChannel);
 			return withBrowseLocaleCookie(request, NextResponse.redirect(url, 308), first);
 		}
 

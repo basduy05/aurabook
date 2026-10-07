@@ -167,7 +167,7 @@ class DummyGatewayPlugin(BasePlugin):
         self.config = GatewayConfig(
             gateway_name=GATEWAY_NAME,
             auto_capture=True,
-            supported_currencies="USD, PLN",
+            supported_currencies="USD, PLN, VND",
             connection_params={},
             store_customer=False,
         )
