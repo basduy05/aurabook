@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -51,6 +52,7 @@ export function CommunityAdminDashboard() {
 	const [historyPost, setHistoryPost] = useState<CommunityPost | null>(null);
 	const [settingsSavedAlert, setSettingsSavedAlert] = useState(false);
 	const [isSavingSettings, setIsSavingSettings] = useState(false);
+	const [mounted, setMounted] = useState(false);
 
 	// Community Settings state (Macaw UI configuration switches)
 	const [settings, setSettings] = useState({
@@ -94,6 +96,7 @@ export function CommunityAdminDashboard() {
 	};
 
 	useEffect(() => {
+		setMounted(true);
 		loadData();
 	}, []);
 
@@ -1106,8 +1109,10 @@ export function CommunityAdminDashboard() {
 			</div>
 
 			{/* REAL SALEOR ACCOUNT DETAILS MODAL */}
-			{selectedUser && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/60 backdrop-blur-xs">
+			{selectedUser &&
+				mounted &&
+				createPortal(
+					<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/60 backdrop-blur-xs">
 					<div className="relative w-full max-w-xl rounded-xl border border-border bg-card p-6 shadow-2xl transition-all animate-in fade-in-0 zoom-in-95 max-h-[90vh] overflow-y-auto">
 						{/* Close button */}
 						<button
@@ -1254,7 +1259,8 @@ export function CommunityAdminDashboard() {
 							</Button>
 						</div>
 					</div>
-				</div>
+				</div>,
+				document.body,
 			)}
 
 			{/* Admin Edit Post Modal */}

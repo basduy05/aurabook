@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import {
 	Users,
@@ -47,6 +48,11 @@ export function CommunityUserProfileModal({
 	const [isFollowing, setIsFollowing] = useState(false);
 	const [followersCount, setFollowersCount] = useState(0);
 	const [isFollowLoading, setIsFollowLoading] = useState(false);
+	const [mounted, setMounted] = useState(false);
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
 
 	const isSelf =
 		currentUser &&
@@ -140,7 +146,9 @@ export function CommunityUserProfileModal({
 				? allPosts.filter((p) => savedPostIds.includes(p.id))
 				: allPosts.filter((p) => user?.savedPosts?.includes(p.id));
 
-	return (
+	if (!isOpen || !mounted) return null;
+
+	return createPortal(
 		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs animate-in fade-in-0">
 			<div className="w-full max-w-2xl rounded-2xl border border-border bg-card shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
 				{/* Top Cover / Header */}
@@ -400,6 +408,7 @@ export function CommunityUserProfileModal({
 					)}
 				</div>
 			</div>
-		</div>
+		</div>,
+		document.body,
 	);
 }

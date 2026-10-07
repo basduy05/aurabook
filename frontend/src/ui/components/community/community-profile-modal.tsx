@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { X, UserCheck, Camera, Upload, Check } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
@@ -63,8 +64,13 @@ export function CommunityProfileModal({
 	const [avatarTab, setAvatarTab] = useState<"doraemon" | "shin" | "custom">("doraemon");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState("");
+	const [mounted, setMounted] = useState(false);
 
 	const fileInputRef = useRef<HTMLInputElement>(null);
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
 
 	useEffect(() => {
 		if (user) {
@@ -137,7 +143,9 @@ export function CommunityProfileModal({
 	const doraemonAvatars = PRESET_AVATARS.filter((a) => a.category === "doraemon");
 	const shinAvatars = PRESET_AVATARS.filter((a) => a.category === "shin");
 
-	return (
+	if (!isOpen || !mounted || !user) return null;
+
+	return createPortal(
 		<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/60 backdrop-blur-xs">
 			<div className="relative w-full max-w-3xl rounded-2xl border border-border bg-card p-6 shadow-2xl transition-all sm:p-7 animate-in fade-in-0 zoom-in-95 max-h-[92vh] overflow-y-auto">
 				{/* Streamlined Single Line Header */}
@@ -469,6 +477,7 @@ export function CommunityProfileModal({
 					</div>
 				</form>
 			</div>
-		</div>
+		</div>,
+		document.body,
 	);
 }

@@ -1,5 +1,6 @@
 import { type ReactNode, Suspense } from "react";
 import { Footer } from "@/ui/components/footer";
+import { ConditionalFooter } from "@/ui/components/conditional-footer";
 import { BrowseHeaderFrame } from "./browse-header-frame";
 import { type BrowseRouteParams } from "./browse-chrome-slots";
 
@@ -54,9 +55,11 @@ export function MainChrome({ params, children }: { params: BrowseRouteParams; ch
 			<BrowseHeaderFrame params={params} />
 			<div className="flex min-h-[calc(100dvh-var(--chrome-offset))] flex-col">
 				<main className="flex-1">{children}</main>
-				<Suspense fallback={<FooterSkeleton />}>
-					<FooterSlot params={params} />
-				</Suspense>
+				<ConditionalFooter>
+					<Suspense fallback={<FooterSkeleton />}>
+						<FooterSlot params={params} />
+					</Suspense>
+				</ConditionalFooter>
 			</div>
 		</>
 	);

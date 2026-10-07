@@ -16,10 +16,15 @@ export interface UserProfileHistoryItem {
 	previousDisplayName?: string;
 	previousUsername?: string;
 	previousBio?: string;
+	previousFavoriteGenre?: string;
 	newAvatar?: string;
 	newDisplayName?: string;
 	newUsername?: string;
 	newBio?: string;
+	newFavoriteGenre?: string;
+	favoriteGenre?: string;
+	followersCount?: number;
+	followingCount?: number;
 }
 
 export interface CommunityUser {

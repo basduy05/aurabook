@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { History, X, Save, Clock, AlertCircle } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
@@ -25,9 +26,14 @@ export function CommunityPostEditModal({
 	const [content, setContent] = useState(post.content);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [mounted, setMounted] = useState(false);
 	const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-	if (!isOpen) return null;
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
+	if (!isOpen || !mounted) return null;
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -48,7 +54,7 @@ export function CommunityPostEditModal({
 		}
 	};
 
-	return (
+	return createPortal(
 		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs animate-in fade-in-0">
 			<div className="w-full max-w-xl rounded-2xl border border-border bg-card p-6 shadow-2xl space-y-4">
 				<div className="flex items-center justify-between border-b border-border pb-3">
@@ -141,7 +147,8 @@ export function CommunityPostEditModal({
 					</div>
 				</form>
 			</div>
-		</div>
+		</div>,
+		document.body,
 	);
 }
 
@@ -152,12 +159,17 @@ interface PostHistoryModalProps {
 }
 
 export function PostHistoryModal({ isOpen, post, onClose }: PostHistoryModalProps) {
-	if (!isOpen) return null;
+	const [mounted, setMounted] = useState(false);
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
+	if (!isOpen || !mounted) return null;
 
 	const history = post.editHistory || [];
 
-
-	return (
+	return createPortal(
 		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs animate-in fade-in-0">
 			<div className="w-full max-w-2xl rounded-2xl border border-border bg-card p-6 shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
 				<div className="flex items-center justify-between border-b border-border pb-3 shrink-0">
@@ -222,6 +234,7 @@ export function PostHistoryModal({ isOpen, post, onClose }: PostHistoryModalProp
 					</Button>
 				</div>
 			</div>
-		</div>
+		</div>,
+		document.body,
 	);
 }

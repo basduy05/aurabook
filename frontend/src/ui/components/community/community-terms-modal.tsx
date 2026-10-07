@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { ShieldCheck, BookOpen, Users, AlertCircle, X } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { Checkbox } from "@/ui/components/ui/checkbox";
@@ -20,8 +21,13 @@ export function CommunityTermsModal({
 }: CommunityTermsModalProps) {
 	const [accepted, setAccepted] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [mounted, setMounted] = useState(false);
 
-	if (!isOpen) return null;
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
+	if (!isOpen || !mounted) return null;
 
 	const handleConfirm = async () => {
 		if (!accepted || isSubmitting) return;
@@ -33,7 +39,7 @@ export function CommunityTermsModal({
 		}
 	};
 
-	return (
+	return createPortal(
 		<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/70 backdrop-blur-md animate-in fade-in-0">
 			<div className="relative w-full max-w-lg rounded-3xl border border-border bg-card p-6 shadow-2xl transition-all sm:p-8 animate-in zoom-in-95">
 				{/* Optional Close Button if not mandatory onboarding */}
@@ -143,6 +149,7 @@ export function CommunityTermsModal({
 					</Button>
 				</div>
 			</div>
-		</div>
+		</div>,
+		document.body,
 	);
 }

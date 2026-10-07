@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Star, CheckCircle2, X } from "lucide-react";
 
 interface OrderLineReviewButtonProps {
@@ -23,6 +24,11 @@ export function OrderLineReviewButton({
 	productId,
 }: OrderLineReviewButtonProps) {
 	const [isOpen, setIsOpen] = useState(false);
+	const [mounted, setMounted] = useState(false);
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
 	const [rating, setRating] = useState(5);
 	const [hoverRating, setHoverRating] = useState<number | null>(null);
 	const [author, setAuthor] = useState("");
@@ -85,8 +91,10 @@ export function OrderLineReviewButton({
 				Đánh giá sản phẩm
 			</button>
 
-			{isOpen && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
+			{isOpen &&
+				mounted &&
+				createPortal(
+					<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
 					<div className="relative w-full max-w-md rounded-2xl border bg-card p-6 shadow-2xl">
 						<button
 							type="button"
@@ -213,7 +221,8 @@ export function OrderLineReviewButton({
 							</form>
 						)}
 					</div>
-				</div>
+				</div>,
+				document.body,
 			)}
 		</>
 	);

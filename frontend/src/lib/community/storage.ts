@@ -833,6 +833,7 @@ export function saveCommunityUserWithPropagation(updatedUser: Partial<CommunityU
 	const oldDisplayName = existing.displayName;
 	const oldUsername = existing.username;
 	const oldBio = existing.bio;
+	const oldGenre = existing.favoriteGenre || "";
 
 	const newAvatar = updatedUser.avatar || oldAvatar;
 	const newDisplayName = updatedUser.displayName?.trim() || oldDisplayName;
@@ -840,13 +841,15 @@ export function saveCommunityUserWithPropagation(updatedUser: Partial<CommunityU
 		? (updatedUser.username.startsWith("@") ? updatedUser.username : `@${updatedUser.username}`)
 		: oldUsername;
 	const newBio = updatedUser.bio !== undefined ? updatedUser.bio.trim() : oldBio;
+	const newGenre = updatedUser.favoriteGenre !== undefined ? updatedUser.favoriteGenre.trim() : oldGenre;
 
 	// Check if key profile attributes changed
 	const hasProfileChanged =
 		newAvatar !== oldAvatar ||
 		newDisplayName !== oldDisplayName ||
 		newUsername !== oldUsername ||
-		newBio !== oldBio;
+		newBio !== oldBio ||
+		newGenre !== oldGenre;
 
 	let history = existing.profileHistory || [];
 	if (hasProfileChanged) {
@@ -857,10 +860,15 @@ export function saveCommunityUserWithPropagation(updatedUser: Partial<CommunityU
 			previousDisplayName: oldDisplayName,
 			previousUsername: oldUsername,
 			previousBio: oldBio,
+			previousFavoriteGenre: oldGenre,
 			newAvatar: newAvatar,
 			newDisplayName: newDisplayName,
 			newUsername: newUsername,
 			newBio: newBio,
+			newFavoriteGenre: newGenre,
+			favoriteGenre: newGenre || oldGenre,
+			followersCount: existing.followers ? existing.followers.length : 0,
+			followingCount: existing.following ? existing.following.length : 0,
 		};
 		history = [historyEntry, ...history];
 	}
@@ -872,6 +880,7 @@ export function saveCommunityUserWithPropagation(updatedUser: Partial<CommunityU
 		displayName: newDisplayName,
 		username: newUsername,
 		bio: newBio,
+		favoriteGenre: newGenre,
 		profileHistory: history,
 	};
 

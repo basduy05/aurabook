@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { createPortal } from "react-dom";
 import { Star, ThumbsUp, CheckCircle2, MessageSquarePlus, X, PenLine, ChevronLeft, ChevronRight, Lock, EyeOff } from "lucide-react";
 import { type Review, type ReviewSummary } from "@/lib/reviews/types";
 
@@ -48,6 +49,11 @@ export function ProductReviewsSection({
 	// User auth / eligibility state
 	const [currentUser, setCurrentUser] = useState<{ name?: string; email?: string; hasPurchased?: boolean } | null>(null);
 	const [showIneligibleNotice, setShowIneligibleNotice] = useState(false);
+	const [mounted, setMounted] = useState(false);
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
 
 	// Form state
 	const [formRating, setFormRating] = useState(5);
@@ -470,32 +476,37 @@ export function ProductReviewsSection({
 			)}
 
 			{/* Ineligible Notice Modal */}
-			{showIneligibleNotice && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs animate-in fade-in duration-200">
-					<div className="relative w-full max-w-sm rounded-2xl border bg-card p-6 text-center shadow-xl">
-						<div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-50 text-amber-600">
-							<Lock className="h-6 w-6" />
+			{showIneligibleNotice &&
+				mounted &&
+				createPortal(
+					<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs animate-in fade-in duration-200">
+						<div className="relative w-full max-w-sm rounded-2xl border bg-card p-6 text-center shadow-xl">
+							<div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-50 text-amber-600">
+								<Lock className="h-6 w-6" />
+							</div>
+							<h3 className="mt-3 text-base font-bold text-foreground">
+								Quyền đánh giá bị giới hạn
+							</h3>
+							<p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+								Để đảm bảo tính khách quan và trung thực, chỉ những độc giả đã mua sản phẩm này tại Aurabook mới có thể gửi đánh giá.
+							</p>
+							<button
+								type="button"
+								onClick={() => setShowIneligibleNotice(false)}
+								className="mt-5 w-full rounded-xl bg-primary py-2 text-xs font-semibold text-primary-foreground"
+							>
+								Đã hiểu
+							</button>
 						</div>
-						<h3 className="mt-3 text-base font-bold text-foreground">
-							Quyền đánh giá bị giới hạn
-						</h3>
-						<p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-							Để đảm bảo tính khách quan và trung thực, chỉ những độc giả đã mua sản phẩm này tại Aurabook mới có thể gửi đánh giá.
-						</p>
-						<button
-							type="button"
-							onClick={() => setShowIneligibleNotice(false)}
-							className="mt-5 w-full rounded-xl bg-primary py-2 text-xs font-semibold text-primary-foreground"
-						>
-							Đã hiểu
-						</button>
-					</div>
-				</div>
-			)}
+					</div>,
+					document.body,
+				)}
 
 			{/* Write Review Modal */}
-			{isModalOpen && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs animate-in fade-in duration-200">
+			{isModalOpen &&
+				mounted &&
+				createPortal(
+					<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs animate-in fade-in duration-200">
 					<div className="relative w-full max-w-md rounded-2xl border bg-card p-5 shadow-2xl sm:p-6 animate-in zoom-in-95 duration-200">
 						<button
 							type="button"
@@ -641,7 +652,8 @@ export function ProductReviewsSection({
 							</form>
 						)}
 					</div>
-				</div>
+				</div>,
+				document.body,
 			)}
 		</section>
 	);

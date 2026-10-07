@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import {
 	ArrowLeft,
@@ -80,6 +81,11 @@ export function CommunityUserProfileView({
 	// Local Profile Modal state (guarantees instant, reliable opening)
 	const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 	const [copiedProfileLink, setCopiedProfileLink] = useState(false);
+	const [mounted, setMounted] = useState(false);
+
+	useEffect(() => {
+		setMounted(true);
+	}, []);
 
 	const [isFollowing, setIsFollowing] = useState(false);
 	const [followersCount, setFollowersCount] = useState(0);
@@ -566,7 +572,7 @@ export function CommunityUserProfileView({
 								key={idx}
 								className="rounded-2xl border border-border bg-card p-5 shadow-xs space-y-3"
 							>
-								{/* Context post header with CLICKABLE ORIGINAL POST LINK */}
+								{/* Context post header with SINGLE CLICKABLE ORIGINAL POST LINK */}
 								<div className="flex flex-wrap items-center justify-between gap-2 text-[12px] border-b border-border/60 pb-2.5">
 									<div className="flex items-center gap-1.5 min-w-0 max-w-full">
 										<span className="text-muted-foreground font-medium shrink-0">Đã bình luận vào:</span>
@@ -580,20 +586,9 @@ export function CommunityUserProfileView({
 											<ExternalLink className="h-3 w-3 text-muted-foreground group-hover:text-primary shrink-0" />
 										</button>
 									</div>
-									<div className="flex items-center gap-2 shrink-0">
-										<button
-											type="button"
-											onClick={() => onSelectPost?.(item.post.id)}
-											className="text-[11.5px] font-semibold text-primary hover:underline inline-flex items-center gap-1 cursor-pointer"
-											title="Chuyển đến bài viết gốc"
-										>
-											<span>Xem bài viết gốc</span>
-											<ExternalLink className="h-3 w-3" />
-										</button>
-										<span className="text-muted-foreground font-medium text-[11px]">
-											• {formatCommunityExactTime(item.comment.createdAt)}
-										</span>
-									</div>
+									<span className="text-muted-foreground font-medium text-[11.5px] shrink-0">
+										{formatCommunityExactTime(item.comment.createdAt)}
+									</span>
 								</div>
 
 								{/* Comment text */}
@@ -630,35 +625,34 @@ export function CommunityUserProfileView({
 											e.preventDefault();
 											handleReplyToCommentInProfile(item.post.id, item.comment.id);
 										}}
-										className="flex items-center gap-2 pt-2 animate-in fade-in-0"
+										className="mt-2.5 flex items-center gap-2 rounded-xl border border-border bg-background p-1.5 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all shadow-2xs animate-in fade-in-0"
 									>
-										<Input
+										<input
 											type="text"
 											value={replyText}
 											onChange={(e) => setReplyText(e.target.value)}
 											placeholder={`Trả lời cho ${user.displayName}...`}
-											className="h-8.5 text-[12px] bg-muted/30"
+											className="flex-1 bg-transparent px-3 py-1 text-[13px] text-foreground placeholder:text-muted-foreground outline-hidden"
 											autoFocus
 											disabled={isSubmittingReply}
 										/>
-										<Button
-											type="submit"
-											size="sm"
-											disabled={!replyText.trim() || isSubmittingReply}
-											className="h-8.5 px-3 text-[12px] font-semibold shrink-0 cursor-pointer"
-										>
-											<Send className="h-3 w-3 mr-1" />
-											Gửi
-										</Button>
-										<Button
-											type="button"
-											variant="ghost"
-											size="sm"
-											onClick={() => setReplyingCommentId(null)}
-											className="h-8.5 px-2 text-[12px] shrink-0 cursor-pointer"
-										>
-											Hủy
-										</Button>
+										<div className="flex items-center gap-1 shrink-0">
+											<button
+												type="button"
+												onClick={() => setReplyingCommentId(null)}
+												className="rounded-lg px-2.5 py-1 text-[12px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+											>
+												Hủy
+											</button>
+											<button
+												type="submit"
+												disabled={!replyText.trim() || isSubmittingReply}
+												className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-[12.5px] font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer shadow-2xs"
+											>
+												<Send className="h-3 w-3" />
+												<span>Gửi</span>
+											</button>
+										</div>
 									</form>
 								)}
 
@@ -712,16 +706,6 @@ export function CommunityUserProfileView({
 			{/* Tab 4: Profile Change History Timeline */}
 			{activeTab === "history" && (
 				<div className="space-y-4">
-					<div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 flex items-center gap-3">
-						<History className="h-5 w-5 text-amber-500 shrink-0" />
-						<div className="text-[13px]">
-							<span className="font-bold text-foreground">Lịch sử thay đổi hồ sơ: </span>
-							<span className="text-muted-foreground">
-								Ghi nhận tất cả các lần cập nhật ảnh đại diện, họ tên và thông tin tài khoản
-							</span>
-						</div>
-					</div>
-
 					{historyList.length === 0 ? (
 						<div className="rounded-2xl border border-dashed border-border p-12 text-center">
 							<History className="mx-auto h-9 w-9 text-muted-foreground/60 mb-2.5" />
@@ -731,324 +715,417 @@ export function CommunityUserProfileView({
 							</p>
 						</div>
 					) : (
-						<div className="space-y-3.5">
-							{historyList.map((hist, idx) => (
-								<div
-									key={hist.id || idx}
-									className="rounded-2xl border border-border bg-card p-5 shadow-2xs space-y-3 relative"
-								>
-									<div className="flex items-center justify-between border-b border-border/60 pb-2.5">
-										<div className="flex items-center gap-2">
-											<span className="h-2 w-2 rounded-full bg-amber-500" />
-											<span className="text-[13px] font-bold text-foreground">
-												Cập nhật hồ sơ #{historyList.length - idx}
+						<div className="relative pl-6 sm:pl-8 before:absolute before:left-2.5 sm:before:left-3.5 before:top-3 before:bottom-3 before:w-0.5 before:bg-border/80 space-y-4">
+							{historyList.map((hist, idx) => {
+								const versionNumber = historyList.length - idx;
+								const avatarChanged = Boolean(
+									hist.previousAvatar && hist.newAvatar && hist.previousAvatar !== hist.newAvatar,
+								);
+								const nameChanged = Boolean(
+									hist.previousDisplayName &&
+										hist.newDisplayName &&
+										hist.previousDisplayName !== hist.newDisplayName,
+								);
+								const usernameChanged = Boolean(
+									hist.previousUsername &&
+										hist.newUsername &&
+										hist.previousUsername !== hist.newUsername,
+								);
+								const genreChanged = Boolean(
+									hist.previousFavoriteGenre &&
+										hist.newFavoriteGenre &&
+										hist.previousFavoriteGenre !== hist.newFavoriteGenre,
+								);
+								const currentGenre =
+									hist.newFavoriteGenre ||
+									hist.favoriteGenre ||
+									hist.previousFavoriteGenre ||
+									user.favoriteGenre;
+								const followers = hist.followersCount ?? (user.followers?.length || 0);
+								const following = hist.followingCount ?? (user.following?.length || 0);
+
+								return (
+									<div
+										key={hist.id || idx}
+										className="relative rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-2xs space-y-3 transition-all hover:border-border/80"
+									>
+										{/* Timeline marker dot */}
+										<div className="absolute -left-[1.85rem] sm:-left-[2.35rem] top-5 h-3.5 w-3.5 rounded-full border-2 border-background bg-amber-500 shadow-xs ring-4 ring-card" />
+
+										{/* Header: Version badge + Timestamp */}
+										<div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/50 pb-2.5">
+											<div className="flex items-center gap-2">
+												<span className="rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold px-2.5 py-0.5 text-[11.5px] border border-amber-500/20">
+													Cập nhật #{versionNumber}
+												</span>
+												<span className="text-[13px] font-bold text-foreground">
+													Thay đổi thông tin hồ sơ
+												</span>
+											</div>
+											<span className="text-[11.5px] text-muted-foreground font-medium flex items-center gap-1.5">
+												<Clock className="h-3 w-3 text-muted-foreground" />
+												{formatCommunityExactTime(hist.changedAt)}
 											</span>
 										</div>
-										<span className="text-[12px] text-muted-foreground font-medium flex items-center gap-1">
-											<Clock className="h-3 w-3" />
-											{formatCommunityExactTime(hist.changedAt)}
-										</span>
-									</div>
 
-									<div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[13px]">
-										{/* Previous version */}
-										<div className="rounded-xl bg-muted/30 p-3.5 border border-border/60 space-y-2.5">
-											<span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider block">
-												Thông tin trước khi đổi:
-											</span>
+										{/* Stream Content (Luồng thông tin) */}
+										<div className="space-y-2.5 text-[13px]">
+											{/* User identity row: Avatar + Name / Username */}
 											<div className="flex items-center gap-3">
-												{hist.previousAvatar && (
-													<div className="relative h-11 w-11 rounded-full overflow-hidden border border-border bg-muted shrink-0">
+												{/* Avatar stream: old -> new if changed, or single avatar */}
+												{avatarChanged ? (
+													<div className="flex items-center gap-1.5 shrink-0">
+														<div className="relative h-9 w-9 rounded-full overflow-hidden border border-border bg-muted opacity-70">
+															<Image
+																src={hist.previousAvatar!}
+																alt="Ảnh cũ"
+																fill
+																sizes="36px"
+																className="object-cover"
+																unoptimized
+															/>
+														</div>
+														<span className="text-muted-foreground text-[11px] font-bold">→</span>
+														<div className="relative h-10 w-10 rounded-full overflow-hidden border-2 border-primary bg-muted shadow-2xs">
+															<Image
+																src={hist.newAvatar!}
+																alt="Ảnh mới"
+																fill
+																sizes="40px"
+																className="object-cover"
+																unoptimized
+															/>
+														</div>
+													</div>
+												) : (
+													<div className="relative h-10 w-10 rounded-full overflow-hidden border border-border bg-muted shrink-0 shadow-2xs">
 														<Image
-															src={hist.previousAvatar}
-															alt="Previous avatar"
+															src={hist.newAvatar || hist.previousAvatar || user.avatar}
+															alt="Ảnh đại diện"
 															fill
-															sizes="44px"
+															sizes="40px"
 															className="object-cover"
 															unoptimized
 														/>
 													</div>
 												)}
-												<div>
-													<div className="font-bold text-foreground">
-														{hist.previousDisplayName || "Chưa đặt"}
-													</div>
-													<div className="text-[12px] text-muted-foreground">
-														{hist.previousUsername || "Chưa đặt"}
-													</div>
-												</div>
-											</div>
-											{hist.previousBio && (
-												<div className="text-[12px] text-muted-foreground italic line-clamp-2">
-													"{hist.previousBio}"
-												</div>
-											)}
-										</div>
 
-										{/* New updated version */}
-										<div className="rounded-xl bg-primary/5 p-3.5 border border-primary/20 space-y-2.5">
-											<span className="text-[11px] font-bold text-primary uppercase tracking-wider block">
-												Thông tin mới cập nhật:
-											</span>
-											<div className="flex items-center gap-3">
-												{hist.newAvatar && (
-													<div className="relative h-11 w-11 rounded-full overflow-hidden border-2 border-primary bg-muted shrink-0 shadow-2xs">
-														<Image
-															src={hist.newAvatar}
-															alt="New avatar"
-															fill
-															sizes="44px"
-															className="object-cover"
-															unoptimized
-														/>
+												{/* Display name & Username flow */}
+												<div className="min-w-0 flex-1">
+													<div className="flex flex-wrap items-center gap-1.5">
+														{nameChanged ? (
+															<span className="flex items-center gap-1">
+																<span className="text-muted-foreground line-through text-[12.5px]">
+																	{hist.previousDisplayName}
+																</span>
+																<span className="text-muted-foreground text-[10px]">→</span>
+																<span className="font-bold text-foreground">
+																	{hist.newDisplayName}
+																</span>
+															</span>
+														) : (
+															<span className="font-bold text-foreground">
+																{hist.newDisplayName || hist.previousDisplayName || user.displayName}
+															</span>
+														)}
+
+														{usernameChanged ? (
+															<span className="text-[12px] flex items-center gap-1 text-primary">
+																<span className="text-muted-foreground line-through text-[11px]">
+																	{hist.previousUsername}
+																</span>
+																<span>→</span>
+																<span className="font-semibold">{hist.newUsername}</span>
+															</span>
+														) : (
+															<span className="text-[12px] text-muted-foreground">
+																{hist.newUsername || hist.previousUsername || user.username}
+															</span>
+														)}
 													</div>
-												)}
-												<div>
-													<div className="font-bold text-foreground">
-														{hist.newDisplayName || "Chưa đặt"}
-													</div>
-													<div className="text-[12px] text-primary font-semibold">
-														{hist.newUsername || "Chưa đặt"}
+
+													{/* Metrics & Genre bar */}
+													<div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px] text-muted-foreground mt-0.5">
+														{currentGenre && (
+															<div className="flex items-center gap-1 text-foreground/80 font-medium">
+																<BookOpen className="h-3 w-3 text-primary shrink-0" />
+																{genreChanged ? (
+																	<span>
+																		<span className="line-through text-muted-foreground">{hist.previousFavoriteGenre}</span>
+																		{" → "}
+																		<span className="font-semibold text-primary">{hist.newFavoriteGenre}</span>
+																	</span>
+																) : (
+																	<span>{currentGenre}</span>
+																)}
+															</div>
+														)}
+
+														<div className="flex items-center gap-1">
+															<Users className="h-3 w-3 text-muted-foreground shrink-0" />
+															<span>{followers} người theo dõi</span>
+															<span>•</span>
+															<span>{following} đang theo dõi</span>
+														</div>
 													</div>
 												</div>
 											</div>
-											{hist.newBio && (
-												<div className="text-[12px] text-foreground/90 italic line-clamp-2">
-													"{hist.newBio}"
+
+											{/* Bio if updated or present */}
+											{(hist.newBio || hist.previousBio) && (
+												<div className="rounded-xl bg-muted/30 px-3 py-2 border border-border/40 text-[12.5px] text-foreground/85 italic">
+													{hist.previousBio && hist.newBio && hist.previousBio !== hist.newBio ? (
+														<div className="space-y-1">
+															<div className="line-through text-muted-foreground text-[11.5px]">
+																"{hist.previousBio}"
+															</div>
+															<div className="font-medium text-foreground/90">
+																"{hist.newBio}"
+															</div>
+														</div>
+													) : (
+														<div>"{hist.newBio || hist.previousBio}"</div>
+													)}
 												</div>
 											)}
 										</div>
 									</div>
-								</div>
-							))}
+								);
+							})}
 						</div>
 					)}
 				</div>
 			)}
 
-			{/* POPUP MODAL 1: Followers Popup Modal */}
-			{isFollowersModalOpen && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/60 backdrop-blur-xs animate-in fade-in-0">
-					<div className="relative w-full max-w-lg rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-2xl animate-in zoom-in-95 max-h-[85vh] flex flex-col">
-						{/* Header */}
-						<div className="flex items-center justify-between border-b border-border pb-3 shrink-0">
-							<div className="flex items-center gap-2">
-								<Users className="h-4 w-4 text-primary" />
-								<h2 className="text-base font-bold text-foreground">
-									Người theo dõi ({followersUsers.length})
-								</h2>
-							</div>
-							<button
-								type="button"
-								onClick={() => setIsFollowersModalOpen(false)}
-								className="rounded-full p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
-							>
-								<X className="h-4 w-4" />
-							</button>
-						</div>
-
-						{/* Search in modal if list has items */}
-						{followersUsers.length > 4 && (
-							<div className="pt-3 pb-1 shrink-0">
-								<div className="relative">
-									<Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
-									<Input
-										type="text"
-										value={modalSearch}
-										onChange={(e) => setModalSearch(e.target.value)}
-										placeholder="Tìm kiếm người theo dõi..."
-										className="pl-8.5 h-8.5 text-[12.5px] bg-muted/30"
-									/>
+			{/* POPUP MODAL 1: Followers Popup Modal mounted to document.body */}
+			{isFollowersModalOpen &&
+				mounted &&
+				createPortal(
+					<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/60 backdrop-blur-xs animate-in fade-in-0">
+						<div className="relative w-full max-w-lg rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-2xl animate-in zoom-in-95 max-h-[85vh] flex flex-col">
+							{/* Header */}
+							<div className="flex items-center justify-between border-b border-border pb-3 shrink-0">
+								<div className="flex items-center gap-2">
+									<Users className="h-4 w-4 text-primary" />
+									<h2 className="text-base font-bold text-foreground">
+										Người theo dõi ({followersUsers.length})
+									</h2>
 								</div>
+								<button
+									type="button"
+									onClick={() => setIsFollowersModalOpen(false)}
+									className="rounded-full p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
+								>
+									<X className="h-4 w-4" />
+								</button>
 							</div>
-						)}
 
-						{/* Body list */}
-						<div className="overflow-y-auto mt-3 pr-1 space-y-2 flex-1">
-							{followersUsers.length === 0 ? (
-								<div className="p-8 text-center text-muted-foreground text-[13px]">
-									Chưa có người theo dõi nào.
+							{/* Search in modal if list has items */}
+							{followersUsers.length > 4 && (
+								<div className="pt-3 pb-1 shrink-0">
+									<div className="relative">
+										<Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
+										<Input
+											type="text"
+											value={modalSearch}
+											onChange={(e) => setModalSearch(e.target.value)}
+											placeholder="Tìm kiếm người theo dõi..."
+											className="pl-8.5 h-8.5 text-[12.5px] bg-muted/30"
+										/>
+									</div>
 								</div>
-							) : (
-								followersUsers
-									.filter(
-										(u) =>
-											!modalSearch.trim() ||
-											u.displayName.toLowerCase().includes(modalSearch.toLowerCase()) ||
-											u.username.toLowerCase().includes(modalSearch.toLowerCase()),
-									)
-									.map((u) => (
-										<div
-											key={u.id}
-											className="rounded-xl border border-border/80 bg-muted/20 p-3 flex items-center justify-between gap-3 hover:border-primary/50 transition-colors"
-										>
-											<button
-												type="button"
-												onClick={() => {
-													setIsFollowersModalOpen(false);
-													onViewOtherProfile(u.username || u.id);
-												}}
-												className="flex items-center gap-3 text-left min-w-0 flex-1 group cursor-pointer"
-											>
-												<div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border bg-muted">
-													<Image
-														src={
-															u.avatar ||
-															"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"
-														}
-														alt={u.displayName}
-														fill
-														sizes="40px"
-														className="object-cover"
-														unoptimized
-													/>
-												</div>
-												<div className="min-w-0">
-													<div className="font-bold text-[13px] text-foreground group-hover:text-primary transition-colors truncate">
-														{u.displayName}
-													</div>
-													<div className="text-[11.5px] text-muted-foreground truncate">
-														{u.username}
-													</div>
-													{u.bio && (
-														<div className="text-[11px] text-muted-foreground/80 truncate mt-0.5">
-															{u.bio}
-														</div>
-													)}
-												</div>
-											</button>
-
-											<Button
-												type="button"
-												variant="outline-solid"
-												size="sm"
-												onClick={() => {
-													setIsFollowersModalOpen(false);
-													onViewOtherProfile(u.username || u.id);
-												}}
-												className="text-[12px] h-7.5 rounded-xl font-semibold shrink-0 cursor-pointer"
-											>
-												Xem hồ sơ
-											</Button>
-										</div>
-									))
 							)}
-						</div>
-					</div>
-				</div>
-			)}
 
-			{/* POPUP MODAL 2: Following Popup Modal */}
-			{isFollowingModalOpen && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/60 backdrop-blur-xs animate-in fade-in-0">
-					<div className="relative w-full max-w-lg rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-2xl animate-in zoom-in-95 max-h-[85vh] flex flex-col">
-						{/* Header */}
-						<div className="flex items-center justify-between border-b border-border pb-3 shrink-0">
-							<div className="flex items-center gap-2">
-								<UserCheck className="h-4 w-4 text-primary" />
-								<h2 className="text-base font-bold text-foreground">
-									Đang theo dõi ({followingUsers.length})
-								</h2>
-							</div>
-							<button
-								type="button"
-								onClick={() => setIsFollowingModalOpen(false)}
-								className="rounded-full p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
-							>
-								<X className="h-4 w-4" />
-							</button>
-						</div>
-
-						{/* Search in modal if list has items */}
-						{followingUsers.length > 4 && (
-							<div className="pt-3 pb-1 shrink-0">
-								<div className="relative">
-									<Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
-									<Input
-										type="text"
-										value={modalSearch}
-										onChange={(e) => setModalSearch(e.target.value)}
-										placeholder="Tìm kiếm người đang theo dõi..."
-										className="pl-8.5 h-8.5 text-[12.5px] bg-muted/30"
-									/>
-								</div>
-							</div>
-						)}
-
-						{/* Body list */}
-						<div className="overflow-y-auto mt-3 pr-1 space-y-2 flex-1">
-							{followingUsers.length === 0 ? (
-								<div className="p-8 text-center text-muted-foreground text-[13px]">
-									Chưa theo dõi người dùng nào.
-								</div>
-							) : (
-								followingUsers
-									.filter(
-										(u) =>
-											!modalSearch.trim() ||
-											u.displayName.toLowerCase().includes(modalSearch.toLowerCase()) ||
-											u.username.toLowerCase().includes(modalSearch.toLowerCase()),
-									)
-									.map((u) => (
-										<div
-											key={u.id}
-											className="rounded-xl border border-border/80 bg-muted/20 p-3 flex items-center justify-between gap-3 hover:border-primary/50 transition-colors"
-										>
-											<button
-												type="button"
-												onClick={() => {
-													setIsFollowingModalOpen(false);
-													onViewOtherProfile(u.username || u.id);
-												}}
-												className="flex items-center gap-3 text-left min-w-0 flex-1 group cursor-pointer"
+							{/* Body list */}
+							<div className="overflow-y-auto mt-3 pr-1 space-y-2 flex-1">
+								{followersUsers.length === 0 ? (
+									<div className="p-8 text-center text-muted-foreground text-[13px]">
+										Chưa có người theo dõi nào.
+									</div>
+								) : (
+									followersUsers
+										.filter(
+											(u) =>
+												!modalSearch.trim() ||
+												u.displayName.toLowerCase().includes(modalSearch.toLowerCase()) ||
+												u.username.toLowerCase().includes(modalSearch.toLowerCase()),
+										)
+										.map((u) => (
+											<div
+												key={u.id}
+												className="rounded-xl border border-border/80 bg-muted/20 p-3 flex items-center justify-between gap-3 hover:border-primary/50 transition-colors"
 											>
-												<div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border bg-muted">
-													<Image
-														src={
-															u.avatar ||
-															"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"
-														}
-														alt={u.displayName}
-														fill
-														sizes="40px"
-														className="object-cover"
-														unoptimized
-													/>
-												</div>
-												<div className="min-w-0">
-													<div className="font-bold text-[13px] text-foreground group-hover:text-primary transition-colors truncate">
-														{u.displayName}
+												<button
+													type="button"
+													onClick={() => {
+														setIsFollowersModalOpen(false);
+														onViewOtherProfile(u.username || u.id);
+													}}
+													className="flex items-center gap-3 text-left min-w-0 flex-1 group cursor-pointer"
+												>
+													<div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border bg-muted">
+														<Image
+															src={
+																u.avatar ||
+																"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"
+															}
+															alt={u.displayName}
+															fill
+															sizes="40px"
+															className="object-cover"
+															unoptimized
+														/>
 													</div>
-													<div className="text-[11.5px] text-muted-foreground truncate">
-														{u.username}
-													</div>
-													{u.bio && (
-														<div className="text-[11px] text-muted-foreground/80 truncate mt-0.5">
-															{u.bio}
+													<div className="min-w-0">
+														<div className="font-bold text-[13px] text-foreground group-hover:text-primary transition-colors truncate">
+															{u.displayName}
 														</div>
-													)}
-												</div>
-											</button>
+														<div className="text-[11.5px] text-muted-foreground truncate">
+															{u.username}
+														</div>
+														{u.bio && (
+															<div className="text-[11px] text-muted-foreground/80 truncate mt-0.5">
+																{u.bio}
+															</div>
+														)}
+													</div>
+												</button>
 
-											<Button
-												type="button"
-												variant="outline-solid"
-												size="sm"
-												onClick={() => {
-													setIsFollowingModalOpen(false);
-													onViewOtherProfile(u.username || u.id);
-												}}
-												className="text-[12px] h-7.5 rounded-xl font-semibold shrink-0 cursor-pointer"
-											>
-												Xem hồ sơ
-											</Button>
-										</div>
-									))
-							)}
+												<Button
+													type="button"
+													variant="outline-solid"
+													size="sm"
+													onClick={() => {
+														setIsFollowersModalOpen(false);
+														onViewOtherProfile(u.username || u.id);
+													}}
+													className="text-[12px] h-7.5 rounded-xl font-semibold shrink-0 cursor-pointer"
+												>
+													Xem hồ sơ
+												</Button>
+											</div>
+										))
+								)}
+							</div>
 						</div>
-					</div>
-				</div>
-			)}
+					</div>,
+					document.body,
+				)}
+
+			{/* POPUP MODAL 2: Following Popup Modal mounted to document.body */}
+			{isFollowingModalOpen &&
+				mounted &&
+				createPortal(
+					<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/60 backdrop-blur-xs animate-in fade-in-0">
+						<div className="relative w-full max-w-lg rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-2xl animate-in zoom-in-95 max-h-[85vh] flex flex-col">
+							{/* Header */}
+							<div className="flex items-center justify-between border-b border-border pb-3 shrink-0">
+								<div className="flex items-center gap-2">
+									<UserCheck className="h-4 w-4 text-primary" />
+									<h2 className="text-base font-bold text-foreground">
+										Đang theo dõi ({followingUsers.length})
+									</h2>
+								</div>
+								<button
+									type="button"
+									onClick={() => setIsFollowingModalOpen(false)}
+									className="rounded-full p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
+								>
+									<X className="h-4 w-4" />
+								</button>
+							</div>
+
+							{/* Search in modal if list has items */}
+							{followingUsers.length > 4 && (
+								<div className="pt-3 pb-1 shrink-0">
+									<div className="relative">
+										<Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
+										<Input
+											type="text"
+											value={modalSearch}
+											onChange={(e) => setModalSearch(e.target.value)}
+											placeholder="Tìm kiếm người đang theo dõi..."
+											className="pl-8.5 h-8.5 text-[12.5px] bg-muted/30"
+										/>
+									</div>
+								</div>
+							)}
+
+							{/* Body list */}
+							<div className="overflow-y-auto mt-3 pr-1 space-y-2 flex-1">
+								{followingUsers.length === 0 ? (
+									<div className="p-8 text-center text-muted-foreground text-[13px]">
+										Chưa theo dõi người dùng nào.
+									</div>
+								) : (
+									followingUsers
+										.filter(
+											(u) =>
+												!modalSearch.trim() ||
+												u.displayName.toLowerCase().includes(modalSearch.toLowerCase()) ||
+												u.username.toLowerCase().includes(modalSearch.toLowerCase()),
+										)
+										.map((u) => (
+											<div
+												key={u.id}
+												className="rounded-xl border border-border/80 bg-muted/20 p-3 flex items-center justify-between gap-3 hover:border-primary/50 transition-colors"
+											>
+												<button
+													type="button"
+													onClick={() => {
+														setIsFollowingModalOpen(false);
+														onViewOtherProfile(u.username || u.id);
+													}}
+													className="flex items-center gap-3 text-left min-w-0 flex-1 group cursor-pointer"
+												>
+													<div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border bg-muted">
+														<Image
+															src={
+																u.avatar ||
+																"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"
+															}
+															alt={u.displayName}
+															fill
+															sizes="40px"
+															className="object-cover"
+															unoptimized
+														/>
+													</div>
+													<div className="min-w-0">
+														<div className="font-bold text-[13px] text-foreground group-hover:text-primary transition-colors truncate">
+															{u.displayName}
+														</div>
+														<div className="text-[11.5px] text-muted-foreground truncate">
+															{u.username}
+														</div>
+														{u.bio && (
+															<div className="text-[11px] text-muted-foreground/80 truncate mt-0.5">
+																{u.bio}
+															</div>
+														)}
+													</div>
+												</button>
+
+												<Button
+													type="button"
+													variant="outline-solid"
+													size="sm"
+													onClick={() => {
+														setIsFollowingModalOpen(false);
+														onViewOtherProfile(u.username || u.id);
+													}}
+													className="text-[12px] h-7.5 rounded-xl font-semibold shrink-0 cursor-pointer"
+												>
+													Xem hồ sơ
+												</Button>
+											</div>
+										))
+								)}
+							</div>
+						</div>
+					</div>,
+					document.body,
+				)}
 
 			{/* Reliable Profile Edit Modal directly integrated */}
 			<CommunityProfileModal

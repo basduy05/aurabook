@@ -451,33 +451,24 @@ export function CommunityFeed() {
 								}
 								return (
 									<div className="space-y-4 animate-in fade-in-0">
-										<div className="rounded-2xl border border-border bg-card p-4 sm:p-5 flex items-center justify-between gap-3 shadow-2xs">
-											<div className="flex items-center gap-3 min-w-0">
-												<button
-													type="button"
-													onClick={handleExitProfileAndPost}
-													className="rounded-full p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer shrink-0"
-													title="Quay lại Bảng tin cộng đồng"
-												>
-													<ArrowLeft className="h-5 w-5" />
-												</button>
-												<div className="min-w-0">
-													<div className="text-[14px] font-bold text-foreground truncate">
-														{focusedPost.title}
-													</div>
-													<div className="text-[12px] text-muted-foreground truncate">
-														Đang xem bài viết chi tiết • {focusedPost.author.displayName} ({focusedPost.author.username})
-													</div>
+										<div className="rounded-2xl border border-border bg-card p-3.5 sm:p-4 flex items-center gap-3 shadow-2xs">
+											<button
+												type="button"
+												onClick={handleExitProfileAndPost}
+												className="rounded-xl p-2 text-muted-foreground hover:text-foreground hover:bg-muted border border-border/60 hover:border-border transition-colors cursor-pointer shrink-0"
+												title="Quay lại Bảng tin cộng đồng"
+												aria-label="Quay lại tất cả bài viết"
+											>
+												<ArrowLeft className="h-5 w-5" />
+											</button>
+											<div className="min-w-0 flex-1">
+												<div className="text-[14.5px] font-bold text-foreground truncate">
+													{focusedPost.title}
+												</div>
+												<div className="text-[12px] text-muted-foreground truncate">
+													Đang xem bài viết chi tiết • {focusedPost.author.displayName} ({focusedPost.author.username})
 												</div>
 											</div>
-											<Button
-												variant="outline-solid"
-												size="sm"
-												onClick={handleExitProfileAndPost}
-												className="rounded-xl text-[12px] font-semibold h-8.5 shrink-0 cursor-pointer"
-											>
-												← Tất cả bài viết
-											</Button>
 										</div>
 
 										<CommunityPostCard
