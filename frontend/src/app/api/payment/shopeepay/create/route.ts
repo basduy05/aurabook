@@ -16,7 +16,7 @@ export async function POST(request: Request) {
 			orderInfo?: string;
 		}
 		const body = (await request.json()) as ShopeePayRequestBody;
-		const { amount, orderId, orderInfo = "Thanh toán AuraBook" } = body;
+		const { amount, orderId, orderInfo = "Thanh toán Aurabook" } = body;
 
 		if (!amount || !orderId) {
 			return NextResponse.json({ success: false, error: "Missing amount or orderId" }, { status: 400 });

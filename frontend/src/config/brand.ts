@@ -15,28 +15,28 @@
 
 export const brandConfig = {
 	/** Site name used in titles, metadata, and headers */
-	siteName: "Saleor Store",
+	siteName: "Aurabook",
 
 	/** Legal entity name for copyright notices */
-	copyrightHolder: "Saleor Store",
+	copyrightHolder: "Aurabook",
 
 	/** Organization name for structured data (JSON-LD) */
-	organizationName: "Saleor Store",
+	organizationName: "Aurabook",
 
 	/** Default brand name for products without a brand */
-	defaultBrand: "Saleor Store",
+	defaultBrand: "Aurabook",
 
 	/** Tagline/description for the store */
-	tagline: "Discover our collection.",
+	tagline: "Khám phá kho tàng sách và tri thức số.",
 
 	/** Homepage meta description */
-	description: "Shop our collection.",
+	description: "Aurabook - Nền tảng sách trực tuyến và cộng đồng bạn đọc.",
 
 	/** Logo aria-label for accessibility */
-	logoAriaLabel: "Store",
+	logoAriaLabel: "Aurabook",
 
 	/** Title template - %s will be replaced with page title */
-	titleTemplate: "%s | Saleor Store",
+	titleTemplate: "%s | Aurabook",
 
 	/** Social media handles */
 	social: {

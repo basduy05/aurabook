@@ -56,38 +56,48 @@ export const rootMetadata: Metadata = {
 		},
 	}),
 
-	// Icons - with light/dark mode support
+	// Icons - with light/dark mode support (cache-busted with ?v=aurabook5 to immediately update browser tabs)
 	icons: {
 		icon: [
-			{ url: "/favicon.ico", sizes: "32x32" },
-			// Light mode (dark icon on light tabs)
 			{
-				url: "/favicon-16x16.png",
+				url: "/favicon-32x32.png?v=aurabook5",
+				sizes: "32x32",
+				type: "image/png",
+			},
+			{
+				url: "/favicon-16x16.png?v=aurabook5",
+				sizes: "16x16",
+				type: "image/png",
+			},
+			{ url: "/favicon.ico?v=aurabook5", sizes: "any" },
+			// Light mode
+			{
+				url: "/favicon-16x16.png?v=aurabook5",
 				sizes: "16x16",
 				type: "image/png",
 				media: "(prefers-color-scheme: light)",
 			},
 			{
-				url: "/favicon-32x32.png",
+				url: "/favicon-32x32.png?v=aurabook5",
 				sizes: "32x32",
 				type: "image/png",
 				media: "(prefers-color-scheme: light)",
 			},
-			// Dark mode (light icon on dark tabs)
+			// Dark mode
 			{
-				url: "/favicon-dark-16x16.png",
+				url: "/favicon-dark-16x16.png?v=aurabook5",
 				sizes: "16x16",
 				type: "image/png",
 				media: "(prefers-color-scheme: dark)",
 			},
 			{
-				url: "/favicon-dark-32x32.png",
+				url: "/favicon-dark-32x32.png?v=aurabook5",
 				sizes: "32x32",
 				type: "image/png",
 				media: "(prefers-color-scheme: dark)",
 			},
 		],
-		apple: "/apple-icon.png",
+		apple: "/apple-touch-icon.png?v=aurabook5",
 	},
 
 	// Web App Manifest

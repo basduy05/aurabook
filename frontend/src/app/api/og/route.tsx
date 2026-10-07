@@ -32,7 +32,7 @@ function clamp(value: string | null, maxLength: number): string {
 export async function GET(request: NextRequest) {
 	const { searchParams } = request.nextUrl;
 
-	const title = clamp(searchParams.get("title"), MAX_TITLE_LENGTH) || "Saleor Store";
+	const title = clamp(searchParams.get("title"), MAX_TITLE_LENGTH) || "Aurabook";
 	const subtitle = clamp(searchParams.get("subtitle"), MAX_SUBTITLE_LENGTH);
 	const price = clamp(searchParams.get("price"), MAX_PRICE_LENGTH);
 

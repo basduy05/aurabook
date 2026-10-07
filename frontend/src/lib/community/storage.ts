@@ -349,7 +349,7 @@ export function syncReviewToCommunity(
 				rating: review.rating,
 				price: extra?.price || "120.000 ₫",
 				thumbnail: extra?.thumbnail || "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop&q=80",
-				author: extra?.author || "Tác giả AuraBook",
+				author: extra?.author || "Tác giả Aurabook",
 			},
 			title: review.title,
 			content: review.content,
@@ -446,7 +446,7 @@ export function getCommunitySidebarData(): {
 			const known = KNOWN_BOOKS[slug];
 			const existing = bookStats.get(slug) || {
 				title: known?.title || post.book.title,
-				author: known?.author || post.book.author || "Tác giả AuraBook",
+				author: known?.author || post.book.author || "Tác giả Aurabook",
 				slug,
 				ratings: [] as number[],
 				count: 0,
@@ -471,7 +471,7 @@ export function getCommunitySidebarData(): {
 			const bookTitle = known?.title || (slug === "dac-nhan-tam" ? "Đắc Nhân Tâm" : String(slug));
 			const existing = bookStats.get(slug) || {
 				title: bookTitle,
-				author: known?.author || "Tác giả AuraBook",
+				author: known?.author || "Tác giả Aurabook",
 				slug,
 				ratings: [] as number[],
 				count: 0,

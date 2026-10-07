@@ -112,7 +112,7 @@ export function CommunityProfileModal({
 						</h2>
 					</div>
 					<p className="mt-1 text-[13px] text-muted-foreground">
-						Định hình phong cách của bạn trong mạng xã hội cộng đồng sách AuraBook
+						Định hình phong cách của bạn trong mạng xã hội cộng đồng sách Aurabook
 					</p>
 				</div>
 

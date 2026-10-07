@@ -202,7 +202,7 @@ export function CommunityCreatePost({
 							</div>
 							<div>
 								<div className="text-[13px] font-semibold text-foreground leading-none">
-									{currentUser?.displayName || "Độc giả AuraBook"}
+									{currentUser?.displayName || "Độc giả Aurabook"}
 								</div>
 								<div className="text-[12px] text-muted-foreground leading-none mt-1">
 									{currentUser?.username || "@docgia"}

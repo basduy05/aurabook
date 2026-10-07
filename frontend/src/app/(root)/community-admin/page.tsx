@@ -3,7 +3,7 @@ import { CommunityAdminDashboard } from "@/ui/components/community/admin/communi
 
 export const metadata: Metadata = {
 	title: "Quản trị Cộng đồng & Độc giả | Saleor Admin",
-	description: "Bảng điều khiển quản trị mạng xã hội, kiểm duyệt bài viết và quản lý người dùng AuraBook theo chuẩn Saleor Dashboard.",
+	description: "Bảng điều khiển quản trị mạng xã hội, kiểm duyệt bài viết và quản lý người dùng Aurabook theo chuẩn Saleor Dashboard.",
 };
 
 export default function StandaloneCommunityAdminPage() {

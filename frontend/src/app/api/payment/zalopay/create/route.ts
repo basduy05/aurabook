@@ -37,7 +37,7 @@ export async function POST(request: Request) {
 
 		const embedData = JSON.stringify({ redirecturl: redirectUrl });
 		const items: string[] = [];
-		const description = `AuraBook - Thanh toán đơn hàng ${appTransId}`;
+		const description = `Aurabook - Thanh toán đơn hàng ${appTransId}`;
 		const appTime = now.getTime();
 		const appUser = "aurabook_user";
 

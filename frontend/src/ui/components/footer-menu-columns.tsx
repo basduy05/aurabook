@@ -27,7 +27,7 @@ const defaultFooterLinksVi = {
 		{ label: "Chính sách đổi trả", href: "/returns" },
 	],
 	company: [
-		{ label: "Giới thiệu AuraBook", href: "/about" },
+		{ label: "Giới thiệu Aurabook", href: "/about" },
 		{ label: "Phát triển bền vững", href: "/sustainability" },
 		{ label: "Cơ hội nghề nghiệp", href: "/careers" },
 		{ label: "Báo chí & Truyền thông", href: "/press" },

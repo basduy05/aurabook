@@ -166,7 +166,7 @@ export const viStorefrontContent = {
 			brandStory: {
 				heading: "Câu chuyện thương hiệu",
 				paragraphs: [
-					"Chào mừng bạn đến với AuraBook – nơi mang đến những trải nghiệm mua sắm hiện đại, tiện lợi và đáng tin cậy.",
+					"Chào mừng bạn đến với Aurabook – nơi mang đến những trải nghiệm mua sắm hiện đại, tiện lợi và đáng tin cậy.",
 					"Mỗi sản phẩm đều được chọn lọc kỹ càng nhằm đáp ứng nhu cầu và nâng cao chất lượng cuộc sống của bạn.",
 				],
 			},

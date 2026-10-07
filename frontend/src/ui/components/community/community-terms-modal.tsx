@@ -58,7 +58,7 @@ export function CommunityTermsModal({
 							{mandatory ? "Điều khoản tham gia Cộng đồng" : "Quy ước Cộng đồng Độc giả"}
 						</h2>
 						<p className="text-[13px] text-muted-foreground mt-0.5">
-							Quy ước ứng xử và điều khoản tham gia diễn đàn văn hóa đọc AuraBook
+							Quy ước ứng xử và điều khoản tham gia diễn đàn văn hóa đọc Aurabook
 						</p>
 					</div>
 				</div>
@@ -116,7 +116,7 @@ export function CommunityTermsModal({
 							className="mt-0.5"
 						/>
 						<span className="text-[13px] leading-normal text-foreground font-medium select-none">
-							Tôi đã đọc kỹ và đồng ý tuân thủ toàn bộ Quy chuẩn & Điều khoản hoạt động của Cộng đồng Độc giả AuraBook.
+							Tôi đã đọc kỹ và đồng ý tuân thủ toàn bộ Quy chuẩn & Điều khoản hoạt động của Cộng đồng Độc giả Aurabook.
 						</span>
 					</label>
 				</div>

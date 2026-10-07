@@ -130,6 +130,15 @@ services:
       - API_URL=http://localhost:8000/graphql/
       - APP_MOUNT_URI=/dashboard/
       - STATIC_URL=/dashboard/static/
+    volumes:
+      - ./dashboard-custom/index.html:/app/dashboard/index.html
+      - ./dashboard-custom/index-MpKC72Sj.js:/app/dashboard/index-MpKC72Sj.js
+      - ./dashboard-custom/index-aurabook.js:/app/dashboard/index-aurabook.js
+      - ./dashboard-custom/index-aurabook-v2.js:/app/dashboard/index-aurabook-v2.js
+      - ./dashboard-custom/Layout-1_e8a5xr.js:/app/dashboard/Layout-1_e8a5xr.js
+      - ./dashboard-custom/favicons:/app/dashboard/favicons
+      - ./dashboard-custom/favicon.ico:/app/dashboard/favicon.ico
+      - ./dashboard-custom/default.conf:/etc/nginx/conf.d/default.conf
     networks:
       - aurabook-network
 

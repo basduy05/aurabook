@@ -18,6 +18,9 @@ import { MulticolumnSection } from "@/ui/sections/multicolumn-section/multicolum
 import { RichTextBlock } from "@/ui/sections/rich-text-block/rich-text-block";
 
 export const metadata = {
+	title: {
+		absolute: `${brandConfig.siteName} - ${brandConfig.tagline}`,
+	},
 	description: brandConfig.description,
 };
 

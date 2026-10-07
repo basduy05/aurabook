@@ -285,7 +285,7 @@ export const SimulatedVietnamPayments: FC<SimulatedVietnamPaymentsProps> = ({
 					orderId: checkout.id,
 					amount: totalAmount,
 					currency,
-					orderInfo: `AuraBook - Thanh toán đơn hàng`,
+					orderInfo: `Aurabook - Thanh toán đơn hàng`,
 				}),
 			});
 

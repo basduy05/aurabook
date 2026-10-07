@@ -36,7 +36,7 @@ export async function GET(request: Request) {
 				username,
 				displayName: name,
 				avatar: me.avatar?.url || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=10b981&color=fff`,
-				bio: "Thành viên cộng đồng độc giả AuraBook",
+				bio: "Thành viên cộng đồng độc giả Aurabook",
 				favoriteGenre: "Văn học & Kỹ năng sống",
 				hasAcceptedTerms: false,
 				isBlocked: false,

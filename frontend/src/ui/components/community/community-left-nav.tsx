@@ -79,7 +79,7 @@ export function CommunityLeftNav({
 		{
 			id: "3",
 			title: "Chào mừng bạn mới",
-			content: "Chào mừng bạn đến với Mạng xã hội Độc giả AuraBook. Hãy cùng kết nối và chia sẻ!",
+			content: "Chào mừng bạn đến với Mạng xã hội Độc giả Aurabook. Hãy cùng kết nối và chia sẻ!",
 			time: "Hôm qua",
 			isRead: true,
 			icon: "system",
@@ -221,7 +221,7 @@ export function CommunityLeftNav({
 							</div>
 							<div className="min-w-0 flex-1">
 								<div className="text-[13px] font-semibold text-foreground truncate">
-									{currentUser?.displayName || "Độc giả AuraBook"}
+									{currentUser?.displayName || "Độc giả Aurabook"}
 								</div>
 								<div className="text-[12px] text-muted-foreground truncate">
 									{currentUser?.username || "@docgia"}

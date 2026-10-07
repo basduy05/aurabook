@@ -79,9 +79,13 @@ export default async function LocaleRootLayout({
 
 	return (
 		<html {...htmlProps}>
-			{/* No crossOrigin: plain <img> fetches are not CORS, and a `crossorigin`
-			    preconnect would warm a connection the image load cannot reuse. */}
-			{mediaOrigin && <link rel="preconnect" href={mediaOrigin} />}
+			<head>
+				<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=aurabook5" />
+				<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=aurabook5" />
+				<link rel="shortcut icon" href="/favicon.ico?v=aurabook5" />
+				<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=aurabook5" />
+				{mediaOrigin && <link rel="preconnect" href={mediaOrigin} />}
+			</head>
 			<body className="min-h-dvh font-sans">
 				<NextIntlClientProvider locale={localeSlug} messages={messages} timeZone={getDefaultTimeZone()}>
 					<PersistBrowseLocaleCookie locale={localeSlug} />

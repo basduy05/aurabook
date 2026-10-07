@@ -11,7 +11,7 @@ export async function POST(request: Request) {
 			orderInfo?: string;
 		}
 		const body = (await request.json()) as MoMoRequestBody;
-		const { amount, currency = "VND", orderId, orderInfo = "Thanh toán đơn hàng AuraBook" } = body;
+		const { amount, currency = "VND", orderId, orderInfo = "Thanh toán đơn hàng Aurabook" } = body;
 
 		if (!amount || !orderId) {
 			return NextResponse.json({ success: false, error: "Missing amount or orderId" }, { status: 400 });

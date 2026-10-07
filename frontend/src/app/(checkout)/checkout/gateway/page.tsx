@@ -168,7 +168,7 @@ function GatewayContent() {
 				<div className="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-slate-800 space-y-3">
 					<div className="flex items-center justify-between text-sm pb-3 border-b border-slate-100 dark:border-slate-800">
 						<span className="text-slate-500">Đơn vị thụ hưởng:</span>
-						<span className="font-semibold text-slate-800 dark:text-slate-100">AuraBook Publishing</span>
+						<span className="font-semibold text-slate-800 dark:text-slate-100">Aurabook Publishing</span>
 					</div>
 					<div className="flex items-center justify-between text-sm pb-3 border-b border-slate-100 dark:border-slate-800">
 						<span className="text-slate-500">Mã giao dịch / Đơn hàng:</span>
@@ -281,7 +281,7 @@ function GatewayContent() {
 									</div>
 								</div>
 								<div className="text-xs text-slate-500 text-center">
-									Nhấn nút bên dưới để ngân hàng NCB xác nhận giao dịch thành công và chuyển hướng về AuraBook.
+									Nhấn nút bên dưới để ngân hàng NCB xác nhận giao dịch thành công và chuyển hướng về Aurabook.
 								</div>
 							</div>
 						)}
@@ -331,7 +331,7 @@ function GatewayContent() {
 							<ShieldCheck className="w-3 h-3" /> PCI-DSS Compliant
 						</span>
 					</div>
-					<p>© 2026 Bản quyền thuộc về AuraBook &amp; Đối tác cổng thanh toán.</p>
+					<p>© 2026 Bản quyền thuộc về Aurabook &amp; Đối tác cổng thanh toán.</p>
 				</div>
 			</div>
 		</div>

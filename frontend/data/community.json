@@ -93,6 +93,29 @@
         "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&auto=format&fit=crop&q=80",
         "isVerifiedBuyer": true
       },
+      "book": {
+        "title": "Apple Juice",
+        "slug": "apple-juice",
+        "price": "49.750 ₫",
+        "thumbnail": "http://localhost:8000/media/thumbnails/products/saleor-apple-drink_thumbnail_256.png",
+        "author": "Tác giả AuraBook",
+        "rating": 5
+      },
+      "title": "gs",
+      "content": "sd",
+      "id": "post-1791375770866-iy5y",
+      "likes": [],
+      "comments": [],
+      "createdAt": "2026-10-07T12:22:50.866Z"
+    },
+    {
+      "author": {
+        "id": "user-VXNlcjo0Ng==",
+        "username": "@duy",
+        "displayName": "Duy Nguyễn Bá",
+        "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&auto=format&fit=crop&q=80",
+        "isVerifiedBuyer": true
+      },
       "title": "Đọc sách là hành trình của tâm tưởng — và tại AuraBook Communities, sự riêng tư của bạn là ưu tiên số một.",
       "content": "Sách phản chiếu những ngóc ngách sâu kín nhất trong suy nghĩ của mỗi người. Khi cầm lên một cuốn sách về triết học, tâm lý trị liệu, khủng hoảng tuổi trẻ, hay đơn giản là một bộ tiểu thuyết lãng mạn nhẹ nhàng, danh sách đọc (reading list) thực chất chính là nhật ký tinh thần của bạn.\n\nChính vì vậy, trong không gian kết nối của AuraBook Communities, câu hỏi lớn nhất luôn được đặt ra: Làm sao để chúng ta vừa thoải mái thảo luận, kết nối cùng những tâm hồn đồng điệu, vừa không đánh mất quyền kiểm soát tuyệt đối đối với ranh giới cá nhân?\n\n1. Không gian riêng tư: Đọc là để lắng đọng, không phải để phô bày ép buộc\nNhiều nền tảng mạng xã hội vô tình biến việc đọc sách thành một cuộc đua số lượng hoặc một bảng xếp hạng công khai. Tại AuraBook, quyền riêng tư được thiết lập từ cấp độ vi mô nhất:\n\nTùy chọn hiển thị tủ sách: Bạn toàn quyền chọn cuốn sách nào công khai trên hồ sơ, cuốn nào chỉ bạn bè thân thiết được thấy, và cuốn nào nằm trọn vẹn trong \"Góc bí mật\".\n\nGhi chú và trích dẫn cá nhân: Những dòng highlight hay ghi chú bên lề (marginalia) chỉ thuộc về bạn trừ khi bạn chủ động nhấn nút chia sẻ vào buổi thảo luận nhóm.\n\n2. Minh bạch dữ liệu: Bạn là người đọc, không phải là sản phẩm\nAuraBook Communities cam kết duy trì một môi trường văn minh, tách biệt với các mô hình theo dõi hành vi xâm phạm:\n\nKhông bán dữ liệu hành vi đọc: Dữ liệu về tốc độ đọc, chủ đề quan tâm hay thời gian bạn mở sách chỉ phục vụ cho việc tối ưu trải nghiệm cá nhân hóa của chính bạn, không bị đóng gói thành hồ sơ người dùng để bán cho các bên quảng cáo thứ ba.\n\nMã hóa đường truyền và bảo mật tài khoản: Toàn bộ tin nhắn trao đổi trong các câu lạc bộ sách kín, thảo luận nhóm đều được bảo vệ nghiêm ngặt qua các lớp mã hóa tiêu chuẩn cao.\n\n3. Tự do ẩn danh khi chia sẻ quan điểm sâu sắc\nĐôi khi, những cuốn sách chạm vào các chủ đề nhạy cảm khiến người đọc ngần ngại cất lên tiếng nói dưới danh tính thật:\n\nTính năng thảo luận ẩn danh theo chủ đề: Trong các câu lạc bộ sách tại AuraBook, bạn có thể tham gia thảo luận các chủ đề mang tính trải nghiệm cá nhân hoặc góc nhìn phản biện mà không lo ngại việc bị định kiến hay ảnh hưởng đến hồ sơ chính.\n\nChủ động chặn và báo cáo: Bộ công cụ quản trị cộng đồng giúp bạn nhanh chóng giới hạn tương tác với những tài khoản phiền phức, bảo vệ không gian đọc sách luôn thuần khiết.\n\n4. Quyền làm chủ dữ liệu trọn vẹn\nChúng tôi tin rằng sự tin tưởng được xây dựng từ quyền kiểm soát:\n\nXuất và xóa dữ liệu bất kỳ lúc nào: Nếu một ngày bạn muốn rời đi, toàn bộ lịch sử đọc, đánh giá và ghi chú của bạn có thể được sao lưu trọn vẹn hoặc xóa vĩnh viễn khỏi hệ thống chỉ bằng một thao tác.\n\nĐọc sách là lúc chúng ta chân thật nhất với chính mình. Một cộng đồng đọc sách chỉ thực sự bền vững khi mỗi thành viên cảm thấy an toàn khi mở cuốn sách tiếp theo mà không sợ bị phán xét hay theo dõi.\n\nHãy giữ cho mình những khoảng lặng riêng, và cùng xây dựng một cộng đồng AuraBook văn minh, an toàn và đầy cảm hứng.",
       "id": "post-1791369750595-k8jn",
@@ -100,7 +123,8 @@
         "user-VXNlcjo0Ng=="
       ],
       "comments": [],
-      "createdAt": "2026-10-07T10:42:30.595Z"
+      "createdAt": "2026-10-07T10:42:30.595Z",
+      "isPinned": true
     },
     {
       "id": "post-review-rev-1791368216594-b60ij",
@@ -278,7 +302,7 @@
         }
       ],
       "createdAt": "2026-10-05T14:30:00.000Z",
-      "isPinned": true
+      "isPinned": false
     },
     {
       "id": "post-2",

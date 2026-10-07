@@ -168,7 +168,7 @@ export async function GET(request: Request) {
 						title: node.name,
 						slug: node.slug,
 						price: priceFormatted,
-						author: "Tác giả AuraBook",
+						author: "Tác giả Aurabook",
 						thumbnail:
 							node.thumbnail?.url ||
 							"https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop&q=80",

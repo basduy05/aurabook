@@ -179,12 +179,23 @@ export function CommunityAdminDashboard() {
 							<span>/</span>
 							<span className="font-semibold text-foreground">Quản trị Cộng đồng & Độc giả</span>
 						</nav>
-						<h1 className="text-lg font-bold tracking-tight text-foreground sm:text-xl flex items-center gap-2">
-							<span>Cộng đồng & Đánh giá Sách</span>
-							<span className="rounded-full bg-primary/10 text-primary text-[11px] font-semibold px-2 py-0.5">
-								Saleor App v1.0
-							</span>
-						</h1>
+						<div className="flex items-center gap-3 pt-0.5">
+							<Image
+								src="/logo.png"
+								alt="Aurabook"
+								width={130}
+								height={28}
+								className="h-6 w-auto object-contain"
+								unoptimized
+							/>
+							<div className="h-4 w-px bg-border" />
+							<h1 className="text-lg font-bold tracking-tight text-foreground sm:text-xl flex items-center gap-2">
+								<span>Cộng đồng & Đánh giá Sách</span>
+								<span className="rounded-full bg-primary/10 text-primary text-[11px] font-semibold px-2 py-0.5">
+									Saleor App v1.0
+								</span>
+							</h1>
+						</div>
 					</div>
 
 					<div className="flex items-center gap-2 shrink-0">

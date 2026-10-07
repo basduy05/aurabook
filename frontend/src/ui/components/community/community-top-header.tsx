@@ -60,7 +60,7 @@ export function CommunityTopHeader({
 		{
 			id: "3",
 			title: "Chào mừng bạn mới",
-			content: "Chào mừng bạn đến với Mạng xã hội Độc giả AuraBook. Hãy cùng kết nối và chia sẻ!",
+			content: "Chào mừng bạn đến với Mạng xã hội Độc giả Aurabook. Hãy cùng kết nối và chia sẻ!",
 			time: "Hôm qua",
 			isRead: true,
 			icon: "system",
@@ -104,7 +104,7 @@ export function CommunityTopHeader({
 					</div>
 					<div className="min-w-0">
 						<div className="text-[15px] font-bold text-foreground leading-tight tracking-tight truncate">
-							Cộng đồng Độc giả AuraBook
+							Cộng đồng Độc giả Aurabook
 						</div>
 						<div className="text-[12px] text-muted-foreground leading-none mt-0.5 truncate hidden sm:block">
 							Không gian giao lưu & chia sẻ góc nhìn về sách

@@ -160,7 +160,7 @@ export function ProductReviewsSection({
 		e.preventDefault();
 		const finalAuthorName = formIsAnonymous
 			? "Độc giả ẩn danh"
-			: formAuthor.trim() || currentUser?.name || "Khách hàng AuraBook";
+			: formAuthor.trim() || currentUser?.name || "Khách hàng Aurabook";
 
 		if (!formContent.trim()) {
 			setFormError("Vui lòng nhập nội dung đánh giá của bạn.");
@@ -480,7 +480,7 @@ export function ProductReviewsSection({
 							Quyền đánh giá bị giới hạn
 						</h3>
 						<p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-							Để đảm bảo tính khách quan và trung thực, chỉ những độc giả đã mua sản phẩm này tại AuraBook mới có thể gửi đánh giá.
+							Để đảm bảo tính khách quan và trung thực, chỉ những độc giả đã mua sản phẩm này tại Aurabook mới có thể gửi đánh giá.
 						</p>
 						<button
 							type="button"
