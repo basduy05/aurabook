@@ -16,11 +16,16 @@ import {
 	Bookmark,
 	Edit3,
 	History,
+	CornerDownRight,
+	Eye,
+	EyeOff,
 } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
 import { type CommunityPost, type CommunityUser, type CommunityComment } from "@/lib/community/types";
 import { CommunityPostEditModal, PostHistoryModal } from "./community-post-edit-modal";
+import { formatCommunityExactTime } from "@/lib/community/time";
+import { FormattedCommunityContent } from "./community-rich-editor";
 
 interface CommunityPostCardProps {
 	post: CommunityPost;
@@ -33,6 +38,7 @@ interface CommunityPostCardProps {
 	onRequireLogin?: () => void;
 	onViewAuthorProfile?: (authorIdOrUsername: string) => void;
 	onPostUpdated?: (updatedPost: CommunityPost) => void;
+	onToggleHidePost?: (postId: string) => Promise<void>;
 }
 
 export function CommunityPostCard({
@@ -46,11 +52,13 @@ export function CommunityPostCard({
 	onRequireLogin,
 	onViewAuthorProfile,
 	onPostUpdated,
+	onToggleHidePost,
 }: CommunityPostCardProps) {
 	const currentUserId = currentUser?.id || "guest";
 	const [currentPost, setCurrentPost] = useState<CommunityPost>(post);
 	const [likes, setLikes] = useState<string[]>(post.likes || []);
 	const [isLiking, setIsLiking] = useState(false);
+	const [isHiding, setIsHiding] = useState(false);
 	const [showComments, setShowComments] = useState(false);
 	const [comments, setComments] = useState<CommunityComment[]>(post.comments || []);
 	const [commentText, setCommentText] = useState("");
@@ -58,6 +66,11 @@ export function CommunityPostCard({
 	const [copied, setCopied] = useState(false);
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
+
+	// Nested replies state
+	const [replyingToId, setReplyingToId] = useState<string | null>(null);
+	const [replyText, setReplyText] = useState("");
+	const [isSubmittingReply, setIsSubmittingReply] = useState(false);
 
 	const isLiked = likes.includes(currentUserId);
 	const isAuthor =
@@ -86,6 +99,35 @@ export function CommunityPostCard({
 		const data = (await res.json()) as { post: CommunityPost };
 		setCurrentPost(data.post);
 		onPostUpdated?.(data.post);
+	};
+
+	const handleToggleHide = async () => {
+		if (isHiding) return;
+		const willHide = !currentPost.isHidden;
+		const confirmMsg = willHide
+			? "Ẩn bài viết này khỏi bảng tin công khai? (Bạn vẫn có thể xem và hiện lại bài viết bất kỳ lúc nào trong trang cá nhân của bạn)"
+			: "Hiện lại bài viết này lên bảng tin cộng đồng?";
+		if (!window.confirm(confirmMsg)) return;
+
+		setIsHiding(true);
+		try {
+			const res = await fetch(`/api/community/posts/${currentPost.id}`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ action: "toggleHide" }),
+			});
+			if (res.ok) {
+				const data = (await res.json()) as { ok: boolean; isHidden: boolean };
+				const updated = { ...currentPost, isHidden: data.isHidden };
+				setCurrentPost(updated);
+				onPostUpdated?.(updated);
+				if (onToggleHidePost) await onToggleHidePost(currentPost.id);
+			}
+		} catch (e) {
+			console.error("Failed to toggle hide post:", e);
+		} finally {
+			setIsHiding(false);
+		}
 	};
 
 	const handleToggleLike = async () => {
@@ -161,24 +203,61 @@ export function CommunityPostCard({
 		}
 	};
 
+	const handleAddReply = async (parentCommentId: string) => {
+		if (!currentUser) {
+			if (onRequireLogin) onRequireLogin();
+			return;
+		}
+		if (!replyText.trim() || isSubmittingReply) return;
+
+		setIsSubmittingReply(true);
+		try {
+			const res = await fetch(`/api/community/posts/${currentPost.id}/comment`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					author: {
+						id: currentUser.id,
+						username: currentUser.username,
+						displayName: currentUser.displayName,
+						avatar: currentUser.avatar,
+					},
+					content: replyText.trim(),
+					parentId: parentCommentId,
+				}),
+			});
+
+			if (res.ok) {
+				const data = (await res.json()) as { comment: CommunityComment };
+				setComments((prev) =>
+					prev.map((c) => {
+						if (c.id === parentCommentId) {
+							return {
+								...c,
+								replies: [...(c.replies || []), data.comment],
+							};
+						}
+						return c;
+					}),
+				);
+				setReplyText("");
+				setReplyingToId(null);
+			}
+		} catch (e) {
+			console.error("Failed to add reply:", e);
+		} finally {
+			setIsSubmittingReply(false);
+		}
+	};
+
 	const handleShare = () => {
 		navigator.clipboard.writeText(window.location.href);
 		setCopied(true);
 		setTimeout(() => setCopied(false), 2000);
 	};
 
-	// Format date nicely
 	const formatDate = (dateStr: string) => {
-		try {
-			const d = new Date(dateStr);
-			return d.toLocaleDateString("vi-VN", {
-				day: "numeric",
-				month: "long",
-				year: "numeric",
-			});
-		} catch {
-			return dateStr;
-		}
+		return formatCommunityExactTime(dateStr);
 	};
 
 	const hasEditHistory =
@@ -279,7 +358,7 @@ export function CommunityPostCard({
 					</div>
 				</div>
 
-				{/* Right tags / author edit / admin actions */}
+				{/* Right tags / author edit & hide / admin actions */}
 				<div className="flex items-center gap-2">
 					{currentPost.isPinned && (
 						<span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2.5 py-1 text-[13px] font-semibold text-amber-600">
@@ -288,16 +367,42 @@ export function CommunityPostCard({
 						</span>
 					)}
 
-					{/* Author or Admin Edit Button */}
+					{currentPost.isHidden && (
+						<span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 px-2.5 py-1 text-[12px] font-semibold text-amber-700 dark:text-amber-400 border border-amber-500/30">
+							<EyeOff className="h-3 w-3" />
+							Đã ẩn
+						</span>
+					)}
+
+					{/* Author or Admin Edit & Hide Buttons */}
 					{(isAuthor || isAdmin) && (
-						<button
-							type="button"
-							onClick={() => setIsEditModalOpen(true)}
-							className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-							title="Chỉnh sửa bài viết"
-						>
-							<Edit3 className="h-4 w-4" />
-						</button>
+						<div className="flex items-center gap-1">
+							<button
+								type="button"
+								onClick={() => setIsEditModalOpen(true)}
+								className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+								title="Chỉnh sửa bài viết"
+							>
+								<Edit3 className="h-4 w-4" />
+							</button>
+							<button
+								type="button"
+								onClick={handleToggleHide}
+								disabled={isHiding}
+								className={`rounded-md p-1.5 transition-colors ${
+									currentPost.isHidden
+										? "text-amber-600 hover:bg-amber-500/10 hover:text-amber-700"
+										: "text-muted-foreground hover:bg-muted hover:text-foreground"
+								}`}
+								title={
+									currentPost.isHidden
+										? "Hiện lại bài viết lên bảng tin cộng đồng"
+										: "Ẩn bài viết khỏi bảng tin công khai (không xóa)"
+								}
+							>
+								{currentPost.isHidden ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+							</button>
+						</div>
 					)}
 
 					{isAdmin && (
@@ -382,9 +487,11 @@ export function CommunityPostCard({
 				<h3 className="text-[15px] font-semibold text-foreground leading-snug">
 					{currentPost.title}
 				</h3>
-				<p className="text-[13px] leading-relaxed text-foreground/90 whitespace-pre-line">
-					{currentPost.content}
-				</p>
+				<FormattedCommunityContent
+					content={currentPost.content}
+					onTagClick={onViewAuthorProfile}
+					className="text-[13px] text-foreground/90"
+				/>
 			</div>
 
 			{/* Post Interaction Bar (Likes, Comments, Save, Share) */}
@@ -457,49 +564,174 @@ export function CommunityPostCard({
 							Chưa có bình luận nào. Hãy là người đầu tiên nêu cảm nghĩ!
 						</p>
 					) : (
-						<div className="space-y-3">
+						<div className="space-y-3.5">
 							{comments.map((comm) => (
-								<div key={comm.id} className="flex items-start gap-3">
-									{/* Clickable Comment Author Avatar */}
-									<button
-										type="button"
-										onClick={() =>
-											onViewAuthorProfile?.(comm.author.username || comm.author.id)
-										}
-										className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full border border-border bg-muted hover:opacity-85 transition-opacity"
-										title={`Xem hồ sơ ${comm.author.displayName}`}
-									>
-										<Image
-											src={
-												comm.author.avatar ||
-												"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
+								<div key={comm.id} className="space-y-2">
+									<div className="flex items-start gap-3">
+										{/* Clickable Comment Author Avatar */}
+										<button
+											type="button"
+											onClick={() =>
+												onViewAuthorProfile?.(comm.author.username || comm.author.id)
 											}
-											alt={comm.author.displayName}
-											fill
-											sizes="32px"
-											className="object-cover"
-											unoptimized
-										/>
-									</button>
-									<div className="flex-1 rounded-xl bg-card p-3 border border-border/60 text-[13px]">
-										<div className="flex items-center justify-between">
-											<button
-												type="button"
-												onClick={() =>
-													onViewAuthorProfile?.(comm.author.username || comm.author.id)
+											className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full border border-border bg-muted hover:opacity-85 transition-opacity"
+											title={`Xem hồ sơ ${comm.author.displayName}`}
+										>
+											<Image
+												src={
+													comm.author.avatar ||
+													"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
 												}
-												className="font-semibold text-[13px] text-foreground hover:underline text-left"
-											>
-												{comm.author.displayName}
-											</button>
-											<span className="text-[13px] text-muted-foreground">
-												{formatDate(comm.createdAt)}
-											</span>
+												alt={comm.author.displayName}
+												fill
+												sizes="32px"
+												className="object-cover"
+												unoptimized
+											/>
+										</button>
+										<div className="flex-1 rounded-xl bg-card p-3 border border-border/60 text-[13px]">
+											<div className="flex items-center justify-between">
+												<div className="flex items-center gap-1.5">
+													<button
+														type="button"
+														onClick={() =>
+															onViewAuthorProfile?.(comm.author.username || comm.author.id)
+														}
+														className="font-semibold text-[13px] text-foreground hover:underline text-left"
+													>
+														{comm.author.displayName}
+													</button>
+													<span className="text-[11px] text-muted-foreground">
+														{comm.author.username}
+													</span>
+												</div>
+												<span className="text-[12px] text-muted-foreground font-medium">
+													{formatCommunityExactTime(comm.createdAt)}
+												</span>
+											</div>
+											<div className="mt-1">
+												<FormattedCommunityContent
+													content={comm.content}
+													onTagClick={onViewAuthorProfile}
+												/>
+											</div>
+
+											{/* Reply action button */}
+											<div className="mt-2 pt-1 border-t border-border/40 flex items-center gap-3 text-[12px]">
+												<button
+													type="button"
+													onClick={() => {
+														if (replyingToId === comm.id) {
+															setReplyingToId(null);
+														} else {
+															setReplyingToId(comm.id);
+															setReplyText(`@${comm.author.username.replace(/^@/, "")} `);
+														}
+													}}
+													className="text-primary hover:underline font-semibold flex items-center gap-1"
+												>
+													<CornerDownRight className="h-3 w-3" />
+													<span>Trả lời</span>
+												</button>
+											</div>
 										</div>
-										<p className="mt-1 text-foreground/90 leading-relaxed text-[13px]">
-											{comm.content}
-										</p>
 									</div>
+
+									{/* Inline reply form for this comment */}
+									{replyingToId === comm.id && (
+										<form
+											onSubmit={(e) => {
+												e.preventDefault();
+												handleAddReply(comm.id);
+											}}
+											className="ml-11 flex items-center gap-2 animate-in fade-in-0"
+										>
+											<Input
+												type="text"
+												value={replyText}
+												onChange={(e) => setReplyText(e.target.value)}
+												placeholder={`Trả lời cho ${comm.author.displayName}...`}
+												className="h-8.5 text-[12px] bg-card"
+												autoFocus
+												disabled={isSubmittingReply}
+											/>
+											<Button
+												type="submit"
+												size="sm"
+												disabled={!replyText.trim() || isSubmittingReply}
+												className="h-8.5 px-3 text-[12px] font-semibold shrink-0"
+											>
+												Gửi
+											</Button>
+											<Button
+												type="button"
+												variant="ghost"
+												size="sm"
+												onClick={() => setReplyingToId(null)}
+												className="h-8.5 px-2 text-[12px] shrink-0"
+											>
+												Hủy
+											</Button>
+										</form>
+									)}
+
+									{/* Nested replies thread */}
+									{comm.replies && comm.replies.length > 0 && (
+										<div className="ml-11 space-y-2 border-l-2 border-primary/20 pl-3 pt-1">
+											{comm.replies.map((reply) => (
+												<div key={reply.id} className="flex items-start gap-2.5">
+													<button
+														type="button"
+														onClick={() =>
+															onViewAuthorProfile?.(reply.author.username || reply.author.id)
+														}
+														className="relative h-7 w-7 shrink-0 overflow-hidden rounded-full border border-border bg-muted hover:opacity-85"
+														title={`Xem hồ sơ ${reply.author.displayName}`}
+													>
+														<Image
+															src={
+																reply.author.avatar ||
+																"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"
+															}
+															alt={reply.author.displayName}
+															fill
+															sizes="28px"
+															className="object-cover"
+															unoptimized
+														/>
+													</button>
+													<div className="flex-1 rounded-xl bg-card/90 p-2.5 border border-border/50 text-[12.5px]">
+														<div className="flex items-center justify-between">
+															<div className="flex items-center gap-1.5">
+																<button
+																	type="button"
+																	onClick={() =>
+																		onViewAuthorProfile?.(reply.author.username || reply.author.id)
+																	}
+																	className="font-bold text-foreground hover:underline text-left text-[12px]"
+																>
+																	{reply.author.displayName}
+																</button>
+																<span className="text-[11px] text-muted-foreground">
+																	{reply.author.username}
+																</span>
+															</div>
+															<span className="text-[11px] text-muted-foreground">
+																{formatCommunityExactTime(reply.createdAt)}
+															</span>
+														</div>
+														<div className="mt-1">
+															<FormattedCommunityContent
+																content={reply.content}
+																onTagClick={onViewAuthorProfile}
+																className="text-[12.5px]"
+															/>
+														</div>
+													</div>
+												</div>
+											))}
+										</div>
+									)}
 								</div>
 							))}
 						</div>
@@ -511,7 +743,7 @@ export function CommunityPostCard({
 							type="text"
 							value={commentText}
 							onChange={(e) => setCommentText(e.target.value)}
-							placeholder="Viết bình luận cho bài đánh giá này..."
+							placeholder="Viết bình luận cho bài đánh giá này... (Gõ @ để tag người dùng)"
 							className="h-9 text-[13px] bg-card"
 							disabled={isSubmittingComment}
 						/>

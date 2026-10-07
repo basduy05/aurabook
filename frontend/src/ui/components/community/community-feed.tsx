@@ -15,7 +15,7 @@ import { CommunityRightNav } from "./community-right-nav";
 import { CommunityLeftNav, type CommunityNavTab } from "./community-left-nav";
 import { CommunityTermsModal } from "./community-terms-modal";
 import { CommunityProfileModal } from "./community-profile-modal";
-import { CommunityUserProfileModal } from "./community-user-profile-modal";
+import { CommunityUserProfileView } from "./community-user-profile-view";
 import { CommunityCreatePost } from "./community-create-post";
 import { CommunityPostCard } from "./community-post-card";
 
@@ -187,6 +187,10 @@ export function CommunityFeed() {
 		setPosts((prev) => prev.map((p) => (p.id === updatedPost.id ? updatedPost : p)));
 	};
 
+	const handleToggleHidePost = async (postId: string) => {
+		setPosts((prev) => prev.filter((p) => p.id !== postId));
+	};
+
 	// Filter posts
 	const filteredPosts = posts.filter((p) => {
 		// Navigation tabs filter
@@ -229,17 +233,6 @@ export function CommunityFeed() {
 				user={currentUser}
 				onClose={() => setIsProfileOpen(false)}
 				onSave={handleSaveProfile}
-			/>
-
-			{/* User Profile View Modal (with Follow, Posts, Comments, Saved) */}
-			<CommunityUserProfileModal
-				isOpen={!!viewProfileTarget}
-				userIdOrUsername={viewProfileTarget}
-				currentUser={currentUser}
-				onClose={() => setViewProfileTarget(null)}
-				onEditProfile={() => setIsProfileOpen(true)}
-				savedPostIds={savedPostIds}
-				allPosts={posts}
 			/>
 
 			{/* Main Social Layout: 3 Columns Spanning Wide */}
@@ -320,6 +313,18 @@ export function CommunityFeed() {
 									</Button>
 								</div>
 							</div>
+						) : viewProfileTarget ? (
+							<CommunityUserProfileView
+								userIdOrUsername={viewProfileTarget}
+								currentUser={currentUser}
+								onBack={() => setViewProfileTarget(null)}
+								onEditProfile={() => setIsProfileOpen(true)}
+								savedPostIds={savedPostIds}
+								onToggleSavePost={handleToggleSavePost}
+								allPosts={posts}
+								onViewOtherProfile={(idOrUsername) => setViewProfileTarget(idOrUsername)}
+								onPostUpdated={handlePostUpdated}
+							/>
 						) : (
 							<>
 
@@ -416,6 +421,7 @@ export function CommunityFeed() {
 												onToggleSave={handleToggleSavePost}
 												onViewAuthorProfile={(authorId) => setViewProfileTarget(authorId)}
 												onPostUpdated={handlePostUpdated}
+												onToggleHidePost={handleToggleHidePost}
 												onRequireLogin={() => {
 													if (!currentUser?.hasAcceptedTerms) {
 														setIsTermsMandatory(true);
@@ -523,6 +529,7 @@ export function CommunityFeed() {
 												onToggleSave={handleToggleSavePost}
 												onViewAuthorProfile={(authorId) => setViewProfileTarget(authorId)}
 												onPostUpdated={handlePostUpdated}
+												onToggleHidePost={handleToggleHidePost}
 												onRequireLogin={() => {
 													if (!currentUser?.hasAcceptedTerms) {
 														setIsTermsMandatory(true);

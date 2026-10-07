@@ -9,6 +9,19 @@ export interface CommunityRealAccount {
 	lastActive: string;
 }
 
+export interface UserProfileHistoryItem {
+	id: string;
+	changedAt: string;
+	previousAvatar?: string;
+	previousDisplayName?: string;
+	previousUsername?: string;
+	previousBio?: string;
+	newAvatar?: string;
+	newDisplayName?: string;
+	newUsername?: string;
+	newBio?: string;
+}
+
 export interface CommunityUser {
 	id: string;
 	username: string; // e.g. @tuannm
@@ -23,6 +36,7 @@ export interface CommunityUser {
 	followers?: string[]; // IDs or usernames of followers
 	following?: string[]; // IDs or usernames of users followed
 	savedPosts?: string[]; // IDs of saved posts
+	profileHistory?: UserProfileHistoryItem[]; // Lịch sử thay đổi hồ sơ
 }
 
 export interface CommunityComment {
@@ -35,6 +49,25 @@ export interface CommunityComment {
 	};
 	content: string;
 	createdAt: string;
+	parentId?: string; // ID của bình luận cha nếu là trả lời (reply)
+	replies?: CommunityComment[]; // Các câu trả lời con
+}
+
+export interface CommunityNotification {
+	id: string;
+	recipientId: string;
+	sender: {
+		id: string;
+		username: string;
+		displayName: string;
+		avatar: string;
+	};
+	type: "like" | "comment" | "reply" | "follow" | "tag" | "system";
+	title: string;
+	content: string;
+	postId?: string;
+	createdAt: string;
+	isRead: boolean;
 }
 
 export interface PostEditHistory {

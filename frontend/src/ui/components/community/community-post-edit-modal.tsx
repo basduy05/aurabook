@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { History, X, Save, Clock, AlertCircle } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
 import { type CommunityPost } from "@/lib/community/types";
+import { RichToolbar, FormattedCommunityContent } from "./community-rich-editor";
+import { formatCommunityExactTime } from "@/lib/community/time";
 
 interface CommunityPostEditModalProps {
 	isOpen: boolean;
@@ -23,6 +25,7 @@ export function CommunityPostEditModal({
 	const [content, setContent] = useState(post.content);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
 	if (!isOpen) return null;
 
@@ -91,12 +94,21 @@ export function CommunityPostEditModal({
 						/>
 					</div>
 
-					<div className="space-y-1.5">
-						<label htmlFor="edit-post-content" className="text-xs font-semibold text-foreground">
-							Nội dung bài viết
-						</label>
+					<div className="space-y-2">
+						<div className="flex items-center justify-between">
+							<label htmlFor="edit-post-content" className="text-xs font-semibold text-foreground">
+								Nội dung bài viết
+							</label>
+							<RichToolbar
+								textareaRef={textareaRef}
+								value={content}
+								onChange={setContent}
+								size="sm"
+							/>
+						</div>
 						<textarea
 							id="edit-post-content"
+							ref={textareaRef}
 							value={content}
 							onChange={(e) => setContent(e.target.value)}
 							rows={6}
@@ -144,20 +156,6 @@ export function PostHistoryModal({ isOpen, post, onClose }: PostHistoryModalProp
 
 	const history = post.editHistory || [];
 
-	const formatDate = (dateStr: string) => {
-		try {
-			const d = new Date(dateStr);
-			return d.toLocaleString("vi-VN", {
-				hour: "2-digit",
-				minute: "2-digit",
-				day: "2-digit",
-				month: "2-digit",
-				year: "numeric",
-			});
-		} catch {
-			return dateStr;
-		}
-	};
 
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs animate-in fade-in-0">
@@ -193,13 +191,11 @@ export function PostHistoryModal({ isOpen, post, onClose }: PostHistoryModalProp
 							</span>
 							<span className="text-muted-foreground flex items-center gap-1">
 								<Clock className="h-3 w-3" />
-								{formatDate(post.updatedAt || post.createdAt)}
+								{formatCommunityExactTime(post.updatedAt || post.createdAt)}
 							</span>
 						</div>
 						<div className="font-semibold text-xs text-foreground">{post.title}</div>
-						<p className="text-xs text-foreground/90 leading-relaxed whitespace-pre-line">
-							{post.content}
-						</p>
+						<FormattedCommunityContent content={post.content} className="text-xs" />
 					</div>
 
 					{/* Previous versions */}
@@ -211,13 +207,11 @@ export function PostHistoryModal({ isOpen, post, onClose }: PostHistoryModalProp
 								</span>
 								<span className="text-muted-foreground flex items-center gap-1">
 									<Clock className="h-3 w-3" />
-									{formatDate(hist.editedAt)}
+									{formatCommunityExactTime(hist.editedAt)}
 								</span>
 							</div>
 							<div className="font-semibold text-xs text-foreground">{hist.title}</div>
-							<p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-line">
-								{hist.content}
-							</p>
+							<FormattedCommunityContent content={hist.content} className="text-xs text-muted-foreground" />
 						</div>
 					))}
 				</div>

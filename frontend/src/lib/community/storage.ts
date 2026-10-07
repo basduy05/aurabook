@@ -6,6 +6,8 @@ import {
 	type CommunityComment,
 	type PostEditHistory,
 	type CommunityAdminSettings,
+	type CommunityNotification,
+	type UserProfileHistoryItem,
 } from "./types";
 import { type Review } from "@/lib/reviews/types";
 
@@ -15,6 +17,7 @@ const COMMUNITY_FILE = path.join(DATA_DIR, "community.json");
 interface CommunityData {
 	users: CommunityUser[];
 	posts: CommunityPost[];
+	notifications?: CommunityNotification[];
 	settings?: CommunityAdminSettings;
 }
 
@@ -158,13 +161,63 @@ const SEED_POSTS: CommunityPost[] = [
 	},
 ];
 
+const SEED_NOTIFICATIONS: CommunityNotification[] = [
+	{
+		id: "notif-1",
+		recipientId: "user-1",
+		sender: {
+			id: "user-2",
+			username: "@minhtuan_read",
+			displayName: "Minh Tuấn",
+			avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+		},
+		type: "like",
+		title: "Minh Tuấn đã thích bài viết của bạn",
+		content: "Bài học sâu sắc về sự lắng nghe chân thành trong Đắc Nhân Tâm",
+		postId: "post-1",
+		createdAt: "2026-10-06T10:15:00.000Z",
+		isRead: false,
+	},
+	{
+		id: "notif-2",
+		recipientId: "user-1",
+		sender: {
+			id: "user-3",
+			username: "@thuha_books",
+			displayName: "Thu Hà",
+			avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
+		},
+		type: "comment",
+		title: "Thu Hà đã bình luận về bài viết của bạn",
+		content: "Hoàn toàn đồng ý với góc nhìn của bạn! Mình cũng rất thích cuốn sách này.",
+		postId: "post-1",
+		createdAt: "2026-10-06T11:20:00.000Z",
+		isRead: false,
+	},
+	{
+		id: "notif-3",
+		recipientId: "user-1",
+		sender: {
+			id: "user-2",
+			username: "@minhtuan_read",
+			displayName: "Minh Tuấn",
+			avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+		},
+		type: "follow",
+		title: "Minh Tuấn đã bắt đầu theo dõi bạn",
+		content: "Đã thêm bạn vào danh sách theo dõi",
+		createdAt: "2026-10-05T14:30:00.000Z",
+		isRead: true,
+	},
+];
+
 function loadData(): CommunityData {
 	try {
 		if (!fs.existsSync(DATA_DIR)) {
 			fs.mkdirSync(DATA_DIR, { recursive: true });
 		}
 		if (!fs.existsSync(COMMUNITY_FILE)) {
-			const initial: CommunityData = { users: SEED_USERS, posts: SEED_POSTS };
+			const initial: CommunityData = { users: SEED_USERS, posts: SEED_POSTS, notifications: SEED_NOTIFICATIONS };
 			fs.writeFileSync(COMMUNITY_FILE, JSON.stringify(initial, null, 2), "utf8");
 			return initial;
 		}
@@ -173,11 +226,12 @@ function loadData(): CommunityData {
 		return {
 			users: parsed.users || SEED_USERS,
 			posts: parsed.posts || SEED_POSTS,
+			notifications: parsed.notifications || SEED_NOTIFICATIONS,
 			settings: parsed.settings || SEED_SETTINGS,
 		};
 	} catch (e) {
 		console.error("[community] Failed to load data:", e);
-		return { users: SEED_USERS, posts: SEED_POSTS, settings: SEED_SETTINGS };
+		return { users: SEED_USERS, posts: SEED_POSTS, notifications: SEED_NOTIFICATIONS, settings: SEED_SETTINGS };
 	}
 }
 
@@ -246,6 +300,10 @@ export function createCommunityPost(postData: Omit<CommunityPost, "id" | "create
 
 	data.posts.unshift(newPost);
 	saveData(data);
+
+	// Trigger notifications for any @mentions in post
+	parseAndNotifyMentions(newPost.content, newPost.author, newPost.id, "post");
+
 	return newPost;
 }
 
@@ -308,6 +366,29 @@ export function toggleLikePost(postId: string, userIdOrIp: string): { likesCount
 	if (index === -1) {
 		post.likes.push(userIdOrIp);
 		isLiked = true;
+
+		// Trigger like notification if not liking own post
+		if (post.author.id !== userIdOrIp && post.author.username !== userIdOrIp) {
+			const liker = user || {
+				id: userIdOrIp,
+				username: "@docgia",
+				displayName: "Một độc giả",
+				avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+			};
+			createCommunityNotification({
+				recipientId: post.author.id,
+				sender: {
+					id: liker.id,
+					username: liker.username,
+					displayName: liker.displayName,
+					avatar: liker.avatar,
+				},
+				type: "like",
+				title: `${liker.displayName} đã thích bài viết của bạn`,
+				content: post.title,
+				postId: post.id,
+			});
+		}
 	} else {
 		post.likes.splice(index, 1);
 		isLiked = false;
@@ -317,7 +398,14 @@ export function toggleLikePost(postId: string, userIdOrIp: string): { likesCount
 	return { likesCount: post.likes.length, isLiked };
 }
 
-export function addCommentToPost(postId: string, commentData: { author: CommunityPost["author"]; content: string }) {
+export function addCommentToPost(
+	postId: string,
+	commentData: {
+		author: CommunityPost["author"];
+		content: string;
+		parentId?: string;
+	},
+) {
 	const data = loadData();
 	const post = data.posts.find((p) => p.id === postId);
 	if (!post) {
@@ -342,10 +430,68 @@ export function addCommentToPost(postId: string, commentData: { author: Communit
 		},
 		content: commentData.content.trim(),
 		createdAt: new Date().toISOString(),
+		parentId: commentData.parentId,
+		replies: [],
 	};
 
-	post.comments.push(newComment);
+	if (commentData.parentId) {
+		// Nested reply to an existing comment
+		const parentComment = post.comments.find((c) => c.id === commentData.parentId);
+		if (parentComment) {
+			parentComment.replies = parentComment.replies || [];
+			parentComment.replies.push(newComment);
+
+			// Trigger reply notification to parent comment author if not self
+			if (parentComment.author.id !== commentData.author.id && parentComment.author.username !== commentData.author.username) {
+				createCommunityNotification({
+					recipientId: parentComment.author.id,
+					sender: {
+						id: commentData.author.id,
+						username: commentData.author.username,
+						displayName: commentData.author.displayName,
+						avatar: commentData.author.avatar,
+					},
+					type: "reply",
+					title: `${commentData.author.displayName} đã trả lời bình luận của bạn`,
+					content: commentData.content.trim().slice(0, 120),
+					postId: post.id,
+				});
+			}
+		} else {
+			post.comments.push(newComment);
+		}
+	} else {
+		// Top-level comment
+		post.comments.push(newComment);
+
+		// Trigger comment notification to post author if not self
+		if (post.author.id !== commentData.author.id && post.author.username !== commentData.author.username) {
+			createCommunityNotification({
+				recipientId: post.author.id,
+				sender: {
+					id: commentData.author.id,
+					username: commentData.author.username,
+					displayName: commentData.author.displayName,
+					avatar: commentData.author.avatar,
+				},
+				type: "comment",
+				title: `${commentData.author.displayName} đã bình luận về bài viết của bạn`,
+				content: commentData.content.trim().slice(0, 120),
+				postId: post.id,
+			});
+		}
+	}
+
 	saveData(data);
+
+	// Parse @mentions
+	parseAndNotifyMentions(
+		commentData.content,
+		commentData.author,
+		post.id,
+		commentData.parentId ? "reply" : "comment",
+	);
+
 	return newComment;
 }
 
@@ -423,6 +569,20 @@ export function toggleFollowUser(
 			}
 		}
 		isFollowing = true;
+
+		// Trigger follow notification
+		createCommunityNotification({
+			recipientId: targetUser.id,
+			sender: {
+				id: currentUser ? currentUser.id : followerId,
+				username: currentUser ? currentUser.username : `@${followerId}`,
+				displayName: currentUser ? currentUser.displayName : "Người dùng Aurabook",
+				avatar: currentUser ? currentUser.avatar : "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+			},
+			type: "follow",
+			title: `${currentUser?.displayName || "Một độc giả"} đã bắt đầu theo dõi bạn`,
+			content: "Nhấn để xem trang cá nhân và theo dõi lại",
+		});
 	} else {
 		targetUser.followers.splice(index, 1);
 		if (currentUser) {
@@ -458,7 +618,7 @@ export function toggleSaveUserPost(
 	return { isSaved, savedPosts: user.savedPosts };
 }
 
-export function getUserActivity(userIdOrUsername: string) {
+export function getUserActivity(userIdOrUsername: string, viewerIdOrUsername?: string) {
 	const data = loadData();
 	const targetUser = data.users.find(
 		(u) => u.id === userIdOrUsername || u.username === userIdOrUsername,
@@ -466,17 +626,31 @@ export function getUserActivity(userIdOrUsername: string) {
 	const username = targetUser ? targetUser.username : userIdOrUsername;
 	const userId = targetUser ? targetUser.id : userIdOrUsername;
 
-	// User's posts
-	const userPosts = data.posts.filter(
+	const isSelf =
+		viewerIdOrUsername &&
+		(viewerIdOrUsername === userId ||
+			viewerIdOrUsername === username ||
+			(targetUser && viewerIdOrUsername === targetUser.id));
+
+	// User's posts (hide hidden posts if viewer is not the author themselves)
+	let userPosts = data.posts.filter(
 		(p) => p.author.id === userId || p.author.username === username,
 	);
+	if (!isSelf) {
+		userPosts = userPosts.filter((p) => !p.isHidden);
+	}
 
-	// User's comments across all posts
+	// User's comments across all posts (including replies)
 	const userComments: Array<{ comment: CommunityComment; post: CommunityPost }> = [];
 	for (const p of data.posts) {
 		for (const c of p.comments || []) {
 			if (c.author.id === userId || c.author.username === username) {
 				userComments.push({ comment: c, post: p });
+			}
+			for (const r of c.replies || []) {
+				if (r.author.id === userId || r.author.username === username) {
+					userComments.push({ comment: r, post: p });
+				}
 			}
 		}
 	}
@@ -485,12 +659,127 @@ export function getUserActivity(userIdOrUsername: string) {
 	const userSavedPostIds = targetUser?.savedPosts || [];
 	const savedPosts = data.posts.filter((p) => userSavedPostIds.includes(p.id));
 
+	// Followers & Following detailed user objects
+	const followersUserIds = targetUser?.followers || [];
+	const followingUserIds = targetUser?.following || [];
+
+	const followersUsers: CommunityUser[] = data.users.filter(
+		(u) => followersUserIds.includes(u.id) || followersUserIds.includes(u.username),
+	);
+	const followingUsers: CommunityUser[] = data.users.filter(
+		(u) => followingUserIds.includes(u.id) || followingUserIds.includes(u.username),
+	);
+
 	return {
 		user: targetUser || null,
 		posts: userPosts,
 		comments: userComments,
 		savedPosts: savedPosts,
+		followersUsers,
+		followingUsers,
 	};
+}
+
+// =========================================================================
+// REAL NOTIFICATIONS API
+// =========================================================================
+export function createCommunityNotification(
+	notification: Omit<CommunityNotification, "id" | "createdAt" | "isRead">,
+): CommunityNotification {
+	const data = loadData();
+	data.notifications = data.notifications || SEED_NOTIFICATIONS;
+
+	const newNotif: CommunityNotification = {
+		...notification,
+		id: `notif-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+		createdAt: new Date().toISOString(),
+		isRead: false,
+	};
+	data.notifications.unshift(newNotif);
+	saveData(data);
+	return newNotif;
+}
+
+export function getNotificationsForUser(userIdOrUsername: string): {
+	notifications: CommunityNotification[];
+	unreadCount: number;
+} {
+	const data = loadData();
+	const user = data.users.find((u) => u.id === userIdOrUsername || u.username === userIdOrUsername);
+	const targetId = user?.id || userIdOrUsername;
+	const targetUsername = user?.username || userIdOrUsername;
+
+	const allNotifs = data.notifications || SEED_NOTIFICATIONS;
+	const userNotifs = allNotifs.filter(
+		(n) => n.recipientId === targetId || n.recipientId === targetUsername,
+	);
+
+	const unreadCount = userNotifs.filter((n) => !n.isRead).length;
+	return { notifications: userNotifs, unreadCount };
+}
+
+export function markNotificationRead(notifId: string): boolean {
+	const data = loadData();
+	data.notifications = data.notifications || SEED_NOTIFICATIONS;
+	const item = data.notifications.find((n) => n.id === notifId);
+	if (item) {
+		item.isRead = true;
+		saveData(data);
+		return true;
+	}
+	return false;
+}
+
+export function markAllNotificationsRead(userIdOrUsername: string): boolean {
+	const data = loadData();
+	const user = data.users.find((u) => u.id === userIdOrUsername || u.username === userIdOrUsername);
+	const targetId = user?.id || userIdOrUsername;
+	const targetUsername = user?.username || userIdOrUsername;
+
+	data.notifications = data.notifications || SEED_NOTIFICATIONS;
+	for (const n of data.notifications) {
+		if (n.recipientId === targetId || n.recipientId === targetUsername) {
+			n.isRead = true;
+		}
+	}
+	saveData(data);
+	return true;
+}
+
+function parseAndNotifyMentions(
+	content: string,
+	sender: { id: string; username: string; displayName: string; avatar: string },
+	postId: string,
+	context: "post" | "comment" | "reply",
+) {
+	const mentionMatches = content.match(/@([a-zA-Z0-9_]+)/g);
+	if (!mentionMatches) return;
+
+	const data = loadData();
+	const uniqueUsernames = Array.from(new Set(mentionMatches.map((m) => m.toLowerCase())));
+
+	for (const rawMention of uniqueUsernames) {
+		const targetUser = data.users.find(
+			(u) =>
+				u.username.toLowerCase() === rawMention ||
+				u.username.toLowerCase() === `@${rawMention.replace(/^@/, "")}`,
+		);
+		if (targetUser && targetUser.id !== sender.id && targetUser.username !== sender.username) {
+			createCommunityNotification({
+				recipientId: targetUser.id,
+				sender: {
+					id: sender.id,
+					username: sender.username,
+					displayName: sender.displayName,
+					avatar: sender.avatar,
+				},
+				type: "tag",
+				title: `${sender.displayName} đã nhắc đến bạn trong một ${context === "post" ? "bài viết" : "bình luận"}`,
+				content: content.slice(0, 120),
+				postId,
+			});
+		}
+	}
 }
 
 export function getCommunitySettings(): CommunityAdminSettings {
@@ -520,16 +809,112 @@ export function saveCommunitySettings(settings: Partial<CommunityAdminSettings>)
 	return data.settings;
 }
 
-export function saveCommunityUser(user: CommunityUser): CommunityUser {
+// =========================================================================
+// SAVE USER WITH DEEP PROPAGATION & PROFILE CHANGE HISTORY
+// =========================================================================
+export function saveCommunityUserWithPropagation(updatedUser: Partial<CommunityUser> & { id: string }): CommunityUser {
 	const data = loadData();
-	const index = data.users.findIndex((u) => u.id === user.id);
-	if (index !== -1) {
-		data.users[index] = user;
+	let existingIndex = data.users.findIndex((u) => u.id === updatedUser.id);
+	let existing: CommunityUser;
+
+	if (existingIndex !== -1) {
+		existing = data.users[existingIndex];
 	} else {
-		data.users.push(user);
+		existing = data.users[0] || SEED_USERS[0];
+		existingIndex = 0;
 	}
+
+	const oldAvatar = existing.avatar;
+	const oldDisplayName = existing.displayName;
+	const oldUsername = existing.username;
+	const oldBio = existing.bio;
+
+	const newAvatar = updatedUser.avatar || oldAvatar;
+	const newDisplayName = updatedUser.displayName?.trim() || oldDisplayName;
+	const newUsername = updatedUser.username
+		? (updatedUser.username.startsWith("@") ? updatedUser.username : `@${updatedUser.username}`)
+		: oldUsername;
+	const newBio = updatedUser.bio !== undefined ? updatedUser.bio.trim() : oldBio;
+
+	// Check if key profile attributes changed
+	const hasProfileChanged =
+		newAvatar !== oldAvatar ||
+		newDisplayName !== oldDisplayName ||
+		newUsername !== oldUsername ||
+		newBio !== oldBio;
+
+	let history = existing.profileHistory || [];
+	if (hasProfileChanged) {
+		const historyEntry: UserProfileHistoryItem = {
+			id: `hist-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+			changedAt: new Date().toISOString(),
+			previousAvatar: oldAvatar,
+			previousDisplayName: oldDisplayName,
+			previousUsername: oldUsername,
+			previousBio: oldBio,
+			newAvatar: newAvatar,
+			newDisplayName: newDisplayName,
+			newUsername: newUsername,
+			newBio: newBio,
+		};
+		history = [historyEntry, ...history];
+	}
+
+	const savedUser: CommunityUser = {
+		...existing,
+		...updatedUser,
+		avatar: newAvatar,
+		displayName: newDisplayName,
+		username: newUsername,
+		bio: newBio,
+		profileHistory: history,
+	};
+
+	data.users[existingIndex] = savedUser;
+
+	// Deep propagation across ALL historic posts, comments, replies & notifications!
+	const userMatches = (id?: string, uname?: string) => {
+		return id === existing.id || uname === oldUsername || uname === newUsername;
+	};
+
+	for (const post of data.posts) {
+		if (userMatches(post.author.id, post.author.username)) {
+			post.author.displayName = newDisplayName;
+			post.author.username = newUsername;
+			post.author.avatar = newAvatar;
+		}
+
+		for (const comm of post.comments || []) {
+			if (userMatches(comm.author.id, comm.author.username)) {
+				comm.author.displayName = newDisplayName;
+				comm.author.username = newUsername;
+				comm.author.avatar = newAvatar;
+			}
+			for (const rep of comm.replies || []) {
+				if (userMatches(rep.author.id, rep.author.username)) {
+					rep.author.displayName = newDisplayName;
+					rep.author.username = newUsername;
+					rep.author.avatar = newAvatar;
+				}
+			}
+		}
+	}
+
+	data.notifications = data.notifications || SEED_NOTIFICATIONS;
+	for (const notif of data.notifications) {
+		if (userMatches(notif.sender.id, notif.sender.username)) {
+			notif.sender.displayName = newDisplayName;
+			notif.sender.username = newUsername;
+			notif.sender.avatar = newAvatar;
+		}
+	}
+
 	saveData(data);
-	return user;
+	return savedUser;
+}
+
+export function saveCommunityUser(user: CommunityUser): CommunityUser {
+	return saveCommunityUserWithPropagation(user);
 }
 
 export function toggleUserBlockedStatus(userId: string): boolean {

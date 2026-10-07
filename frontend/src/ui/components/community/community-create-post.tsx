@@ -7,6 +7,7 @@ import { Star, Send, Book, AlertCircle, Search, X, ExternalLink } from "lucide-r
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
 import { type CommunityUser, type CommunityPost } from "@/lib/community/types";
+import { RichToolbar, MentionDropdown } from "./community-rich-editor";
 
 interface BookResult {
 	id: string;
@@ -44,6 +45,44 @@ export function CommunityCreatePost({
 	const [rating, setRating] = useState<number>(5);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState("");
+
+	// Rich text & Mentions
+	const contentTextareaRef = useRef<HTMLTextAreaElement | null>(null);
+	const [mentionQuery, setMentionQuery] = useState("");
+	const [showMentionDropdown, setShowMentionDropdown] = useState(false);
+
+	const handleContentChange = (val: string) => {
+		setContent(val);
+		const textarea = contentTextareaRef.current;
+		if (textarea) {
+			const cursor = textarea.selectionStart;
+			const textBeforeCursor = val.slice(0, cursor);
+			const match = textBeforeCursor.match(/@([a-zA-Z0-9_]*)$/);
+			if (match) {
+				setMentionQuery(match[1]);
+				setShowMentionDropdown(true);
+			} else {
+				setShowMentionDropdown(false);
+			}
+		}
+	};
+
+	const handleSelectMentionUser = (selectedUsername: string) => {
+		const textarea = contentTextareaRef.current;
+		if (!textarea) return;
+		const cursor = textarea.selectionStart;
+		const textBeforeCursor = content.slice(0, cursor);
+		const textAfterCursor = content.slice(cursor);
+		const tag = selectedUsername.startsWith("@") ? selectedUsername : `@${selectedUsername}`;
+		const replacedBefore = textBeforeCursor.replace(/@([a-zA-Z0-9_]*)$/, `${tag} `);
+		const newContent = replacedBefore + textAfterCursor;
+		setContent(newContent);
+		setShowMentionDropdown(false);
+		setTimeout(() => {
+			textarea.focus();
+			textarea.setSelectionRange(replacedBefore.length, replacedBefore.length);
+		}, 0);
+	};
 
 	// Search real books from catalog
 	useEffect(() => {
@@ -400,14 +439,35 @@ export function CommunityCreatePost({
 						/>
 					</div>
 
-					<div>
+					<div className="space-y-2 relative">
+						<div className="flex items-center justify-between">
+							<RichToolbar
+								textareaRef={contentTextareaRef}
+								value={content}
+								onChange={setContent}
+								onOpenMention={() => setShowMentionDropdown(true)}
+								size="sm"
+							/>
+							<span className="text-[11px] text-muted-foreground">
+								Hỗ trợ in đậm, in nghiêng, trích dẫn, danh sách & @tag
+							</span>
+						</div>
+
 						<textarea
+							ref={contentTextareaRef}
 							rows={4}
 							value={content}
-							onChange={(e) => setContent(e.target.value)}
-							placeholder="Viết cảm nhận, những câu trích dẫn tâm đắc hoặc bài học bạn rút ra từ cuốn sách..."
+							onChange={(e) => handleContentChange(e.target.value)}
+							placeholder="Viết cảm nhận, câu trích dẫn tâm đắc hoặc bài học từ sách... Gõ @ để nhắc đến bạn bè"
 							className="w-full rounded-md border border-input bg-background px-3 py-2 text-[13px] text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring leading-relaxed"
 							required
+						/>
+
+						<MentionDropdown
+							isOpen={showMentionDropdown}
+							query={mentionQuery}
+							onSelectUser={handleSelectMentionUser}
+							onClose={() => setShowMentionDropdown(false)}
 						/>
 					</div>
 

@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { X, UserCheck, Sparkles, Camera } from "lucide-react";
+import { X, UserCheck, Camera, Upload, Check } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
 import { type CommunityUser } from "@/lib/community/types";
+import { PRESET_AVATARS } from "@/lib/community/avatars";
 
-const AVATAR_PRESETS = [
+const DEFAULT_PRESETS = [
 	"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
 	"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
 	"https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
@@ -16,13 +17,29 @@ const AVATAR_PRESETS = [
 	"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80",
 ];
 
-const GENRE_SUGGESTIONS = [
-	"Kỹ năng sống & Tư duy",
-	"Văn học kinh điển",
+export const BOOK_GENRES = [
 	"Kinh doanh & Khởi nghiệp",
-	"Tâm lý học",
-	"Triết học & Lịch sử",
-	"Khoa học viễn tưởng",
+	"Kỹ năng sống & Phát triển bản thân",
+	"Tài chính cá nhân & Đầu tư",
+	"Văn học kinh điển",
+	"Tiểu thuyết & Văn học hiện đại",
+	"Tâm lý học & Hành vi",
+	"Triết học & Tư tưởng nhân loại",
+	"Khoa học tự nhiên & Vũ trụ",
+	"Lịch sử thế giới & Lịch sử Việt Nam",
+	"Công nghệ, Lập trình & Trí tuệ nhân tạo",
+	"Thiền định, Mindfulness & Tâm linh",
+	"Trinh thám, Kinh dị & Kỳ bí",
+	"Khoa học viễn tưởng (Sci-Fi)",
+	"Văn học giả tưởng (Fantasy)",
+	"Hồi ký, Tự truyện & Tiểu sử",
+	"Nghệ thuật, Thiết kế & Kiến trúc",
+	"Thơ ca & Tản văn",
+	"Sách thiếu nhi & Truyện tranh",
+	"Sức khỏe, Y học & Dinh dưỡng",
+	"Ngoại ngữ, Du học & Văn hóa quốc tế",
+	"Chính trị, Ngoại giao & Luật học",
+	"Giáo dục & Nuôi dạy con",
 ];
 
 interface CommunityProfileModalProps {
@@ -43,8 +60,11 @@ export function CommunityProfileModal({
 	const [avatar, setAvatar] = useState("");
 	const [bio, setBio] = useState("");
 	const [favoriteGenre, setFavoriteGenre] = useState("");
+	const [avatarTab, setAvatarTab] = useState<"doraemon" | "shin" | "custom">("doraemon");
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState("");
+
+	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	useEffect(() => {
 		if (user) {
@@ -58,6 +78,30 @@ export function CommunityProfileModal({
 	}, [user, isOpen]);
 
 	if (!isOpen || !user) return null;
+
+	const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+		if (!file) return;
+
+		if (file.size > 5 * 1024 * 1024) {
+			setError("Dung lượng ảnh tải lên không được vượt quá 5MB");
+			return;
+		}
+
+		if (!file.type.startsWith("image/")) {
+			setError("Vui lòng chọn đúng định dạng hình ảnh (PNG, JPG, WEBP...)");
+			return;
+		}
+
+		const reader = new FileReader();
+		reader.onload = () => {
+			if (typeof reader.result === "string") {
+				setAvatar(reader.result);
+				setError("");
+			}
+		};
+		reader.readAsDataURL(file);
+	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -78,7 +122,7 @@ export function CommunityProfileModal({
 				username: `@${cleanUsername}`,
 				displayName: displayName.trim(),
 				avatar: avatar.trim() || user.avatar,
-				bio: bio.trim(),
+				bio: bio.trim().slice(0, 250),
 				favoriteGenre: favoriteGenre.trim(),
 			});
 			onClose();
@@ -90,30 +134,25 @@ export function CommunityProfileModal({
 		}
 	};
 
+	const doraemonAvatars = PRESET_AVATARS.filter((a) => a.category === "doraemon");
+	const shinAvatars = PRESET_AVATARS.filter((a) => a.category === "shin");
+
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/60 backdrop-blur-xs">
-			<div className="relative w-full max-w-lg rounded-2xl border border-border bg-card p-6 shadow-2xl transition-all sm:p-8 animate-in fade-in-0 zoom-in-95 max-h-[90vh] overflow-y-auto">
-				{/* Close Button */}
-				<button
-					type="button"
-					onClick={onClose}
-					className="absolute right-4 top-4 rounded-full p-2 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-					aria-label="Đóng"
-				>
-					<X className="h-5 w-5" />
-				</button>
-
-				{/* Header */}
-				<div className="border-b border-border pb-4">
-					<div className="flex items-center gap-2">
-						<Sparkles className="h-5 w-5 text-primary" />
-						<h2 className="text-[15px] font-semibold tracking-tight text-foreground">
-							Tùy chỉnh hồ sơ độc giả
-						</h2>
-					</div>
-					<p className="mt-1 text-[13px] text-muted-foreground">
-						Định hình phong cách của bạn trong mạng xã hội cộng đồng sách Aurabook
-					</p>
+			<div className="relative w-full max-w-3xl rounded-2xl border border-border bg-card p-6 shadow-2xl transition-all sm:p-7 animate-in fade-in-0 zoom-in-95 max-h-[92vh] overflow-y-auto">
+				{/* Streamlined Single Line Header */}
+				<div className="flex items-center justify-between border-b border-border pb-3">
+					<h2 className="text-base font-bold text-foreground">
+						Tùy chỉnh hồ sơ
+					</h2>
+					<button
+						type="button"
+						onClick={onClose}
+						className="rounded-full p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+						aria-label="Đóng"
+					>
+						<X className="h-4 w-4" />
+					</button>
 				</div>
 
 				{error && (
@@ -122,72 +161,225 @@ export function CommunityProfileModal({
 					</div>
 				)}
 
-				<form onSubmit={handleSubmit} className="mt-5 space-y-4">
-					{/* Avatar Selection */}
-					<div>
-						<label className="block text-[13px] font-semibold text-foreground mb-2">
-							Ảnh đại diện (Avatar)
-						</label>
+				<form onSubmit={handleSubmit} className="mt-5 space-y-5">
+					{/* Avatar Section */}
+					<div className="rounded-xl border border-border/80 bg-muted/20 p-4 space-y-3.5">
+						<div className="flex items-center justify-between">
+							<label className="block text-[13px] font-semibold text-foreground">
+								Ảnh đại diện (Avatar)
+							</label>
+							<span className="text-[12px] text-muted-foreground">
+								Tải ảnh từ máy tính hoặc chọn nhân vật
+							</span>
+						</div>
+
+						{/* Preview & Current selection */}
 						<div className="flex items-center gap-4">
-							<div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-primary/20 shadow-xs">
+							<div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border-2 border-primary shadow-sm bg-muted ring-4 ring-primary/10">
 								<Image
 									src={avatar || user.avatar}
 									alt="Avatar preview"
 									fill
-									sizes="64px"
+									sizes="80px"
 									className="object-cover"
 									unoptimized
 								/>
 							</div>
+
 							<div className="flex-1 space-y-2">
-								<div className="flex flex-wrap gap-2">
-									{AVATAR_PRESETS.map((presetUrl, idx) => (
-										<button
-											key={idx}
-											type="button"
-											onClick={() => setAvatar(presetUrl)}
-											className={`relative h-8 w-8 overflow-hidden rounded-full border-2 transition-all ${
-												avatar === presetUrl ? "border-primary scale-110 shadow-xs" : "border-border opacity-70 hover:opacity-100"
-											}`}
-										>
-											<Image
-												src={presetUrl}
-												alt={`Preset ${idx + 1}`}
-												fill
-												sizes="32px"
-												className="object-cover"
-												unoptimized
-											/>
-										</button>
-									))}
-								</div>
-								<div className="flex items-center gap-1.5 text-[13px] text-muted-foreground">
-									<Camera className="h-3.5 w-3.5" />
-									<span>Hoặc nhập URL ảnh:</span>
-								</div>
-								<Input
-									type="url"
-									value={avatar}
-									onChange={(e) => setAvatar(e.target.value)}
-									placeholder="https://example.com/avatar.jpg"
-									className="h-8 text-[13px]"
+								<input
+									type="file"
+									ref={fileInputRef}
+									onChange={handleFileUpload}
+									accept="image/*"
+									className="hidden"
 								/>
+								<Button
+									type="button"
+									variant="outline-solid"
+									size="sm"
+									onClick={() => fileInputRef.current?.click()}
+									className="gap-2 text-[12px] h-8.5 rounded-xl font-semibold"
+								>
+									<Upload className="h-3.5 w-3.5 text-primary" />
+									Tải ảnh từ máy tính
+								</Button>
+								<p className="text-[11px] text-muted-foreground">
+									Định dạng JPG, PNG, WEBP (Tối đa 5MB)
+								</p>
+							</div>
+						</div>
+
+						{/* Character Tabs Selector */}
+						<div className="pt-2 border-t border-border/60">
+							<div className="flex items-center gap-1.5 overflow-x-auto pb-2">
+								<button
+									type="button"
+									onClick={() => setAvatarTab("doraemon")}
+									className={`px-3 py-1 rounded-full text-[12px] font-semibold transition-all whitespace-nowrap ${
+										avatarTab === "doraemon"
+											? "bg-foreground text-background shadow-2xs"
+											: "bg-muted text-muted-foreground hover:text-foreground"
+									}`}
+								>
+									🐱 Doraemon
+								</button>
+								<button
+									type="button"
+									onClick={() => setAvatarTab("shin")}
+									className={`px-3 py-1 rounded-full text-[12px] font-semibold transition-all whitespace-nowrap ${
+										avatarTab === "shin"
+											? "bg-foreground text-background shadow-2xs"
+											: "bg-muted text-muted-foreground hover:text-foreground"
+									}`}
+								>
+									🖍️ Shin - Cậu bé bút chì
+								</button>
+								<button
+									type="button"
+									onClick={() => setAvatarTab("custom")}
+									className={`px-3 py-1 rounded-full text-[12px] font-semibold transition-all whitespace-nowrap ${
+										avatarTab === "custom"
+											? "bg-foreground text-background shadow-2xs"
+											: "bg-muted text-muted-foreground hover:text-foreground"
+									}`}
+								>
+									🖼️ Mặc định & URL
+								</button>
+							</div>
+
+							{/* Character Grid */}
+							<div className="mt-2">
+								{avatarTab === "doraemon" && (
+									<div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+										{doraemonAvatars.map((char) => (
+											<button
+												key={char.id}
+												type="button"
+												onClick={() => setAvatar(char.url)}
+												className={`flex items-center gap-2 p-1.5 rounded-xl border text-left transition-all ${
+													avatar === char.url
+														? "border-primary bg-primary/10 ring-1 ring-primary shadow-xs"
+														: "border-border/70 hover:border-primary/50 bg-card hover:bg-muted/40"
+												}`}
+											>
+												<div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border">
+													<Image
+														src={char.url}
+														alt={char.name}
+														fill
+														sizes="40px"
+														className="object-cover"
+														unoptimized
+													/>
+												</div>
+												<div className="min-w-0 flex-1">
+													<div className="text-[12px] font-bold text-foreground truncate">
+														{char.name}
+													</div>
+													<div className="text-[10px] text-muted-foreground truncate">
+														{char.description}
+													</div>
+												</div>
+												{avatar === char.url && (
+													<Check className="h-3.5 w-3.5 text-primary shrink-0 mr-1" />
+												)}
+											</button>
+										))}
+									</div>
+								)}
+
+								{avatarTab === "shin" && (
+									<div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+										{shinAvatars.map((char) => (
+											<button
+												key={char.id}
+												type="button"
+												onClick={() => setAvatar(char.url)}
+												className={`flex items-center gap-2 p-1.5 rounded-xl border text-left transition-all ${
+													avatar === char.url
+														? "border-primary bg-primary/10 ring-1 ring-primary shadow-xs"
+														: "border-border/70 hover:border-primary/50 bg-card hover:bg-muted/40"
+												}`}
+											>
+												<div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border">
+													<Image
+														src={char.url}
+														alt={char.name}
+														fill
+														sizes="40px"
+														className="object-cover"
+														unoptimized
+													/>
+												</div>
+												<div className="min-w-0 flex-1">
+													<div className="text-[12px] font-bold text-foreground truncate">
+														{char.name}
+													</div>
+													<div className="text-[10px] text-muted-foreground truncate">
+														{char.description}
+													</div>
+												</div>
+												{avatar === char.url && (
+													<Check className="h-3.5 w-3.5 text-primary shrink-0 mr-1" />
+												)}
+											</button>
+										))}
+									</div>
+								)}
+
+								{avatarTab === "custom" && (
+									<div className="space-y-2">
+										<div className="flex flex-wrap gap-2">
+											{DEFAULT_PRESETS.map((presetUrl, idx) => (
+												<button
+													key={idx}
+													type="button"
+													onClick={() => setAvatar(presetUrl)}
+													className={`relative h-10 w-10 overflow-hidden rounded-full border-2 transition-all ${
+														avatar === presetUrl ? "border-primary scale-110 shadow-xs" : "border-border opacity-70 hover:opacity-100"
+													}`}
+												>
+													<Image
+														src={presetUrl}
+														alt={`Preset ${idx + 1}`}
+														fill
+														sizes="40px"
+														className="object-cover"
+														unoptimized
+													/>
+												</button>
+											))}
+										</div>
+										<div className="flex items-center gap-1.5 text-[12px] text-muted-foreground pt-1">
+											<Camera className="h-3.5 w-3.5" />
+											<span>Hoặc dán URL ảnh trực tiếp:</span>
+										</div>
+										<Input
+											type="url"
+											value={avatar}
+											onChange={(e) => setAvatar(e.target.value)}
+											placeholder="https://example.com/avatar.jpg"
+											className="h-8.5 text-[12px]"
+										/>
+									</div>
+								)}
 							</div>
 						</div>
 					</div>
 
-					{/* Names */}
-					<div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+					{/* Names in 2-column layout */}
+					<div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
 						<div>
 							<label className="block text-[13px] font-semibold text-foreground mb-1">
-								Tên hiển thị <span className="text-destructive">*</span>
+								Họ và tên hiển thị <span className="text-destructive">*</span>
 							</label>
 							<Input
 								type="text"
 								value={displayName}
 								onChange={(e) => setDisplayName(e.target.value)}
 								placeholder="Nguyễn Văn A"
-								className="text-[13px]"
+								className="text-[13px] h-9.5"
 								required
 							/>
 						</div>
@@ -205,55 +397,54 @@ export function CommunityProfileModal({
 									value={username}
 									onChange={(e) => setUsername(e.target.value)}
 									placeholder="nguyenvana"
-									className="pl-7 text-[13px]"
+									className="pl-7 text-[13px] h-9.5"
 									required
 								/>
 							</div>
 						</div>
 					</div>
 
-					{/* Bio */}
-					<div>
-						<label className="block text-[13px] font-semibold text-foreground mb-1">
-							Giới thiệu bản thân (Bio)
-						</label>
-						<textarea
-							rows={3}
-							value={bio}
-							onChange={(e) => setBio(e.target.value)}
-							placeholder="Chia sẻ vài dòng về sở thích, câu nói tâm đắc hoặc thói quen đọc sách của bạn..."
-							className="w-full rounded-md border border-input bg-background px-3 py-2 text-[13px] text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring"
-						/>
-					</div>
-
-					{/* Favorite Genre */}
+					{/* Favorite Genre Dropdown */}
 					<div>
 						<label className="block text-[13px] font-semibold text-foreground mb-1">
 							Thể loại sách yêu thích
 						</label>
-						<Input
-							type="text"
+						<select
 							value={favoriteGenre}
 							onChange={(e) => setFavoriteGenre(e.target.value)}
-							placeholder="VD: Tâm lý học, Văn học, Kinh doanh..."
-							className="text-[13px]"
-						/>
-						<div className="mt-2 flex flex-wrap gap-1.5">
-							{GENRE_SUGGESTIONS.map((genre) => (
-								<button
-									key={genre}
-									type="button"
-									onClick={() => setFavoriteGenre(genre)}
-									className={`rounded-full px-2.5 py-1 text-[13px] font-medium transition-colors ${
-										favoriteGenre === genre
-											? "bg-primary text-primary-foreground"
-											: "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
-									}`}
-								>
+							className="w-full h-9.5 rounded-md border border-input bg-background px-3 text-[13px] text-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring"
+						>
+							<option value="">-- Chọn thể loại sách yêu thích --</option>
+							{BOOK_GENRES.map((genre) => (
+								<option key={genre} value={genre}>
 									{genre}
-								</button>
+								</option>
 							))}
+						</select>
+					</div>
+
+					{/* Bio (Max 250 characters) */}
+					<div>
+						<div className="flex items-center justify-between mb-1">
+							<label className="block text-[13px] font-semibold text-foreground">
+								Giới thiệu bản thân (Bio)
+							</label>
+							<span
+								className={`text-[11px] font-medium ${
+									bio.length >= 250 ? "text-destructive font-bold" : "text-muted-foreground"
+								}`}
+							>
+								{bio.length}/250 ký tự
+							</span>
 						</div>
+						<textarea
+							rows={3}
+							maxLength={250}
+							value={bio}
+							onChange={(e) => setBio(e.target.value)}
+							placeholder="Chia sẻ vài dòng về sở thích, câu nói tâm đắc hoặc thói quen đọc sách của bạn (tối đa 250 ký tự)..."
+							className="w-full rounded-md border border-input bg-background px-3 py-2 text-[13px] text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring"
+						/>
 					</div>
 
 					{/* Footer buttons */}
@@ -263,14 +454,14 @@ export function CommunityProfileModal({
 							variant="outline-solid"
 							onClick={onClose}
 							disabled={isSubmitting}
-							className="text-[13px]"
+							className="text-[13px] rounded-xl"
 						>
 							Hủy
 						</Button>
 						<Button
 							type="submit"
 							disabled={isSubmitting}
-							className="gap-2 text-[13px] font-semibold"
+							className="gap-2 text-[13px] font-semibold rounded-xl"
 						>
 							<UserCheck className="h-4 w-4" />
 							{isSubmitting ? "Đang lưu..." : "Lưu thay đổi"}

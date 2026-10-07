@@ -1,5 +1,29 @@
 import { NextResponse } from "next/server";
-import { editCommunityPost, deleteCommunityPost } from "@/lib/community/storage";
+import { editCommunityPost, deleteCommunityPost, toggleHideCommunityPost } from "@/lib/community/storage";
+
+export async function POST(
+	request: Request,
+	{ params }: { params: Promise<{ id: string }> },
+) {
+	try {
+		const { id: postId } = await params;
+		if (!postId) {
+			return NextResponse.json({ error: "Missing postId" }, { status: 400 });
+		}
+		const body = (await request.json().catch(() => ({}))) as { action?: string };
+		if (body.action === "toggleHide" || !body.action) {
+			const isHidden = toggleHideCommunityPost(postId);
+			return NextResponse.json({ ok: true, isHidden });
+		}
+		return NextResponse.json({ error: "Hành động không hợp lệ" }, { status: 400 });
+	} catch (error: any) {
+		console.error("[api/community/posts/[id]] Error toggle hide post:", error);
+		return NextResponse.json(
+			{ error: error?.message || "Không thể thực hiện ẩn/hiện bài viết." },
+			{ status: 500 },
+		);
+	}
+}
 
 export async function PATCH(
 	request: Request,

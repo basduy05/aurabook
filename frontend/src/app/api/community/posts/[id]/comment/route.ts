@@ -11,6 +11,7 @@ export async function POST(
 		const body = (await request.json()) as {
 			author: CommunityPost["author"];
 			content: string;
+			parentId?: string;
 		};
 
 		if (!body.content?.trim()) {

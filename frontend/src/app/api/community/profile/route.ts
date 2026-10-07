@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
 import { CurrentUserDocument } from "@/gql/graphql";
-import { getCommunityUsers, saveCommunityUser, getCommunityUserById } from "@/lib/community/storage";
+import {
+	getCommunityUsers,
+	saveCommunityUserWithPropagation,
+	getCommunityUserById,
+} from "@/lib/community/storage";
 import { type CommunityUser } from "@/lib/community/types";
 
 export async function GET(request: Request) {
@@ -51,7 +55,7 @@ export async function GET(request: Request) {
 					lastActive: "Đang online",
 				},
 			};
-			saveCommunityUser(newProfile);
+			saveCommunityUserWithPropagation(newProfile);
 			return NextResponse.json({ user: newProfile });
 		}
 	} catch (e) {
@@ -85,8 +89,8 @@ export async function POST(request: Request) {
 			hasAcceptedTerms: body.hasAcceptedTerms ?? user.hasAcceptedTerms,
 		};
 
-		saveCommunityUser(updatedUser);
-		return NextResponse.json({ user: updatedUser });
+		const saved = saveCommunityUserWithPropagation(updatedUser);
+		return NextResponse.json({ user: saved });
 	} catch (error) {
 		console.error("[community/profile] Error saving profile:", error);
 		return NextResponse.json({ error: "Lỗi hệ thống khi cập nhật hồ sơ." }, { status: 500 });

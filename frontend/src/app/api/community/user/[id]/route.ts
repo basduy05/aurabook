@@ -7,13 +7,15 @@ import {
 } from "@/lib/community/storage";
 
 export async function GET(
-	_request: Request,
+	request: Request,
 	{ params }: { params: Promise<{ id: string }> },
 ) {
 	try {
 		const { id: rawId } = await params;
 		const userIdOrUsername = decodeURIComponent(rawId);
-		const activity = getUserActivity(userIdOrUsername);
+		const { searchParams } = new URL(request.url);
+		const viewerId = searchParams.get("viewerId") || undefined;
+		const activity = getUserActivity(userIdOrUsername, viewerId);
 
 		if (!activity.user) {
 			const fallbackUser = getCommunityUserById(userIdOrUsername);
@@ -25,6 +27,8 @@ export async function GET(
 				posts: [],
 				comments: [],
 				savedPosts: [],
+				followersUsers: [],
+				followingUsers: [],
 			});
 		}
 
@@ -33,6 +37,8 @@ export async function GET(
 			posts: activity.posts,
 			comments: activity.comments,
 			savedPosts: activity.savedPosts || [],
+			followersUsers: activity.followersUsers || [],
+			followingUsers: activity.followingUsers || [],
 		});
 	} catch (error: any) {
 		console.error("[api/community/user/[id]] Error:", error);

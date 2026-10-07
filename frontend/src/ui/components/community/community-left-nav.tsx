@@ -15,19 +15,13 @@ import {
 	Heart,
 	MessageSquare,
 	Sparkles,
+	UserPlus,
+	AtSign,
 } from "lucide-react";
-import { type CommunityUser } from "@/lib/community/types";
+import { type CommunityUser, type CommunityNotification } from "@/lib/community/types";
+import { formatCommunityExactTime } from "@/lib/community/time";
 
 export type CommunityNavTab = "feed" | "reviews" | "saved" | "bookshelf";
-
-interface NotificationItem {
-	id: string;
-	title: string;
-	content: string;
-	time: string;
-	isRead: boolean;
-	icon: "like" | "comment" | "system";
-}
 
 interface CommunityLeftNavProps {
 	activeNav: CommunityNavTab;
@@ -58,32 +52,27 @@ export function CommunityLeftNav({
 	const [showNotifications, setShowNotifications] = useState(false);
 	const profileClusterRef = useRef<HTMLDivElement>(null);
 
-	const [notifications, setNotifications] = useState<NotificationItem[]>([
-		{
-			id: "1",
-			title: "Lượt thích mới",
-			content: "Minh Tuấn đã thích bài cảm nhận của bạn về cuốn Đắc Nhân Tâm.",
-			time: "15 phút trước",
-			isRead: false,
-			icon: "like",
-		},
-		{
-			id: "2",
-			title: "Bình luận mới",
-			content: "Thu Hà đã bình luận: 'Hoàn toàn đồng ý với góc nhìn của bạn!'",
-			time: "1 giờ trước",
-			isRead: false,
-			icon: "comment",
-		},
-		{
-			id: "3",
-			title: "Chào mừng bạn mới",
-			content: "Chào mừng bạn đến với Mạng xã hội Độc giả Aurabook. Hãy cùng kết nối và chia sẻ!",
-			time: "Hôm qua",
-			isRead: true,
-			icon: "system",
-		},
-	]);
+	const [notifications, setNotifications] = useState<CommunityNotification[]>([]);
+
+	// Fetch real notifications from API
+	const fetchNotifications = async () => {
+		try {
+			const userId = currentUser?.id || "user-1";
+			const res = await fetch(`/api/community/notifications?userId=${encodeURIComponent(userId)}`);
+			if (res.ok) {
+				const data = (await res.json()) as { notifications: CommunityNotification[] };
+				setNotifications(data.notifications || []);
+			}
+		} catch (e) {
+			console.error("Failed to load notifications:", e);
+		}
+	};
+
+	useEffect(() => {
+		fetchNotifications();
+		const interval = setInterval(fetchNotifications, 15000);
+		return () => clearInterval(interval);
+	}, [currentUser]);
 
 	// Close popups when clicking outside the profile cluster
 	useEffect(() => {
@@ -99,8 +88,30 @@ export function CommunityLeftNav({
 
 	const unreadCount = notifications.filter((n) => !n.isRead).length;
 
-	const handleMarkAllRead = () => {
+	const handleMarkAllRead = async () => {
 		setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+		try {
+			await fetch("/api/community/notifications", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ markAll: true, userId: currentUser?.id || "user-1" }),
+			});
+		} catch (e) {
+			console.error("Failed to mark all notifications read:", e);
+		}
+	};
+
+	const handleMarkSingleRead = async (id: string) => {
+		setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)));
+		try {
+			await fetch("/api/community/notifications", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ notificationId: id, userId: currentUser?.id || "user-1" }),
+			});
+		} catch (e) {
+			console.error("Failed to mark notification read:", e);
+		}
 	};
 
 	const handleSearchSubmit = (e: React.FormEvent) => {
@@ -292,31 +303,61 @@ export function CommunityLeftNav({
 							</div>
 
 							<div className="my-2 max-h-72 space-y-2 overflow-y-auto pr-1">
-								{notifications.map((item) => (
-									<div
-										key={item.id}
-										className={`rounded-xl p-2.5 text-[13px] transition-colors ${
-											item.isRead ? "bg-card hover:bg-muted/30" : "bg-muted/50 hover:bg-muted/80 font-medium"
-										}`}
-									>
-										<div className="flex items-start gap-2">
-											<div className="mt-0.5 shrink-0">
-												{item.icon === "like" && <Heart className="h-3.5 w-3.5 text-red-500 fill-red-500" />}
-												{item.icon === "comment" && <MessageSquare className="h-3.5 w-3.5 text-primary" />}
-												{item.icon === "system" && <Sparkles className="h-3.5 w-3.5 text-amber-500" />}
-											</div>
-											<div className="flex-1 min-w-0">
-												<div className="flex items-center justify-between">
-													<span className="font-semibold text-[13px] text-foreground truncate">{item.title}</span>
-													<span className="text-[12px] text-muted-foreground">{item.time}</span>
+								{notifications.length === 0 ? (
+									<div className="py-6 text-center text-[13px] text-muted-foreground">
+										Chưa có thông báo mới nào
+									</div>
+								) : (
+									notifications.map((item) => (
+										<div
+											key={item.id}
+											onClick={() => handleMarkSingleRead(item.id)}
+											className={`rounded-xl p-2.5 text-[13px] transition-colors cursor-pointer ${
+												item.isRead
+													? "bg-card hover:bg-muted/30"
+													: "bg-primary/5 border border-primary/20 hover:bg-primary/10 font-medium"
+											}`}
+										>
+											<div className="flex items-start gap-2.5">
+												<div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full border border-border bg-muted mt-0.5">
+													<Image
+														src={
+															item.sender?.avatar ||
+															"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"
+														}
+														alt={item.sender?.displayName || "Sender"}
+														fill
+														sizes="32px"
+														className="object-cover"
+														unoptimized
+													/>
 												</div>
-												<p className="mt-0.5 text-[13px] text-muted-foreground leading-relaxed">
-													{item.content}
-												</p>
+												<div className="flex-1 min-w-0">
+													<div className="flex items-center justify-between gap-1">
+														<div className="flex items-center gap-1.5 min-w-0">
+															{item.type === "like" && <Heart className="h-3.5 w-3.5 text-red-500 fill-red-500 shrink-0" />}
+															{item.type === "comment" && <MessageSquare className="h-3.5 w-3.5 text-primary shrink-0" />}
+															{item.type === "reply" && <MessageSquare className="h-3.5 w-3.5 text-primary shrink-0" />}
+															{item.type === "follow" && <UserPlus className="h-3.5 w-3.5 text-emerald-500 shrink-0" />}
+															{item.type === "tag" && <AtSign className="h-3.5 w-3.5 text-purple-500 shrink-0" />}
+															{item.type === "system" && <Sparkles className="h-3.5 w-3.5 text-amber-500 shrink-0" />}
+															<span className="font-bold text-[12.5px] text-foreground truncate">{item.title}</span>
+														</div>
+														{!item.isRead && (
+															<span className="h-2 w-2 rounded-full bg-primary shrink-0" />
+														)}
+													</div>
+													<p className="mt-0.5 text-[12px] text-muted-foreground leading-relaxed line-clamp-2">
+														{item.content}
+													</p>
+													<div className="mt-1 text-[11px] text-muted-foreground/80 font-medium">
+														{formatCommunityExactTime(item.createdAt)}
+													</div>
+												</div>
 											</div>
 										</div>
-									</div>
-								))}
+									))
+								)}
 							</div>
 
 							<div className="border-t border-border pt-1.5 text-center">
