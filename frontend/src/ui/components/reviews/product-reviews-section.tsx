@@ -251,11 +251,11 @@ export function ProductReviewsSection({
 								/>
 							))}
 						</div>
-						<p className="text-sm font-medium text-foreground">
+						<p className="text-[13px] font-medium text-foreground">
 							Dựa trên <span className="font-bold">{summary.totalReviews}</span> lượt đánh giá
 						</p>
 						{summary.recommendPercentage > 0 && (
-							<p className="mt-1 text-xs font-semibold text-emerald-600">
+							<p className="mt-1 text-[13px] font-semibold text-emerald-600">
 								✓ {summary.recommendPercentage}% độc giả khuyên đọc
 							</p>
 						)}
@@ -273,12 +273,12 @@ export function ProductReviewsSection({
 									key={star}
 									type="button"
 									onClick={() => setSelectedStarFilter(isSelected ? null : star)}
-									className={`group flex items-center gap-3 text-sm transition-colors hover:text-foreground ${
+									className={`group flex items-center gap-3 text-[13px] transition-colors hover:text-foreground ${
 										isSelected ? "font-bold text-foreground" : "text-muted-foreground"
 									}`}
 									title={`Lọc đánh giá ${star} sao`}
 								>
-									<span className="flex w-11 items-center gap-1 shrink-0 font-medium text-xs">
+									<span className="flex w-11 items-center gap-1 shrink-0 font-medium text-[13px]">
 										{star} <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
 									</span>
 									<div className="h-2.5 flex-1 overflow-hidden rounded-full bg-muted">
@@ -288,7 +288,7 @@ export function ProductReviewsSection({
 										/>
 									</div>
 									{/* Fixed width with whitespace-nowrap prevents line jump bug */}
-									<span className="w-20 shrink-0 text-right text-xs tabular-nums whitespace-nowrap font-medium text-muted-foreground">
+									<span className="w-20 shrink-0 text-right text-[13px] tabular-nums whitespace-nowrap font-medium text-muted-foreground">
 										{count} ({percentage.toFixed(0)}%)
 									</span>
 								</button>
@@ -298,12 +298,12 @@ export function ProductReviewsSection({
 				</div>
 
 				{/* Integrated filter row inside the card */}
-				<div className="mt-5 flex flex-wrap items-center gap-2 border-t pt-4 text-sm">
-					<span className="mr-1 text-xs font-semibold text-muted-foreground">Lọc theo:</span>
+				<div className="mt-5 flex flex-wrap items-center gap-2 border-t pt-4 text-[13px]">
+					<span className="mr-1 text-[13px] font-semibold text-muted-foreground">Lọc theo:</span>
 					<button
 						type="button"
 						onClick={() => setSelectedStarFilter(null)}
-						className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
+						className={`rounded-md px-3 py-1.5 text-[13px] font-semibold transition-colors ${
 							selectedStarFilter === null
 								? "bg-primary text-primary-foreground"
 								: "bg-secondary text-secondary-foreground hover:bg-secondary/80"
@@ -316,7 +316,7 @@ export function ProductReviewsSection({
 							key={star}
 							type="button"
 							onClick={() => setSelectedStarFilter(selectedStarFilter === star ? null : star)}
-							className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
+							className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[13px] font-semibold transition-colors ${
 								selectedStarFilter === star
 									? "bg-primary text-primary-foreground"
 									: "bg-secondary text-secondary-foreground hover:bg-secondary/80"
@@ -334,8 +334,8 @@ export function ProductReviewsSection({
 				{paginatedReviews.length === 0 ? (
 					<div className="rounded-xl border border-dashed p-8 text-center">
 						<MessageSquarePlus className="mx-auto h-8 w-8 text-muted-foreground/40" />
-						<p className="mt-2 text-sm font-semibold text-foreground">Chưa có đánh giá phù hợp</p>
-						<p className="mt-1 text-xs text-muted-foreground">
+						<p className="mt-2 text-[15px] font-semibold text-foreground">Chưa có đánh giá phù hợp</p>
+						<p className="mt-1 text-[13px] text-muted-foreground">
 							{selectedStarFilter
 								? `Chưa có đánh giá ${selectedStarFilter} sao nào.`
 								: "Hãy là người đầu tiên chia sẻ cảm nhận về cuốn sách này!"}
@@ -358,16 +358,16 @@ export function ProductReviewsSection({
 							>
 								<div className="flex flex-wrap items-start justify-between gap-3">
 									<div className="flex items-center gap-3">
-										<div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
+										<div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[13px] font-bold text-primary">
 											{initial}
 										</div>
 										<div>
 											<div className="flex items-center gap-2">
-												<span className="text-sm font-semibold text-foreground">
+												<span className="text-[13px] font-semibold text-foreground">
 													{review.authorName}
 												</span>
 												{review.isVerified && (
-													<span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700">
+													<span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[13px] font-semibold text-emerald-700">
 														<CheckCircle2 className="h-3 w-3 text-emerald-600" />
 														Đã mua hàng
 													</span>
@@ -386,7 +386,7 @@ export function ProductReviewsSection({
 														/>
 													))}
 												</div>
-												<span className="text-xs text-muted-foreground">{dateStr}</span>
+												<span className="text-[13px] text-muted-foreground">{dateStr}</span>
 											</div>
 										</div>
 									</div>
@@ -395,7 +395,7 @@ export function ProductReviewsSection({
 										type="button"
 										onClick={() => handleHelpful(review.id)}
 										disabled={isLiked}
-										className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1 text-xs font-medium transition-colors ${
+										className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1 text-[13px] font-medium transition-colors ${
 											isLiked
 												? "border-emerald-200 bg-emerald-50 text-emerald-700 cursor-default"
 												: "bg-background text-muted-foreground hover:bg-accent hover:text-foreground cursor-pointer"
@@ -408,11 +408,11 @@ export function ProductReviewsSection({
 								</div>
 
 								{review.title && (
-									<h4 className="mt-3 text-sm font-semibold text-foreground">
+									<h4 className="mt-3 text-[15px] font-semibold text-foreground">
 										{review.title}
 									</h4>
 								)}
-								<p className="mt-1.5 text-sm leading-relaxed text-foreground/90 whitespace-pre-line">
+								<p className="mt-1.5 text-[13px] leading-relaxed text-foreground/90 whitespace-pre-line">
 									{review.content}
 								</p>
 							</div>
@@ -423,8 +423,8 @@ export function ProductReviewsSection({
 
 			{/* Pagination Controls (when more than 1 review exists) */}
 			{reviews.length > 1 && totalPages > 1 && (
-				<div className="mt-5 flex items-center justify-between border-t pt-3 text-xs">
-					<span className="text-[11px] text-muted-foreground">
+				<div className="mt-5 flex items-center justify-between border-t pt-3 text-[13px]">
+					<span className="text-[13px] text-muted-foreground">
 						Hiển thị {(currentPage - 1) * REVIEWS_PER_PAGE + 1} -{" "}
 						{Math.min(currentPage * REVIEWS_PER_PAGE, filteredReviews.length)} trong{" "}
 						{filteredReviews.length} đánh giá

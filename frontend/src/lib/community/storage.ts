@@ -90,6 +90,9 @@ const SEED_POSTS: CommunityPost[] = [
 		book: {
 			slug: "dac-nhan-tam",
 			title: "Đắc Nhân Tâm",
+			price: "86.000 ₫",
+			author: "Dale Carnegie",
+			thumbnail: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop&q=80",
 			rating: 5,
 		},
 		title: "Bài học sâu sắc về sự lắng nghe chân thành trong Đắc Nhân Tâm",
@@ -124,6 +127,9 @@ const SEED_POSTS: CommunityPost[] = [
 		book: {
 			slug: "nha-gia-kim",
 			title: "Nhà Giả Kim",
+			price: "79.000 ₫",
+			author: "Paulo Coelho",
+			thumbnail: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300&auto=format&fit=crop&q=80",
 			rating: 5,
 		},
 		title: "Theo đuổi vận mệnh của chính mình",
@@ -316,7 +322,11 @@ export function toggleUserBlockedStatus(userId: string): boolean {
 }
 
 /** Automatically sync a product review from PDP to community feed! */
-export function syncReviewToCommunity(review: Review, bookTitle: string) {
+export function syncReviewToCommunity(
+	review: Review,
+	bookTitle: string,
+	extra?: { price?: string; thumbnail?: string; author?: string },
+) {
 	try {
 		const data = loadData();
 		const syncPostId = `post-review-${review.id}`;
@@ -337,6 +347,9 @@ export function syncReviewToCommunity(review: Review, bookTitle: string) {
 				slug: review.productSlug,
 				title: bookTitle || review.productSlug,
 				rating: review.rating,
+				price: extra?.price || "120.000 ₫",
+				thumbnail: extra?.thumbnail || "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop&q=80",
+				author: extra?.author || "Tác giả AuraBook",
 			},
 			title: review.title,
 			content: review.content,
@@ -351,4 +364,250 @@ export function syncReviewToCommunity(review: Review, bookTitle: string) {
 	} catch (e) {
 		console.error("[community] Failed to sync review to community:", e);
 	}
+}
+
+export interface TrendingBookItem {
+	title: string;
+	author: string;
+	slug: string;
+	rating: number;
+	reviewsCount: number;
+	thumbnail: string;
+}
+
+export interface ActiveReaderItem {
+	name: string;
+	username: string;
+	avatar: string;
+	reviews: number;
+}
+
+export function getCommunitySidebarData(): {
+	trendingBooks: TrendingBookItem[];
+	topReaders: ActiveReaderItem[];
+} {
+	const communityData = loadData();
+	const reviewsFile = path.join(DATA_DIR, "reviews.json");
+	let reviewsList: Review[] = [];
+	try {
+		if (fs.existsSync(reviewsFile)) {
+			reviewsList = JSON.parse(fs.readFileSync(reviewsFile, "utf8")) as Review[];
+		}
+	} catch {}
+
+	// 1. Calculate REAL trending books from actual posts and reviews
+	const bookStats = new Map<
+		string,
+		{
+			title: string;
+			author: string;
+			slug: string;
+			ratings: number[];
+			count: number;
+			thumbnail: string;
+		}
+	>();
+
+	// Known real books dictionary
+	const KNOWN_BOOKS: Record<string, { title: string; author: string; thumbnail: string }> = {
+		"dac-nhan-tam": {
+			title: "Đắc Nhân Tâm",
+			author: "Dale Carnegie",
+			thumbnail: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop&q=80",
+		},
+		"nha-gia-kim": {
+			title: "Nhà Giả Kim",
+			author: "Paulo Coelho",
+			thumbnail: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300&auto=format&fit=crop&q=80",
+		},
+		"tuoi-tre-dang-gia-bao-nhieu": {
+			title: "Tuổi Trẻ Đáng Giá Bao Nhiêu",
+			author: "Rosie Nguyễn",
+			thumbnail: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&auto=format&fit=crop&q=80",
+		},
+		"tu-duy-nhanh-va-cham": {
+			title: "Tư Duy Nhanh Và Chậm",
+			author: "Daniel Kahneman",
+			thumbnail: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=300&auto=format&fit=crop&q=80",
+		},
+		"cay-cam-ngot-cua-toi": {
+			title: "Cây Cam Ngọt Của Tôi",
+			author: "José Mauro de Vasconcelos",
+			thumbnail: "https://images.unsplash.com/photo-1495640388908-05fa85288e61?w=300&auto=format&fit=crop&q=80",
+		},
+	};
+
+	const nonBookSlugs = new Set(["dry-sunglasses", "ascii-tee", "plimsolls", "canvas-sneakers", "hoodie", "t-shirt"]);
+
+	// From community posts
+	for (const post of communityData.posts) {
+		if (post.book?.slug && !nonBookSlugs.has(post.book.slug)) {
+			const slug = post.book.slug;
+			const known = KNOWN_BOOKS[slug];
+			const existing = bookStats.get(slug) || {
+				title: known?.title || post.book.title,
+				author: known?.author || post.book.author || "Tác giả AuraBook",
+				slug,
+				ratings: [] as number[],
+				count: 0,
+				thumbnail:
+					known?.thumbnail ||
+					post.book.thumbnail ||
+					"https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop&q=80",
+			};
+			existing.count += 1 + (post.comments?.length || 0);
+			if (post.book.rating) {
+				existing.ratings.push(post.book.rating);
+			}
+			bookStats.set(slug, existing);
+		}
+	}
+
+	// From product reviews
+	for (const rev of reviewsList) {
+		if (rev.productSlug && !nonBookSlugs.has(rev.productSlug)) {
+			const slug = rev.productSlug;
+			const known = KNOWN_BOOKS[slug];
+			const bookTitle = known?.title || (slug === "dac-nhan-tam" ? "Đắc Nhân Tâm" : String(slug));
+			const existing = bookStats.get(slug) || {
+				title: bookTitle,
+				author: known?.author || "Tác giả AuraBook",
+				slug,
+				ratings: [] as number[],
+				count: 0,
+				thumbnail:
+					known?.thumbnail ||
+					"https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop&q=80",
+			};
+			existing.count += 1;
+			if (rev.rating) {
+				existing.ratings.push(rev.rating);
+			}
+			bookStats.set(slug, existing);
+		}
+	}
+
+	// Default fallback books from catalog if needed
+	const defaultCatalog = [
+		{
+			title: "Đắc Nhân Tâm",
+			author: "Dale Carnegie",
+			slug: "dac-nhan-tam",
+			rating: 4.9,
+			thumbnail: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop&q=80",
+		},
+		{
+			title: "Nhà Giả Kim",
+			author: "Paulo Coelho",
+			slug: "nha-gia-kim",
+			rating: 4.8,
+			thumbnail: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300&auto=format&fit=crop&q=80",
+		},
+		{
+			title: "Tuổi Trẻ Đáng Giá Bao Nhiêu",
+			author: "Rosie Nguyễn",
+			slug: "tuoi-tre-dang-gia-bao-nhieu",
+			rating: 4.7,
+			thumbnail: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&auto=format&fit=crop&q=80",
+		},
+	];
+
+	for (const def of defaultCatalog) {
+		if (!bookStats.has(def.slug)) {
+			bookStats.set(def.slug, {
+				title: def.title,
+				author: def.author,
+				slug: def.slug,
+				ratings: [def.rating],
+				count: 0,
+				thumbnail: def.thumbnail,
+			});
+		}
+	}
+
+	const trendingBooks: TrendingBookItem[] = Array.from(bookStats.values())
+		.map((b) => {
+			const avgRating =
+				b.ratings.length > 0
+					? Math.round((b.ratings.reduce((acc, r) => acc + r, 0) / b.ratings.length) * 10) / 10
+					: 4.8;
+			return {
+				title: b.title,
+				author: b.author,
+				slug: b.slug,
+				rating: avgRating,
+				reviewsCount: b.count,
+				thumbnail: b.thumbnail,
+			};
+		})
+		.sort((a, b) => b.reviewsCount - a.reviewsCount)
+		.slice(0, 4);
+
+	// 2. Calculate REAL active readers
+	const userActivityMap = new Map<
+		string,
+		{
+			name: string;
+			username: string;
+			avatar: string;
+			count: number;
+		}
+	>();
+
+	// Add registered community users
+	for (const u of communityData.users) {
+		if (!u.isBlocked) {
+			userActivityMap.set(u.username, {
+				name: u.displayName,
+				username: u.username,
+				avatar: u.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.displayName)}`,
+				count: 0,
+			});
+		}
+	}
+
+	// Count real posts for each author
+	for (const p of communityData.posts) {
+		const key = p.author.username;
+		const existing = userActivityMap.get(key) || {
+			name: p.author.displayName,
+			username: p.author.username,
+			avatar: p.author.avatar,
+			count: 0,
+		};
+		existing.count += 1;
+		userActivityMap.set(key, existing);
+	}
+
+	// Count reviews
+	for (const rev of reviewsList) {
+		const authorName = rev.authorName;
+		const matchedUser = communityData.users.find(
+			(u) =>
+				u.displayName.toLowerCase() === authorName.toLowerCase() ||
+				u.realAccount?.fullName?.toLowerCase() === authorName.toLowerCase(),
+		);
+		if (matchedUser) {
+			const existing = userActivityMap.get(matchedUser.username);
+			if (existing) {
+				existing.count += 1;
+			}
+		}
+	}
+
+	const topReaders: ActiveReaderItem[] = communityData.users
+		.filter((u) => !u.isBlocked)
+		.map((u) => {
+			const stats = userActivityMap.get(u.username);
+			return {
+				name: u.displayName,
+				username: u.username,
+				avatar: u.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.displayName)}`,
+				reviews: stats?.count || 0,
+			};
+		})
+		.sort((a, b) => b.reviews - a.reviews)
+		.slice(0, 4);
+
+	return { trendingBooks, topReaders };
 }

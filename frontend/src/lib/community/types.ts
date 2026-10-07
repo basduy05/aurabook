@@ -47,6 +47,8 @@ export interface CommunityPost {
 		slug: string;
 		title: string;
 		thumbnail?: string;
+		price?: string;
+		author?: string;
 		rating?: number;
 	} | null;
 	title: string;

@@ -107,17 +107,17 @@ export function CommunityProfileModal({
 				<div className="border-b border-border pb-4">
 					<div className="flex items-center gap-2">
 						<Sparkles className="h-5 w-5 text-primary" />
-						<h2 className="text-xl font-bold tracking-tight text-foreground">
+						<h2 className="text-[15px] font-semibold tracking-tight text-foreground">
 							Tùy chỉnh hồ sơ độc giả
 						</h2>
 					</div>
-					<p className="mt-1 text-xs text-muted-foreground">
+					<p className="mt-1 text-[13px] text-muted-foreground">
 						Định hình phong cách của bạn trong mạng xã hội cộng đồng sách AuraBook
 					</p>
 				</div>
 
 				{error && (
-					<div className="mt-4 rounded-xl border border-destructive/20 bg-destructive/10 p-3 text-xs text-destructive">
+					<div className="mt-4 rounded-xl border border-destructive/20 bg-destructive/10 p-3 text-[13px] text-destructive">
 						{error}
 					</div>
 				)}
@@ -125,7 +125,7 @@ export function CommunityProfileModal({
 				<form onSubmit={handleSubmit} className="mt-5 space-y-4">
 					{/* Avatar Selection */}
 					<div>
-						<label className="block text-xs font-semibold text-foreground mb-2">
+						<label className="block text-[13px] font-semibold text-foreground mb-2">
 							Ảnh đại diện (Avatar)
 						</label>
 						<div className="flex items-center gap-4">
@@ -161,7 +161,7 @@ export function CommunityProfileModal({
 										</button>
 									))}
 								</div>
-								<div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+								<div className="flex items-center gap-1.5 text-[13px] text-muted-foreground">
 									<Camera className="h-3.5 w-3.5" />
 									<span>Hoặc nhập URL ảnh:</span>
 								</div>
@@ -170,7 +170,7 @@ export function CommunityProfileModal({
 									value={avatar}
 									onChange={(e) => setAvatar(e.target.value)}
 									placeholder="https://example.com/avatar.jpg"
-									className="h-8 text-xs"
+									className="h-8 text-[13px]"
 								/>
 							</div>
 						</div>
@@ -179,7 +179,7 @@ export function CommunityProfileModal({
 					{/* Names */}
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
 						<div>
-							<label className="block text-xs font-semibold text-foreground mb-1">
+							<label className="block text-[13px] font-semibold text-foreground mb-1">
 								Tên hiển thị <span className="text-destructive">*</span>
 							</label>
 							<Input
@@ -187,17 +187,17 @@ export function CommunityProfileModal({
 								value={displayName}
 								onChange={(e) => setDisplayName(e.target.value)}
 								placeholder="Nguyễn Văn A"
-								className="text-sm"
+								className="text-[13px]"
 								required
 							/>
 						</div>
 
 						<div>
-							<label className="block text-xs font-semibold text-foreground mb-1">
+							<label className="block text-[13px] font-semibold text-foreground mb-1">
 								Username (@tag) <span className="text-destructive">*</span>
 							</label>
 							<div className="relative">
-								<span className="absolute left-3 top-2.5 text-xs text-muted-foreground font-semibold">
+								<span className="absolute left-3 top-2.5 text-[13px] text-muted-foreground font-semibold">
 									@
 								</span>
 								<Input
@@ -205,7 +205,7 @@ export function CommunityProfileModal({
 									value={username}
 									onChange={(e) => setUsername(e.target.value)}
 									placeholder="nguyenvana"
-									className="pl-7 text-sm"
+									className="pl-7 text-[13px]"
 									required
 								/>
 							</div>
@@ -214,7 +214,7 @@ export function CommunityProfileModal({
 
 					{/* Bio */}
 					<div>
-						<label className="block text-xs font-semibold text-foreground mb-1">
+						<label className="block text-[13px] font-semibold text-foreground mb-1">
 							Giới thiệu bản thân (Bio)
 						</label>
 						<textarea
@@ -222,13 +222,13 @@ export function CommunityProfileModal({
 							value={bio}
 							onChange={(e) => setBio(e.target.value)}
 							placeholder="Chia sẻ vài dòng về sở thích, câu nói tâm đắc hoặc thói quen đọc sách của bạn..."
-							className="w-full rounded-md border border-input bg-background px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring"
+							className="w-full rounded-md border border-input bg-background px-3 py-2 text-[13px] text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring"
 						/>
 					</div>
 
 					{/* Favorite Genre */}
 					<div>
-						<label className="block text-xs font-semibold text-foreground mb-1">
+						<label className="block text-[13px] font-semibold text-foreground mb-1">
 							Thể loại sách yêu thích
 						</label>
 						<Input
@@ -236,7 +236,7 @@ export function CommunityProfileModal({
 							value={favoriteGenre}
 							onChange={(e) => setFavoriteGenre(e.target.value)}
 							placeholder="VD: Tâm lý học, Văn học, Kinh doanh..."
-							className="text-sm"
+							className="text-[13px]"
 						/>
 						<div className="mt-2 flex flex-wrap gap-1.5">
 							{GENRE_SUGGESTIONS.map((genre) => (
@@ -244,7 +244,7 @@ export function CommunityProfileModal({
 									key={genre}
 									type="button"
 									onClick={() => setFavoriteGenre(genre)}
-									className={`rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors ${
+									className={`rounded-full px-2.5 py-1 text-[13px] font-medium transition-colors ${
 										favoriteGenre === genre
 											? "bg-primary text-primary-foreground"
 											: "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
@@ -263,13 +263,14 @@ export function CommunityProfileModal({
 							variant="outline-solid"
 							onClick={onClose}
 							disabled={isSubmitting}
+							className="text-[13px]"
 						>
 							Hủy
 						</Button>
 						<Button
 							type="submit"
 							disabled={isSubmitting}
-							className="gap-2"
+							className="gap-2 text-[13px] font-semibold"
 						>
 							<UserCheck className="h-4 w-4" />
 							{isSubmitting ? "Đang lưu..." : "Lưu thay đổi"}

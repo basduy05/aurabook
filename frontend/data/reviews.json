@@ -1,5 +1,29 @@
 [
   {
+    "id": "rev-1791368216594-b60ij",
+    "productSlug": "ascii-tee",
+    "productId": "UHJvZHVjdDoxMzQ=",
+    "authorName": "áo cũng đẹp đấy",
+    "rating": 5,
+    "title": "áo đẹph",
+    "content": "áo rất đẹp",
+    "createdAt": "2026-10-07T10:16:56.594Z",
+    "isVerified": true,
+    "helpfulCount": 0
+  },
+  {
+    "id": "rev-1791364642517-o28sc",
+    "productSlug": "dry-sunglasses",
+    "productId": "UHJvZHVjdDoxNDQ=",
+    "authorName": "heelo",
+    "rating": 5,
+    "title": "âs",
+    "content": "fasdf",
+    "createdAt": "2026-10-07T09:17:22.517Z",
+    "isVerified": true,
+    "helpfulCount": 0
+  },
+  {
     "id": "rev-1791361969794-pwd1s",
     "productSlug": "dry-sunglasses",
     "productId": "UHJvZHVjdDoxNDQ=",
