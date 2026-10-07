@@ -33,6 +33,15 @@ export async function POST(request: Request) {
 		}
 
 		const result = addReview(body);
+
+		// Automatically sync review to Community Social Feed
+		try {
+			const { syncReviewToCommunity } = await import("@/lib/community/storage");
+			syncReviewToCommunity(result.review, body.title || body.productSlug);
+		} catch (e) {
+			console.error("[api/reviews] Failed to sync to community:", e);
+		}
+
 		return NextResponse.json(result, { status: 201 });
 	} catch (error) {
 		console.error("[api/reviews] Error creating review:", error);

@@ -1,0 +1,179 @@
+{
+  "users": [
+    {
+      "id": "user-1",
+      "username": "@basduy05",
+      "displayName": "Nguyen Ba Duy",
+      "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
+      "bio": "Đam mê đọc sách phát triển bản thân, công nghệ và kinh doanh.",
+      "favoriteGenre": "Kinh doanh & Khởi nghiệp",
+      "hasAcceptedTerms": true,
+      "isBlocked": false,
+      "joinedAt": "2026-08-10T09:00:00.000Z",
+      "realAccount": {
+        "id": "VXNlcjox",
+        "email": "basduygame@gmail.com",
+        "fullName": "Duy Nguyễn",
+        "phone": "0912345678",
+        "ordersCount": 4,
+        "totalSpent": "2.460.000 ₫",
+        "registeredDate": "10/08/2026",
+        "lastActive": "Hôm nay, 15:20"
+      }
+    },
+    {
+      "id": "user-2",
+      "username": "@minhtuan_read",
+      "displayName": "Minh Tuấn",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+      "bio": "Mỗi ngày 30 trang sách để mở rộng thế giới quan.",
+      "favoriteGenre": "Văn học cổ điển & Triết học",
+      "hasAcceptedTerms": true,
+      "isBlocked": false,
+      "joinedAt": "2026-09-01T14:20:00.000Z",
+      "realAccount": {
+        "id": "VXNlcjoy",
+        "email": "minhtuan.nguyen@example.com",
+        "fullName": "Nguyễn Minh Tuấn",
+        "phone": "0987654321",
+        "ordersCount": 2,
+        "totalSpent": "450.000 ₫",
+        "registeredDate": "01/09/2026",
+        "lastActive": "Hôm qua, 20:15"
+      }
+    },
+    {
+      "id": "user-3",
+      "username": "@thuha_books",
+      "displayName": "Thu Hà",
+      "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
+      "bio": "Yêu thích không gian yên tĩnh và những trang sách thơm mùi giấy mới.",
+      "favoriteGenre": "Tiểu thuyết & Nghệ thuật sống",
+      "hasAcceptedTerms": true,
+      "isBlocked": false,
+      "joinedAt": "2026-09-12T10:00:00.000Z",
+      "realAccount": {
+        "id": "VXNlcjoz",
+        "email": "thuha.tran@example.com",
+        "fullName": "Trần Thu Hà",
+        "phone": "0909123456",
+        "ordersCount": 3,
+        "totalSpent": "720.000 ₫",
+        "registeredDate": "12/09/2026",
+        "lastActive": "3 ngày trước"
+      }
+    }
+  ],
+  "posts": [
+    {
+      "id": "post-review-rev-1791361969794-pwd1s",
+      "author": {
+        "id": "user-guest-Độc giả ẩn danh",
+        "username": "@độc_giả_ẩn_danh",
+        "displayName": "Độc giả ẩn danh",
+        "avatar": "https://ui-avatars.com/api/?name=%C4%90%E1%BB%99c%20gi%E1%BA%A3%20%E1%BA%A9n%20danh&background=0D8ABC&color=fff",
+        "isVerifiedBuyer": true
+      },
+      "book": {
+        "slug": "dry-sunglasses",
+        "title": "Hài lòng",
+        "rating": 4
+      },
+      "title": "Hài lòng",
+      "content": "bloblo",
+      "likes": [],
+      "comments": [
+        {
+          "id": "comm-1791363016648-j9n8",
+          "author": {
+            "id": "user-1",
+            "username": "@basduy05",
+            "displayName": "Nguyen Ba Duy",
+            "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80"
+          },
+          "content": "Quyển sách này hay không bạn",
+          "createdAt": "2026-10-07T08:50:16.648Z"
+        }
+      ],
+      "createdAt": "2026-10-07T08:32:49.794Z",
+      "isFromProductReview": true
+    },
+    {
+      "id": "post-review-rev-1791361948004-owyt1",
+      "author": {
+        "id": "user-guest-Duy Bá",
+        "username": "@duy_bá",
+        "displayName": "Duy Bá",
+        "avatar": "https://ui-avatars.com/api/?name=Duy%20B%C3%A1&background=0D8ABC&color=fff",
+        "isVerifiedBuyer": true
+      },
+      "book": {
+        "slug": "dry-sunglasses",
+        "title": "gh",
+        "rating": 5
+      },
+      "title": "gh",
+      "content": "g",
+      "likes": [],
+      "comments": [],
+      "createdAt": "2026-10-07T08:32:28.004Z",
+      "isFromProductReview": true
+    },
+    {
+      "id": "post-1",
+      "author": {
+        "id": "user-1",
+        "username": "@basduy",
+        "displayName": "Duy Nguyễn",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+        "isVerifiedBuyer": true
+      },
+      "book": {
+        "slug": "dac-nhan-tam",
+        "title": "Đắc Nhân Tâm",
+        "rating": 5
+      },
+      "title": "Bài học sâu sắc về sự lắng nghe chân thành trong Đắc Nhân Tâm",
+      "content": "Sau khi đọc lại cuốn Đắc Nhân Tâm lần thứ 3, mình nhận ra bài học giá trị nhất không phải là làm sao để nói hay, mà là nghệ thuật lắng nghe bằng cả tấm lòng. Khi bạn thực sự quan tâm đến người đối diện, mọi cánh cửa giao tiếp đều tự động mở ra. Rất khuyên mọi người nên có một cuốn trên bàn làm việc!",
+      "likes": [
+        "user-2",
+        "user-3"
+      ],
+      "comments": [
+        {
+          "id": "comm-1",
+          "author": {
+            "id": "user-2",
+            "username": "@minhtuan_read",
+            "displayName": "Minh Tuấn",
+            "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
+          },
+          "content": "Hoàn toàn đồng ý với anh Duy! Đặc biệt là chương về việc nhớ tên người khác, áp dụng vào công việc thấy hiệu quả bất ngờ.",
+          "createdAt": "2026-10-06T10:15:00.000Z"
+        }
+      ],
+      "createdAt": "2026-10-05T14:30:00.000Z",
+      "isPinned": true
+    },
+    {
+      "id": "post-2",
+      "author": {
+        "id": "user-3",
+        "username": "@thuha_books",
+        "displayName": "Thu Hà",
+        "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
+        "isVerifiedBuyer": true
+      },
+      "book": {
+        "slug": "nha-gia-kim",
+        "title": "Nhà Giả Kim",
+        "rating": 5
+      },
+      "title": "Theo đuổi vận mệnh của chính mình",
+      "content": "Hành trình vượt qua sa mạc của Santiago nhắc nhở chúng ta rằng: kho báu không nằm ở điểm đến, mà nằm ở tất cả những trải nghiệm và bài học bạn tích lũy được trên đường đi. Một cuốn sách nhẹ nhàng nhưng đầy chất thơ.",
+      "likes": [],
+      "comments": [],
+      "createdAt": "2026-10-06T16:00:00.000Z"
+    }
+  ]
+}

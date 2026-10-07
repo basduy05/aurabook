@@ -300,6 +300,24 @@ function MegaMenuDesktopMenu({
 							</LinkWithChannel>
 						</NavigationMenuLink>
 					</NavigationMenuItem>
+					<NavigationMenuItem>
+						<NavigationMenuLink asChild>
+							<LinkWithChannel
+								href="/community"
+								className={cn(
+									megaMenuTriggerClassName,
+									pathname.startsWith("/community") && "border-foreground text-foreground",
+									"relative inline-flex items-center gap-1.5",
+								)}
+								onClick={closeMenu}
+							>
+								<span>Cộng đồng</span>
+								<span className="inline-flex items-center rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold text-primary uppercase tracking-wider">
+									Mới
+								</span>
+							</LinkWithChannel>
+						</NavigationMenuLink>
+					</NavigationMenuItem>
 					{items.map((item) => (
 						<MegaMenuTopItem key={item.id} item={item} nav={nav} onClose={closeMenu} />
 					))}

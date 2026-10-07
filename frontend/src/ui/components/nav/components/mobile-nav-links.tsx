@@ -154,6 +154,9 @@ export function MobileNavLinks({ items, nav }: { items: NavMenuItem[]; nav: NavC
 			<li>
 				<MobileNavTopLink item={{ id: "all-products", label: nav.allProductsLabel, href: "/products" }} />
 			</li>
+			<li>
+				<MobileNavTopLink item={{ id: "community", label: "Cộng đồng ✦ Mới", href: "/community" }} />
+			</li>
 			{items.map((item) => {
 				if (hasNavMenuChildren(item)) {
 					return (

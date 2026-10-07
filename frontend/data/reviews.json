@@ -1,5 +1,29 @@
 [
   {
+    "id": "rev-1791361969794-pwd1s",
+    "productSlug": "dry-sunglasses",
+    "productId": "UHJvZHVjdDoxNDQ=",
+    "authorName": "Độc giả ẩn danh",
+    "rating": 4,
+    "title": "Hài lòng",
+    "content": "bloblo",
+    "createdAt": "2026-10-07T08:32:49.794Z",
+    "isVerified": true,
+    "helpfulCount": 1
+  },
+  {
+    "id": "rev-1791361948004-owyt1",
+    "productSlug": "dry-sunglasses",
+    "productId": "UHJvZHVjdDoxNDQ=",
+    "authorName": "Duy Bá",
+    "rating": 5,
+    "title": "gh",
+    "content": "g",
+    "createdAt": "2026-10-07T08:32:28.004Z",
+    "isVerified": true,
+    "helpfulCount": 1
+  },
+  {
     "id": "rev-1791361003664-taxif",
     "productSlug": "plimsolls",
     "authorName": "Nguyễn Văn An",
@@ -20,7 +44,7 @@
     "content": "Lỗi nhiều lắm",
     "createdAt": "2026-10-07T08:15:35.371Z",
     "isVerified": true,
-    "helpfulCount": 2
+    "helpfulCount": 3
   },
   {
     "id": "rev-1",

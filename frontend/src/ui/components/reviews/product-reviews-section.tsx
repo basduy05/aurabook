@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Star, ThumbsUp, CheckCircle2, MessageSquarePlus, X, PenLine } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { Star, ThumbsUp, CheckCircle2, MessageSquarePlus, X, PenLine, ChevronLeft, ChevronRight, Lock, EyeOff } from "lucide-react";
 import { type Review, type ReviewSummary } from "@/lib/reviews/types";
 
 interface ProductReviewsSectionProps {
@@ -22,6 +22,8 @@ const RATING_LABELS: Record<number, string> = {
 	5: "Tuyệt vời & khuyên đọc",
 };
 
+const REVIEWS_PER_PAGE = 3;
+
 export function ProductReviewsSection({
 	productSlug,
 	productId,
@@ -38,19 +40,26 @@ export function ProductReviewsSection({
 		},
 	);
 	const [selectedStarFilter, setSelectedStarFilter] = useState<number | null>(null);
+	const [currentPage, setCurrentPage] = useState(1);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [helpfulVoted, setHelpfulVoted] = useState<Record<string, boolean>>({});
+
+	// User auth / eligibility state
+	const [currentUser, setCurrentUser] = useState<{ name?: string; email?: string; hasPurchased?: boolean } | null>(null);
+	const [showIneligibleNotice, setShowIneligibleNotice] = useState(false);
 
 	// Form state
 	const [formRating, setFormRating] = useState(5);
 	const [formHoverRating, setFormHoverRating] = useState<number | null>(null);
 	const [formAuthor, setFormAuthor] = useState("");
+	const [formIsAnonymous, setFormIsAnonymous] = useState(false);
 	const [formTitle, setFormTitle] = useState("");
 	const [formContent, setFormContent] = useState("");
 	const [formSuccessMessage, setFormSuccessMessage] = useState(false);
 	const [formError, setFormError] = useState("");
 
+	// Load reviews & voted state
 	useEffect(() => {
 		async function loadReviews() {
 			try {
@@ -67,22 +76,73 @@ export function ProductReviewsSection({
 		if (!initialData) {
 			loadReviews();
 		}
+
+		// Load helpful votes from localStorage so user can only like ONCE
+		try {
+			const savedVotes = localStorage.getItem("aurabook_helpful_votes");
+			if (savedVotes) {
+				setHelpfulVoted(JSON.parse(savedVotes) as Record<string, boolean>);
+			}
+		} catch {
+			// ignore
+		}
+
+		// Check current user & eligibility
+		async function checkUser() {
+			try {
+				const res = await fetch(`/api/reviews/check-eligibility?productSlug=${encodeURIComponent(productSlug)}`);
+				if (res.ok) {
+					const data = (await res.json()) as { name?: string; email?: string; hasPurchased?: boolean };
+					setCurrentUser(data);
+					if (data.name) {
+						setFormAuthor(data.name);
+					}
+				}
+			} catch {
+				// ignore
+			}
+		}
+		checkUser();
 	}, [productSlug, initialData]);
 
 	useEffect(() => {
-		const handleOpenModal = () => setIsModalOpen(true);
+		const handleOpenModal = () => handleOpenReviewModal();
 		window.addEventListener("open-write-review-modal", handleOpenModal);
 		return () => window.removeEventListener("open-write-review-modal", handleOpenModal);
-	}, []);
+	}, [currentUser]);
 
-	const filteredReviews = selectedStarFilter
-		? reviews.filter((r) => r.rating === selectedStarFilter)
-		: reviews;
+	const handleOpenReviewModal = () => {
+		// Enforce rule: Only purchasers can review
+		if (currentUser && !currentUser.hasPurchased) {
+			setShowIneligibleNotice(true);
+			return;
+		}
+		setIsModalOpen(true);
+	};
+
+	const filteredReviews = useMemo(() => {
+		if (!selectedStarFilter) return reviews;
+		return reviews.filter((r) => r.rating === selectedStarFilter);
+	}, [reviews, selectedStarFilter]);
+
+	// Reset to page 1 on filter change
+	useEffect(() => {
+		setCurrentPage(1);
+	}, [selectedStarFilter]);
+
+	const totalPages = Math.max(1, Math.ceil(filteredReviews.length / REVIEWS_PER_PAGE));
+	const paginatedReviews = useMemo(() => {
+		const start = (currentPage - 1) * REVIEWS_PER_PAGE;
+		return filteredReviews.slice(start, start + REVIEWS_PER_PAGE);
+	}, [filteredReviews, currentPage]);
 
 	const handleHelpful = async (reviewId: string) => {
-		if (helpfulVoted[reviewId]) return;
+		if (helpfulVoted[reviewId]) return; // strictly 1 like per user
 		try {
-			setHelpfulVoted((prev) => ({ ...prev, [reviewId]: true }));
+			const updated = { ...helpfulVoted, [reviewId]: true };
+			setHelpfulVoted(updated);
+			localStorage.setItem("aurabook_helpful_votes", JSON.stringify(updated));
+
 			setReviews((prev) =>
 				prev.map((r) => (r.id === reviewId ? { ...r, helpfulCount: r.helpfulCount + 1 } : r)),
 			);
@@ -98,8 +158,12 @@ export function ProductReviewsSection({
 
 	const handleSubmitReview = async (e: React.FormEvent) => {
 		e.preventDefault();
-		if (!formAuthor.trim() || !formContent.trim()) {
-			setFormError("Vui lòng nhập họ tên và nội dung đánh giá của bạn.");
+		const finalAuthorName = formIsAnonymous
+			? "Độc giả ẩn danh"
+			: formAuthor.trim() || currentUser?.name || "Khách hàng AuraBook";
+
+		if (!formContent.trim()) {
+			setFormError("Vui lòng nhập nội dung đánh giá của bạn.");
 			return;
 		}
 
@@ -113,7 +177,7 @@ export function ProductReviewsSection({
 				body: JSON.stringify({
 					productSlug,
 					productId,
-					authorName: formAuthor,
+					authorName: finalAuthorName,
 					rating: formRating,
 					title: formTitle || RATING_LABELS[formRating],
 					content: formContent,
@@ -131,11 +195,9 @@ export function ProductReviewsSection({
 			setSummary(data.summary);
 			setFormSuccessMessage(true);
 
-			// Reset form after 2s and close modal
 			setTimeout(() => {
 				setIsModalOpen(false);
 				setFormSuccessMessage(false);
-				setFormAuthor("");
 				setFormTitle("");
 				setFormContent("");
 				setFormRating(5);
@@ -148,146 +210,146 @@ export function ProductReviewsSection({
 	};
 
 	return (
-		<section id="customer-reviews" className="mt-16 border-t pt-12">
-			<div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+		<section id="customer-reviews" className="mx-auto mt-16 max-w-4xl border-t pt-10">
+			{/* Compact Section Header */}
+			<div className="mb-6 flex flex-wrap items-center justify-between gap-4">
 				<div>
-					<h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+					<h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
 						Đánh giá & Nhận xét từ độc giả
 					</h2>
 					<p className="mt-1 text-sm text-muted-foreground">
-						Những phản hồi chân thực từ bạn đọc đã mua & trải nghiệm cuốn sách này
+						Phản hồi thực tế từ độc giả đã mua & trải nghiệm sản phẩm này
 					</p>
 				</div>
 				<button
 					type="button"
-					onClick={() => setIsModalOpen(true)}
-					className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:shadow"
+					onClick={handleOpenReviewModal}
+					className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-xs transition-all hover:bg-primary/90"
 				>
 					<PenLine className="h-4 w-4" />
 					Viết đánh giá
 				</button>
 			</div>
 
-			{/* Review Summary Breakdown Box */}
-			<div className="grid gap-6 rounded-2xl border bg-card p-6 shadow-xs md:grid-cols-12 md:p-8">
-				{/* Overall score */}
-				<div className="flex flex-col items-center justify-center border-b pb-6 text-center md:col-span-4 md:border-r md:border-b-0 md:pb-0 md:pr-6">
-					<div className="text-5xl font-black tracking-tight text-foreground sm:text-6xl">
-						{summary.averageRating.toFixed(1)}
-					</div>
-					<div className="my-2.5 flex items-center gap-1 text-amber-500">
-						{[1, 2, 3, 4, 5].map((s) => (
-							<Star
-								key={s}
-								className={`h-5 w-5 ${
-									s <= Math.round(summary.averageRating)
-										? "fill-amber-400 text-amber-400"
-										: "fill-muted text-muted-foreground/30"
-								}`}
-							/>
-						))}
-					</div>
-					<p className="text-sm font-medium text-foreground">
-						Dựa trên <span className="font-bold">{summary.totalReviews}</span> lượt đánh giá
-					</p>
-					{summary.recommendPercentage > 0 && (
-						<p className="mt-1 text-xs text-emerald-600 font-medium">
-							✓ {summary.recommendPercentage}% người mua khuyên đọc tác phẩm này
+			{/* Compact Summary Box with integrated Filter */}
+			<div className="rounded-xl border bg-card p-6 shadow-xs">
+				<div className="grid gap-6 md:grid-cols-12 md:items-center">
+					{/* Overall Score */}
+					<div className="flex flex-col items-center justify-center border-b pb-4 text-center md:col-span-4 md:border-r md:border-b-0 md:pb-0 md:pr-6">
+						<div className="text-4xl font-black tracking-tight text-foreground sm:text-5xl">
+							{summary.averageRating.toFixed(1)}
+						</div>
+						<div className="my-2 flex items-center gap-1 text-amber-500">
+							{[1, 2, 3, 4, 5].map((s) => (
+								<Star
+									key={s}
+									className={`h-5 w-5 ${
+										s <= Math.round(summary.averageRating)
+											? "fill-amber-400 text-amber-400"
+											: "fill-muted text-muted-foreground/30"
+									}`}
+								/>
+							))}
+						</div>
+						<p className="text-sm font-medium text-foreground">
+							Dựa trên <span className="font-bold">{summary.totalReviews}</span> lượt đánh giá
 						</p>
-					)}
+						{summary.recommendPercentage > 0 && (
+							<p className="mt-1 text-xs font-semibold text-emerald-600">
+								✓ {summary.recommendPercentage}% độc giả khuyên đọc
+							</p>
+						)}
+					</div>
+
+					{/* Star breakdown bars - compact and no line wraps */}
+					<div className="flex flex-col justify-center space-y-2 md:col-span-8 md:pl-4">
+						{[5, 4, 3, 2, 1].map((star) => {
+							const count = summary.distribution[star as 1 | 2 | 3 | 4 | 5] || 0;
+							const percentage = summary.totalReviews > 0 ? (count / summary.totalReviews) * 100 : 0;
+							const isSelected = selectedStarFilter === star;
+
+							return (
+								<button
+									key={star}
+									type="button"
+									onClick={() => setSelectedStarFilter(isSelected ? null : star)}
+									className={`group flex items-center gap-3 text-sm transition-colors hover:text-foreground ${
+										isSelected ? "font-bold text-foreground" : "text-muted-foreground"
+									}`}
+									title={`Lọc đánh giá ${star} sao`}
+								>
+									<span className="flex w-11 items-center gap-1 shrink-0 font-medium text-xs">
+										{star} <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+									</span>
+									<div className="h-2.5 flex-1 overflow-hidden rounded-full bg-muted">
+										<div
+											className="h-full rounded-full bg-amber-400 transition-all duration-300 group-hover:bg-amber-500"
+											style={{ width: `${percentage}%` }}
+										/>
+									</div>
+									{/* Fixed width with whitespace-nowrap prevents line jump bug */}
+									<span className="w-20 shrink-0 text-right text-xs tabular-nums whitespace-nowrap font-medium text-muted-foreground">
+										{count} ({percentage.toFixed(0)}%)
+									</span>
+								</button>
+							);
+						})}
+					</div>
 				</div>
 
-				{/* Star breakdown bars */}
-				<div className="flex flex-col justify-center space-y-2.5 md:col-span-8 md:pl-2">
-					{[5, 4, 3, 2, 1].map((star) => {
-						const count = summary.distribution[star as 1 | 2 | 3 | 4 | 5] || 0;
-						const percentage = summary.totalReviews > 0 ? (count / summary.totalReviews) * 100 : 0;
-						const isSelected = selectedStarFilter === star;
-
-						return (
-							<button
-								key={star}
-								type="button"
-								onClick={() => setSelectedStarFilter(isSelected ? null : star)}
-								className={`group flex items-center gap-3 text-xs transition-colors hover:text-foreground ${
-									isSelected ? "font-bold text-foreground" : "text-muted-foreground"
-								}`}
-							>
-								<span className="flex w-12 items-center gap-1 shrink-0 font-medium">
-									{star} <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-								</span>
-								<div className="h-2.5 flex-1 overflow-hidden rounded-full bg-muted">
-									<div
-										className="h-full rounded-full bg-amber-400 transition-all duration-300 group-hover:bg-amber-500"
-										style={{ width: `${percentage}%` }}
-									/>
-								</div>
-								<span className="w-10 text-right shrink-0 tabular-nums">
-									{count} ({percentage.toFixed(0)}%)
-								</span>
-							</button>
-						);
-					})}
-				</div>
-			</div>
-
-			{/* Filter Tabs */}
-			<div className="mt-8 flex flex-wrap items-center gap-2 border-b pb-4">
-				<span className="mr-2 text-xs font-medium text-muted-foreground">Lọc theo:</span>
-				<button
-					type="button"
-					onClick={() => setSelectedStarFilter(null)}
-					className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-						selectedStarFilter === null
-							? "bg-primary text-primary-foreground"
-							: "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-					}`}
-				>
-					Tất cả ({reviews.length})
-				</button>
-				{[5, 4, 3, 2, 1].map((star) => (
+				{/* Integrated filter row inside the card */}
+				<div className="mt-5 flex flex-wrap items-center gap-2 border-t pt-4 text-sm">
+					<span className="mr-1 text-xs font-semibold text-muted-foreground">Lọc theo:</span>
 					<button
-						key={star}
 						type="button"
-						onClick={() => setSelectedStarFilter(star)}
-						className={`flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-							selectedStarFilter === star
+						onClick={() => setSelectedStarFilter(null)}
+						className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
+							selectedStarFilter === null
 								? "bg-primary text-primary-foreground"
 								: "bg-secondary text-secondary-foreground hover:bg-secondary/80"
 						}`}
 					>
-						{star} <Star className="h-3 w-3 fill-amber-400 text-amber-400" /> (
-						{summary.distribution[star as 1 | 2 | 3 | 4 | 5] || 0})
+						Tất cả ({reviews.length})
 					</button>
-				))}
+					{[5, 4, 3, 2, 1].map((star) => (
+						<button
+							key={star}
+							type="button"
+							onClick={() => setSelectedStarFilter(selectedStarFilter === star ? null : star)}
+							className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
+								selectedStarFilter === star
+									? "bg-primary text-primary-foreground"
+									: "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+							}`}
+						>
+							{star} <Star className="h-3 w-3 fill-amber-400 text-amber-400" /> (
+							{summary.distribution[star as 1 | 2 | 3 | 4 | 5] || 0})
+						</button>
+					))}
+				</div>
 			</div>
 
 			{/* Reviews List */}
 			<div className="mt-6 space-y-4">
-				{filteredReviews.length === 0 ? (
+				{paginatedReviews.length === 0 ? (
 					<div className="rounded-xl border border-dashed p-8 text-center">
-						<MessageSquarePlus className="mx-auto h-8 w-8 text-muted-foreground/50" />
-						<p className="mt-2 text-sm font-medium text-foreground">Chưa có đánh giá nào</p>
+						<MessageSquarePlus className="mx-auto h-8 w-8 text-muted-foreground/40" />
+						<p className="mt-2 text-sm font-semibold text-foreground">Chưa có đánh giá phù hợp</p>
 						<p className="mt-1 text-xs text-muted-foreground">
-							Hãy là người đầu tiên chia sẻ cảm nhận về cuốn sách này!
+							{selectedStarFilter
+								? `Chưa có đánh giá ${selectedStarFilter} sao nào.`
+								: "Hãy là người đầu tiên chia sẻ cảm nhận về cuốn sách này!"}
 						</p>
-						<button
-							type="button"
-							onClick={() => setIsModalOpen(true)}
-							className="mt-4 inline-flex items-center gap-1.5 rounded-lg border bg-background px-4 py-2 text-xs font-semibold hover:bg-accent"
-						>
-							<PenLine className="h-3.5 w-3.5" />
-							Viết nhận xét ngay
-						</button>
 					</div>
 				) : (
-					filteredReviews.map((review) => {
+					paginatedReviews.map((review) => {
 						const dateStr = new Date(review.createdAt).toLocaleDateString("vi-VN", {
 							year: "numeric",
-							month: "long",
+							month: "numeric",
 							day: "numeric",
 						});
 						const initial = review.authorName.charAt(0).toUpperCase() || "B";
+						const isLiked = Boolean(helpfulVoted[review.id]);
 
 						return (
 							<div
@@ -296,16 +358,16 @@ export function ProductReviewsSection({
 							>
 								<div className="flex flex-wrap items-start justify-between gap-3">
 									<div className="flex items-center gap-3">
-										<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 font-bold text-primary">
+										<div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
 											{initial}
 										</div>
 										<div>
 											<div className="flex items-center gap-2">
-												<span className="font-semibold text-foreground text-sm">
+												<span className="text-sm font-semibold text-foreground">
 													{review.authorName}
 												</span>
 												{review.isVerified && (
-													<span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700">
+													<span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700">
 														<CheckCircle2 className="h-3 w-3 text-emerald-600" />
 														Đã mua hàng
 													</span>
@@ -324,7 +386,7 @@ export function ProductReviewsSection({
 														/>
 													))}
 												</div>
-												<span className="text-[11px] text-muted-foreground">{dateStr}</span>
+												<span className="text-xs text-muted-foreground">{dateStr}</span>
 											</div>
 										</div>
 									</div>
@@ -332,24 +394,25 @@ export function ProductReviewsSection({
 									<button
 										type="button"
 										onClick={() => handleHelpful(review.id)}
-										disabled={helpfulVoted[review.id]}
-										className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1 text-xs font-medium transition-colors ${
-											helpfulVoted[review.id]
-												? "border-emerald-200 bg-emerald-50 text-emerald-700"
-												: "bg-background text-muted-foreground hover:bg-accent hover:text-foreground"
+										disabled={isLiked}
+										className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1 text-xs font-medium transition-colors ${
+											isLiked
+												? "border-emerald-200 bg-emerald-50 text-emerald-700 cursor-default"
+												: "bg-background text-muted-foreground hover:bg-accent hover:text-foreground cursor-pointer"
 										}`}
+										title={isLiked ? "Bạn đã bấm thích đánh giá này" : "Bấm thích đánh giá"}
 									>
 										<ThumbsUp className="h-3.5 w-3.5" />
-										<span>Hữu ích ({review.helpfulCount})</span>
+										<span>{isLiked ? "Đã thích" : "Hữu ích"} ({review.helpfulCount})</span>
 									</button>
 								</div>
 
 								{review.title && (
-									<h4 className="mt-3.5 font-semibold text-foreground text-sm">
+									<h4 className="mt-3 text-sm font-semibold text-foreground">
 										{review.title}
 									</h4>
 								)}
-								<p className="mt-1 text-sm leading-relaxed text-foreground/90 whitespace-pre-line">
+								<p className="mt-1.5 text-sm leading-relaxed text-foreground/90 whitespace-pre-line">
 									{review.content}
 								</p>
 							</div>
@@ -358,50 +421,122 @@ export function ProductReviewsSection({
 				)}
 			</div>
 
+			{/* Pagination Controls (when more than 1 review exists) */}
+			{reviews.length > 1 && totalPages > 1 && (
+				<div className="mt-5 flex items-center justify-between border-t pt-3 text-xs">
+					<span className="text-[11px] text-muted-foreground">
+						Hiển thị {(currentPage - 1) * REVIEWS_PER_PAGE + 1} -{" "}
+						{Math.min(currentPage * REVIEWS_PER_PAGE, filteredReviews.length)} trong{" "}
+						{filteredReviews.length} đánh giá
+					</span>
+
+					<div className="flex items-center gap-1">
+						<button
+							type="button"
+							disabled={currentPage === 1}
+							onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+							className="inline-flex h-7 w-7 items-center justify-center rounded-md border bg-card text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-40"
+							title="Trang trước"
+						>
+							<ChevronLeft className="h-3.5 w-3.5" />
+						</button>
+
+						{Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+							<button
+								key={pageNum}
+								type="button"
+								onClick={() => setCurrentPage(pageNum)}
+								className={`inline-flex h-7 w-7 items-center justify-center rounded-md text-xs font-medium transition-colors ${
+									currentPage === pageNum
+										? "bg-primary text-primary-foreground font-semibold"
+										: "border bg-card text-muted-foreground hover:bg-accent hover:text-foreground"
+								}`}
+							>
+								{pageNum}
+							</button>
+						))}
+
+						<button
+							type="button"
+							disabled={currentPage === totalPages}
+							onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+							className="inline-flex h-7 w-7 items-center justify-center rounded-md border bg-card text-muted-foreground hover:bg-accent hover:text-foreground disabled:opacity-40"
+							title="Trang sau"
+						>
+							<ChevronRight className="h-3.5 w-3.5" />
+						</button>
+					</div>
+				</div>
+			)}
+
+			{/* Ineligible Notice Modal */}
+			{showIneligibleNotice && (
+				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs animate-in fade-in duration-200">
+					<div className="relative w-full max-w-sm rounded-2xl border bg-card p-6 text-center shadow-xl">
+						<div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-amber-50 text-amber-600">
+							<Lock className="h-6 w-6" />
+						</div>
+						<h3 className="mt-3 text-base font-bold text-foreground">
+							Quyền đánh giá bị giới hạn
+						</h3>
+						<p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+							Để đảm bảo tính khách quan và trung thực, chỉ những độc giả đã mua sản phẩm này tại AuraBook mới có thể gửi đánh giá.
+						</p>
+						<button
+							type="button"
+							onClick={() => setShowIneligibleNotice(false)}
+							className="mt-5 w-full rounded-xl bg-primary py-2 text-xs font-semibold text-primary-foreground"
+						>
+							Đã hiểu
+						</button>
+					</div>
+				</div>
+			)}
+
 			{/* Write Review Modal */}
 			{isModalOpen && (
 				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs animate-in fade-in duration-200">
-					<div className="relative w-full max-w-lg rounded-2xl border bg-card p-6 shadow-2xl sm:p-8 animate-in zoom-in-95 duration-200">
+					<div className="relative w-full max-w-md rounded-2xl border bg-card p-5 shadow-2xl sm:p-6 animate-in zoom-in-95 duration-200">
 						<button
 							type="button"
 							onClick={() => setIsModalOpen(false)}
-							className="absolute top-5 right-5 rounded-lg p-1 text-muted-foreground hover:bg-accent hover:text-foreground"
+							className="absolute top-4 right-4 rounded-lg p-1 text-muted-foreground hover:bg-accent hover:text-foreground"
 							title="Đóng"
 						>
-							<X className="h-5 w-5" />
+							<X className="h-4 w-4" />
 						</button>
 
 						{formSuccessMessage ? (
-							<div className="py-8 text-center">
-								<div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
-									<CheckCircle2 className="h-8 w-8" />
+							<div className="py-6 text-center">
+								<div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+									<CheckCircle2 className="h-7 w-7" />
 								</div>
-								<h3 className="mt-4 text-xl font-bold text-foreground">Cảm ơn bạn đã đánh giá!</h3>
-								<p className="mt-2 text-sm text-muted-foreground">
-									Đánh giá của bạn đã được ghi nhận và hiển thị ngay trên sản phẩm.
+								<h3 className="mt-3 text-lg font-bold text-foreground">Cảm ơn bạn đã đánh giá!</h3>
+								<p className="mt-1 text-xs text-muted-foreground">
+									Đánh giá của bạn đã được ghi nhận và hiển thị ngay trên sản phẩm & cộng đồng.
 								</p>
 							</div>
 						) : (
-							<form onSubmit={handleSubmitReview} className="space-y-5">
+							<form onSubmit={handleSubmitReview} className="space-y-4">
 								<div>
-									<h3 className="text-xl font-bold text-foreground">Đánh giá sản phẩm</h3>
-									<p className="mt-1 line-clamp-1 text-sm text-muted-foreground">
+									<h3 className="text-lg font-bold text-foreground">Viết đánh giá sản phẩm</h3>
+									<p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground font-medium">
 										{productName}
 									</p>
 								</div>
 
 								{formError && (
-									<div className="rounded-lg bg-destructive/10 p-3 text-xs font-medium text-destructive">
+									<div className="rounded-lg bg-destructive/10 p-2.5 text-xs font-medium text-destructive">
 										{formError}
 									</div>
 								)}
 
 								{/* Star Picker */}
 								<div>
-									<label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-										Mức độ hài lòng của bạn <span className="text-destructive">*</span>
+									<label className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+										Chất lượng sản phẩm <span className="text-destructive">*</span>
 									</label>
-									<div className="mt-2 flex items-center gap-2">
+									<div className="mt-1.5 flex items-center gap-1.5">
 										{[1, 2, 3, 4, 5].map((star) => {
 											const activeLevel = formHoverRating ?? formRating;
 											const isFilled = star <= activeLevel;
@@ -412,10 +547,10 @@ export function ProductReviewsSection({
 													onMouseEnter={() => setFormHoverRating(star)}
 													onMouseLeave={() => setFormHoverRating(null)}
 													onClick={() => setFormRating(star)}
-													className="p-1 transition-transform hover:scale-110 focus:outline-hidden"
+													className="p-0.5 transition-transform hover:scale-110 focus:outline-hidden"
 												>
 													<Star
-														className={`h-7 w-7 transition-colors ${
+														className={`h-6 w-6 transition-colors ${
 															isFilled
 																? "fill-amber-400 text-amber-400"
 																: "fill-muted text-muted-foreground/30"
@@ -430,24 +565,37 @@ export function ProductReviewsSection({
 									</div>
 								</div>
 
-								{/* Author Name */}
+								{/* Author & Anonymous option */}
 								<div>
-									<label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-										Họ và tên của bạn <span className="text-destructive">*</span>
-									</label>
+									<div className="flex items-center justify-between">
+										<label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+											Tên hiển thị <span className="text-destructive">*</span>
+										</label>
+										<label className="flex cursor-pointer items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground">
+											<input
+												type="checkbox"
+												checked={formIsAnonymous}
+												onChange={(e) => setFormIsAnonymous(e.target.checked)}
+												className="rounded border-border"
+											/>
+											<EyeOff className="h-3 w-3" />
+											<span>Đánh giá ẩn danh</span>
+										</label>
+									</div>
 									<input
 										type="text"
-										required
-										value={formAuthor}
+										required={!formIsAnonymous}
+										disabled={formIsAnonymous}
+										value={formIsAnonymous ? "Độc giả ẩn danh" : formAuthor}
 										onChange={(e) => setFormAuthor(e.target.value)}
 										placeholder="Ví dụ: Nguyễn Văn A"
-										className="mt-1.5 w-full rounded-xl border bg-background px-3.5 py-2.5 text-sm outline-hidden focus:ring-2 focus:ring-primary/30"
+										className="mt-1 w-full rounded-xl border bg-background px-3 py-2 text-xs outline-hidden focus:ring-2 focus:ring-primary/30 disabled:opacity-60"
 									/>
 								</div>
 
 								{/* Title */}
 								<div>
-									<label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+									<label className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
 										Tiêu đề nhận xét
 									</label>
 									<input
@@ -455,37 +603,37 @@ export function ProductReviewsSection({
 										value={formTitle}
 										onChange={(e) => setFormTitle(e.target.value)}
 										placeholder="Ví dụ: Sách rất hay, đóng gói cẩn thận"
-										className="mt-1.5 w-full rounded-xl border bg-background px-3.5 py-2.5 text-sm outline-hidden focus:ring-2 focus:ring-primary/30"
+										className="mt-1 w-full rounded-xl border bg-background px-3 py-2 text-xs outline-hidden focus:ring-2 focus:ring-primary/30"
 									/>
 								</div>
 
 								{/* Content */}
 								<div>
-									<label className="block text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+									<label className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
 										Nội dung đánh giá chi tiết <span className="text-destructive">*</span>
 									</label>
 									<textarea
 										required
-										rows={4}
+										rows={3}
 										value={formContent}
 										onChange={(e) => setFormContent(e.target.value)}
-										placeholder="Chia sẻ cảm nhận của bạn về nội dung cuốn sách, chất lượng in ấn, thời gian giao hàng..."
-										className="mt-1.5 w-full rounded-xl border bg-background px-3.5 py-2.5 text-sm outline-hidden focus:ring-2 focus:ring-primary/30"
+										placeholder="Chia sẻ cảm nhận chân thực của bạn về chất lượng sách, nội dung, dịch vụ..."
+										className="mt-1 w-full rounded-xl border bg-background px-3 py-2 text-xs outline-hidden focus:ring-2 focus:ring-primary/30"
 									/>
 								</div>
 
-								<div className="flex justify-end gap-3 pt-2">
+								<div className="flex justify-end gap-2.5 pt-1">
 									<button
 										type="button"
 										onClick={() => setIsModalOpen(false)}
-										className="rounded-xl border px-4 py-2.5 text-sm font-semibold hover:bg-accent"
+										className="rounded-xl border px-3.5 py-2 text-xs font-semibold hover:bg-accent"
 									>
 										Hủy
 									</button>
 									<button
 										type="submit"
 										disabled={isSubmitting}
-										className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 disabled:opacity-50"
+										className="inline-flex items-center gap-1.5 rounded-xl bg-primary px-5 py-2 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/90 disabled:opacity-50"
 									>
 										{isSubmitting ? "Đang gửi..." : "Gửi đánh giá"}
 									</button>
