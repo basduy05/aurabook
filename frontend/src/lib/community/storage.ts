@@ -1,6 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
-import { type CommunityPost, type CommunityUser } from "./types";
+import {
+	type CommunityPost,
+	type CommunityUser,
+	type CommunityComment,
+	type PostEditHistory,
+	type CommunityAdminSettings,
+} from "./types";
 import { type Review } from "@/lib/reviews/types";
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -9,7 +15,15 @@ const COMMUNITY_FILE = path.join(DATA_DIR, "community.json");
 interface CommunityData {
 	users: CommunityUser[];
 	posts: CommunityPost[];
+	settings?: CommunityAdminSettings;
 }
+
+const SEED_SETTINGS: CommunityAdminSettings = {
+	requireTerms: true,
+	verifiedBuyersOnly: true,
+	autoApprovePosts: true,
+	filterSensitiveWords: true,
+};
 
 const SEED_USERS: CommunityUser[] = [
 	{
@@ -32,6 +46,7 @@ const SEED_USERS: CommunityUser[] = [
 			registeredDate: "10/08/2026",
 			lastActive: "Hôm nay, 15:20",
 		},
+		savedPosts: ["post-1", "post-2"],
 	},
 	{
 		id: "user-2",
@@ -53,6 +68,7 @@ const SEED_USERS: CommunityUser[] = [
 			registeredDate: "01/09/2026",
 			lastActive: "Hôm qua, 20:15",
 		},
+		savedPosts: ["post-2"],
 	},
 	{
 		id: "user-3",
@@ -74,6 +90,7 @@ const SEED_USERS: CommunityUser[] = [
 			registeredDate: "12/09/2026",
 			lastActive: "3 ngày trước",
 		},
+		savedPosts: ["post-1", "post-3"],
 	},
 ];
 
@@ -156,10 +173,11 @@ function loadData(): CommunityData {
 		return {
 			users: parsed.users || SEED_USERS,
 			posts: parsed.posts || SEED_POSTS,
+			settings: parsed.settings || SEED_SETTINGS,
 		};
 	} catch (e) {
 		console.error("[community] Failed to load data:", e);
-		return { users: SEED_USERS, posts: SEED_POSTS };
+		return { users: SEED_USERS, posts: SEED_POSTS, settings: SEED_SETTINGS };
 	}
 }
 
@@ -175,9 +193,14 @@ function saveData(data: CommunityData) {
 }
 
 // Posts API
-export function getCommunityPosts(filter?: { bookSlug?: string; search?: string }): CommunityPost[] {
+export function getCommunityPosts(filter?: { bookSlug?: string; search?: string; includeHidden?: boolean }): CommunityPost[] {
 	const data = loadData();
 	let posts = [...data.posts];
+
+	// Filter out hidden posts unless includeHidden is true
+	if (!filter?.includeHidden) {
+		posts = posts.filter((p) => !p.isHidden);
+	}
 
 	if (filter?.bookSlug) {
 		const s = filter.bookSlug.toLowerCase().trim();
@@ -205,17 +228,66 @@ export function getCommunityPosts(filter?: { bookSlug?: string; search?: string 
 
 export function createCommunityPost(postData: Omit<CommunityPost, "id" | "createdAt" | "likes" | "comments">): CommunityPost {
 	const data = loadData();
+
+	// Check if author is blocked
+	const authorUser = data.users.find((u) => u.id === postData.author.id || u.username === postData.author.username);
+	if (authorUser?.isBlocked) {
+		throw new Error("Tài khoản của bạn đã bị quản trị viên khóa quyền truy cập cộng đồng.");
+	}
+
 	const newPost: CommunityPost = {
 		...postData,
 		id: `post-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
 		likes: [],
 		comments: [],
 		createdAt: new Date().toISOString(),
+		editHistory: [],
 	};
 
 	data.posts.unshift(newPost);
 	saveData(data);
 	return newPost;
+}
+
+export function editCommunityPost(
+	postId: string,
+	newTitle: string,
+	newContent: string,
+	editorUser?: { id: string; displayName: string },
+): CommunityPost {
+	const data = loadData();
+	const post = data.posts.find((p) => p.id === postId);
+	if (!post) {
+		throw new Error("Bài viết không tồn tại");
+	}
+
+	// Check if editor is blocked (unless admin)
+	if (editorUser?.id !== "admin") {
+		const editor = data.users.find(
+			(u) => u.id === editorUser?.id || u.username === editorUser?.id || u.id === post.author.id,
+		);
+		if (editor?.isBlocked) {
+			throw new Error("Tài khoản của bạn đã bị quản trị viên khóa quyền truy cập cộng đồng.");
+		}
+	}
+
+	// Save existing version to edit history
+	const historyItem: PostEditHistory = {
+		id: `hist-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+		title: post.title,
+		content: post.content,
+		editedAt: new Date().toISOString(),
+		editedBy: editorUser?.displayName || post.author.displayName,
+	};
+
+	post.editHistory = post.editHistory || [];
+	post.editHistory.unshift(historyItem);
+	post.title = newTitle.trim();
+	post.content = newContent.trim();
+	post.updatedAt = new Date().toISOString();
+
+	saveData(data);
+	return post;
 }
 
 export function toggleLikePost(postId: string, userIdOrIp: string): { likesCount: number; isLiked: boolean } {
@@ -225,14 +297,18 @@ export function toggleLikePost(postId: string, userIdOrIp: string): { likesCount
 		throw new Error("Bài viết không tồn tại");
 	}
 
+	// Check if user is blocked
+	const user = data.users.find((u) => u.id === userIdOrIp || u.username === userIdOrIp);
+	if (user?.isBlocked) {
+		throw new Error("Tài khoản của bạn đã bị quản trị viên khóa quyền truy cập cộng đồng.");
+	}
+
 	const index = post.likes.indexOf(userIdOrIp);
 	let isLiked = false;
 	if (index === -1) {
-		// Like (Strictly 1 like per user/session)
 		post.likes.push(userIdOrIp);
 		isLiked = true;
 	} else {
-		// Unlike
 		post.likes.splice(index, 1);
 		isLiked = false;
 	}
@@ -248,7 +324,15 @@ export function addCommentToPost(postId: string, commentData: { author: Communit
 		throw new Error("Bài viết không tồn tại");
 	}
 
-	const newComment = {
+	// Check if author is blocked
+	const authorUser = data.users.find(
+		(u) => u.id === commentData.author.id || u.username === commentData.author.username,
+	);
+	if (authorUser?.isBlocked) {
+		throw new Error("Tài khoản của bạn đã bị quản trị viên khóa quyền truy cập cộng đồng.");
+	}
+
+	const newComment: CommunityComment = {
 		id: `comm-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
 		author: {
 			id: commentData.author.id,
@@ -287,6 +371,17 @@ export function togglePinCommunityPost(postId: string): boolean {
 	return false;
 }
 
+export function toggleHideCommunityPost(postId: string): boolean {
+	const data = loadData();
+	const post = data.posts.find((p) => p.id === postId);
+	if (post) {
+		post.isHidden = !post.isHidden;
+		saveData(data);
+		return !!post.isHidden;
+	}
+	return false;
+}
+
 // Users API
 export function getCommunityUsers(): CommunityUser[] {
 	const data = loadData();
@@ -296,6 +391,133 @@ export function getCommunityUsers(): CommunityUser[] {
 export function getCommunityUserById(userId: string): CommunityUser | undefined {
 	const data = loadData();
 	return data.users.find((u) => u.id === userId || u.username === userId);
+}
+
+export function toggleFollowUser(
+	currentUserId: string,
+	targetUserId: string,
+): { isFollowing: boolean; followersCount: number } {
+	const data = loadData();
+	const currentUser = data.users.find((u) => u.id === currentUserId || u.username === currentUserId);
+	const targetUser = data.users.find((u) => u.id === targetUserId || u.username === targetUserId);
+
+	if (!targetUser) {
+		throw new Error("Người dùng không tồn tại");
+	}
+
+	targetUser.followers = targetUser.followers || [];
+	if (currentUser) {
+		currentUser.following = currentUser.following || [];
+	}
+
+	const followerId = currentUser ? currentUser.id : currentUserId;
+	const index = targetUser.followers.indexOf(followerId);
+	let isFollowing = false;
+
+	if (index === -1) {
+		targetUser.followers.push(followerId);
+		if (currentUser) {
+			currentUser.following = currentUser.following || [];
+			if (!currentUser.following.includes(targetUser.id)) {
+				currentUser.following.push(targetUser.id);
+			}
+		}
+		isFollowing = true;
+	} else {
+		targetUser.followers.splice(index, 1);
+		if (currentUser) {
+			currentUser.following = (currentUser.following || []).filter((id) => id !== targetUser.id);
+		}
+		isFollowing = false;
+	}
+
+	saveData(data);
+	return { isFollowing, followersCount: targetUser.followers.length };
+}
+
+export function toggleSaveUserPost(
+	userIdOrUsername: string,
+	postId: string,
+): { isSaved: boolean; savedPosts: string[] } {
+	const data = loadData();
+	const user = data.users.find((u) => u.id === userIdOrUsername || u.username === userIdOrUsername);
+	if (!user) {
+		throw new Error("Người dùng không tồn tại");
+	}
+	user.savedPosts = user.savedPosts || [];
+	const index = user.savedPosts.indexOf(postId);
+	let isSaved = false;
+	if (index === -1) {
+		user.savedPosts.push(postId);
+		isSaved = true;
+	} else {
+		user.savedPosts.splice(index, 1);
+		isSaved = false;
+	}
+	saveData(data);
+	return { isSaved, savedPosts: user.savedPosts };
+}
+
+export function getUserActivity(userIdOrUsername: string) {
+	const data = loadData();
+	const targetUser = data.users.find(
+		(u) => u.id === userIdOrUsername || u.username === userIdOrUsername,
+	);
+	const username = targetUser ? targetUser.username : userIdOrUsername;
+	const userId = targetUser ? targetUser.id : userIdOrUsername;
+
+	// User's posts
+	const userPosts = data.posts.filter(
+		(p) => p.author.id === userId || p.author.username === username,
+	);
+
+	// User's comments across all posts
+	const userComments: Array<{ comment: CommunityComment; post: CommunityPost }> = [];
+	for (const p of data.posts) {
+		for (const c of p.comments || []) {
+			if (c.author.id === userId || c.author.username === username) {
+				userComments.push({ comment: c, post: p });
+			}
+		}
+	}
+
+	// User's saved posts
+	const userSavedPostIds = targetUser?.savedPosts || [];
+	const savedPosts = data.posts.filter((p) => userSavedPostIds.includes(p.id));
+
+	return {
+		user: targetUser || null,
+		posts: userPosts,
+		comments: userComments,
+		savedPosts: savedPosts,
+	};
+}
+
+export function getCommunitySettings(): CommunityAdminSettings {
+	const data = loadData();
+	return (
+		data.settings || {
+			requireTerms: true,
+			verifiedBuyersOnly: true,
+			autoApprovePosts: true,
+			filterSensitiveWords: true,
+		}
+	);
+}
+
+export function saveCommunitySettings(settings: Partial<CommunityAdminSettings>): CommunityAdminSettings {
+	const data = loadData();
+	data.settings = {
+		...(data.settings || {
+			requireTerms: true,
+			verifiedBuyersOnly: true,
+			autoApprovePosts: true,
+			filterSensitiveWords: true,
+		}),
+		...settings,
+	};
+	saveData(data);
+	return data.settings;
 }
 
 export function saveCommunityUser(user: CommunityUser): CommunityUser {

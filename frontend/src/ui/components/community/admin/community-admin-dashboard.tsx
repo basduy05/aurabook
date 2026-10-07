@@ -17,6 +17,9 @@ import {
 	CheckCircle2,
 	AlertTriangle,
 	Eye,
+	EyeOff,
+	Edit3,
+	History,
 	X,
 	BookOpen,
 	Star,
@@ -28,6 +31,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { type CommunityUser, type CommunityPost } from "@/lib/community/types";
+import { CommunityPostEditModal, PostHistoryModal } from "../community-post-edit-modal";
 
 type AdminTab = "posts" | "reviews" | "users" | "settings";
 
@@ -42,6 +46,12 @@ export function CommunityAdminDashboard() {
 	// Selected user for Real Account Details modal
 	const [selectedUser, setSelectedUser] = useState<CommunityUser | null>(null);
 
+	// Modals for admin post moderation
+	const [editingPost, setEditingPost] = useState<CommunityPost | null>(null);
+	const [historyPost, setHistoryPost] = useState<CommunityPost | null>(null);
+	const [settingsSavedAlert, setSettingsSavedAlert] = useState(false);
+	const [isSavingSettings, setIsSavingSettings] = useState(false);
+
 	// Community Settings state (Macaw UI configuration switches)
 	const [settings, setSettings] = useState({
 		requireTerms: true,
@@ -54,9 +64,10 @@ export function CommunityAdminDashboard() {
 	const loadData = async () => {
 		setIsLoading(true);
 		try {
-			const [usersRes, postsRes] = await Promise.all([
+			const [usersRes, postsRes, settingsRes] = await Promise.all([
 				fetch("/api/community/admin/users"),
-				fetch("/api/community/posts"),
+				fetch("/api/community/admin/posts"),
+				fetch("/api/community/admin/settings"),
 			]);
 
 			if (usersRes.ok) {
@@ -67,6 +78,13 @@ export function CommunityAdminDashboard() {
 			if (postsRes.ok) {
 				const postsData = (await postsRes.json()) as { posts: CommunityPost[] };
 				setPosts(postsData.posts);
+			}
+
+			if (settingsRes?.ok) {
+				const settingsData = (await settingsRes.json()) as { settings: any };
+				if (settingsData.settings) {
+					setSettings(settingsData.settings);
+				}
 			}
 		} catch (e) {
 			console.error("Failed to load admin data:", e);
@@ -132,6 +150,66 @@ export function CommunityAdminDashboard() {
 			}
 		} catch (e) {
 			console.error("Failed to toggle pin:", e);
+		}
+	};
+
+	// Toggle hide post
+	const handleToggleHide = async (postId: string) => {
+		try {
+			const res = await fetch("/api/community/admin/posts", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ action: "hide", postId }),
+			});
+			if (res.ok) {
+				const data = (await res.json()) as { ok: boolean; isHidden: boolean };
+				setPosts((prev) =>
+					prev.map((p) => (p.id === postId ? { ...p, isHidden: data.isHidden } : p)),
+				);
+			}
+		} catch (e) {
+			console.error("Failed to toggle hide post:", e);
+		}
+	};
+
+	// Save admin edit post
+	const handleSaveAdminEdit = async (postId: string, newTitle: string, newContent: string) => {
+		const res = await fetch("/api/community/admin/posts", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				action: "edit",
+				postId,
+				title: newTitle,
+				content: newContent,
+			}),
+		});
+		if (!res.ok) {
+			const err = (await res.json()) as { error?: string };
+			throw new Error(err.error || "Không thể cập nhật bài viết");
+		}
+		const data = (await res.json()) as { post: CommunityPost };
+		setPosts((prev) => prev.map((p) => (p.id === postId ? data.post : p)));
+	};
+
+	// Save settings
+	const handleSaveSettings = async (customSettings?: typeof settings) => {
+		const toSave = customSettings || settings;
+		setIsSavingSettings(true);
+		try {
+			const res = await fetch("/api/community/admin/settings", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(toSave),
+			});
+			if (res.ok) {
+				setSettingsSavedAlert(true);
+				setTimeout(() => setSettingsSavedAlert(false), 3000);
+			}
+		} catch (e) {
+			console.error("Failed to save settings:", e);
+		} finally {
+			setIsSavingSettings(false);
 		}
 	};
 
@@ -425,6 +503,18 @@ export function CommunityAdminDashboard() {
 																Đã ghim
 															</span>
 														)}
+														{post.isHidden && (
+															<span className="inline-flex items-center gap-1 rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-semibold text-destructive">
+																<EyeOff strokeWidth={1.75} className="h-3 w-3" />
+																Đã ẩn
+															</span>
+														)}
+														{post.updatedAt && (
+															<span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+																<History strokeWidth={1.75} className="h-3 w-3" />
+																Đã sửa
+															</span>
+														)}
 														{post.isFromProductReview && (
 															<span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
 																Đánh giá PDP
@@ -502,7 +592,7 @@ export function CommunityAdminDashboard() {
 											</div>
 
 											{/* Moderation Actions */}
-											<div className="flex items-center gap-1.5 shrink-0">
+											<div className="flex flex-wrap items-center gap-1.5 shrink-0">
 												<Button
 													type="button"
 													variant="outline-solid"
@@ -513,6 +603,53 @@ export function CommunityAdminDashboard() {
 													<Pin strokeWidth={1.75} className="h-3 w-3" />
 													<span>{post.isPinned ? "Bỏ ghim" : "Ghim"}</span>
 												</Button>
+
+												<Button
+													type="button"
+													variant={post.isHidden ? "default" : "outline-solid"}
+													size="sm"
+													onClick={() => handleToggleHide(post.id)}
+													className={`h-7 text-[11px] gap-1 ${
+														post.isHidden ? "bg-amber-600 hover:bg-amber-700 text-white" : ""
+													}`}
+												>
+													{post.isHidden ? (
+														<>
+															<Eye strokeWidth={1.75} className="h-3 w-3" />
+															<span>Hiện bài</span>
+														</>
+													) : (
+														<>
+															<EyeOff strokeWidth={1.75} className="h-3 w-3" />
+															<span>Ẩn bài</span>
+														</>
+													)}
+												</Button>
+
+												<Button
+													type="button"
+													variant="outline-solid"
+													size="sm"
+													onClick={() => setEditingPost(post)}
+													className="h-7 text-[11px] gap-1"
+												>
+													<Edit3 strokeWidth={1.75} className="h-3 w-3" />
+													<span>Sửa</span>
+												</Button>
+
+												{post.editHistory && post.editHistory.length > 0 && (
+													<Button
+														type="button"
+														variant="outline-solid"
+														size="sm"
+														onClick={() => setHistoryPost(post)}
+														className="h-7 text-[11px] gap-1 text-primary"
+													>
+														<History strokeWidth={1.75} className="h-3 w-3" />
+														<span>Lịch sử ({post.editHistory.length})</span>
+													</Button>
+												)}
+
 												<Button
 													type="button"
 													variant="destructive"
@@ -555,7 +692,10 @@ export function CommunityAdminDashboard() {
 												<div className="flex items-center gap-2">
 													<div className="relative h-7 w-7 shrink-0 overflow-hidden rounded-full border border-border">
 														<Image
-															src={rev.author.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"}
+															src={
+																rev.author.avatar ||
+																"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
+															}
 															alt={rev.author.displayName}
 															fill
 															sizes="28px"
@@ -563,19 +703,32 @@ export function CommunityAdminDashboard() {
 															unoptimized
 														/>
 													</div>
-													<span className="font-semibold text-xs text-foreground">{rev.author.displayName}</span>
-													<span className="text-[11px] text-muted-foreground">{rev.author.username}</span>
+													<span className="font-semibold text-xs text-foreground">
+														{rev.author.displayName}
+													</span>
+													<span className="text-[11px] text-muted-foreground">
+														{rev.author.username}
+													</span>
 													<span className="inline-flex items-center gap-0.5 rounded-full bg-success/10 px-2 py-0.5 text-[10px] font-semibold text-success">
 														<CheckCircle2 strokeWidth={1.75} className="h-3 w-3" />
 														Khách đã mua
 													</span>
+													{rev.isHidden && (
+														<span className="inline-flex items-center gap-0.5 rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-semibold text-destructive">
+															<EyeOff strokeWidth={1.75} className="h-3 w-3" />
+															Đã ẩn
+														</span>
+													)}
 												</div>
 
 												{rev.book && (
 													<div className="inline-flex items-center gap-2.5 rounded-lg border border-border/70 bg-muted/20 px-3 py-1.5 text-xs">
 														<div className="relative h-8 w-6 shrink-0 overflow-hidden rounded border border-border/80">
 															<Image
-																src={rev.book.thumbnail || "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop&q=80"}
+																src={
+																	rev.book.thumbnail ||
+																	"https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop&q=80"
+																}
 																alt={rev.book.title}
 																fill
 																sizes="24px"
@@ -586,11 +739,16 @@ export function CommunityAdminDashboard() {
 														<div className="space-y-0.5">
 															<div className="font-semibold text-foreground flex items-center gap-2">
 																<span>{rev.book.title}</span>
-																<span className="text-primary font-bold">{rev.book.price}</span>
+																<span className="text-primary font-bold">
+																	{rev.book.price}
+																</span>
 															</div>
 															{rev.book.rating && (
 																<div className="flex items-center gap-1 text-[11px] text-amber-500 font-semibold">
-																	<Star strokeWidth={1.75} className="h-3 w-3 fill-amber-400 text-amber-400" />
+																	<Star
+																		strokeWidth={1.75}
+																		className="h-3 w-3 fill-amber-400 text-amber-400"
+																	/>
 																	<span>{rev.book.rating}/5 sao</span>
 																</div>
 															)}
@@ -612,7 +770,7 @@ export function CommunityAdminDashboard() {
 												</p>
 											</div>
 
-											<div className="flex items-center gap-1.5 shrink-0">
+											<div className="flex flex-wrap items-center gap-1.5 shrink-0">
 												<Button
 													type="button"
 													variant="outline-solid"
@@ -622,6 +780,29 @@ export function CommunityAdminDashboard() {
 												>
 													<Pin strokeWidth={1.75} className="h-3 w-3" />
 													<span>{rev.isPinned ? "Bỏ ghim" : "Ghim"}</span>
+												</Button>
+												<Button
+													type="button"
+													variant={rev.isHidden ? "default" : "outline-solid"}
+													size="sm"
+													onClick={() => handleToggleHide(rev.id)}
+													className={`h-7 text-[11px] gap-1 ${
+														rev.isHidden
+															? "bg-amber-600 hover:bg-amber-700 text-white"
+															: ""
+													}`}
+												>
+													{rev.isHidden ? (
+														<>
+															<Eye strokeWidth={1.75} className="h-3 w-3" />
+															<span>Hiện bài</span>
+														</>
+													) : (
+														<>
+															<EyeOff strokeWidth={1.75} className="h-3 w-3" />
+															<span>Ẩn bài</span>
+														</>
+													)}
 												</Button>
 												<Button
 													type="button"
@@ -790,7 +971,11 @@ export function CommunityAdminDashboard() {
 									</div>
 									<button
 										type="button"
-										onClick={() => setSettings((s) => ({ ...s, requireTerms: !s.requireTerms }))}
+										onClick={() => {
+											const next = { ...settings, requireTerms: !settings.requireTerms };
+											setSettings(next);
+											handleSaveSettings(next);
+										}}
 										className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${
 											settings.requireTerms ? "bg-primary" : "bg-muted"
 										}`}
@@ -814,9 +999,14 @@ export function CommunityAdminDashboard() {
 									</div>
 									<button
 										type="button"
-										onClick={() =>
-											setSettings((s) => ({ ...s, verifiedBuyersOnly: !s.verifiedBuyersOnly }))
-										}
+										onClick={() => {
+											const next = {
+												...settings,
+												verifiedBuyersOnly: !settings.verifiedBuyersOnly,
+											};
+											setSettings(next);
+											handleSaveSettings(next);
+										}}
 										className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${
 											settings.verifiedBuyersOnly ? "bg-primary" : "bg-muted"
 										}`}
@@ -840,9 +1030,14 @@ export function CommunityAdminDashboard() {
 									</div>
 									<button
 										type="button"
-										onClick={() =>
-											setSettings((s) => ({ ...s, autoApprovePosts: !s.autoApprovePosts }))
-										}
+										onClick={() => {
+											const next = {
+												...settings,
+												autoApprovePosts: !settings.autoApprovePosts,
+											};
+											setSettings(next);
+											handleSaveSettings(next);
+										}}
 										className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${
 											settings.autoApprovePosts ? "bg-primary" : "bg-muted"
 										}`}
@@ -866,12 +1061,14 @@ export function CommunityAdminDashboard() {
 									</div>
 									<button
 										type="button"
-										onClick={() =>
-											setSettings((s) => ({
-												...s,
-												filterSensitiveWords: !s.filterSensitiveWords,
-											}))
-										}
+										onClick={() => {
+											const next = {
+												...settings,
+												filterSensitiveWords: !settings.filterSensitiveWords,
+											};
+											setSettings(next);
+											handleSaveSettings(next);
+										}}
 										className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${
 											settings.filterSensitiveWords ? "bg-primary" : "bg-muted"
 										}`}
@@ -883,6 +1080,25 @@ export function CommunityAdminDashboard() {
 										/>
 									</button>
 								</div>
+							</div>
+
+							<div className="pt-4 border-t border-border flex items-center justify-between">
+								<div>
+									{settingsSavedAlert && (
+										<span className="inline-flex items-center gap-1.5 text-xs text-success font-semibold animate-in fade-in-0">
+											<CheckCircle2 strokeWidth={2} className="h-4 w-4" />
+											Đã lưu cấu hình quản trị thành công!
+										</span>
+									)}
+								</div>
+								<Button
+									type="button"
+									onClick={() => handleSaveSettings()}
+									disabled={isSavingSettings}
+									className="text-xs h-8 px-4 font-semibold gap-1.5"
+								>
+									{isSavingSettings ? "Đang lưu..." : "Lưu thay đổi"}
+								</Button>
 							</div>
 						</div>
 					</div>
@@ -1039,6 +1255,25 @@ export function CommunityAdminDashboard() {
 						</div>
 					</div>
 				</div>
+			)}
+
+			{/* Admin Edit Post Modal */}
+			{editingPost && (
+				<CommunityPostEditModal
+					isOpen={!!editingPost}
+					post={editingPost}
+					onClose={() => setEditingPost(null)}
+					onSave={handleSaveAdminEdit}
+				/>
+			)}
+
+			{/* Admin View Revision History Modal */}
+			{historyPost && (
+				<PostHistoryModal
+					isOpen={!!historyPost}
+					post={historyPost}
+					onClose={() => setHistoryPost(null)}
+				/>
 			)}
 		</div>
 	);

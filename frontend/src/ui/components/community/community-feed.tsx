@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import {
 	BookOpen,
 	Library,
 	Bookmark,
+	ShieldAlert,
 } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { type CommunityPost, type CommunityUser } from "@/lib/community/types";
@@ -13,6 +15,7 @@ import { CommunityRightNav } from "./community-right-nav";
 import { CommunityLeftNav, type CommunityNavTab } from "./community-left-nav";
 import { CommunityTermsModal } from "./community-terms-modal";
 import { CommunityProfileModal } from "./community-profile-modal";
+import { CommunityUserProfileModal } from "./community-user-profile-modal";
 import { CommunityCreatePost } from "./community-create-post";
 import { CommunityPostCard } from "./community-post-card";
 
@@ -25,6 +28,7 @@ export function CommunityFeed() {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [activeNav, setActiveNav] = useState<CommunityNavTab>("feed");
 	const [activeTab, setActiveTab] = useState<"all" | "reviews" | "posts" | "pinned">("all");
+	const [viewProfileTarget, setViewProfileTarget] = useState<string | null>(null);
 
 	// Real sidebar statistics (trending books & active readers)
 	const [sidebarData, setSidebarData] = useState<{
@@ -179,6 +183,10 @@ export function CommunityFeed() {
 		loadSidebarData();
 	};
 
+	const handlePostUpdated = (updatedPost: CommunityPost) => {
+		setPosts((prev) => prev.map((p) => (p.id === updatedPost.id ? updatedPost : p)));
+	};
+
 	// Filter posts
 	const filteredPosts = posts.filter((p) => {
 		// Navigation tabs filter
@@ -223,6 +231,17 @@ export function CommunityFeed() {
 				onSave={handleSaveProfile}
 			/>
 
+			{/* User Profile View Modal (with Follow, Posts, Comments, Saved) */}
+			<CommunityUserProfileModal
+				isOpen={!!viewProfileTarget}
+				userIdOrUsername={viewProfileTarget}
+				currentUser={currentUser}
+				onClose={() => setViewProfileTarget(null)}
+				onEditProfile={() => setIsProfileOpen(true)}
+				savedPostIds={savedPostIds}
+				allPosts={posts}
+			/>
+
 			{/* Main Social Layout: 3 Columns Spanning Wide */}
 			<div className="w-full max-w-[1840px] 2xl:max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-5 sm:py-6">
 				<div className="grid grid-cols-1 lg:grid-cols-12 gap-6 xl:gap-8 items-start w-full">
@@ -238,6 +257,13 @@ export function CommunityFeed() {
 							savedCount={savedPostIds.length}
 							currentUser={currentUser}
 							onOpenProfile={() => setIsProfileOpen(true)}
+							onViewSelfProfile={() => {
+								if (currentUser) {
+									setViewProfileTarget(currentUser.username || currentUser.id);
+								} else {
+									setIsProfileOpen(true);
+								}
+							}}
 							onOpenTerms={() => {
 								setIsTermsMandatory(false);
 								setIsTermsOpen(true);
@@ -258,6 +284,45 @@ export function CommunityFeed() {
 
 					{/* Middle Column: Main Social Feed (Scrollable) */}
 					<main className="lg:col-span-6 space-y-6 min-w-0 w-full">
+						{/* Blocked User Notice & Access Denied Screen */}
+						{currentUser?.isBlocked ? (
+							<div className="rounded-2xl border-2 border-destructive/40 bg-destructive/10 p-8 text-center space-y-4 shadow-xs animate-in fade-in-0">
+								<div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-destructive/15 text-destructive">
+									<ShieldAlert className="h-8 w-8" />
+								</div>
+								<div className="space-y-1.5">
+									<h2 className="text-lg font-bold text-destructive">
+										Tài khoản bị khóa quyền truy cập cộng đồng
+									</h2>
+									<p className="text-xs sm:text-sm text-foreground/85 max-w-md mx-auto leading-relaxed">
+										Tài khoản <span className="font-semibold text-foreground">{currentUser.displayName}</span> ({currentUser.username}) đã bị quản trị viên khóa quyền truy cập do vi phạm quy ước hoặc điều khoản cộng đồng. Bạn không có quyền xem bảng tin, đăng bài hoặc tương tác trong không gian này.
+									</p>
+								</div>
+								<div className="pt-2 flex flex-wrap justify-center items-center gap-3">
+									<Link
+										href="/vi/channel-vnd"
+										className="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-xs"
+									>
+										Quay lại trang mua sách
+									</Link>
+									<Button
+										type="button"
+										variant="outline-solid"
+										size="sm"
+										onClick={() =>
+											alert(
+												"Vui lòng gửi email đến banquantri@aurabook.vn để được hỗ trợ mở khóa tài khoản.",
+											)
+										}
+										className="text-xs font-semibold rounded-xl h-8.5"
+									>
+										Liên hệ hỗ trợ mở khóa
+									</Button>
+								</div>
+							</div>
+						) : (
+							<>
+
 						{/* Active Search Filter Banner */}
 						{searchQuery.trim() && (
 							<div className="rounded-2xl border border-primary/30 bg-primary/5 p-4 flex items-center justify-between gap-3 shadow-2xs">
@@ -349,6 +414,8 @@ export function CommunityFeed() {
 												currentUser={currentUser}
 												isSaved={savedPostIds.includes(post.id)}
 												onToggleSave={handleToggleSavePost}
+												onViewAuthorProfile={(authorId) => setViewProfileTarget(authorId)}
+												onPostUpdated={handlePostUpdated}
 												onRequireLogin={() => {
 													if (!currentUser?.hasAcceptedTerms) {
 														setIsTermsMandatory(true);
@@ -362,19 +429,21 @@ export function CommunityFeed() {
 							</div>
 						) : (
 							<>
-								{/* Create Post Box */}
-								<CommunityCreatePost
-									currentUser={currentUser}
-									onPostCreated={handlePostCreated}
-									onRequireTermsOrProfile={() => {
-										if (!currentUser?.hasAcceptedTerms) {
-											setIsTermsMandatory(true);
-											setIsTermsOpen(true);
-										} else {
-											setIsProfileOpen(true);
-										}
-									}}
-								/>
+								{/* Create Post Box (Hidden if user is blocked) */}
+								{!currentUser?.isBlocked && (
+									<CommunityCreatePost
+										currentUser={currentUser}
+										onPostCreated={handlePostCreated}
+										onRequireTermsOrProfile={() => {
+											if (!currentUser?.hasAcceptedTerms) {
+												setIsTermsMandatory(true);
+												setIsTermsOpen(true);
+											} else {
+												setIsProfileOpen(true);
+											}
+										}}
+									/>
+								)}
 
 								{/* Feed Filter Tabs */}
 								<div className="flex items-center justify-between gap-2 border-b border-border pb-3">
@@ -452,6 +521,8 @@ export function CommunityFeed() {
 												currentUser={currentUser}
 												isSaved={savedPostIds.includes(post.id)}
 												onToggleSave={handleToggleSavePost}
+												onViewAuthorProfile={(authorId) => setViewProfileTarget(authorId)}
+												onPostUpdated={handlePostUpdated}
 												onRequireLogin={() => {
 													if (!currentUser?.hasAcceptedTerms) {
 														setIsTermsMandatory(true);
@@ -464,7 +535,9 @@ export function CommunityFeed() {
 								)}
 							</>
 						)}
-					</main>
+					</>
+				)}
+			</main>
 
 					{/* Right Column: Fixed / Sticky Right Sidebar (Real Trending Books & Real Active Readers) */}
 					<aside className="lg:col-span-3 lg:sticky lg:top-20 lg:self-start z-20 pl-1">
@@ -477,8 +550,14 @@ export function CommunityFeed() {
 								if (activeNav !== "feed") setActiveNav("feed");
 							}}
 							onSelectReader={(name) => {
-								setSearchQuery(name);
-								if (activeNav !== "feed") setActiveNav("feed");
+								// Find username from topReaders
+								const reader = sidebarData.topReaders.find((r) => r.name === name || r.username === name);
+								if (reader) {
+									setViewProfileTarget(reader.username);
+								} else {
+									setSearchQuery(name);
+									if (activeNav !== "feed") setActiveNav("feed");
+								}
 							}}
 						/>
 					</aside>

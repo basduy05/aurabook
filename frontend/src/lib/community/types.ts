@@ -20,6 +20,9 @@ export interface CommunityUser {
 	isBlocked: boolean;
 	joinedAt: string;
 	realAccount: CommunityRealAccount;
+	followers?: string[]; // IDs or usernames of followers
+	following?: string[]; // IDs or usernames of users followed
+	savedPosts?: string[]; // IDs of saved posts
 }
 
 export interface CommunityComment {
@@ -32,6 +35,14 @@ export interface CommunityComment {
 	};
 	content: string;
 	createdAt: string;
+}
+
+export interface PostEditHistory {
+	id: string;
+	title: string;
+	content: string;
+	editedAt: string;
+	editedBy?: string;
 }
 
 export interface CommunityPost {
@@ -56,6 +67,16 @@ export interface CommunityPost {
 	likes: string[]; // List of user IDs or session tokens who liked
 	comments: CommunityComment[];
 	createdAt: string;
+	updatedAt?: string;
+	editHistory?: PostEditHistory[];
 	isPinned?: boolean;
 	isFromProductReview?: boolean;
+	isHidden?: boolean;
+}
+
+export interface CommunityAdminSettings {
+	requireTerms: boolean;
+	verifiedBuyersOnly: boolean;
+	autoApprovePosts: boolean;
+	filterSensitiveWords: boolean;
 }

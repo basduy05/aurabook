@@ -14,10 +14,13 @@ import {
 	Trash2,
 	Send,
 	Bookmark,
+	Edit3,
+	History,
 } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
 import { type CommunityPost, type CommunityUser, type CommunityComment } from "@/lib/community/types";
+import { CommunityPostEditModal, PostHistoryModal } from "./community-post-edit-modal";
 
 interface CommunityPostCardProps {
 	post: CommunityPost;
@@ -28,6 +31,8 @@ interface CommunityPostCardProps {
 	onDeletePost?: (postId: string) => Promise<void>;
 	onTogglePin?: (postId: string) => Promise<void>;
 	onRequireLogin?: () => void;
+	onViewAuthorProfile?: (authorIdOrUsername: string) => void;
+	onPostUpdated?: (updatedPost: CommunityPost) => void;
 }
 
 export function CommunityPostCard({
@@ -39,8 +44,11 @@ export function CommunityPostCard({
 	onDeletePost,
 	onTogglePin,
 	onRequireLogin,
+	onViewAuthorProfile,
+	onPostUpdated,
 }: CommunityPostCardProps) {
 	const currentUserId = currentUser?.id || "guest";
+	const [currentPost, setCurrentPost] = useState<CommunityPost>(post);
 	const [likes, setLikes] = useState<string[]>(post.likes || []);
 	const [isLiking, setIsLiking] = useState(false);
 	const [showComments, setShowComments] = useState(false);
@@ -48,8 +56,37 @@ export function CommunityPostCard({
 	const [commentText, setCommentText] = useState("");
 	const [isSubmittingComment, setIsSubmittingComment] = useState(false);
 	const [copied, setCopied] = useState(false);
+	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+	const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
 
 	const isLiked = likes.includes(currentUserId);
+	const isAuthor =
+		currentUser &&
+		(currentUser.id === currentPost.author.id ||
+			currentUser.username === currentPost.author.username);
+
+	const handleSaveEdit = async (_postId: string, newTitle: string, newContent: string) => {
+		const res = await fetch(`/api/community/posts/${currentPost.id}`, {
+			method: "PATCH",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				title: newTitle,
+				content: newContent,
+				editorUser: currentUser
+					? { id: currentUser.id, displayName: currentUser.displayName }
+					: undefined,
+			}),
+		});
+
+		if (!res.ok) {
+			const errData = (await res.json()) as { error?: string };
+			throw new Error(errData.error || "Không thể cập nhật bài viết");
+		}
+
+		const data = (await res.json()) as { post: CommunityPost };
+		setCurrentPost(data.post);
+		onPostUpdated?.(data.post);
+	};
 
 	const handleToggleLike = async () => {
 		if (!currentUser) {
@@ -66,7 +103,7 @@ export function CommunityPostCard({
 		setLikes(nextLikes);
 
 		try {
-			const res = await fetch(`/api/community/posts/${post.id}/like`, {
+			const res = await fetch(`/api/community/posts/${currentPost.id}/like`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ userId: currentUserId }),
@@ -98,7 +135,7 @@ export function CommunityPostCard({
 
 		setIsSubmittingComment(true);
 		try {
-			const res = await fetch(`/api/community/posts/${post.id}/comment`, {
+			const res = await fetch(`/api/community/posts/${currentPost.id}/comment`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
@@ -144,30 +181,67 @@ export function CommunityPostCard({
 		}
 	};
 
+	const hasEditHistory =
+		(currentPost.editHistory && currentPost.editHistory.length > 0) || !!currentPost.updatedAt;
+
 	return (
 		<article className="rounded-2xl border border-border bg-card p-5 shadow-xs transition-all hover:border-border/80 sm:p-6">
+			{/* Edit Post Modal */}
+			<CommunityPostEditModal
+				isOpen={isEditModalOpen}
+				post={currentPost}
+				onClose={() => setIsEditModalOpen(false)}
+				onSave={handleSaveEdit}
+			/>
+
+			{/* Revision History Modal */}
+			<PostHistoryModal
+				isOpen={isHistoryModalOpen}
+				post={currentPost}
+				onClose={() => setIsHistoryModalOpen(false)}
+			/>
+
 			{/* Top Bar / Meta */}
 			<div className="flex items-start justify-between gap-3">
 				<div className="flex items-center gap-3">
-					<div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full border border-border bg-muted">
+					{/* Clickable Author Avatar */}
+					<button
+						type="button"
+						onClick={() =>
+							onViewAuthorProfile?.(currentPost.author.username || currentPost.author.id)
+						}
+						className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full border border-border bg-muted group transition-transform hover:scale-105"
+						title={`Xem hồ sơ của ${currentPost.author.displayName}`}
+					>
 						<Image
-							src={post.author.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"}
-							alt={post.author.displayName}
+							src={
+								currentPost.author.avatar ||
+								"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
+							}
+							alt={currentPost.author.displayName}
 							fill
 							sizes="44px"
 							className="object-cover"
 							unoptimized
 						/>
-					</div>
+					</button>
+
 					<div>
 						<div className="flex flex-wrap items-center gap-2">
-							<span className="font-semibold text-[13px] text-foreground">
-								{post.author.displayName}
-							</span>
+							{/* Clickable Author Name */}
+							<button
+								type="button"
+								onClick={() =>
+									onViewAuthorProfile?.(currentPost.author.username || currentPost.author.id)
+								}
+								className="font-semibold text-[13px] text-foreground hover:underline text-left"
+							>
+								{currentPost.author.displayName}
+							</button>
 							<span className="text-[13px] text-muted-foreground">
-								{post.author.username}
+								{currentPost.author.username}
 							</span>
-							{post.author.isVerifiedBuyer && (
+							{currentPost.author.isVerifiedBuyer && (
 								<span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-[13px] font-semibold text-success">
 									<CheckCircle2 className="h-3.5 w-3.5" />
 									Đã mua hàng
@@ -175,8 +249,25 @@ export function CommunityPostCard({
 							)}
 						</div>
 						<div className="flex items-center gap-2 text-[13px] text-muted-foreground mt-0.5">
-							<span>{formatDate(post.createdAt)}</span>
-							{post.isFromProductReview && (
+							<span>{formatDate(currentPost.createdAt)}</span>
+
+							{/* "Đã chỉnh sửa" tag opening history modal */}
+							{hasEditHistory && (
+								<>
+									<span>•</span>
+									<button
+										type="button"
+										onClick={() => setIsHistoryModalOpen(true)}
+										className="inline-flex items-center gap-1 rounded-full bg-muted/80 px-2 py-0.5 text-[11px] font-semibold text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+										title="Xem lịch sử chỉnh sửa bài viết"
+									>
+										<History className="h-3 w-3 text-primary" />
+										<span>Đã chỉnh sửa</span>
+									</button>
+								</>
+							)}
+
+							{currentPost.isFromProductReview && (
 								<>
 									<span>•</span>
 									<span className="text-[13px] font-semibold text-primary">
@@ -188,13 +279,25 @@ export function CommunityPostCard({
 					</div>
 				</div>
 
-				{/* Right tags / admin actions */}
+				{/* Right tags / author edit / admin actions */}
 				<div className="flex items-center gap-2">
-					{post.isPinned && (
+					{currentPost.isPinned && (
 						<span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2.5 py-1 text-[13px] font-semibold text-amber-600">
 							<Pin className="h-3 w-3" />
 							Ghim
 						</span>
+					)}
+
+					{/* Author or Admin Edit Button */}
+					{(isAuthor || isAdmin) && (
+						<button
+							type="button"
+							onClick={() => setIsEditModalOpen(true)}
+							className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+							title="Chỉnh sửa bài viết"
+						>
+							<Edit3 className="h-4 w-4" />
+						</button>
 					)}
 
 					{isAdmin && (
@@ -202,9 +305,9 @@ export function CommunityPostCard({
 							{onTogglePin && (
 								<button
 									type="button"
-									onClick={() => onTogglePin(post.id)}
+									onClick={() => onTogglePin(currentPost.id)}
 									className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-									title={post.isPinned ? "Bỏ ghim" : "Ghim bài"}
+									title={currentPost.isPinned ? "Bỏ ghim" : "Ghim bài"}
 								>
 									<Pin className="h-4 w-4" />
 								</button>
@@ -212,7 +315,7 @@ export function CommunityPostCard({
 							{onDeletePost && (
 								<button
 									type="button"
-									onClick={() => onDeletePost(post.id)}
+									onClick={() => onDeletePost(currentPost.id)}
 									className="rounded-md p-1.5 text-destructive/80 hover:bg-destructive/10 hover:text-destructive transition-colors"
 									title="Xóa bài viết"
 								>
@@ -224,14 +327,17 @@ export function CommunityPostCard({
 				</div>
 			</div>
 
-			{/* Book Card Tag with exact title, author, price, and product link (Always visible book cover image) */}
-			{post.book && (
+			{/* Book Card Tag with exact title, author, price, and product link */}
+			{currentPost.book && (
 				<div className="mt-3 rounded-xl border border-border/70 bg-muted/20 p-2.5 sm:p-3 flex items-center justify-between gap-3 group transition-colors hover:border-border">
 					<div className="flex items-center gap-3 min-w-0">
 						<div className="relative w-11 h-16 shrink-0 overflow-hidden rounded-md border border-border/80 bg-muted shadow-2xs">
 							<Image
-								src={post.book.thumbnail || "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop&q=80"}
-								alt={post.book.title}
+								src={
+									currentPost.book.thumbnail ||
+									"https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop&q=80"
+								}
+								alt={currentPost.book.title}
 								fill
 								sizes="44px"
 								className="object-cover"
@@ -240,21 +346,21 @@ export function CommunityPostCard({
 						</div>
 						<div className="min-w-0">
 							<div className="font-semibold text-[13px] text-foreground group-hover:text-primary transition-colors truncate">
-								{post.book.title}
+								{currentPost.book.title}
 							</div>
-							{post.book.author && (
+							{currentPost.book.author && (
 								<div className="text-[13px] text-muted-foreground truncate mt-0.5">
-									{post.book.author}
+									{currentPost.book.author}
 								</div>
 							)}
 							<div className="flex items-center gap-2 mt-0.5">
 								<span className="text-[13px] font-bold text-primary">
-									{post.book.price || "120.000 ₫"}
+									{currentPost.book.price || "120.000 ₫"}
 								</span>
-								{post.book.rating && (
+								{currentPost.book.rating && (
 									<span className="flex items-center gap-0.5 text-[13px] text-amber-500 font-semibold">
 										<Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-										{post.book.rating}
+										{currentPost.book.rating}
 									</span>
 								)}
 							</div>
@@ -262,7 +368,7 @@ export function CommunityPostCard({
 					</div>
 
 					<Link
-						href={`/vi/channel-vnd/products/${post.book.slug}`}
+						href={`/vi/channel-vnd/products/${currentPost.book.slug}`}
 						className="inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-background px-3 py-1.5 text-[13px] font-semibold text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors shrink-0 shadow-2xs"
 					>
 						<span>Xem sách</span>
@@ -274,10 +380,10 @@ export function CommunityPostCard({
 			{/* Post Content */}
 			<div className="mt-3.5 space-y-1.5">
 				<h3 className="text-[15px] font-semibold text-foreground leading-snug">
-					{post.title}
+					{currentPost.title}
 				</h3>
 				<p className="text-[13px] leading-relaxed text-foreground/90 whitespace-pre-line">
-					{post.content}
+					{currentPost.content}
 				</p>
 			</div>
 
@@ -290,9 +396,7 @@ export function CommunityPostCard({
 						onClick={handleToggleLike}
 						disabled={isLiking}
 						className={`group flex items-center gap-2 font-medium transition-colors ${
-							isLiked
-								? "text-red-500 font-semibold"
-								: "hover:text-foreground"
+							isLiked ? "text-red-500 font-semibold" : "hover:text-foreground"
 						}`}
 					>
 						<Heart
@@ -318,11 +422,9 @@ export function CommunityPostCard({
 					{/* Bookmark / Save Post Button */}
 					<button
 						type="button"
-						onClick={() => onToggleSave?.(post.id)}
+						onClick={() => onToggleSave?.(currentPost.id)}
 						className={`group flex items-center gap-1.5 font-medium transition-colors ${
-							isSaved
-								? "text-primary font-semibold"
-								: "hover:text-foreground"
+							isSaved ? "text-primary font-semibold" : "hover:text-foreground"
 						}`}
 						title={isSaved ? "Bỏ lưu bài viết" : "Lưu bài viết"}
 					>
@@ -358,21 +460,38 @@ export function CommunityPostCard({
 						<div className="space-y-3">
 							{comments.map((comm) => (
 								<div key={comm.id} className="flex items-start gap-3">
-									<div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full border border-border bg-muted">
+									{/* Clickable Comment Author Avatar */}
+									<button
+										type="button"
+										onClick={() =>
+											onViewAuthorProfile?.(comm.author.username || comm.author.id)
+										}
+										className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full border border-border bg-muted hover:opacity-85 transition-opacity"
+										title={`Xem hồ sơ ${comm.author.displayName}`}
+									>
 										<Image
-											src={comm.author.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"}
+											src={
+												comm.author.avatar ||
+												"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
+											}
 											alt={comm.author.displayName}
 											fill
 											sizes="32px"
 											className="object-cover"
 											unoptimized
 										/>
-									</div>
+									</button>
 									<div className="flex-1 rounded-xl bg-card p-3 border border-border/60 text-[13px]">
 										<div className="flex items-center justify-between">
-											<span className="font-semibold text-[13px] text-foreground">
+											<button
+												type="button"
+												onClick={() =>
+													onViewAuthorProfile?.(comm.author.username || comm.author.id)
+												}
+												className="font-semibold text-[13px] text-foreground hover:underline text-left"
+											>
 												{comm.author.displayName}
-											</span>
+											</button>
 											<span className="text-[13px] text-muted-foreground">
 												{formatDate(comm.createdAt)}
 											</span>

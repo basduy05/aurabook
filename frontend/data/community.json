@@ -19,7 +19,10 @@
         "totalSpent": "2.460.000 ₫",
         "registeredDate": "10/08/2026",
         "lastActive": "Hôm nay, 15:20"
-      }
+      },
+      "followers": ["user-2", "user-3"],
+      "following": ["user-2"],
+      "savedPosts": ["post-1", "post-2"]
     },
     {
       "id": "user-2",
@@ -40,7 +43,10 @@
         "totalSpent": "450.000 ₫",
         "registeredDate": "01/09/2026",
         "lastActive": "Hôm qua, 20:15"
-      }
+      },
+      "followers": ["user-1"],
+      "following": ["user-1", "user-3"],
+      "savedPosts": ["post-2"]
     },
     {
       "id": "user-3",
@@ -61,7 +67,10 @@
         "totalSpent": "720.000 ₫",
         "registeredDate": "12/09/2026",
         "lastActive": "3 ngày trước"
-      }
+      },
+      "followers": ["user-1", "user-2"],
+      "following": ["user-1"],
+      "savedPosts": ["post-1", "post-3"]
     },
     {
       "id": "user-VXNlcjo0Ng==",
@@ -71,7 +80,7 @@
       "bio": "Thành viên cộng đồng độc giả AuraBook",
       "favoriteGenre": "Văn học & Kỹ năng sống",
       "hasAcceptedTerms": true,
-      "isBlocked": true,
+      "isBlocked": false,
       "joinedAt": "2026-10-07T09:28:53.287Z",
       "realAccount": {
         "id": "VXNlcjo0Ng==",
@@ -270,7 +279,7 @@
         "rating": 5
       },
       "title": "Bài học sâu sắc về sự lắng nghe chân thành trong Đắc Nhân Tâm",
-      "content": "Sau khi đọc lại cuốn Đắc Nhân Tâm lần thứ 3, mình nhận ra bài học giá trị nhất không phải là làm sao để nói hay, mà là nghệ thuật lắng nghe bằng cả tấm lòng. Khi bạn thực sự quan tâm đến người đối diện, mọi cánh cửa giao tiếp đều tự động mở ra. Rất khuyên mọi người nên có một cuốn trên bàn làm việc!",
+      "content": "Sau khi đọc lại cuốn Đắc Nhân Tâm lần thứ 3, mình nhận ra bài học giá trị nhất không phải là làm sao để nói hay, mà là nghệ thuật lắng nghe bằng cả tấm lòng. Khi bạn thực sự quan tâm đến người đối diện, mọi cánh cửa giao tiếp đều tự động mở ra. Rất khuyên mọi người nên có một cuốn trên bàn làm việc! hello",
       "likes": [
         "user-2",
         "user-3",
@@ -302,7 +311,17 @@
         }
       ],
       "createdAt": "2026-10-05T14:30:00.000Z",
-      "isPinned": false
+      "isPinned": false,
+      "editHistory": [
+        {
+          "id": "hist-1791382181447-qr9v",
+          "title": "Bài học sâu sắc về sự lắng nghe chân thành trong Đắc Nhân Tâm",
+          "content": "Sau khi đọc lại cuốn Đắc Nhân Tâm lần thứ 3, mình nhận ra bài học giá trị nhất không phải là làm sao để nói hay, mà là nghệ thuật lắng nghe bằng cả tấm lòng. Khi bạn thực sự quan tâm đến người đối diện, mọi cánh cửa giao tiếp đều tự động mở ra. Rất khuyên mọi người nên có một cuốn trên bàn làm việc!",
+          "editedAt": "2026-10-07T14:09:41.447Z",
+          "editedBy": "Nguyen Ba Duy"
+        }
+      ],
+      "updatedAt": "2026-10-07T14:09:41.447Z"
     },
     {
       "id": "post-2",

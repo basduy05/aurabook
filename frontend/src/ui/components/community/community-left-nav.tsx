@@ -8,9 +8,6 @@ import {
 	Bookmark,
 	BookMarked,
 	Settings,
-	User,
-	ShieldCheck,
-	ShieldAlert,
 	Search,
 	X,
 	Bell,
@@ -39,6 +36,7 @@ interface CommunityLeftNavProps {
 	currentUser: CommunityUser | null;
 	onOpenProfile: () => void;
 	onOpenTerms: () => void;
+	onViewSelfProfile?: () => void;
 	searchQuery: string;
 	onSearchChange: (q: string) => void;
 	onSearchSubmit?: (q: string) => void;
@@ -51,6 +49,7 @@ export function CommunityLeftNav({
 	currentUser,
 	onOpenProfile,
 	onOpenTerms,
+	onViewSelfProfile,
 	searchQuery,
 	onSearchChange,
 	onSearchSubmit,
@@ -199,12 +198,12 @@ export function CommunityLeftNav({
 			<div ref={profileClusterRef} className="relative space-y-1.5">
 				<div className="rounded-2xl border border-border/80 bg-card p-2.5 shadow-2xs">
 					<div className="flex items-center justify-between gap-1.5">
-						{/* User Info (Clickable to open profile edit modal) */}
+						{/* User Info (Clickable to open user profile view) */}
 						<button
 							type="button"
-							onClick={onOpenProfile}
+							onClick={onViewSelfProfile || onOpenProfile}
 							className="flex items-center gap-2 min-w-0 text-left flex-1 hover:opacity-80 transition-opacity rounded-xl p-1"
-							title="Bấm để chỉnh sửa hồ sơ cá nhân"
+							title="Bấm để xem trang cá nhân"
 						>
 							<div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border border-border bg-muted">
 								<Image
@@ -229,8 +228,8 @@ export function CommunityLeftNav({
 							</div>
 						</button>
 
-						{/* Action Buttons: Explicitly Circular Shape (rounded-full) */}
-						<div className="flex items-center gap-1 shrink-0">
+						{/* Action Buttons: Explicitly Circular Shape (rounded-full) with comfortable spacing */}
+						<div className="flex items-center gap-4 shrink-0">
 							{/* Circular Notification Bell Button */}
 							<button
 								type="button"
@@ -332,18 +331,17 @@ export function CommunityLeftNav({
 						</div>
 					)}
 
-					{/* Settings Dropdown Menu Opening Downwards */}
+					{/* Settings Dropdown Menu Opening Downwards (Clean text without icons, admin link hidden) */}
 					{showSettings && (
-						<div className="absolute right-0 top-full mt-2 w-64 rounded-2xl border border-border bg-card p-2 shadow-xl z-50 animate-in fade-in-0 zoom-in-95 space-y-1 text-[13px]">
+						<div className="absolute right-0 top-full mt-2 w-56 rounded-2xl border border-border bg-card p-2 shadow-xl z-50 animate-in fade-in-0 zoom-in-95 space-y-1 text-[13px]">
 							<button
 								type="button"
 								onClick={() => {
 									setShowSettings(false);
 									onOpenProfile();
 								}}
-								className="w-full flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-left font-medium text-foreground hover:bg-muted/70 transition-colors"
+								className="w-full flex items-center rounded-xl px-3 py-2.5 text-left font-medium text-foreground hover:bg-muted/70 transition-colors"
 							>
-								<User className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
 								<span className="truncate">Tùy chỉnh hồ sơ cá nhân</span>
 							</button>
 
@@ -353,21 +351,10 @@ export function CommunityLeftNav({
 									setShowSettings(false);
 									onOpenTerms();
 								}}
-								className="w-full flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-left font-medium text-foreground hover:bg-muted/70 transition-colors"
+								className="w-full flex items-center rounded-xl px-3 py-2.5 text-left font-medium text-foreground hover:bg-muted/70 transition-colors"
 							>
-								<ShieldCheck className="h-3.5 w-3.5 text-primary shrink-0" />
 								<span className="truncate">Quy ước & Điều khoản</span>
 							</button>
-
-							<a
-								href="/community-admin"
-								target="_blank"
-								rel="noreferrer"
-								className="w-full flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-left font-semibold text-primary hover:bg-primary/10 transition-colors"
-							>
-								<ShieldAlert className="h-3.5 w-3.5 shrink-0" />
-								<span className="truncate">Quản trị cộng đồng</span>
-							</a>
 						</div>
 					)}
 				</div>
