@@ -318,7 +318,18 @@ export function CommunityFeed() {
 								userIdOrUsername={viewProfileTarget}
 								currentUser={currentUser}
 								onBack={() => setViewProfileTarget(null)}
-								onEditProfile={() => setIsProfileOpen(true)}
+								onEditProfile={async () => {
+									try {
+										const res = await fetch("/api/community/profile");
+										if (res.ok) {
+											const d = (await res.json()) as { user: CommunityUser };
+											setCurrentUser(d.user);
+										}
+										loadSidebarData();
+									} catch (e) {
+										console.error(e);
+									}
+								}}
 								savedPostIds={savedPostIds}
 								onToggleSavePost={handleToggleSavePost}
 								allPosts={posts}

@@ -32,12 +32,13 @@ import {
 import { formatCommunityExactTime } from "@/lib/community/time";
 import { FormattedCommunityContent } from "./community-rich-editor";
 import { CommunityPostCard } from "./community-post-card";
+import { CommunityProfileModal } from "./community-profile-modal";
 
 interface CommunityUserProfileViewProps {
 	userIdOrUsername: string;
 	currentUser: CommunityUser | null;
 	onBack: () => void;
-	onEditProfile: () => void;
+	onEditProfile?: () => void;
 	savedPostIds: string[];
 	onToggleSavePost: (postId: string) => void;
 	allPosts: CommunityPost[];
@@ -64,13 +65,16 @@ export function CommunityUserProfileView({
 	const [followingUsers, setFollowingUsers] = useState<CommunityUser[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 
-	// Tabs: Only views that render content in the main feed
+	// Tabs: Only icon views that render content in the main feed
 	const [activeTab, setActiveTab] = useState<"posts" | "comments" | "saved" | "history">("posts");
 
 	// Followers & Following Popups
 	const [isFollowersModalOpen, setIsFollowersModalOpen] = useState(false);
 	const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
 	const [modalSearch, setModalSearch] = useState("");
+
+	// Local Profile Modal state (guarantees instant, reliable opening)
+	const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
 	const [isFollowing, setIsFollowing] = useState(false);
 	const [followersCount, setFollowersCount] = useState(0);
@@ -81,10 +85,14 @@ export function CommunityUserProfileView({
 	const [replyText, setReplyText] = useState("");
 	const [isSubmittingReply, setIsSubmittingReply] = useState(false);
 
-	const isSelf =
+	const cleanU1 = currentUser?.username?.replace(/^@/, "").toLowerCase();
+	const cleanU2 = user?.username?.replace(/^@/, "").toLowerCase();
+	const isSelf = Boolean(
 		currentUser &&
-		user &&
-		(currentUser.id === user.id || currentUser.username === user.username);
+			user &&
+			(currentUser.id === user.id ||
+				(cleanU1 && cleanU2 && cleanU1 === cleanU2)),
+	);
 
 	useEffect(() => {
 		const fetchUserData = async () => {
@@ -150,6 +158,26 @@ export function CommunityUserProfileView({
 		} finally {
 			setIsFollowLoading(false);
 		}
+	};
+
+	const handleSaveProfileDirect = async (updated: Partial<CommunityUser>) => {
+		if (!user) return;
+		const res = await fetch("/api/community/profile", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				id: user.id,
+				...updated,
+			}),
+		});
+		if (!res.ok) {
+			const errData = (await res.json()) as { error?: string };
+			throw new Error(errData.error || "Không thể cập nhật hồ sơ");
+		}
+		const data = (await res.json()) as { user: CommunityUser };
+		setUser(data.user);
+		setIsProfileModalOpen(false);
+		onEditProfile?.();
 	};
 
 	const handleReplyToCommentInProfile = async (postId: string, commentId: string) => {
@@ -238,247 +266,230 @@ export function CommunityUserProfileView({
 				<button
 					type="button"
 					onClick={onBack}
-					className="inline-flex items-center gap-2 text-[13px] font-semibold text-muted-foreground hover:text-foreground transition-colors group"
+					className="inline-flex items-center gap-2 text-[13px] font-semibold text-muted-foreground hover:text-foreground transition-colors group cursor-pointer"
 				>
 					<ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1 text-primary" />
 					<span>Quay lại Bảng tin cộng đồng</span>
 				</button>
 				<span className="text-[12px] font-semibold text-muted-foreground">
-					Hồ sơ độc giả • {user.displayName}
+					{user.displayName}
 				</span>
 			</div>
 
-			{/* Large Hero Profile Card */}
-			<div className="rounded-2xl border border-border bg-card shadow-xs overflow-hidden">
-				{/* Sleek Compact Cover Banner */}
-				<div className="relative h-32 sm:h-36 bg-gradient-to-r from-primary/25 via-primary/10 to-muted/50 p-4 flex items-start justify-between">
-					<div className="inline-flex items-center gap-1.5 rounded-full bg-background/85 px-3 py-1 text-[11px] font-semibold text-foreground backdrop-blur-xs border border-border/60">
-						<Users className="h-3 w-3 text-primary" />
-						<span>Trang cá nhân độc giả</span>
+			{/* Gray Unified Profile Header Box (Phủ từ avatar đến ngày gia nhập và thống kê thành màu xám) */}
+			<div className="rounded-2xl border border-border/80 bg-muted/50 dark:bg-muted/30 p-5 sm:p-6 shadow-2xs">
+				<div className="flex flex-col sm:flex-row gap-4 sm:gap-5 items-start">
+					{/* Avatar */}
+					<div className="relative h-20 w-20 sm:h-24 sm:w-24 rounded-full border-2 border-background bg-card shadow-sm overflow-hidden shrink-0 ring-2 ring-border/60">
+						<Image
+							src={
+								user.avatar ||
+								"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
+							}
+							alt={user.displayName}
+							fill
+							sizes="96px"
+							className="object-cover"
+							unoptimized
+						/>
 					</div>
-				</div>
 
-				{/* Streamlined Profile Header: Avatar on left, All details placed neatly in the empty space behind/next to avatar */}
-				<div className="px-5 sm:px-6 pb-5 pt-0">
-					<div className="flex flex-col sm:flex-row gap-4 sm:gap-5 items-start -mt-12 sm:-mt-14">
-						{/* Avatar */}
-						<div className="relative h-24 w-24 sm:h-28 sm:w-28 rounded-full border-4 border-card bg-muted shadow-md overflow-hidden shrink-0 ring-4 ring-primary/10">
-							<Image
-								src={
-									user.avatar ||
-									"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
-								}
-								alt={user.displayName}
-								fill
-								sizes="112px"
-								className="object-cover"
-								unoptimized
-							/>
-						</div>
-
-						{/* Info directly behind/next to avatar */}
-						<div className="flex-1 min-w-0 w-full space-y-2.5">
-							{/* Row 1: Name, Username, Verified Badge, and Action Button */}
-							<div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-								<div className="flex flex-wrap items-center gap-2 min-w-0">
-									<h1 className="text-lg sm:text-xl font-bold text-foreground truncate">
-										{user.displayName}
-									</h1>
-									<span className="text-[13px] text-muted-foreground font-medium">
-										{user.username}
-									</span>
-									<span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-[11px] font-semibold text-success">
-										<CheckCircle2 className="h-3 w-3" />
-										Độc giả xác thực
-									</span>
-								</div>
-
-								{/* Action button */}
-								<div>
-									{isSelf ? (
-										<Button
-											type="button"
-											onClick={onEditProfile}
-											variant="outline-solid"
-											size="sm"
-											className="gap-1.5 text-[12px] font-semibold rounded-xl h-8 shadow-2xs"
-										>
-											<Edit3 className="h-3.5 w-3.5 text-primary" />
-											<span>Chỉnh sửa hồ sơ</span>
-										</Button>
-									) : (
-										<Button
-											type="button"
-											onClick={handleToggleFollow}
-											disabled={isFollowLoading}
-											size="sm"
-											variant={isFollowing ? "outline-solid" : "default"}
-											className="gap-1.5 text-[12px] font-semibold rounded-xl h-8 shadow-2xs"
-										>
-											{isFollowing ? (
-												<>
-													<UserCheck className="h-3.5 w-3.5 text-primary" />
-													<span>Đang theo dõi</span>
-												</>
-											) : (
-												<>
-													<UserPlus className="h-3.5 w-3.5" />
-													<span>Theo dõi</span>
-												</>
-											)}
-										</Button>
-									)}
-								</div>
+					{/* Profile info placed right inside this gray area */}
+					<div className="flex-1 min-w-0 w-full space-y-2">
+						{/* Row 1: Name, Username, Verified, Edit/Follow button */}
+						<div className="flex flex-wrap items-center justify-between gap-3">
+							<div className="flex flex-wrap items-center gap-2 min-w-0">
+								<h1 className="text-lg sm:text-xl font-bold text-foreground truncate">
+									{user.displayName}
+								</h1>
+								<span className="text-[13px] text-muted-foreground font-medium">
+									{user.username}
+								</span>
+								<span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-[11px] font-semibold text-success">
+									<CheckCircle2 className="h-3 w-3" />
+									Độc giả xác thực
+								</span>
 							</div>
 
-							{/* Row 2: Bio (limited to 250 characters) */}
-							{user.bio ? (
-								<p className="text-[13px] text-foreground/90 leading-relaxed max-w-2xl break-words line-clamp-3 sm:line-clamp-none">
-									{user.bio.slice(0, 250)}
-								</p>
-							) : (
-								<p className="text-[12.5px] text-muted-foreground italic">
-									Chưa có lời giới thiệu bản thân.
-								</p>
-							)}
-
-							{/* Row 3: Meta details */}
-							<div className="flex flex-wrap items-center gap-4 text-[12px] text-muted-foreground">
-								<div className="flex items-center gap-1.5">
-									<Calendar className="h-3.5 w-3.5 text-muted-foreground/80" />
-									<span>Gia nhập: {formatCommunityExactTime(user.joinedAt)}</span>
-								</div>
-								{user.favoriteGenre && (
-									<div className="flex items-center gap-1.5">
-										<BookOpen className="h-3.5 w-3.5 text-primary" />
-										<span>
-											Thể loại: <strong className="text-foreground">{user.favoriteGenre}</strong>
-										</span>
-									</div>
+							{/* Action Button */}
+							<div>
+								{isSelf ? (
+									<Button
+										type="button"
+										onClick={() => setIsProfileModalOpen(true)}
+										variant="outline-solid"
+										size="sm"
+										className="gap-1.5 text-[12px] font-semibold rounded-xl h-8 bg-background shadow-2xs hover:bg-card cursor-pointer"
+									>
+										<Edit3 className="h-3.5 w-3.5 text-primary" />
+										<span>Chỉnh sửa hồ sơ</span>
+									</Button>
+								) : (
+									<Button
+										type="button"
+										onClick={handleToggleFollow}
+										disabled={isFollowLoading}
+										size="sm"
+										variant={isFollowing ? "outline-solid" : "default"}
+										className="gap-1.5 text-[12px] font-semibold rounded-xl h-8 shadow-2xs cursor-pointer"
+									>
+										{isFollowing ? (
+											<>
+												<UserCheck className="h-3.5 w-3.5 text-primary" />
+												<span>Đang theo dõi</span>
+											</>
+										) : (
+											<>
+												<UserPlus className="h-3.5 w-3.5" />
+												<span>Theo dõi</span>
+											</>
+										)}
+									</Button>
 								)}
 							</div>
+						</div>
 
-							{/* Row 4: Top Interactive Stat Counters (All shown on top; clicking switches view or opens popup) */}
-							<div className="flex flex-wrap items-center gap-2 sm:gap-2.5 pt-1">
-								{/* Bài viết */}
-								<button
-									type="button"
-									onClick={() => setActiveTab("posts")}
-									className={`px-3 py-1.5 rounded-xl border text-center transition-all flex items-center gap-1.5 ${
-										activeTab === "posts"
-											? "border-primary bg-primary/10 text-primary shadow-2xs font-bold"
-											: "border-border/70 hover:bg-muted/40 text-foreground"
-									}`}
-									title="Xem danh sách bài viết"
-								>
-									<span className="text-sm font-bold">{posts.length}</span>
-									<span className="text-[11.5px] text-muted-foreground">Bài viết</span>
-								</button>
+						{/* Row 2: Bio */}
+						{user.bio ? (
+							<p className="text-[13px] text-foreground/90 leading-relaxed max-w-2xl break-words">
+								{user.bio.slice(0, 250)}
+							</p>
+						) : (
+							<p className="text-[12.5px] text-muted-foreground italic">
+								Chưa có lời giới thiệu bản thân.
+							</p>
+						)}
 
-								{/* Bình luận */}
-								<button
-									type="button"
-									onClick={() => setActiveTab("comments")}
-									className={`px-3 py-1.5 rounded-xl border text-center transition-all flex items-center gap-1.5 ${
-										activeTab === "comments"
-											? "border-primary bg-primary/10 text-primary shadow-2xs font-bold"
-											: "border-border/70 hover:bg-muted/40 text-foreground"
-									}`}
-									title="Xem bình luận & thảo luận"
-								>
-									<span className="text-sm font-bold">{comments.length}</span>
-									<span className="text-[11.5px] text-muted-foreground">Bình luận</span>
-								</button>
-
-								{/* Người theo dõi (Popup) */}
-								<button
-									type="button"
-									onClick={() => {
-										setModalSearch("");
-										setIsFollowersModalOpen(true);
-									}}
-									className="px-3 py-1.5 rounded-xl border border-border/70 hover:border-primary/60 hover:bg-muted/40 text-foreground text-center transition-all flex items-center gap-1.5 group"
-									title="Bấm để xem danh sách người theo dõi dạng popup"
-								>
-									<span className="text-sm font-bold text-foreground group-hover:text-primary">
-										{followersCount}
-									</span>
-									<span className="text-[11.5px] text-muted-foreground">Người theo dõi</span>
-								</button>
-
-								{/* Đang theo dõi (Popup) */}
-								<button
-									type="button"
-									onClick={() => {
-										setModalSearch("");
-										setIsFollowingModalOpen(true);
-									}}
-									className="px-3 py-1.5 rounded-xl border border-border/70 hover:border-primary/60 hover:bg-muted/40 text-foreground text-center transition-all flex items-center gap-1.5 group"
-									title="Bấm để xem danh sách đang theo dõi dạng popup"
-								>
-									<span className="text-sm font-bold text-foreground group-hover:text-primary">
-										{followingCount}
-									</span>
-									<span className="text-[11.5px] text-muted-foreground">Đang theo dõi</span>
-								</button>
+						{/* Row 3: Meta details */}
+						<div className="flex flex-wrap items-center gap-4 text-[12px] text-muted-foreground">
+							<div className="flex items-center gap-1.5">
+								<Calendar className="h-3.5 w-3.5 text-muted-foreground/80" />
+								<span>Gia nhập: {formatCommunityExactTime(user.joinedAt)}</span>
 							</div>
+							{user.favoriteGenre && (
+								<div className="flex items-center gap-1.5">
+									<BookOpen className="h-3.5 w-3.5 text-primary" />
+									<span>
+										Thể loại: <strong className="text-foreground">{user.favoriteGenre}</strong>
+									</span>
+								</div>
+							)}
+						</div>
+
+						{/* Row 4: Stats: Chỉ hiển thị số thông tin bài viết, người theo dõi, đang theo dõi (KHÔNG khung, KHÔNG bình luận) */}
+						<div className="flex flex-wrap items-center gap-6 pt-1 text-[13px]">
+							{/* Bài viết */}
+							<button
+								type="button"
+								onClick={() => setActiveTab("posts")}
+								className={`flex items-center gap-1.5 transition-colors cursor-pointer ${
+									activeTab === "posts"
+										? "text-foreground font-bold"
+										: "text-muted-foreground hover:text-foreground"
+								}`}
+							>
+								<span className="font-bold text-foreground text-[14px]">{posts.length}</span>
+								<span>bài viết</span>
+							</button>
+
+							{/* Người theo dõi */}
+							<button
+								type="button"
+								onClick={() => {
+									setModalSearch("");
+									setIsFollowersModalOpen(true);
+								}}
+								className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer group"
+							>
+								<span className="font-bold text-foreground group-hover:text-primary transition-colors text-[14px]">
+									{followersCount}
+								</span>
+								<span>người theo dõi</span>
+							</button>
+
+							{/* Đang theo dõi */}
+							<button
+								type="button"
+								onClick={() => {
+									setModalSearch("");
+									setIsFollowingModalOpen(true);
+								}}
+								className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer group"
+							>
+								<span className="font-bold text-foreground group-hover:text-primary transition-colors text-[14px]">
+									{followingCount}
+								</span>
+								<span>đang theo dõi</span>
+							</button>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			{/* Streamlined View Switcher (No redundant followers/following tabs) */}
-			<div className="flex items-center gap-2 overflow-x-auto border-b border-border pb-2.5">
+			{/* Icon-Only Navigation Bar with Underline indicator (Chỉ icon bài viết, bình luận, đã lưu, lịch sử) */}
+			<div className="flex items-center justify-center sm:justify-start gap-8 sm:gap-10 border-b border-border px-3">
+				{/* Tab 1: Bài viết */}
 				<button
 					type="button"
 					onClick={() => setActiveTab("posts")}
-					className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-[12.5px] font-semibold transition-all whitespace-nowrap ${
-						activeTab === "posts"
-							? "bg-foreground text-background shadow-2xs"
-							: "bg-muted text-muted-foreground hover:text-foreground"
+					className={`relative py-3 px-2 flex flex-col items-center justify-center transition-colors cursor-pointer ${
+						activeTab === "posts" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
 					}`}
+					title={`Bài viết (${posts.length})`}
+					aria-label="Bài viết"
 				>
-					<FileText className="h-3.5 w-3.5" />
-					<span>Bài viết ({posts.length})</span>
+					<FileText className="h-5 w-5" />
+					{activeTab === "posts" && (
+						<span className="absolute bottom-0 left-0 right-0 h-0.5 bg-foreground rounded-full animate-in fade-in-0" />
+					)}
 				</button>
 
+				{/* Tab 2: Bình luận */}
 				<button
 					type="button"
 					onClick={() => setActiveTab("comments")}
-					className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-[12.5px] font-semibold transition-all whitespace-nowrap ${
-						activeTab === "comments"
-							? "bg-foreground text-background shadow-2xs"
-							: "bg-muted text-muted-foreground hover:text-foreground"
+					className={`relative py-3 px-2 flex flex-col items-center justify-center transition-colors cursor-pointer ${
+						activeTab === "comments" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
 					}`}
+					title={`Bình luận & Trả lời (${comments.length})`}
+					aria-label="Bình luận"
 				>
-					<MessageSquare className="h-3.5 w-3.5" />
-					<span>Bình luận & Trả lời ({comments.length})</span>
+					<MessageSquare className="h-5 w-5" />
+					{activeTab === "comments" && (
+						<span className="absolute bottom-0 left-0 right-0 h-0.5 bg-foreground rounded-full animate-in fade-in-0" />
+					)}
 				</button>
 
+				{/* Tab 3: Đã lưu */}
 				<button
 					type="button"
 					onClick={() => setActiveTab("saved")}
-					className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-[12.5px] font-semibold transition-all whitespace-nowrap ${
-						activeTab === "saved"
-							? "bg-foreground text-background shadow-2xs"
-							: "bg-muted text-muted-foreground hover:text-foreground"
+					className={`relative py-3 px-2 flex flex-col items-center justify-center transition-colors cursor-pointer ${
+						activeTab === "saved" ? "text-foreground" : "text-muted-foreground hover:text-foreground"
 					}`}
+					title={`Đã lưu (${resolvedSavedPosts.length})`}
+					aria-label="Đã lưu"
 				>
-					<Bookmark className="h-3.5 w-3.5" />
-					<span>Đã lưu ({resolvedSavedPosts.length})</span>
+					<Bookmark className="h-5 w-5" />
+					{activeTab === "saved" && (
+						<span className="absolute bottom-0 left-0 right-0 h-0.5 bg-foreground rounded-full animate-in fade-in-0" />
+					)}
 				</button>
 
+				{/* Tab 4: Lịch sử thay đổi hồ sơ */}
 				<button
 					type="button"
 					onClick={() => setActiveTab("history")}
-					className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-[12.5px] font-semibold transition-all whitespace-nowrap ${
-						activeTab === "history"
-							? "bg-foreground text-background shadow-2xs"
-							: "bg-muted text-muted-foreground hover:text-foreground"
+					className={`relative py-3 px-2 flex flex-col items-center justify-center transition-colors cursor-pointer ${
+						activeTab === "history" ? "text-amber-500" : "text-muted-foreground hover:text-foreground"
 					}`}
+					title={`Lịch sử đổi hồ sơ (${historyList.length})`}
+					aria-label="Lịch sử đổi hồ sơ"
 				>
-					<History className="h-3.5 w-3.5 text-amber-500" />
-					<span>Lịch sử đổi hồ sơ ({historyList.length})</span>
+					<History className="h-5 w-5" />
+					{activeTab === "history" && (
+						<span className="absolute bottom-0 left-0 right-0 h-0.5 bg-amber-500 rounded-full animate-in fade-in-0" />
+					)}
 				</button>
 			</div>
 
@@ -567,7 +578,7 @@ export function CommunityUserProfileView({
 												setReplyText(`@${user.username.replace(/^@/, "")} `);
 											}
 										}}
-										className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-primary hover:underline"
+										className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-primary hover:underline cursor-pointer"
 									>
 										<CornerDownRight className="h-3.5 w-3.5" />
 										<span>Trả lời bình luận này</span>
@@ -596,7 +607,7 @@ export function CommunityUserProfileView({
 											type="submit"
 											size="sm"
 											disabled={!replyText.trim() || isSubmittingReply}
-											className="h-8.5 px-3 text-[12px] font-semibold shrink-0"
+											className="h-8.5 px-3 text-[12px] font-semibold shrink-0 cursor-pointer"
 										>
 											<Send className="h-3 w-3 mr-1" />
 											Gửi
@@ -606,7 +617,7 @@ export function CommunityUserProfileView({
 											variant="ghost"
 											size="sm"
 											onClick={() => setReplyingCommentId(null)}
-											className="h-8.5 px-2 text-[12px] shrink-0"
+											className="h-8.5 px-2 text-[12px] shrink-0 cursor-pointer"
 										>
 											Hủy
 										</Button>
@@ -792,7 +803,7 @@ export function CommunityUserProfileView({
 							<button
 								type="button"
 								onClick={() => setIsFollowersModalOpen(false)}
-								className="rounded-full p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+								className="rounded-full p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
 							>
 								<X className="h-4 w-4" />
 							</button>
@@ -839,7 +850,7 @@ export function CommunityUserProfileView({
 													setIsFollowersModalOpen(false);
 													onViewOtherProfile(u.username || u.id);
 												}}
-												className="flex items-center gap-3 text-left min-w-0 flex-1 group"
+												className="flex items-center gap-3 text-left min-w-0 flex-1 group cursor-pointer"
 											>
 												<div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border bg-muted">
 													<Image
@@ -877,7 +888,7 @@ export function CommunityUserProfileView({
 													setIsFollowersModalOpen(false);
 													onViewOtherProfile(u.username || u.id);
 												}}
-												className="text-[12px] h-7.5 rounded-xl font-semibold shrink-0"
+												className="text-[12px] h-7.5 rounded-xl font-semibold shrink-0 cursor-pointer"
 											>
 												Xem hồ sơ
 											</Button>
@@ -904,7 +915,7 @@ export function CommunityUserProfileView({
 							<button
 								type="button"
 								onClick={() => setIsFollowingModalOpen(false)}
-								className="rounded-full p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+								className="rounded-full p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
 							>
 								<X className="h-4 w-4" />
 							</button>
@@ -951,7 +962,7 @@ export function CommunityUserProfileView({
 													setIsFollowingModalOpen(false);
 													onViewOtherProfile(u.username || u.id);
 												}}
-												className="flex items-center gap-3 text-left min-w-0 flex-1 group"
+												className="flex items-center gap-3 text-left min-w-0 flex-1 group cursor-pointer"
 											>
 												<div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-border bg-muted">
 													<Image
@@ -989,7 +1000,7 @@ export function CommunityUserProfileView({
 													setIsFollowingModalOpen(false);
 													onViewOtherProfile(u.username || u.id);
 												}}
-												className="text-[12px] h-7.5 rounded-xl font-semibold shrink-0"
+												className="text-[12px] h-7.5 rounded-xl font-semibold shrink-0 cursor-pointer"
 											>
 												Xem hồ sơ
 											</Button>
@@ -1000,6 +1011,14 @@ export function CommunityUserProfileView({
 					</div>
 				</div>
 			)}
+
+			{/* Reliable Profile Edit Modal directly integrated */}
+			<CommunityProfileModal
+				isOpen={isProfileModalOpen}
+				user={user}
+				onClose={() => setIsProfileModalOpen(false)}
+				onSave={handleSaveProfileDirect}
+			/>
 		</div>
 	);
 }
