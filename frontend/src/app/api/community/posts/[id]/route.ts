@@ -1,5 +1,28 @@
 import { NextResponse } from "next/server";
-import { editCommunityPost, deleteCommunityPost, toggleHideCommunityPost } from "@/lib/community/storage";
+import { getCommunityPost, editCommunityPost, deleteCommunityPost, toggleHideCommunityPost } from "@/lib/community/storage";
+
+export async function GET(
+	_request: Request,
+	{ params }: { params: Promise<{ id: string }> },
+) {
+	try {
+		const { id: postId } = await params;
+		if (!postId) {
+			return NextResponse.json({ error: "Missing postId" }, { status: 400 });
+		}
+		const post = getCommunityPost(postId);
+		if (!post) {
+			return NextResponse.json({ error: "Bài viết không tồn tại" }, { status: 404 });
+		}
+		return NextResponse.json({ post });
+	} catch (error: any) {
+		console.error("[api/community/posts/[id]] Error getting post:", error);
+		return NextResponse.json(
+			{ error: error?.message || "Không thể tải bài viết." },
+			{ status: 500 },
+		);
+	}
+}
 
 export async function POST(
 	request: Request,

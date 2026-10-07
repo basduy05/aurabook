@@ -34,6 +34,7 @@ interface CommunityLeftNavProps {
 	searchQuery: string;
 	onSearchChange: (q: string) => void;
 	onSearchSubmit?: (q: string) => void;
+	onSelectNotification?: (item: CommunityNotification) => void;
 }
 
 export function CommunityLeftNav({
@@ -47,6 +48,7 @@ export function CommunityLeftNav({
 	searchQuery,
 	onSearchChange,
 	onSearchSubmit,
+	onSelectNotification,
 }: CommunityLeftNavProps) {
 	const [showSettings, setShowSettings] = useState(false);
 	const [showNotifications, setShowNotifications] = useState(false);
@@ -311,7 +313,11 @@ export function CommunityLeftNav({
 									notifications.map((item) => (
 										<div
 											key={item.id}
-											onClick={() => handleMarkSingleRead(item.id)}
+											onClick={() => {
+												handleMarkSingleRead(item.id);
+												setShowNotifications(false);
+												onSelectNotification?.(item);
+											}}
 											className={`rounded-xl p-2.5 text-[13px] transition-colors cursor-pointer ${
 												item.isRead
 													? "bg-card hover:bg-muted/30"

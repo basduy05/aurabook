@@ -7,6 +7,7 @@ import {
 	Library,
 	Bookmark,
 	ShieldAlert,
+	ArrowLeft,
 } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { type CommunityPost, type CommunityUser } from "@/lib/community/types";
@@ -29,6 +30,75 @@ export function CommunityFeed() {
 	const [activeNav, setActiveNav] = useState<CommunityNavTab>("feed");
 	const [activeTab, setActiveTab] = useState<"all" | "reviews" | "posts" | "pinned">("all");
 	const [viewProfileTarget, setViewProfileTarget] = useState<string | null>(null);
+	const [focusedPostId, setFocusedPostId] = useState<string | null>(null);
+
+	// Helper to synchronize query parameters in browser URL
+	const updateUrlState = (profile: string | null, post: string | null) => {
+		if (typeof window === "undefined") return;
+		const url = new URL(window.location.href);
+		if (profile) {
+			url.searchParams.set("user", profile);
+			url.searchParams.delete("post");
+			url.searchParams.delete("u");
+			url.searchParams.delete("postId");
+		} else if (post) {
+			url.searchParams.set("post", post);
+			url.searchParams.delete("user");
+			url.searchParams.delete("u");
+			url.searchParams.delete("postId");
+		} else {
+			url.searchParams.delete("user");
+			url.searchParams.delete("post");
+			url.searchParams.delete("u");
+			url.searchParams.delete("postId");
+		}
+		window.history.pushState(null, "", url.toString());
+	};
+
+	const handleExitProfileAndPost = () => {
+		setViewProfileTarget(null);
+		setFocusedPostId(null);
+		updateUrlState(null, null);
+	};
+
+	const handleViewProfile = (usernameOrId: string) => {
+		setViewProfileTarget(usernameOrId);
+		setFocusedPostId(null);
+		updateUrlState(usernameOrId, null);
+	};
+
+	const handleSelectPost = (postId: string) => {
+		setViewProfileTarget(null);
+		setFocusedPostId(postId);
+		updateUrlState(null, postId);
+	};
+
+	// Listen to URL searchParams on mount and on popstate (browser back/forward)
+	useEffect(() => {
+		if (typeof window === "undefined") return;
+
+		const syncFromUrl = () => {
+			const params = new URLSearchParams(window.location.search);
+			const userParam = params.get("user") || params.get("u");
+			const postParam = params.get("post") || params.get("postId");
+
+			if (userParam) {
+				setViewProfileTarget(userParam);
+				setFocusedPostId(null);
+			} else if (postParam) {
+				setFocusedPostId(postParam);
+				setViewProfileTarget(null);
+			} else {
+				setViewProfileTarget(null);
+				setFocusedPostId(null);
+			}
+		};
+
+		syncFromUrl();
+
+		window.addEventListener("popstate", syncFromUrl);
+		return () => window.removeEventListener("popstate", syncFromUrl);
+	}, []);
 
 	// Real sidebar statistics (trending books & active readers)
 	const [sidebarData, setSidebarData] = useState<{
@@ -243,6 +313,7 @@ export function CommunityFeed() {
 						<CommunityLeftNav
 							activeNav={activeNav}
 							onSelectNav={(nav) => {
+								handleExitProfileAndPost();
 								setActiveNav(nav);
 								if (nav === "reviews") setActiveTab("reviews");
 								else if (nav === "feed") setActiveTab("all");
@@ -252,7 +323,7 @@ export function CommunityFeed() {
 							onOpenProfile={() => setIsProfileOpen(true)}
 							onViewSelfProfile={() => {
 								if (currentUser) {
-									setViewProfileTarget(currentUser.username || currentUser.id);
+									handleViewProfile(currentUser.username || currentUser.id);
 								} else {
 									setIsProfileOpen(true);
 								}
@@ -264,13 +335,22 @@ export function CommunityFeed() {
 							searchQuery={searchQuery}
 							onSearchChange={(q) => {
 								setSearchQuery(q);
-								if (q.trim() && activeNav !== "feed") {
-									setActiveNav("feed");
+								if (q.trim()) {
+									handleExitProfileAndPost();
+									if (activeNav !== "feed") setActiveNav("feed");
 								}
 							}}
 							onSearchSubmit={(q) => {
 								setSearchQuery(q);
+								handleExitProfileAndPost();
 								setActiveNav("feed");
+							}}
+							onSelectNotification={(item) => {
+								if (item.postId) {
+									handleSelectPost(item.postId);
+								} else if (item.sender?.username) {
+									handleViewProfile(item.sender.username);
+								}
 							}}
 						/>
 					</aside>
@@ -317,7 +397,7 @@ export function CommunityFeed() {
 							<CommunityUserProfileView
 								userIdOrUsername={viewProfileTarget}
 								currentUser={currentUser}
-								onBack={() => setViewProfileTarget(null)}
+								onBack={handleExitProfileAndPost}
 								onEditProfile={async () => {
 									try {
 										const res = await fetch("/api/community/profile");
@@ -333,9 +413,92 @@ export function CommunityFeed() {
 								savedPostIds={savedPostIds}
 								onToggleSavePost={handleToggleSavePost}
 								allPosts={posts}
-								onViewOtherProfile={(idOrUsername) => setViewProfileTarget(idOrUsername)}
+								onViewOtherProfile={handleViewProfile}
 								onPostUpdated={handlePostUpdated}
+								onSelectPost={handleSelectPost}
 							/>
+						) : focusedPostId ? (
+							(() => {
+								const focusedPost = posts.find((p) => p.id === focusedPostId);
+								if (isLoading) {
+									return (
+										<div className="space-y-4 animate-pulse">
+											<div className="h-16 rounded-2xl bg-muted/40 border border-border" />
+											<div className="h-64 rounded-2xl bg-muted/30 border border-border" />
+										</div>
+									);
+								}
+								if (!focusedPost) {
+									return (
+										<div className="rounded-2xl border border-dashed border-border p-12 text-center space-y-3">
+											<BookOpen className="mx-auto h-9 w-9 text-muted-foreground/60" />
+											<h3 className="font-semibold text-foreground text-[15px]">
+												Không tìm thấy bài viết
+											</h3>
+											<p className="text-[13px] text-muted-foreground">
+												Bài viết không tồn tại hoặc đã bị gỡ bỏ.
+											</p>
+											<Button
+												variant="outline-solid"
+												size="sm"
+												onClick={handleExitProfileAndPost}
+												className="rounded-xl text-[12px] font-semibold cursor-pointer"
+											>
+												← Quay lại Bảng tin
+											</Button>
+										</div>
+									);
+								}
+								return (
+									<div className="space-y-4 animate-in fade-in-0">
+										<div className="rounded-2xl border border-border bg-card p-4 sm:p-5 flex items-center justify-between gap-3 shadow-2xs">
+											<div className="flex items-center gap-3 min-w-0">
+												<button
+													type="button"
+													onClick={handleExitProfileAndPost}
+													className="rounded-full p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer shrink-0"
+													title="Quay lại Bảng tin cộng đồng"
+												>
+													<ArrowLeft className="h-5 w-5" />
+												</button>
+												<div className="min-w-0">
+													<div className="text-[14px] font-bold text-foreground truncate">
+														{focusedPost.title}
+													</div>
+													<div className="text-[12px] text-muted-foreground truncate">
+														Đang xem bài viết chi tiết • {focusedPost.author.displayName} ({focusedPost.author.username})
+													</div>
+												</div>
+											</div>
+											<Button
+												variant="outline-solid"
+												size="sm"
+												onClick={handleExitProfileAndPost}
+												className="rounded-xl text-[12px] font-semibold h-8.5 shrink-0 cursor-pointer"
+											>
+												← Tất cả bài viết
+											</Button>
+										</div>
+
+										<CommunityPostCard
+											post={focusedPost}
+											currentUser={currentUser}
+											isSaved={savedPostIds.includes(focusedPost.id)}
+											onToggleSave={handleToggleSavePost}
+											onViewAuthorProfile={handleViewProfile}
+											onPostUpdated={handlePostUpdated}
+											onToggleHidePost={handleToggleHidePost}
+											initialOpenComments={true}
+											onRequireLogin={() => {
+												if (!currentUser?.hasAcceptedTerms) {
+													setIsTermsMandatory(true);
+													setIsTermsOpen(true);
+												}
+											}}
+										/>
+									</div>
+								);
+							})()
 						) : (
 							<>
 
@@ -430,9 +593,10 @@ export function CommunityFeed() {
 												currentUser={currentUser}
 												isSaved={savedPostIds.includes(post.id)}
 												onToggleSave={handleToggleSavePost}
-												onViewAuthorProfile={(authorId) => setViewProfileTarget(authorId)}
+												onViewAuthorProfile={handleViewProfile}
 												onPostUpdated={handlePostUpdated}
 												onToggleHidePost={handleToggleHidePost}
+												onSelectPost={handleSelectPost}
 												onRequireLogin={() => {
 													if (!currentUser?.hasAcceptedTerms) {
 														setIsTermsMandatory(true);
@@ -538,9 +702,10 @@ export function CommunityFeed() {
 												currentUser={currentUser}
 												isSaved={savedPostIds.includes(post.id)}
 												onToggleSave={handleToggleSavePost}
-												onViewAuthorProfile={(authorId) => setViewProfileTarget(authorId)}
+												onViewAuthorProfile={handleViewProfile}
 												onPostUpdated={handlePostUpdated}
 												onToggleHidePost={handleToggleHidePost}
+												onSelectPost={handleSelectPost}
 												onRequireLogin={() => {
 													if (!currentUser?.hasAcceptedTerms) {
 														setIsTermsMandatory(true);
@@ -564,6 +729,7 @@ export function CommunityFeed() {
 							topReaders={sidebarData.topReaders}
 							isLoading={isSidebarLoading}
 							onSelectBook={(title) => {
+								handleExitProfileAndPost();
 								setSearchQuery(title);
 								if (activeNav !== "feed") setActiveNav("feed");
 							}}
@@ -571,8 +737,9 @@ export function CommunityFeed() {
 								// Find username from topReaders
 								const reader = sidebarData.topReaders.find((r) => r.name === name || r.username === name);
 								if (reader) {
-									setViewProfileTarget(reader.username);
+									handleViewProfile(reader.username);
 								} else {
+									handleExitProfileAndPost();
 									setSearchQuery(name);
 									if (activeNav !== "feed") setActiveNav("feed");
 								}

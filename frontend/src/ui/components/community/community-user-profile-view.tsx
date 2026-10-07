@@ -20,6 +20,8 @@ import {
 	Send,
 	X,
 	Search,
+	ExternalLink,
+	Share2,
 } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
@@ -44,6 +46,7 @@ interface CommunityUserProfileViewProps {
 	allPosts: CommunityPost[];
 	onViewOtherProfile: (idOrUsername: string) => void;
 	onPostUpdated?: (updatedPost: CommunityPost) => void;
+	onSelectPost?: (postId: string) => void;
 }
 
 export function CommunityUserProfileView({
@@ -56,6 +59,7 @@ export function CommunityUserProfileView({
 	allPosts,
 	onViewOtherProfile,
 	onPostUpdated,
+	onSelectPost,
 }: CommunityUserProfileViewProps) {
 	const [user, setUser] = useState<CommunityUser | null>(null);
 	const [posts, setPosts] = useState<CommunityPost[]>([]);
@@ -75,6 +79,7 @@ export function CommunityUserProfileView({
 
 	// Local Profile Modal state (guarantees instant, reliable opening)
 	const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+	const [copiedProfileLink, setCopiedProfileLink] = useState(false);
 
 	const [isFollowing, setIsFollowing] = useState(false);
 	const [followersCount, setFollowersCount] = useState(0);
@@ -180,6 +185,14 @@ export function CommunityUserProfileView({
 		onEditProfile?.();
 	};
 
+	const handleCopyProfileLink = () => {
+		if (typeof window === "undefined" || !user) return;
+		const link = `${window.location.origin}${window.location.pathname}?user=${encodeURIComponent(user.username || user.id)}`;
+		navigator.clipboard.writeText(link);
+		setCopiedProfileLink(true);
+		setTimeout(() => setCopiedProfileLink(false), 2000);
+	};
+
 	const handleReplyToCommentInProfile = async (postId: string, commentId: string) => {
 		if (!currentUser || !replyText.trim() || isSubmittingReply) return;
 		setIsSubmittingReply(true);
@@ -242,7 +255,7 @@ export function CommunityUserProfileView({
 				<p className="text-[13px] text-muted-foreground">
 					Người dùng này không tồn tại hoặc đã thay đổi tên tài khoản.
 				</p>
-				<Button onClick={onBack} variant="outline-solid" size="sm" className="rounded-xl text-[13px]">
+				<Button onClick={onBack} variant="outline-solid" size="sm" className="rounded-xl text-[13px] cursor-pointer">
 					Quay lại Bảng tin
 				</Button>
 			</div>
@@ -261,26 +274,11 @@ export function CommunityUserProfileView({
 
 	return (
 		<div className="space-y-5 min-w-0 w-full animate-in fade-in-0">
-			{/* Top Navigation Bar with Back Button */}
-			<div className="flex items-center justify-between gap-3 bg-card p-3 sm:p-3.5 rounded-2xl border border-border shadow-2xs">
-				<button
-					type="button"
-					onClick={onBack}
-					className="inline-flex items-center gap-2 text-[13px] font-semibold text-muted-foreground hover:text-foreground transition-colors group cursor-pointer"
-				>
-					<ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1 text-primary" />
-					<span>Quay lại Bảng tin cộng đồng</span>
-				</button>
-				<span className="text-[12px] font-semibold text-muted-foreground">
-					{user.displayName}
-				</span>
-			</div>
-
-			{/* Gray Unified Profile Header Box (Phủ từ avatar đến ngày gia nhập và thống kê thành màu xám) */}
+			{/* Gray Unified Profile Box: Phủ từ avatar đến ngày gia nhập thành màu xám. Mũi tên quay lại nằm bên trái tên người dùng. Avatar đẩy xuống bằng với phần bài viết */}
 			<div className="rounded-2xl border border-border/80 bg-muted/50 dark:bg-muted/30 p-5 sm:p-6 shadow-2xs">
-				<div className="flex flex-col sm:flex-row gap-4 sm:gap-5 items-start">
-					{/* Avatar */}
-					<div className="relative h-20 w-20 sm:h-24 sm:w-24 rounded-full border-2 border-background bg-card shadow-sm overflow-hidden shrink-0 ring-2 ring-border/60">
+				<div className="flex flex-col sm:flex-row gap-4 sm:gap-5 items-start sm:items-end">
+					{/* Avatar: Đẩy xuống bằng với hàng bài viết */}
+					<div className="relative h-20 w-20 sm:h-24 sm:w-24 rounded-full border-2 border-background bg-card shadow-sm overflow-hidden shrink-0 ring-2 ring-border/60 sm:self-end">
 						<Image
 							src={
 								user.avatar ||
@@ -296,9 +294,20 @@ export function CommunityUserProfileView({
 
 					{/* Profile info placed right inside this gray area */}
 					<div className="flex-1 min-w-0 w-full space-y-2">
-						{/* Row 1: Name, Username, Verified, Edit/Follow button */}
+						{/* Row 1: Mũi tên quay lại + Tên người dùng + Username + Verified + Nút Chỉnh sửa / Theo dõi */}
 						<div className="flex flex-wrap items-center justify-between gap-3">
 							<div className="flex flex-wrap items-center gap-2 min-w-0">
+								{/* Mũi tên quay lại ngay bên cạnh trái tên người dùng */}
+								<button
+									type="button"
+									onClick={onBack}
+									className="rounded-full p-1 -ml-1 text-muted-foreground hover:text-foreground hover:bg-background/80 transition-all cursor-pointer"
+									title="Quay lại Bảng tin cộng đồng"
+									aria-label="Quay lại"
+								>
+									<ArrowLeft className="h-5 w-5" />
+								</button>
+
 								<h1 className="text-lg sm:text-xl font-bold text-foreground truncate">
 									{user.displayName}
 								</h1>
@@ -311,8 +320,24 @@ export function CommunityUserProfileView({
 								</span>
 							</div>
 
-							{/* Action Button */}
-							<div>
+							{/* Action Buttons */}
+							<div className="flex items-center gap-2">
+								{/* Share Profile Link Button */}
+								<button
+									type="button"
+									onClick={handleCopyProfileLink}
+									className="p-1.5 rounded-xl border border-border/70 hover:bg-background text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+									title="Sao chép liên kết trang cá nhân này"
+								>
+									<Share2 className="h-4 w-4" />
+									<span className="sr-only">Chia sẻ liên kết</span>
+								</button>
+								{copiedProfileLink && (
+									<span className="text-[11px] font-semibold text-primary animate-in fade-in-0">
+										Đã copy link!
+									</span>
+								)}
+
 								{isSelf ? (
 									<Button
 										type="button"
@@ -376,20 +401,16 @@ export function CommunityUserProfileView({
 							)}
 						</div>
 
-						{/* Row 4: Stats: Chỉ hiển thị số thông tin bài viết, người theo dõi, đang theo dõi (KHÔNG khung, KHÔNG bình luận) */}
+						{/* Row 4: Stats: Bài viết (không bôi đậm chữ khi active), Người theo dõi, Đang theo dõi (KHÔNG khung, KHÔNG bình luận) */}
 						<div className="flex flex-wrap items-center gap-6 pt-1 text-[13px]">
 							{/* Bài viết */}
 							<button
 								type="button"
 								onClick={() => setActiveTab("posts")}
-								className={`flex items-center gap-1.5 transition-colors cursor-pointer ${
-									activeTab === "posts"
-										? "text-foreground font-bold"
-										: "text-muted-foreground hover:text-foreground"
-								}`}
+								className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
 							>
 								<span className="font-bold text-foreground text-[14px]">{posts.length}</span>
-								<span>bài viết</span>
+								<span className="font-normal text-muted-foreground">bài viết</span>
 							</button>
 
 							{/* Người theo dõi */}
@@ -404,7 +425,7 @@ export function CommunityUserProfileView({
 								<span className="font-bold text-foreground group-hover:text-primary transition-colors text-[14px]">
 									{followersCount}
 								</span>
-								<span>người theo dõi</span>
+								<span className="font-normal text-muted-foreground">người theo dõi</span>
 							</button>
 
 							{/* Đang theo dõi */}
@@ -419,7 +440,7 @@ export function CommunityUserProfileView({
 								<span className="font-bold text-foreground group-hover:text-primary transition-colors text-[14px]">
 									{followingCount}
 								</span>
-								<span>đang theo dõi</span>
+								<span className="font-normal text-muted-foreground">đang theo dõi</span>
 							</button>
 						</div>
 					</div>
@@ -528,7 +549,7 @@ export function CommunityUserProfileView({
 				</div>
 			)}
 
-			{/* Tab 2: Comments & Discussion Tab (With inline replies) */}
+			{/* Tab 2: Comments & Discussion Tab (With inline replies & jumping to original post) */}
 			{activeTab === "comments" && (
 				<div className="space-y-4">
 					{comments.length === 0 ? (
@@ -545,17 +566,34 @@ export function CommunityUserProfileView({
 								key={idx}
 								className="rounded-2xl border border-border bg-card p-5 shadow-xs space-y-3"
 							>
-								{/* Context post header */}
-								<div className="flex items-center justify-between text-[12px] border-b border-border/60 pb-2.5">
-									<div className="flex items-center gap-2 truncate">
-										<span className="text-muted-foreground font-medium">Đã bình luận vào:</span>
-										<span className="font-bold text-foreground truncate">
-											"{item.post?.title || "Bài viết cộng đồng"}"
+								{/* Context post header with CLICKABLE ORIGINAL POST LINK */}
+								<div className="flex flex-wrap items-center justify-between gap-2 text-[12px] border-b border-border/60 pb-2.5">
+									<div className="flex items-center gap-1.5 min-w-0 max-w-full">
+										<span className="text-muted-foreground font-medium shrink-0">Đã bình luận vào:</span>
+										<button
+											type="button"
+											onClick={() => onSelectPost?.(item.post.id)}
+											className="font-bold text-foreground hover:text-primary hover:underline transition-colors truncate text-left cursor-pointer inline-flex items-center gap-1 group"
+											title="Nhấn để xem bài viết gốc"
+										>
+											<span className="truncate">"{item.post?.title || "Bài viết cộng đồng"}"</span>
+											<ExternalLink className="h-3 w-3 text-muted-foreground group-hover:text-primary shrink-0" />
+										</button>
+									</div>
+									<div className="flex items-center gap-2 shrink-0">
+										<button
+											type="button"
+											onClick={() => onSelectPost?.(item.post.id)}
+											className="text-[11.5px] font-semibold text-primary hover:underline inline-flex items-center gap-1 cursor-pointer"
+											title="Chuyển đến bài viết gốc"
+										>
+											<span>Xem bài viết gốc</span>
+											<ExternalLink className="h-3 w-3" />
+										</button>
+										<span className="text-muted-foreground font-medium text-[11px]">
+											• {formatCommunityExactTime(item.comment.createdAt)}
 										</span>
 									</div>
-									<span className="text-muted-foreground shrink-0 font-medium">
-										{formatCommunityExactTime(item.comment.createdAt)}
-									</span>
 								</div>
 
 								{/* Comment text */}

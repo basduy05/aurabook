@@ -247,6 +247,11 @@ function saveData(data: CommunityData) {
 }
 
 // Posts API
+export function getCommunityPost(postId: string): CommunityPost | null {
+	const data = loadData();
+	return data.posts.find((p) => p.id === postId) || null;
+}
+
 export function getCommunityPosts(filter?: { bookSlug?: string; search?: string; includeHidden?: boolean }): CommunityPost[] {
 	const data = loadData();
 	let posts = [...data.posts];

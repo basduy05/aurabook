@@ -39,6 +39,8 @@ interface CommunityPostCardProps {
 	onViewAuthorProfile?: (authorIdOrUsername: string) => void;
 	onPostUpdated?: (updatedPost: CommunityPost) => void;
 	onToggleHidePost?: (postId: string) => Promise<void>;
+	onSelectPost?: (postId: string) => void;
+	initialOpenComments?: boolean;
 }
 
 export function CommunityPostCard({
@@ -53,13 +55,15 @@ export function CommunityPostCard({
 	onViewAuthorProfile,
 	onPostUpdated,
 	onToggleHidePost,
+	onSelectPost,
+	initialOpenComments = false,
 }: CommunityPostCardProps) {
 	const currentUserId = currentUser?.id || "guest";
 	const [currentPost, setCurrentPost] = useState<CommunityPost>(post);
 	const [likes, setLikes] = useState<string[]>(post.likes || []);
 	const [isLiking, setIsLiking] = useState(false);
 	const [isHiding, setIsHiding] = useState(false);
-	const [showComments, setShowComments] = useState(false);
+	const [showComments, setShowComments] = useState(initialOpenComments);
 	const [comments, setComments] = useState<CommunityComment[]>(post.comments || []);
 	const [commentText, setCommentText] = useState("");
 	const [isSubmittingComment, setIsSubmittingComment] = useState(false);
@@ -251,9 +255,15 @@ export function CommunityPostCard({
 	};
 
 	const handleShare = () => {
-		navigator.clipboard.writeText(window.location.href);
-		setCopied(true);
-		setTimeout(() => setCopied(false), 2000);
+		if (typeof window !== "undefined") {
+			const url = new URL(window.location.href);
+			url.searchParams.delete("user");
+			url.searchParams.delete("u");
+			url.searchParams.set("post", currentPost.id);
+			navigator.clipboard.writeText(url.toString());
+			setCopied(true);
+			setTimeout(() => setCopied(false), 2000);
+		}
 	};
 
 	const formatDate = (dateStr: string) => {
@@ -484,7 +494,12 @@ export function CommunityPostCard({
 
 			{/* Post Content */}
 			<div className="mt-3.5 space-y-1.5">
-				<h3 className="text-[15px] font-semibold text-foreground leading-snug">
+				<h3
+					onClick={() => onSelectPost?.(currentPost.id)}
+					className={`text-[15px] font-semibold text-foreground leading-snug ${
+						onSelectPost ? "cursor-pointer hover:text-primary transition-colors" : ""
+					}`}
+				>
 					{currentPost.title}
 				</h3>
 				<FormattedCommunityContent
