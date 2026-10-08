@@ -124,6 +124,7 @@ services:
     image: ghcr.io/saleor/saleor-dashboard:latest
     container_name: aurabook-dashboard
     restart: unless-stopped
+    entrypoint: ["nginx", "-g", "daemon off;"]
     ports:
       - "${DASHBOARD_PORT:-9000}:80"
     environment:
