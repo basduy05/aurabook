@@ -498,7 +498,10 @@ class Channel(ModelObjectType):
 
     @staticmethod
     def resolve_stock_settings(root: models.Channel, _info: ResolveInfo):
-        return StockSettings(allocation_strategy=root.allocation_strategy)
+        strategy = root.allocation_strategy
+        if strategy:
+            strategy = strategy.replace("_", "-")
+        return StockSettings(allocation_strategy=strategy)
 
     @staticmethod
     def resolve_order_settings(root: models.Channel, _info):

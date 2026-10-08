@@ -5,6 +5,12 @@ import logging
 import os
 import os.path
 import warnings
+from dotenv import load_dotenv
+
+# Auto-load backend/.env for local CLI scripts and dev environment
+_env_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+if os.path.exists(_env_file):
+    load_dotenv(_env_file)
 from typing import cast
 from urllib.parse import urlparse
 

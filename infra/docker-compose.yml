@@ -39,6 +39,16 @@ services:
     networks:
       - aurabook-network
 
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: aurabook-mailpit
+    restart: unless-stopped
+    ports:
+      - "${MAILPIT_SMTP_PORT:-1025}:1025"
+      - "${MAILPIT_UI_PORT:-8025}:8025"
+    networks:
+      - aurabook-network
+
   backend:
     build:
       context: ../backend
@@ -49,16 +59,26 @@ services:
       - "${BACKEND_PORT:-8000}:8000"
     environment:
       - SECRET_KEY=${SALEOR_SECRET_KEY:-django-insecure-aurabook-dev-key-change-in-production}
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-aurabook_user}:${POSTGRES_PASSWORD:-aurabook_secure_password}@postgres:5432/${POSTGRES_DB:-aurabook_saleor}
+      - DATABASE_URL=postgresql://aurabook_user:aurabook_secure_password@postgres:5432/aurabook_db
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CACHE_URL=redis://redis:6379/1
       - ALLOWED_HOSTS=localhost,127.0.0.1,backend
       - ALLOWED_CLIENT_HOSTS=localhost,127.0.0.1,frontend
       - DEFAULT_FROM_EMAIL=${DEFAULT_FROM_EMAIL:-no-reply@aurabook.vn}
+      - EMAIL_URL=smtp://mailpit:1025
       - GEMINI_API_KEY=${GEMINI_API_KEY:-}
       - DRM_MASTER_KEY=${DRM_MASTER_KEY:-}
       - RSA_PRIVATE_KEY=${RSA_PRIVATE_KEY:-}
       - DEBUG=${DEBUG:-True}
+    command: >
+      sh -c "
+        echo 'Waiting for PostgreSQL...' &&
+        until python -c \"import psycopg, os, sys; c=psycopg.connect(os.environ['DATABASE_URL']); c.close(); sys.exit(0)\" 2>/dev/null; do
+          echo 'PostgreSQL not ready, retrying in 2s...'; sleep 2;
+        done &&
+        echo 'PostgreSQL is ready. Starting backend...' &&
+        uvicorn saleor.asgi:application --host=0.0.0.0 --port=8000 --workers=2 --lifespan=auto --ws=none --no-server-header --no-access-log --timeout-keep-alive=35 --timeout-graceful-shutdown=30 --limit-max-requests=10000
+      "
     volumes:
       - ../backend/saleor:/app/saleor
       - ../backend/aurabook_apps:/app/aurabook_apps
@@ -68,6 +88,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      mailpit:
+        condition: service_started
     networks:
       - aurabook-network
 
@@ -80,9 +102,10 @@ services:
     command: celery -A saleor worker --loglevel=info -Q default,celery
     environment:
       - SECRET_KEY=${SALEOR_SECRET_KEY:-django-insecure-aurabook-dev-key-change-in-production}
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-aurabook_user}:${POSTGRES_PASSWORD:-aurabook_secure_password}@postgres:5432/${POSTGRES_DB:-aurabook_saleor}
+      - DATABASE_URL=postgresql://aurabook_user:aurabook_secure_password@postgres:5432/aurabook_db
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CACHE_URL=redis://redis:6379/1
+      - EMAIL_URL=smtp://mailpit:1025
       - GEMINI_API_KEY=${GEMINI_API_KEY:-}
     volumes:
       - ../backend/saleor:/app/saleor
@@ -93,6 +116,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      mailpit:
+        condition: service_started
     networks:
       - aurabook-network
 
@@ -124,6 +149,7 @@ services:
     image: ghcr.io/saleor/saleor-dashboard:latest
     container_name: aurabook-dashboard
     restart: unless-stopped
+    entrypoint: ["nginx", "-g", "daemon off;"]
     ports:
       - "${DASHBOARD_PORT:-9000}:80"
     environment:
@@ -132,10 +158,8 @@ services:
       - STATIC_URL=/dashboard/static/
     volumes:
       - ./dashboard-custom/index.html:/app/dashboard/index.html
-      - ./dashboard-custom/index-MpKC72Sj.js:/app/dashboard/index-MpKC72Sj.js
-      - ./dashboard-custom/index-aurabook.js:/app/dashboard/index-aurabook.js
-      - ./dashboard-custom/index-aurabook-v2.js:/app/dashboard/index-aurabook-v2.js
-      - ./dashboard-custom/Layout-1_e8a5xr.js:/app/dashboard/Layout-1_e8a5xr.js
+      - ./dashboard-custom/index-exGxSnlq.js:/app/dashboard/index-exGxSnlq.js
+      - ./dashboard-custom/aurabook-logo.png:/app/dashboard/aurabook-logo.png
       - ./dashboard-custom/favicons:/app/dashboard/favicons
       - ./dashboard-custom/favicon.ico:/app/dashboard/favicon.ico
       - ./dashboard-custom/default.conf:/etc/nginx/conf.d/default.conf

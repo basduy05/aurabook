@@ -148,14 +148,25 @@ function MobileNavTopLink({ item }: { item: NavMenuItem }) {
 	);
 }
 
+import { useParams } from "next/navigation";
+
 export function MobileNavLinks({ items, nav }: { items: NavMenuItem[]; nav: NavChromeContent }) {
+	const params = useParams<{ locale?: string }>();
+	const isEn = params?.locale === "en";
+
 	return (
 		<>
 			<li>
 				<MobileNavTopLink item={{ id: "all-products", label: nav.allProductsLabel, href: "/products" }} />
 			</li>
 			<li>
-				<MobileNavTopLink item={{ id: "community", label: "Cộng đồng ✦ Mới", href: "/community" }} />
+				<MobileNavTopLink
+					item={{
+						id: "community",
+						label: isEn ? "Community ✦ New" : "Cộng đồng ✦ Mới",
+						href: "/community",
+					}}
+				/>
 			</li>
 			{items.map((item) => {
 				if (hasNavMenuChildren(item)) {

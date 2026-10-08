@@ -58,7 +58,12 @@ def on_variant_channel_listing_saved(sender, instance: ProductVariantChannelList
         return
 
     # Chỉ xử lý khi có giá hợp lệ
-    if not instance.price_amount or instance.price_amount <= 0:
+    try:
+        price_val = float(instance.price_amount) if instance.price_amount is not None else 0
+    except (ValueError, TypeError):
+        price_val = 0
+
+    if price_val <= 0:
         return
 
     _GUARD.active = True

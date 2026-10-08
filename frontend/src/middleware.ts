@@ -7,6 +7,8 @@ import { BROWSE_LOCALE_COOKIE, getBrowseLocaleCookieOptions } from "@/lib/browse
 import { buildStorefrontPath } from "@/lib/storefront-path";
 
 const RESERVED_ROOT_SEGMENTS = new Set([
+	"admin",
+	"community-admin",
 	"api",
 	"checkout",
 	"order",

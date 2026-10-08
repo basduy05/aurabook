@@ -205,7 +205,8 @@
       ],
       "comments": [],
       "createdAt": "2026-10-07T16:01:47.056Z",
-      "editHistory": []
+      "editHistory": [],
+      "isHidden": true
     },
     {
       "author": {
@@ -232,7 +233,7 @@
       "comments": [],
       "createdAt": "2026-10-07T15:05:20.330Z",
       "editHistory": [],
-      "isHidden": false
+      "isHidden": true
     },
     {
       "author": {
@@ -523,7 +524,8 @@
           "editedBy": "Nguyen Ba Duy"
         }
       ],
-      "updatedAt": "2026-10-07T14:09:41.447Z"
+      "updatedAt": "2026-10-07T14:09:41.447Z",
+      "isHidden": true
     },
     {
       "id": "post-2",
@@ -564,7 +566,7 @@
       "postId": "post-1791369750595-k8jn",
       "id": "notif-1791390551023-eenn",
       "createdAt": "2026-10-07T16:29:11.023Z",
-      "isRead": false
+      "isRead": true
     },
     {
       "recipientId": "user-3",
@@ -580,7 +582,7 @@
       "postId": "post-1",
       "id": "notif-1791385725211-xsp7",
       "createdAt": "2026-10-07T15:08:45.211Z",
-      "isRead": false
+      "isRead": true
     },
     {
       "recipientId": "user-VXNlcjo0Ng==",

@@ -681,6 +681,9 @@ class App(ModelObjectType[models.App]):
     )
 
     about_app = graphene.String(description="Description of this app.")
+    deprecation_reason = graphene.String(
+        description="Reason why the app is deprecated."
+    )
 
     data_privacy = graphene.String(
         description="Description of the data privacy defined for this app.",
@@ -847,6 +850,9 @@ class AppInstallation(ModelObjectType[models.AppInstallation]):
         description="The URL address of manifest for the app installation.",
     )
     brand = graphene.Field(AppBrand, description="App's brand data.")
+    deprecation_reason = graphene.String(
+        description="Reason why the app installation is deprecated."
+    )
 
     class Meta:
         model = models.AppInstallation

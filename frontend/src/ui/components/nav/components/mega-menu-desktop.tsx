@@ -246,6 +246,7 @@ function MegaMenuDesktopMenu({
 	nav: NavChromeContent;
 	pathname: string;
 }) {
+	const params = useParams<{ locale?: string; channel?: string }>();
 	const [openItem, setOpenItem] = useState("");
 	const closeMenu = () => setOpenItem("");
 
@@ -311,9 +312,9 @@ function MegaMenuDesktopMenu({
 								)}
 								onClick={closeMenu}
 							>
-								<span>Cộng đồng</span>
+								<span>{params?.locale === "en" ? "Community" : "Cộng đồng"}</span>
 								<span className="inline-flex items-center rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold text-primary uppercase tracking-wider">
-									Mới
+									{params?.locale === "en" ? "New" : "Mới"}
 								</span>
 							</LinkWithChannel>
 						</NavigationMenuLink>
