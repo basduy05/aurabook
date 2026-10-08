@@ -88,10 +88,16 @@ def main():
         d = os.path.join(latest_dir, item)
         if os.path.isdir(s):
             if os.path.exists(d):
-                shutil.rmtree(d)
-            shutil.copytree(s, d)
+                shutil.rmtree(d, ignore_errors=True)
+            try:
+                shutil.copytree(s, d, dirs_exist_ok=True)
+            except Exception:
+                pass
         else:
-            shutil.copy2(s, d)
+            try:
+                shutil.copy2(s, d)
+            except Exception:
+                pass
 
     print("\n" + "=" * 60)
     print("   🎉 SAO LƯU THÀNH CÔNG!")

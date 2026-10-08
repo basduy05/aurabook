@@ -2,7 +2,7 @@ import urllib.request
 import json
 
 # 1. Login
-login_payload = json.dumps({'query': 'mutation { tokenCreate(email: "basduygame@gmail.com", password: "Admin@123") { token } }'}).encode()
+login_payload = json.dumps({'query': 'mutation { tokenCreate(email: "basduygame@gmail.com", password: "admin") { token errors { field message } } }'}).encode()
 req = urllib.request.Request('http://localhost:8000/graphql/', data=login_payload, headers={'Content-Type': 'application/json'})
 try:
     resp = json.loads(urllib.request.urlopen(req).read())

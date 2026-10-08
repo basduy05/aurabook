@@ -27,17 +27,8 @@ app, created = App.objects.update_or_create(
 perms = Permission.objects.filter(codename__in=["manage_users", "manage_orders"])
 app.permissions.set(perms)
 
-# Create or update AppExtension for Navigation
-ext, ext_created = AppExtension.objects.update_or_create(
-    app=app,
-    label="Quản lý Cộng đồng",
-    defaults={
-        "url": "http://localhost:3000/community-admin",
-        "mount": "navigation_pages",
-        "target": "app_page",
-    }
-)
-ext.permissions.set(Permission.objects.filter(codename="manage_users"))
+# Community Admin App is managed cleanly as an Installed App in Dashboard
+# Remove any obsolete extensions to keep dashboard sidebar clean
+AppExtension.objects.filter(app=app).delete()
 
-print(f"SUCCESS: App '{app.name}' (ID: {app.id}, Created: {created})")
-print(f"SUCCESS: AppExtension '{ext.label}' (ID: {ext.id}, Created: {ext_created})")
+print(f"SUCCESS: App '{app.name}' registered cleanly as Installed App in Dashboard.")

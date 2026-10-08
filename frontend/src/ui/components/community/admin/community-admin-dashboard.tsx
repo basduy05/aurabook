@@ -16,43 +16,75 @@ import {
 	Mail,
 	Phone,
 	CheckCircle2,
-	AlertTriangle,
 	Eye,
 	EyeOff,
 	Edit3,
 	History,
 	X,
 	BookOpen,
-	Star,
 	ExternalLink,
 	RefreshCw,
 	SlidersHorizontal,
 	MessageSquare,
 	Heart,
+	Send,
+	Megaphone,
+	ShieldCheck,
+	Check,
+	Plus,
+	ArrowLeft,
+	Sparkles,
+	LogOut,
 } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
+import { Input } from "@/ui/components/ui/input";
+import { Badge } from "@/ui/components/ui/badge";
 import { type CommunityUser, type CommunityPost } from "@/lib/community/types";
 import { CommunityPostEditModal, PostHistoryModal } from "../community-post-edit-modal";
 
-type AdminTab = "posts" | "reviews" | "users" | "settings";
+type MainTab = "management" | "communications";
+type ManagementSubTab = "posts" | "users" | "settings";
 
 export function CommunityAdminDashboard() {
-	const [activeTab, setActiveTab] = useState<AdminTab>("posts");
+	const [authStatus, setAuthStatus] = useState<"checking" | "authorized" | "unauthorized">("checking");
+	const [adminUser, setAdminUser] = useState<{ id: string; email: string; fullName: string; isStaff: boolean } | null>(null);
+
+	// Navigation Tabs
+	const [mainTab, setMainTab] = useState<MainTab>("management");
+	const [mgmtSubTab, setMgmtSubTab] = useState<ManagementSubTab>("posts");
+
+	// Communications State
+	const [isCreatingCommPost, setIsCreatingCommPost] = useState(false);
+	const [adminPostTitle, setAdminPostTitle] = useState("");
+	const [adminPostCategory, setAdminPostCategory] = useState("Thông báo");
+	const [adminPostContent, setAdminPostContent] = useState("");
+	const [adminPostPinned, setAdminPostPinned] = useState(true);
+	const [isSubmittingAdminPost, setIsSubmittingAdminPost] = useState(false);
+	const [postSuccessMessage, setPostSuccessMessage] = useState("");
+
+	// Data Collections
 	const [users, setUsers] = useState<CommunityUser[]>([]);
 	const [posts, setPosts] = useState<CommunityPost[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [searchQuery, setSearchQuery] = useState("");
-	const [postFilter, setPostFilter] = useState<"all" | "pinned" | "with-book">("all");
+	const [postFilter, setPostFilter] = useState<"all" | "reviews" | "pinned" | "hidden">("all");
+	const [commSearchQuery, setCommSearchQuery] = useState("");
 
 	// Selected user for Real Account Details modal
 	const [selectedUser, setSelectedUser] = useState<CommunityUser | null>(null);
 
-	// Modals for admin post moderation
+	// Modals for post moderation
 	const [editingPost, setEditingPost] = useState<CommunityPost | null>(null);
 	const [historyPost, setHistoryPost] = useState<CommunityPost | null>(null);
 	const [settingsSavedAlert, setSettingsSavedAlert] = useState(false);
 	const [isSavingSettings, setIsSavingSettings] = useState(false);
 	const [mounted, setMounted] = useState(false);
+
+	// Explicit login state when unauthenticated
+	const [loginEmail, setLoginEmail] = useState("");
+	const [loginPassword, setLoginPassword] = useState("");
+	const [loginError, setLoginError] = useState("");
+	const [isLoggingIn, setIsLoggingIn] = useState(false);
 
 	// Community Settings state (Macaw UI configuration switches)
 	const [settings, setSettings] = useState({
@@ -62,10 +94,28 @@ export function CommunityAdminDashboard() {
 		filterSensitiveWords: true,
 	});
 
-	// Load data
+	// Load data with authorization guard
 	const loadData = async () => {
 		setIsLoading(true);
 		try {
+			// Check access (reads isolated admin cookie or iframe referrer)
+			const isIframe = typeof window !== "undefined" && window.self !== window.top;
+			const checkUrl = isIframe
+				? "/api/community/admin/check-access?from=dashboard"
+				: "/api/community/admin/check-access";
+
+			const authRes = await fetch(checkUrl);
+			const authData = (await authRes.json()) as { authorized?: boolean; user?: any };
+
+			if (authData.authorized) {
+				setAuthStatus("authorized");
+				setAdminUser(authData.user || { id: "1", email: "basduygame@gmail.com", fullName: "Nguyễn Bá Duy", isStaff: true });
+			} else {
+				setAuthStatus("unauthorized");
+				setIsLoading(false);
+				return;
+			}
+
 			const [usersRes, postsRes, settingsRes] = await Promise.all([
 				fetch("/api/community/admin/users"),
 				fetch("/api/community/admin/posts"),
@@ -74,22 +124,22 @@ export function CommunityAdminDashboard() {
 
 			if (usersRes.ok) {
 				const usersData = (await usersRes.json()) as { users: CommunityUser[] };
-				setUsers(usersData.users);
+				setUsers(usersData.users || []);
 			}
 
 			if (postsRes.ok) {
 				const postsData = (await postsRes.json()) as { posts: CommunityPost[] };
-				setPosts(postsData.posts);
+				setPosts(postsData.posts || []);
 			}
 
 			if (settingsRes?.ok) {
-				const settingsData = (await settingsRes.json()) as { settings: any };
+				const settingsData = (await settingsRes.json()) as { settings: typeof settings };
 				if (settingsData.settings) {
 					setSettings(settingsData.settings);
 				}
 			}
-		} catch (e) {
-			console.error("Failed to load admin data:", e);
+		} catch (error) {
+			console.error("[community-admin] Load data error:", error);
 		} finally {
 			setIsLoading(false);
 		}
@@ -97,23 +147,61 @@ export function CommunityAdminDashboard() {
 
 	useEffect(() => {
 		setMounted(true);
-		loadData();
+		void loadData();
 	}, []);
 
-	// Toggle user blocked
+	// Handle Admin Login submission
+	const handleAdminLogin = async (e: React.FormEvent) => {
+		e.preventDefault();
+		setIsLoggingIn(true);
+		setLoginError("");
+		try {
+			const res = await fetch("/api/community/admin/login", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ email: loginEmail, password: loginPassword }),
+			});
+			const data = (await res.json()) as { ok?: boolean; error?: string; user?: any };
+			if (!res.ok || !data.ok) {
+				setLoginError(data.error || "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
+				return;
+			}
+			setAuthStatus("authorized");
+			setAdminUser(data.user);
+			void loadData();
+		} catch (err) {
+			setLoginError("Không thể kết nối đến máy chủ. Vui lòng thử lại.");
+		} finally {
+			setIsLoggingIn(false);
+		}
+	};
+
+	// Handle Admin Logout
+	const handleAdminLogout = async () => {
+		try {
+			await fetch("/api/community/admin/logout", { method: "POST" });
+		} catch (e) {
+			console.error("Admin logout error:", e);
+		}
+		setAuthStatus("unauthorized");
+		setAdminUser(null);
+	};
+
+	// Handle Toggle Block User
 	const handleToggleBlock = async (userId: string) => {
 		try {
 			const res = await fetch("/api/community/admin/users", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ userId }),
+				body: JSON.stringify({ action: "toggle_block", userId }),
 			});
 			if (res.ok) {
+				const data = (await res.json()) as { ok: boolean; isBlocked: boolean };
 				setUsers((prev) =>
-					prev.map((u) => (u.id === userId ? { ...u, isBlocked: !u.isBlocked } : u)),
+					prev.map((u) => (u.id === userId ? { ...u, isBlocked: data.isBlocked } : u)),
 				);
-				if (selectedUser && selectedUser.id === userId) {
-					setSelectedUser((prev) => (prev ? { ...prev, isBlocked: !prev.isBlocked } : null));
+				if (selectedUser?.id === userId) {
+					setSelectedUser((prev) => (prev ? { ...prev, isBlocked: data.isBlocked } : null));
 				}
 			}
 		} catch (e) {
@@ -121,9 +209,9 @@ export function CommunityAdminDashboard() {
 		}
 	};
 
-	// Delete post
+	// Handle Delete Post
 	const handleDeletePost = async (postId: string) => {
-		if (!confirm("Bạn có chắc chắn muốn xóa bài viết này khỏi cộng đồng?")) return;
+		if (!confirm("Bạn có chắc chắn muốn xóa vĩnh viễn bài viết này khỏi hệ thống?")) return;
 		try {
 			const res = await fetch("/api/community/admin/posts", {
 				method: "POST",
@@ -138,7 +226,7 @@ export function CommunityAdminDashboard() {
 		}
 	};
 
-	// Toggle pin post
+	// Handle Toggle Pin
 	const handleTogglePin = async (postId: string) => {
 		try {
 			const res = await fetch("/api/community/admin/posts", {
@@ -147,8 +235,9 @@ export function CommunityAdminDashboard() {
 				body: JSON.stringify({ action: "pin", postId }),
 			});
 			if (res.ok) {
+				const data = (await res.json()) as { ok: boolean; isPinned: boolean };
 				setPosts((prev) =>
-					prev.map((p) => (p.id === postId ? { ...p, isPinned: !p.isPinned } : p)),
+					prev.map((p) => (p.id === postId ? { ...p, isPinned: data.isPinned } : p)),
 				);
 			}
 		} catch (e) {
@@ -156,7 +245,7 @@ export function CommunityAdminDashboard() {
 		}
 	};
 
-	// Toggle hide post
+	// Handle Toggle Hide
 	const handleToggleHide = async (postId: string) => {
 		try {
 			const res = await fetch("/api/community/admin/posts", {
@@ -171,33 +260,33 @@ export function CommunityAdminDashboard() {
 				);
 			}
 		} catch (e) {
-			console.error("Failed to toggle hide post:", e);
+			console.error("Failed to toggle hide:", e);
 		}
 	};
 
-	// Save admin edit post
+	// Save Edited Post
 	const handleSaveAdminEdit = async (postId: string, newTitle: string, newContent: string) => {
-		const res = await fetch("/api/community/admin/posts", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				action: "edit",
-				postId,
-				title: newTitle,
-				content: newContent,
-			}),
-		});
-		if (!res.ok) {
-			const err = (await res.json()) as { error?: string };
-			throw new Error(err.error || "Không thể cập nhật bài viết");
+		try {
+			const res = await fetch("/api/community/admin/posts", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ action: "edit", postId, title: newTitle, content: newContent }),
+			});
+			if (res.ok) {
+				const data = (await res.json()) as { ok: boolean; post: CommunityPost };
+				if (data.post) {
+					setPosts((prev) => prev.map((p) => (p.id === data.post.id ? data.post : p)));
+				}
+				setEditingPost(null);
+			}
+		} catch (e) {
+			console.error("Failed to edit post:", e);
 		}
-		const data = (await res.json()) as { post: CommunityPost };
-		setPosts((prev) => prev.map((p) => (p.id === postId ? data.post : p)));
 	};
 
-	// Save settings
-	const handleSaveSettings = async (customSettings?: typeof settings) => {
-		const toSave = customSettings || settings;
+	// Save Settings
+	const handleSaveSettings = async (newSettings?: typeof settings) => {
+		const toSave = newSettings || settings;
 		setIsSavingSettings(true);
 		try {
 			const res = await fetch("/api/community/admin/settings", {
@@ -216,23 +305,65 @@ export function CommunityAdminDashboard() {
 		}
 	};
 
-	// Filtered collections
+	// Handle Create Admin Announcement Post (Saleor 2-Column Create View)
+	const handleCreateAdminPost = async (e: React.FormEvent) => {
+		e.preventDefault();
+		if (!adminPostTitle.trim() || !adminPostContent.trim()) {
+			alert("Vui lòng nhập đầy đủ tiêu đề và nội dung thông báo.");
+			return;
+		}
+		setIsSubmittingAdminPost(true);
+		setPostSuccessMessage("");
+		try {
+			const res = await fetch("/api/community/admin/posts", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					action: "create_admin_post",
+					title: adminPostTitle.trim(),
+					content: adminPostContent.trim(),
+					category: adminPostCategory,
+					isPinned: adminPostPinned,
+				}),
+			});
+			if (res.ok) {
+				const data = (await res.json()) as { post?: CommunityPost };
+				if (data.post) {
+					setPosts((prev) => [data.post!, ...prev]);
+				}
+				setAdminPostTitle("");
+				setAdminPostContent("");
+				setIsCreatingCommPost(false); // Return to list view smoothly
+				setPostSuccessMessage("Thông báo truyền thông đã được phát hành thành công lên toàn hệ thống!");
+				setTimeout(() => setPostSuccessMessage(""), 5000);
+			} else {
+				const err = (await res.json()) as { error?: string };
+				alert(err.error || "Không thể đăng bài viết của quản trị viên.");
+			}
+		} catch (error) {
+			console.error("Error creating admin post:", error);
+			alert("Đã xảy ra lỗi khi phát hành bài viết.");
+		} finally {
+			setIsSubmittingAdminPost(false);
+		}
+	};
+
+	// Filtered Collections
 	const filteredUsers = users.filter((u) => {
 		if (!searchQuery.trim()) return true;
 		const q = searchQuery.toLowerCase();
 		return (
 			u.displayName.toLowerCase().includes(q) ||
 			u.username.toLowerCase().includes(q) ||
-			u.realAccount?.email.toLowerCase().includes(q) ||
-			u.realAccount?.fullName.toLowerCase().includes(q)
+			u.realAccount?.email?.toLowerCase().includes(q) ||
+			u.realAccount?.fullName?.toLowerCase().includes(q)
 		);
 	});
 
-	const reviewsPosts = posts.filter((p) => p.isFromProductReview || !!p.book);
-
 	const filteredPosts = posts.filter((p) => {
+		if (postFilter === "reviews" && !p.isFromProductReview && !p.book) return false;
 		if (postFilter === "pinned" && !p.isPinned) return false;
-		if (postFilter === "with-book" && !p.book) return false;
+		if (postFilter === "hidden" && !p.isHidden) return false;
 
 		if (!searchQuery.trim()) return true;
 		const q = searchQuery.toLowerCase();
@@ -240,46 +371,166 @@ export function CommunityAdminDashboard() {
 			p.title.toLowerCase().includes(q) ||
 			p.content.toLowerCase().includes(q) ||
 			p.author.displayName.toLowerCase().includes(q) ||
-			p.book?.title.toLowerCase().includes(q)
+			p.book?.title?.toLowerCase().includes(q)
 		);
 	});
 
-	const totalReviewsCount = reviewsPosts.length;
-	const blockedCount = users.filter((u) => u.isBlocked).length;
+	// Communications Posts (Posts created by Admin or Announcements)
+	const communicationPosts = posts.filter((p) => {
+		const isComm =
+			p.author.username === "@aurabook_admin" ||
+			p.author.id === "user-1" ||
+			p.title.startsWith("[") ||
+			p.isPinned;
+		if (!isComm) return false;
+		if (!commSearchQuery.trim()) return true;
+		const q = commSearchQuery.toLowerCase();
+		return (
+			p.title.toLowerCase().includes(q) ||
+			p.content.toLowerCase().includes(q) ||
+			p.author.displayName.toLowerCase().includes(q)
+		);
+	});
+
+	const totalReviewsCount = posts.filter((p) => p.isFromProductReview || !!p.book).length;
+
+	// Loading or Checking State
+	if (authStatus === "checking" || (isLoading && posts.length === 0 && authStatus === "authorized")) {
+		return (
+			<div className="flex min-h-[500px] w-full flex-col items-center justify-center gap-3 bg-background p-8 text-center text-foreground">
+				<RefreshCw className="h-8 w-8 animate-spin text-primary" />
+				<div className="space-y-1">
+					<p className="text-sm font-semibold">Đang kiểm tra quyền Quản trị viên Aurabook...</p>
+					<p className="text-xs text-muted-foreground">Kết nối Saleor Core & Dữ liệu Quản trị</p>
+				</div>
+			</div>
+		);
+	}
+
+	// Unauthorized / Need Login State
+	if (authStatus === "unauthorized") {
+		return (
+			<div className="flex min-h-[500px] w-full flex-col items-center justify-center bg-background px-4 py-12 text-foreground font-sans">
+				<div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-6">
+					<div className="text-center space-y-2">
+						<div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-muted/60 p-2 shadow-2xs">
+							<Image
+								src="/android-chrome-192x192.png"
+								alt="Aurabook"
+								width={40}
+								height={40}
+								className="h-10 w-10 rounded-xl object-contain"
+								unoptimized
+							/>
+						</div>
+						<h2 className="text-lg font-bold tracking-tight text-foreground">
+							Cổng Quản Trị Aurabook
+						</h2>
+						<p className="text-xs text-muted-foreground leading-relaxed">
+							Khu vực dành riêng cho Nhân viên quản trị hệ thống (Staff Account).
+						</p>
+					</div>
+
+					{loginError && (
+						<div className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive flex items-start gap-2">
+							<ShieldAlert className="h-4 w-4 shrink-0 mt-0.5" />
+							<span>{loginError}</span>
+						</div>
+					)}
+
+					<form onSubmit={handleAdminLogin} className="space-y-4">
+						<div className="space-y-1.5 text-left">
+							<label className="text-xs font-semibold text-foreground">Email Quản Trị</label>
+							<Input
+								type="email"
+								placeholder="admin@example.com"
+								value={loginEmail}
+								onChange={(e) => setLoginEmail(e.target.value)}
+								required
+								className="h-9 text-xs"
+							/>
+						</div>
+						<div className="space-y-1.5 text-left">
+							<label className="text-xs font-semibold text-foreground">Mật Khẩu</label>
+							<Input
+								type="password"
+								placeholder="••••••••"
+								value={loginPassword}
+								onChange={(e) => setLoginPassword(e.target.value)}
+								required
+								className="h-9 text-xs"
+							/>
+						</div>
+
+						<Button
+							type="submit"
+							disabled={isLoggingIn}
+							className="w-full h-9 text-xs font-semibold gap-2"
+						>
+							{isLoggingIn ? (
+								<>
+									<RefreshCw className="h-3.5 w-3.5 animate-spin" />
+									<span>Đang xác thực...</span>
+								</>
+							) : (
+								<>
+									<Lock className="h-3.5 w-3.5" />
+									<span>Đăng Nhập Quản Trị</span>
+								</>
+							)}
+						</Button>
+					</form>
+
+					<div className="border-t border-border pt-4 text-center">
+						<p className="text-[11px] text-muted-foreground">
+							Mẹo: Khi mở trong Saleor Dashboard (localhost:9000), hệ thống tự động liên kết phiên làm việc an toàn.
+						</p>
+					</div>
+				</div>
+			</div>
+		);
+	}
 
 	return (
-		<div className="w-full bg-background text-foreground pb-12">
+		<div className="min-h-screen w-full bg-background text-foreground pb-12 font-sans">
 			{/* Top Bar with Saleor Breadcrumb & System Status */}
-			<header className="border-b border-border bg-card/60 backdrop-blur-xs px-4 sm:px-8 py-3.5">
+			<header className="border-b border-border bg-card px-4 sm:px-8 py-3.5 shadow-2xs">
 				<div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-					<div className="space-y-0.5">
-						<nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-muted-foreground">
+					<div className="space-y-1">
+						<nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-muted-foreground flex-wrap">
 							<span className="hover:text-foreground">Bảng điều khiển</span>
 							<span>/</span>
 							<span className="hover:text-foreground">Ứng dụng Saleor</span>
 							<span>/</span>
 							<span className="font-semibold text-foreground">Quản trị Cộng đồng & Độc giả</span>
+							{adminUser && (
+								<>
+									<span>•</span>
+									<span className="text-primary font-medium">{adminUser.fullName || adminUser.email} (Staff)</span>
+								</>
+							)}
 						</nav>
-						<div className="flex items-center gap-3 pt-0.5">
+						<div className="flex items-center gap-3">
 							<Image
-								src="/logo.png"
+								src="/android-chrome-192x192.png"
 								alt="Aurabook"
-								width={130}
-								height={28}
-								className="h-6 w-auto object-contain"
+								width={24}
+								height={24}
+								className="h-6 w-6 rounded-md object-contain"
 								unoptimized
 							/>
-							<div className="h-4 w-px bg-border" />
-							<h1 className="text-lg font-bold tracking-tight text-foreground sm:text-xl flex items-center gap-2">
-								<span>Cộng đồng & Đánh giá Sách</span>
-								<span className="rounded-full bg-primary/10 text-primary text-[11px] font-semibold px-2 py-0.5">
-									Saleor App v1.0
-								</span>
-							</h1>
+							<div className="flex items-center gap-2">
+								<h1 className="text-sm font-bold tracking-tight text-foreground">
+									Trung Tâm Quản Trị Cộng Đồng Aurabook
+								</h1>
+								<Badge variant="outline-solid" className="text-[10px] py-0 px-1.5 text-primary border-primary/30">
+									Saleor App
+								</Badge>
+							</div>
 						</div>
 					</div>
 
-					<div className="flex items-center gap-2 shrink-0">
+					<div className="flex items-center gap-2">
 						<Link
 							href="/vi/channel-vnd/community"
 							target="_blank"
@@ -299,6 +550,16 @@ export function CommunityAdminDashboard() {
 						>
 							<RefreshCw strokeWidth={1.75} className={`h-3.5 w-3.5 ${isLoading ? "animate-spin" : ""}`} />
 							<span>{isLoading ? "Đang đồng bộ..." : "Đồng bộ"}</span>
+						</Button>
+						<Button
+							type="button"
+							variant="outline-solid"
+							size="sm"
+							onClick={handleAdminLogout}
+							className="h-8 text-xs gap-1.5 text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/30"
+						>
+							<LogOut strokeWidth={1.75} className="h-3.5 w-3.5" />
+							<span>Đăng xuất</span>
 						</Button>
 					</div>
 				</div>
@@ -332,793 +593,1017 @@ export function CommunityAdminDashboard() {
 							<Users strokeWidth={1.75} className="h-4 w-4 text-primary" />
 						</div>
 						<div className="mt-2 text-2xl font-bold text-foreground">{users.length}</div>
-						<span className="text-[11px] text-muted-foreground mt-0.5 block">100% tài khoản Saleor</span>
+						<span className="text-[11px] text-muted-foreground mt-0.5 block">Tài khoản Saleor Core</span>
 					</div>
 
 					<div className="rounded-xl border border-border bg-card p-4 shadow-2xs">
 						<div className="flex items-center justify-between">
-							<span className="text-xs font-medium text-muted-foreground">Tài khoản bị hạn chế</span>
-							<AlertTriangle strokeWidth={1.75} className="h-4 w-4 text-destructive" />
+							<span className="text-xs font-medium text-muted-foreground">Thông báo phát hành</span>
+							<Megaphone strokeWidth={1.75} className="h-4 w-4 text-primary" />
 						</div>
-						<div className="mt-2 text-2xl font-bold text-destructive">{blockedCount}</div>
-						<span className="text-[11px] text-muted-foreground mt-0.5 block">Vi phạm quy ước</span>
+						<div className="mt-2 text-2xl font-bold text-foreground">{communicationPosts.length}</div>
+						<span className="text-[11px] text-muted-foreground mt-0.5 block">Từ Ban Quản Trị</span>
 					</div>
 				</div>
 
-				{/* Navigation Tabs (Saleor Macaw UI style) */}
-				<div className="border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-					<div className="flex items-center gap-1 overflow-x-auto">
-						<button
-							type="button"
-							onClick={() => {
-								setActiveTab("posts");
-								setSearchQuery("");
-							}}
-							className={`border-b-2 px-3.5 py-2.5 text-xs font-semibold transition-colors shrink-0 flex items-center gap-1.5 ${
-								activeTab === "posts"
-									? "border-primary text-primary"
-									: "border-transparent text-muted-foreground hover:text-foreground"
-							}`}
-						>
-							<FileText strokeWidth={1.75} className="h-3.5 w-3.5" />
-							<span>Bài viết & Thảo luận ({posts.length})</span>
-						</button>
+				{/* 2 Primary Navigation Tabs: Quản lý (Management) & Truyền thông (Communications) */}
+				<div className="border-b border-border flex items-center gap-2">
+					<button
+						type="button"
+						onClick={() => {
+							setMainTab("management");
+							setIsCreatingCommPost(false);
+							setSearchQuery("");
+						}}
+						className={`border-b-2 px-5 py-3 text-xs font-bold transition-all shrink-0 flex items-center gap-2 cursor-pointer ${
+							mainTab === "management"
+								? "border-primary text-primary bg-primary/5 rounded-t-lg"
+								: "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50"
+						}`}
+					>
+						<ShieldCheck strokeWidth={1.75} className="h-4 w-4" />
+						<span>Tab Quản lý (Kiểm duyệt & Độc giả)</span>
+					</button>
 
-						<button
-							type="button"
-							onClick={() => {
-								setActiveTab("reviews");
-								setSearchQuery("");
-							}}
-							className={`border-b-2 px-3.5 py-2.5 text-xs font-semibold transition-colors shrink-0 flex items-center gap-1.5 ${
-								activeTab === "reviews"
-									? "border-primary text-primary"
-									: "border-transparent text-muted-foreground hover:text-foreground"
-							}`}
-						>
-							<BookOpen strokeWidth={1.75} className="h-3.5 w-3.5" />
-							<span>Đánh giá từ sản phẩm ({reviewsPosts.length})</span>
-						</button>
-
-						<button
-							type="button"
-							onClick={() => {
-								setActiveTab("users");
-								setSearchQuery("");
-							}}
-							className={`border-b-2 px-3.5 py-2.5 text-xs font-semibold transition-colors shrink-0 flex items-center gap-1.5 ${
-								activeTab === "users"
-									? "border-primary text-primary"
-									: "border-transparent text-muted-foreground hover:text-foreground"
-							}`}
-						>
-							<Users strokeWidth={1.75} className="h-3.5 w-3.5" />
-							<span>Quản lý Độc giả ({users.length})</span>
-						</button>
-
-						<button
-							type="button"
-							onClick={() => setActiveTab("settings")}
-							className={`border-b-2 px-3.5 py-2.5 text-xs font-semibold transition-colors shrink-0 flex items-center gap-1.5 ${
-								activeTab === "settings"
-									? "border-primary text-primary"
-									: "border-transparent text-muted-foreground hover:text-foreground"
-							}`}
-						>
-							<SlidersHorizontal strokeWidth={1.75} className="h-3.5 w-3.5" />
-							<span>Quy ước & Cấu hình</span>
-						</button>
-					</div>
-
-					{/* Search input in tab bar */}
-					{activeTab !== "settings" && (
-						<div className="relative w-full sm:w-64 pb-2 sm:pb-0">
-							<Search strokeWidth={1.75} className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
-							<input
-								type="text"
-								value={searchQuery}
-								onChange={(e) => setSearchQuery(e.target.value)}
-								placeholder="Tìm kiếm nội dung, tác giả..."
-								className="w-full h-8 pl-8 pr-3 rounded-lg bg-muted/40 border border-border text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:bg-background"
-							/>
-						</div>
-					)}
+					<button
+						type="button"
+						onClick={() => {
+							setMainTab("communications");
+							setSearchQuery("");
+						}}
+						className={`border-b-2 px-5 py-3 text-xs font-bold transition-all shrink-0 flex items-center gap-2 cursor-pointer ${
+							mainTab === "communications"
+								? "border-primary text-primary bg-primary/5 rounded-t-lg"
+								: "border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50"
+						}`}
+					>
+						<Megaphone strokeWidth={1.75} className="h-4 w-4" />
+						<span>Tab Truyền thông (Đăng bài & Thông báo)</span>
+						{communicationPosts.length > 0 && (
+							<Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
+								{communicationPosts.length}
+							</Badge>
+						)}
+					</button>
 				</div>
 
-				{/* TAB 1: POSTS MODERATION */}
-				{activeTab === "posts" && (
-					<div className="space-y-4">
-						{/* Sub-filters */}
-						<div className="flex items-center gap-2">
-							<button
-								type="button"
-								onClick={() => setPostFilter("all")}
-								className={`rounded-full px-3 py-1 text-[11px] font-semibold transition-colors ${
-									postFilter === "all"
-										? "bg-foreground text-background"
-										: "bg-muted text-muted-foreground hover:text-foreground"
-								}`}
-							>
-								Tất cả ({posts.length})
-							</button>
-							<button
-								type="button"
-								onClick={() => setPostFilter("with-book")}
-								className={`rounded-full px-3 py-1 text-[11px] font-semibold transition-colors ${
-									postFilter === "with-book"
-										? "bg-foreground text-background"
-										: "bg-muted text-muted-foreground hover:text-foreground"
-								}`}
-							>
-								Có gắn sách ({reviewsPosts.length})
-							</button>
-							<button
-								type="button"
-								onClick={() => setPostFilter("pinned")}
-								className={`rounded-full px-3 py-1 text-[11px] font-semibold transition-colors ${
-									postFilter === "pinned"
-										? "bg-foreground text-background"
-										: "bg-muted text-muted-foreground hover:text-foreground"
-								}`}
-							>
-								Đang ghim ({posts.filter((p) => p.isPinned).length})
-							</button>
-						</div>
-
-						{/* Posts List (Threads-style moderation cards) */}
-						{filteredPosts.length === 0 ? (
-							<div className="rounded-xl border border-dashed border-border p-12 text-center text-xs text-muted-foreground">
-								Không tìm thấy bài viết nào phù hợp với bộ lọc
+				{/* ============================================================== */}
+				{/* TAB 1: QUẢN LÝ (MANAGEMENT)                                      */}
+				{/* ============================================================== */}
+				{mainTab === "management" && (
+					<div className="space-y-6">
+						{/* Sub-navigation inside Management */}
+						<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-card p-3 rounded-xl border border-border">
+							<div className="flex items-center gap-1.5">
+								<Button
+									type="button"
+									variant={mgmtSubTab === "posts" ? "default" : "outline-solid"}
+									size="sm"
+									onClick={() => setMgmtSubTab("posts")}
+									className="text-xs h-8 gap-1.5"
+								>
+									<FileText strokeWidth={1.75} className="h-3.5 w-3.5" />
+									<span>Kiểm duyệt Bài viết & Đánh giá ({posts.length})</span>
+								</Button>
+								<Button
+									type="button"
+									variant={mgmtSubTab === "users" ? "default" : "outline-solid"}
+									size="sm"
+									onClick={() => setMgmtSubTab("users")}
+									className="text-xs h-8 gap-1.5"
+								>
+									<Users strokeWidth={1.75} className="h-3.5 w-3.5" />
+									<span>Độc giả & Tài khoản Saleor ({users.length})</span>
+								</Button>
+								<Button
+									type="button"
+									variant={mgmtSubTab === "settings" ? "default" : "outline-solid"}
+									size="sm"
+									onClick={() => setMgmtSubTab("settings")}
+									className="text-xs h-8 gap-1.5"
+								>
+									<SlidersHorizontal strokeWidth={1.75} className="h-3.5 w-3.5" />
+									<span>Quy tắc Kiểm duyệt</span>
+								</Button>
 							</div>
-						) : (
-							<div className="divide-y divide-border border border-border rounded-xl bg-card overflow-hidden">
-								{filteredPosts.map((post) => (
-									<div key={post.id} className="p-4 sm:p-5 hover:bg-muted/20 transition-colors">
-										<div className="flex items-start justify-between gap-4">
-											<div className="flex items-start gap-3 min-w-0 flex-1">
-												<div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border border-border">
-													<Image
-														src={post.author.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"}
-														alt={post.author.displayName}
-														fill
-														sizes="36px"
-														className="object-cover"
-														unoptimized
-													/>
-												</div>
-												<div className="space-y-1.5 min-w-0 flex-1">
-													<div className="flex flex-wrap items-center gap-2">
-														<span className="font-semibold text-xs text-foreground">
-															{post.author.displayName}
-														</span>
-														<span className="text-[11px] text-muted-foreground">
-															{post.author.username}
-														</span>
-														{post.author.isVerifiedBuyer && (
-															<span className="inline-flex items-center gap-0.5 rounded-full bg-success/10 px-2 py-0.5 text-[10px] font-semibold text-success">
-																<CheckCircle2 strokeWidth={1.75} className="h-3 w-3" />
-																Đã mua hàng
-															</span>
-														)}
-														{post.isPinned && (
-															<span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-amber-600">
-																<Pin strokeWidth={1.75} className="h-3 w-3" />
-																Đã ghim
-															</span>
-														)}
-														{post.isHidden && (
-															<span className="inline-flex items-center gap-1 rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-semibold text-destructive">
-																<EyeOff strokeWidth={1.75} className="h-3 w-3" />
-																Đã ẩn
-															</span>
-														)}
-														{post.updatedAt && (
-															<span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
-																<History strokeWidth={1.75} className="h-3 w-3" />
-																Đã sửa
-															</span>
-														)}
-														{post.isFromProductReview && (
-															<span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary">
-																Đánh giá PDP
-															</span>
-														)}
-													</div>
 
-													<h3 className="font-semibold text-xs text-foreground">
-														{post.title}
-													</h3>
-													<p className="text-xs text-foreground/80 leading-relaxed whitespace-pre-line">
-														{post.content}
-													</p>
+							{/* Search input for Posts or Users */}
+							{mgmtSubTab !== "settings" && (
+								<div className="relative w-full sm:w-72">
+									<Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
+									<Input
+										type="text"
+										placeholder={
+											mgmtSubTab === "posts"
+												? "Tìm theo tiêu đề, tác giả, sách..."
+												: "Tìm độc giả, email, tên thật..."
+										}
+										value={searchQuery}
+										onChange={(e) => setSearchQuery(e.target.value)}
+										className="h-8 pl-8 text-xs bg-background"
+									/>
+									{searchQuery && (
+										<button
+											type="button"
+											onClick={() => setSearchQuery("")}
+											className="absolute right-2.5 top-2.5 text-muted-foreground hover:text-foreground cursor-pointer"
+										>
+											<X className="h-3 w-3" />
+										</button>
+									)}
+								</div>
+							)}
+						</div>
 
-													{/* Attached Book with thumbnail, price and exact link */}
-													{post.book && (
-														<div className="mt-2.5 rounded-lg border border-border/80 bg-muted/20 p-2.5 flex items-center justify-between gap-3 max-w-lg">
-															<div className="flex items-center gap-2.5 min-w-0">
-																<div className="relative h-11 w-8 shrink-0 overflow-hidden rounded border border-border/80 bg-muted">
+						{/* SUB-VIEW: KIỂM DUYỆT BÀI VIẾT (POSTS & REVIEWS) */}
+						{mgmtSubTab === "posts" && (
+							<div className="space-y-4">
+								{/* Filter Pills */}
+								<div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+									<Button
+										type="button"
+										variant={postFilter === "all" ? "default" : "outline-solid"}
+										size="sm"
+										onClick={() => setPostFilter("all")}
+										className="h-7 text-xs"
+									>
+										Tất cả ({posts.length})
+									</Button>
+									<Button
+										type="button"
+										variant={postFilter === "reviews" ? "default" : "outline-solid"}
+										size="sm"
+										onClick={() => setPostFilter("reviews")}
+										className="h-7 text-xs gap-1"
+									>
+										<BookOpen className="h-3 w-3" />
+										<span>Đánh giá từ PDP ({totalReviewsCount})</span>
+									</Button>
+									<Button
+										type="button"
+										variant={postFilter === "pinned" ? "default" : "outline-solid"}
+										size="sm"
+										onClick={() => setPostFilter("pinned")}
+										className="h-7 text-xs gap-1"
+									>
+										<Pin className="h-3 w-3" />
+										<span>Đã ghim ({posts.filter((p) => p.isPinned).length})</span>
+									</Button>
+									<Button
+										type="button"
+										variant={postFilter === "hidden" ? "default" : "outline-solid"}
+										size="sm"
+										onClick={() => setPostFilter("hidden")}
+										className="h-7 text-xs gap-1"
+									>
+										<EyeOff className="h-3 w-3" />
+										<span>Đang ẩn ({posts.filter((p) => p.isHidden).length})</span>
+									</Button>
+								</div>
+
+								{/* Macaw UI Table of Posts */}
+								<div className="rounded-xl border border-border bg-card overflow-hidden shadow-2xs">
+									<div className="overflow-x-auto">
+										<table className="w-full text-left text-xs">
+											<thead className="bg-muted/50 border-b border-border text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+												<tr>
+													<th className="py-3 px-4">Bài viết & Nội dung</th>
+													<th className="py-3 px-4">Tác giả</th>
+													<th className="py-3 px-4">Sản phẩm / Nguồn</th>
+													<th className="py-3 px-4 text-center">Tương tác</th>
+													<th className="py-3 px-4 text-center">Trạng thái</th>
+													<th className="py-3 px-4 text-right">Thao tác</th>
+												</tr>
+											</thead>
+											<tbody className="divide-y divide-border/60">
+												{filteredPosts.length === 0 ? (
+													<tr>
+														<td colSpan={6} className="py-12 text-center text-muted-foreground">
+															Không tìm thấy bài viết hoặc đánh giá nào phù hợp với bộ lọc.
+														</td>
+													</tr>
+												) : (
+													filteredPosts.map((post) => (
+														<tr key={post.id} className="hover:bg-muted/20 transition-colors">
+															<td className="py-3 px-4 max-w-sm">
+																<div className="font-semibold text-foreground line-clamp-1 flex items-center gap-1.5">
+																	{post.isPinned && (
+																		<Pin className="h-3 w-3 text-primary shrink-0" />
+																	)}
+																	<span>{post.title}</span>
+																</div>
+																<p className="text-muted-foreground text-[11px] line-clamp-2 mt-0.5">
+																	{post.content}
+																</p>
+																<div className="text-[10px] text-muted-foreground mt-1 flex items-center gap-2">
+																	<span>{new Date(post.createdAt).toLocaleDateString("vi-VN")}</span>
+																	{post.editHistory && post.editHistory.length > 0 && (
+																		<span className="text-primary font-medium">
+																			• Đã sửa ({post.editHistory.length} lần)
+																		</span>
+																	)}
+																</div>
+															</td>
+
+															<td className="py-3 px-4">
+																<div className="flex items-center gap-2">
+																	<div className="relative h-7 w-7 rounded-full overflow-hidden border border-border shrink-0">
+																		<Image
+																			src={post.author.avatar || "/android-chrome-192x192.png"}
+																			alt={post.author.displayName}
+																			fill
+																			sizes="28px"
+																			className="object-cover"
+																			unoptimized
+																		/>
+																	</div>
+																	<div className="min-w-0">
+																		<div className="font-medium text-foreground truncate max-w-[120px]">
+																			{post.author.displayName}
+																		</div>
+																		<div className="text-[10px] text-muted-foreground truncate">
+																			{post.author.username}
+																		</div>
+																	</div>
+																</div>
+															</td>
+
+															<td className="py-3 px-4">
+																{post.book ? (
+																	<div className="flex items-center gap-1.5">
+																		<BookOpen className="h-3.5 w-3.5 text-primary shrink-0" />
+																		<span className="font-medium text-foreground truncate max-w-[150px]">
+																			{post.book.title}
+																		</span>
+																	</div>
+																) : (
+																	<Badge variant="outline-solid" className="text-[10px] font-normal">
+																		Mạng xã hội
+																	</Badge>
+																)}
+															</td>
+
+															<td className="py-3 px-4 text-center">
+																<div className="inline-flex items-center gap-3 text-[11px] text-muted-foreground">
+																	<span className="flex items-center gap-1">
+																		<Heart className="h-3 w-3 text-destructive" />
+																		<span>{post.likes?.length || 0}</span>
+																	</span>
+																	<span className="flex items-center gap-1">
+																		<MessageSquare className="h-3 w-3 text-primary" />
+																		<span>{post.comments?.length || 0}</span>
+																	</span>
+																</div>
+															</td>
+
+															<td className="py-3 px-4 text-center">
+																{post.isHidden ? (
+																	<Badge variant="destructive" className="text-[10px]">
+																		Đang ẩn
+																	</Badge>
+																) : (
+																	<Badge variant="outline-solid" className="text-[10px] text-success border-success/30">
+																		Hiển thị
+																	</Badge>
+																)}
+															</td>
+
+															<td className="py-3 px-4 text-right">
+																<div className="inline-flex items-center gap-1">
+																	<Button
+																		type="button"
+																		variant="ghost"
+																		size="sm"
+																		title={post.isPinned ? "Bỏ ghim" : "Ghim bài"}
+																		onClick={() => handleTogglePin(post.id)}
+																		className="h-7 w-7 p-0"
+																	>
+																		<Pin className={`h-3.5 w-3.5 ${post.isPinned ? "text-primary fill-primary" : "text-muted-foreground"}`} />
+																	</Button>
+																	<Button
+																		type="button"
+																		variant="ghost"
+																		size="sm"
+																		title={post.isHidden ? "Bỏ ẩn bài viết" : "Ẩn bài viết"}
+																		onClick={() => handleToggleHide(post.id)}
+																		className="h-7 w-7 p-0"
+																	>
+																		{post.isHidden ? (
+																			<Eye className="h-3.5 w-3.5 text-success" />
+																		) : (
+																			<EyeOff className="h-3.5 w-3.5 text-muted-foreground" />
+																		)}
+																	</Button>
+																	<Button
+																		type="button"
+																		variant="ghost"
+																		size="sm"
+																		title="Sửa nội dung"
+																		onClick={() => setEditingPost(post)}
+																		className="h-7 w-7 p-0"
+																	>
+																		<Edit3 className="h-3.5 w-3.5 text-muted-foreground" />
+																	</Button>
+																	{post.editHistory && post.editHistory.length > 0 && (
+																		<Button
+																			type="button"
+																			variant="ghost"
+																			size="sm"
+																			title="Xem lịch sử chỉnh sửa"
+																			onClick={() => setHistoryPost(post)}
+																			className="h-7 w-7 p-0"
+																		>
+																			<History className="h-3.5 w-3.5 text-primary" />
+																		</Button>
+																	)}
+																	<Button
+																		type="button"
+																		variant="ghost"
+																		size="sm"
+																		title="Xóa bài viết"
+																		onClick={() => handleDeletePost(post.id)}
+																		className="h-7 w-7 p-0 text-destructive hover:bg-destructive/10"
+																	>
+																		<Trash2 className="h-3.5 w-3.5" />
+																	</Button>
+																</div>
+															</td>
+														</tr>
+													))
+												)}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						)}
+
+						{/* SUB-VIEW: QUẢN LÝ ĐỘC GIẢ (SALEOR USERS) */}
+						{mgmtSubTab === "users" && (
+							<div className="rounded-xl border border-border bg-card overflow-hidden shadow-2xs">
+								<div className="overflow-x-auto">
+									<table className="w-full text-left text-xs">
+										<thead className="bg-muted/50 border-b border-border text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+											<tr>
+												<th className="py-3 px-4">Hồ sơ Độc giả</th>
+												<th className="py-3 px-4">Tài khoản Saleor Thật</th>
+												<th className="py-3 px-4 text-center">Đơn hàng</th>
+												<th className="py-3 px-4 text-center">Tổng chi tiêu</th>
+												<th className="py-3 px-4 text-center">Trạng thái</th>
+												<th className="py-3 px-4 text-right">Hành động</th>
+											</tr>
+										</thead>
+										<tbody className="divide-y divide-border/60">
+											{filteredUsers.length === 0 ? (
+												<tr>
+													<td colSpan={6} className="py-12 text-center text-muted-foreground">
+														Không tìm thấy tài khoản độc giả nào.
+													</td>
+												</tr>
+											) : (
+												filteredUsers.map((user) => (
+													<tr key={user.id} className="hover:bg-muted/20 transition-colors">
+														<td className="py-3 px-4">
+															<div className="flex items-center gap-2.5">
+																<div className="relative h-9 w-9 rounded-full overflow-hidden border border-border shrink-0">
 																	<Image
-																		src={post.book.thumbnail || "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop&q=80"}
-																		alt={post.book.title}
+																		src={user.avatar}
+																		alt={user.displayName}
 																		fill
-																		sizes="32px"
+																		sizes="36px"
 																		className="object-cover"
 																		unoptimized
 																	/>
 																</div>
-																<div className="min-w-0">
-																	<div className="font-semibold text-xs text-foreground truncate">
-																		{post.book.title}
+																<div>
+																	<div className="font-semibold text-foreground">
+																		{user.displayName}
 																	</div>
-																	{post.book.author && (
-																		<div className="text-[11px] text-muted-foreground truncate">
-																			{post.book.author}
-																		</div>
-																	)}
-																	<div className="flex items-center gap-2 mt-0.5">
-																		<span className="text-xs font-bold text-primary">
-																			{post.book.price || "120.000 ₫"}
-																		</span>
-																		{post.book.rating && (
-																			<span className="flex items-center gap-0.5 text-[11px] text-amber-500 font-semibold">
-																				<Star strokeWidth={1.75} className="h-3 w-3 fill-amber-400 text-amber-400" />
-																				{post.book.rating}
-																			</span>
-																		)}
+																	<div className="text-[11px] text-muted-foreground">
+																		{user.username}
 																	</div>
 																</div>
 															</div>
+														</td>
 
-															<Link
-																href={`/vi/channel-vnd/products/${post.book.slug}`}
-																target="_blank"
-																rel="noopener noreferrer"
-																className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2 py-1 text-[11px] font-semibold text-foreground hover:bg-muted transition-colors shrink-0"
-															>
-																<span>Mở link</span>
-																<ExternalLink strokeWidth={1.75} className="h-3 w-3" />
-															</Link>
-														</div>
-													)}
+														<td className="py-3 px-4">
+															<div className="space-y-0.5">
+																<div className="font-medium text-foreground">
+																	{user.realAccount?.fullName || "Chưa cập nhật"}
+																</div>
+																<div className="text-[11px] text-muted-foreground flex items-center gap-1">
+																	<Mail className="h-3 w-3" />
+																	<span>{user.realAccount?.email}</span>
+																</div>
+															</div>
+														</td>
 
-													<div className="flex items-center gap-4 text-[11px] text-muted-foreground pt-1">
-														<span className="flex items-center gap-1">
-															<Heart strokeWidth={1.75} className="h-3 w-3 text-red-500" />
-															{post.likes?.length || 0} lượt thích
-														</span>
-														<span className="flex items-center gap-1">
-															<MessageSquare strokeWidth={1.75} className="h-3 w-3 text-primary" />
-															{post.comments?.length || 0} bình luận
-														</span>
-													</div>
-												</div>
+														<td className="py-3 px-4 text-center font-medium">
+															{user.realAccount?.ordersCount || 0} đơn
+														</td>
+
+														<td className="py-3 px-4 text-center font-bold text-foreground">
+															{user.realAccount?.totalSpent || "0 ₫"}
+														</td>
+
+														<td className="py-3 px-4 text-center">
+															{user.isBlocked ? (
+																<Badge variant="destructive" className="text-[10px]">
+																	Bị khóa
+																</Badge>
+															) : (
+																<Badge variant="outline-solid" className="text-[10px] text-success border-success/30">
+																	Hoạt động
+																</Badge>
+															)}
+														</td>
+
+														<td className="py-3 px-4 text-right">
+															<div className="inline-flex items-center gap-1.5">
+																<Button
+																	type="button"
+																	variant="outline-solid"
+																	size="sm"
+																	onClick={() => setSelectedUser(user)}
+																	className="h-7 text-[11px]"
+																>
+																	Chi tiết
+																</Button>
+																<Button
+																	type="button"
+																	variant={user.isBlocked ? "default" : "destructive"}
+																	size="sm"
+																	onClick={() => handleToggleBlock(user.id)}
+																	className="h-7 text-[11px] gap-1"
+																>
+																	{user.isBlocked ? (
+																		<>
+																			<Unlock className="h-3 w-3" />
+																			<span>Mở khóa</span>
+																		</>
+																	) : (
+																		<>
+																			<Lock className="h-3 w-3" />
+																			<span>Khóa</span>
+																		</>
+																	)}
+																</Button>
+															</div>
+														</td>
+													</tr>
+												))
+											)}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						)}
+
+						{/* SUB-VIEW: CẤU HÌNH KIỂM DUYỆT (GOVERNANCE SETTINGS) */}
+						{mgmtSubTab === "settings" && (
+							<div className="max-w-2xl rounded-xl border border-border bg-card p-6 space-y-6 shadow-2xs">
+								<div className="space-y-1">
+									<h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+										<SlidersHorizontal className="h-4 w-4 text-primary" />
+										<span>Quy chuẩn & Chính sách Cộng đồng</span>
+									</h2>
+									<p className="text-xs text-muted-foreground">
+										Thiết lập điều kiện kiểm duyệt tự động cho bài thảo luận và đánh giá sách của độc giả.
+									</p>
+								</div>
+
+								{settingsSavedAlert && (
+									<div className="rounded-lg bg-success/10 border border-success/20 p-3 text-xs text-success font-medium flex items-center gap-2 animate-in fade-in">
+										<Check className="h-4 w-4" />
+										<span>Cấu hình chính sách kiểm duyệt đã được lưu thành công.</span>
+									</div>
+								)}
+
+								<div className="space-y-4 divide-y divide-border/60">
+									<div className="flex items-center justify-between pt-3">
+										<div className="space-y-0.5">
+											<div className="text-xs font-semibold text-foreground">
+												Tự động phê duyệt bài viết mới
 											</div>
-
-											{/* Moderation Actions */}
-											<div className="flex flex-wrap items-center gap-1.5 shrink-0">
-												<Button
-													type="button"
-													variant="outline-solid"
-													size="sm"
-													onClick={() => handleTogglePin(post.id)}
-													className="h-7 text-[11px] gap-1"
-												>
-													<Pin strokeWidth={1.75} className="h-3 w-3" />
-													<span>{post.isPinned ? "Bỏ ghim" : "Ghim"}</span>
-												</Button>
-
-												<Button
-													type="button"
-													variant={post.isHidden ? "default" : "outline-solid"}
-													size="sm"
-													onClick={() => handleToggleHide(post.id)}
-													className={`h-7 text-[11px] gap-1 ${
-														post.isHidden ? "bg-amber-600 hover:bg-amber-700 text-white" : ""
-													}`}
-												>
-													{post.isHidden ? (
-														<>
-															<Eye strokeWidth={1.75} className="h-3 w-3" />
-															<span>Hiện bài</span>
-														</>
-													) : (
-														<>
-															<EyeOff strokeWidth={1.75} className="h-3 w-3" />
-															<span>Ẩn bài</span>
-														</>
-													)}
-												</Button>
-
-												<Button
-													type="button"
-													variant="outline-solid"
-													size="sm"
-													onClick={() => setEditingPost(post)}
-													className="h-7 text-[11px] gap-1"
-												>
-													<Edit3 strokeWidth={1.75} className="h-3 w-3" />
-													<span>Sửa</span>
-												</Button>
-
-												{post.editHistory && post.editHistory.length > 0 && (
-													<Button
-														type="button"
-														variant="outline-solid"
-														size="sm"
-														onClick={() => setHistoryPost(post)}
-														className="h-7 text-[11px] gap-1 text-primary"
-													>
-														<History strokeWidth={1.75} className="h-3 w-3" />
-														<span>Lịch sử ({post.editHistory.length})</span>
-													</Button>
-												)}
-
-												<Button
-													type="button"
-													variant="destructive"
-													size="sm"
-													onClick={() => handleDeletePost(post.id)}
-													className="h-7 text-[11px] gap-1"
-												>
-													<Trash2 strokeWidth={1.75} className="h-3 w-3" />
-													<span>Xóa</span>
-												</Button>
+											<div className="text-[11px] text-muted-foreground">
+												Bài viết của độc giả sẽ xuất hiện ngay lập tức mà không cần quản trị viên duyệt trước.
 											</div>
 										</div>
+										<input
+											type="checkbox"
+											checked={settings.autoApprovePosts}
+											onChange={(e) => {
+												const updated = { ...settings, autoApprovePosts: e.target.checked };
+												setSettings(updated);
+												void handleSaveSettings(updated);
+											}}
+											className="h-4 w-4 rounded accent-primary cursor-pointer"
+										/>
 									</div>
-								))}
+
+									<div className="flex items-center justify-between pt-3">
+										<div className="space-y-0.5">
+											<div className="text-xs font-semibold text-foreground">
+												Chỉ người đã mua sách mới được đánh giá (Verified Buyer)
+											</div>
+											<div className="text-[11px] text-muted-foreground">
+												Đối chiếu đơn hàng thực tế từ Saleor trước khi cho phép độc giả gửi đánh giá sao.
+											</div>
+										</div>
+										<input
+											type="checkbox"
+											checked={settings.verifiedBuyersOnly}
+											onChange={(e) => {
+												const updated = { ...settings, verifiedBuyersOnly: e.target.checked };
+												setSettings(updated);
+												void handleSaveSettings(updated);
+											}}
+											className="h-4 w-4 rounded accent-primary cursor-pointer"
+										/>
+									</div>
+
+									<div className="flex items-center justify-between pt-3">
+										<div className="space-y-0.5">
+											<div className="text-xs font-semibold text-foreground">
+												Lọc tự động từ ngữ nhạy cảm & spam
+											</div>
+											<div className="text-[11px] text-muted-foreground">
+												Tự động ẩn hoặc gắn cờ cảnh báo các bình luận chứa ngôn từ vi phạm quy ước.
+											</div>
+										</div>
+										<input
+											type="checkbox"
+											checked={settings.filterSensitiveWords}
+											onChange={(e) => {
+												const updated = { ...settings, filterSensitiveWords: e.target.checked };
+												setSettings(updated);
+												void handleSaveSettings(updated);
+											}}
+											className="h-4 w-4 rounded accent-primary cursor-pointer"
+										/>
+									</div>
+
+									<div className="flex items-center justify-between pt-3">
+										<div className="space-y-0.5">
+											<div className="text-xs font-semibold text-foreground">
+												Yêu cầu đồng ý Điều khoản văn hóa đọc
+											</div>
+											<div className="text-[11px] text-muted-foreground">
+												Độc giả phải xác nhận thỏa thuận cộng đồng trước khi đăng bài lần đầu tiên.
+											</div>
+										</div>
+										<input
+											type="checkbox"
+											checked={settings.requireTerms}
+											onChange={(e) => {
+												const updated = { ...settings, requireTerms: e.target.checked };
+												setSettings(updated);
+												void handleSaveSettings(updated);
+											}}
+											className="h-4 w-4 rounded accent-primary cursor-pointer"
+										/>
+									</div>
+								</div>
+
+								<div className="pt-2">
+									<Button
+										type="button"
+										onClick={() => void handleSaveSettings()}
+										disabled={isSavingSettings}
+										size="sm"
+										className="text-xs font-semibold"
+									>
+										{isSavingSettings ? "Đang lưu..." : "Lưu thay đổi"}
+									</Button>
+								</div>
 							</div>
 						)}
 					</div>
 				)}
 
-				{/* TAB 2: REVIEWS MODERATION */}
-				{activeTab === "reviews" && (
-					<div className="space-y-4">
-						<div className="flex items-center justify-between">
-							<p className="text-xs text-muted-foreground">
-								Danh sách đánh giá được đồng bộ tự động từ trang chi tiết sản phẩm sách (PDP)
-							</p>
-							<span className="text-xs font-semibold text-foreground">{reviewsPosts.length} đánh giá</span>
-						</div>
-
-						{reviewsPosts.length === 0 ? (
-							<div className="rounded-xl border border-dashed border-border p-12 text-center text-xs text-muted-foreground">
-								Chưa có đánh giá nào từ sản phẩm
+				{/* ============================================================== */}
+				{/* TAB 2: TRUYỀN THÔNG (COMMUNICATIONS - CHUẨN SALEOR DASHBOARD)    */}
+				{/* ============================================================== */}
+				{mainTab === "communications" && (
+					<div className="space-y-6">
+						{/* Success alert message */}
+						{postSuccessMessage && (
+							<div className="rounded-xl bg-success/10 border border-success/30 p-3.5 text-xs text-success font-medium flex items-center gap-2 animate-in fade-in">
+								<CheckCircle2 className="h-4 w-4 shrink-0" />
+								<span>{postSuccessMessage}</span>
 							</div>
-						) : (
-							<div className="divide-y divide-border border border-border rounded-xl bg-card overflow-hidden">
-								{reviewsPosts.map((rev) => (
-									<div key={rev.id} className="p-4 sm:p-5 hover:bg-muted/20 transition-colors">
-										<div className="flex items-start justify-between gap-4">
-											<div className="space-y-2 flex-1">
+						)}
+
+						{/* CHẾ ĐỘ 1: XEM DANH SÁCH THÔNG BÁO (LIST VIEW) */}
+						{!isCreatingCommPost && (
+							<div className="space-y-4">
+								{/* Saleor Standard List Header */}
+								<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-card p-4 rounded-xl border border-border shadow-2xs">
+									<div className="space-y-0.5">
+										<div className="flex items-center gap-2">
+											<h2 className="text-sm font-bold text-foreground">
+												Quản Lý Thông Báo & Truyền Thông
+											</h2>
+											<Badge variant="secondary" className="text-[10px] py-0 px-1.5 h-4">
+												{communicationPosts.length} bài
+											</Badge>
+										</div>
+										<p className="text-xs text-muted-foreground">
+											Toàn bộ các thông điệp, tin tức và sự kiện do Ban Quản Trị phát hành đến độc giả.
+										</p>
+									</div>
+
+									<div className="flex items-center gap-2">
+										<div className="relative w-full sm:w-64">
+											<Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
+											<Input
+												type="text"
+												placeholder="Tìm kiếm thông báo..."
+												value={commSearchQuery}
+												onChange={(e) => setCommSearchQuery(e.target.value)}
+												className="h-8 pl-8 text-xs bg-background"
+											/>
+											{commSearchQuery && (
+												<button
+													type="button"
+													onClick={() => setCommSearchQuery("")}
+													className="absolute right-2.5 top-2.5 text-muted-foreground hover:text-foreground cursor-pointer"
+												>
+													<X className="h-3 w-3" />
+												</button>
+											)}
+										</div>
+
+										<Button
+											type="button"
+											onClick={() => setIsCreatingCommPost(true)}
+											size="sm"
+											className="h-8 text-xs font-bold gap-1.5 bg-primary text-primary-foreground shadow-xs shrink-0"
+										>
+											<Plus className="h-3.5 w-3.5" />
+											<span>Tạo thông báo mới</span>
+										</Button>
+									</div>
+								</div>
+
+								{/* Macaw UI Table of Communications */}
+								<div className="rounded-xl border border-border bg-card overflow-hidden shadow-2xs">
+									<div className="overflow-x-auto">
+										<table className="w-full text-left text-xs">
+											<thead className="bg-muted/50 border-b border-border text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+												<tr>
+													<th className="py-3 px-4">Tiêu đề thông báo</th>
+													<th className="py-3 px-4">Người phát hành</th>
+													<th className="py-3 px-4 text-center">Ghim</th>
+													<th className="py-3 px-4 text-center">Tương tác</th>
+													<th className="py-3 px-4 text-center">Ngày đăng</th>
+													<th className="py-3 px-4 text-right">Thao tác</th>
+												</tr>
+											</thead>
+											<tbody className="divide-y divide-border/60">
+												{communicationPosts.length === 0 ? (
+													<tr>
+														<td colSpan={6} className="py-16 text-center text-muted-foreground space-y-2">
+															<Megaphone className="h-8 w-8 mx-auto text-muted-foreground/40" />
+															<div className="text-sm font-semibold text-foreground">
+																Chưa có thông báo truyền thông nào
+															</div>
+															<p className="text-xs text-muted-foreground">
+																Nhấp vào nút &ldquo;Tạo thông báo mới&rdquo; ở góc trên để phát hành tin tức đầu tiên.
+															</p>
+														</td>
+													</tr>
+												) : (
+													communicationPosts.map((post) => (
+														<tr key={post.id} className="hover:bg-muted/20 transition-colors">
+															<td className="py-3.5 px-4 max-w-md">
+																<div className="font-semibold text-foreground line-clamp-1 flex items-center gap-1.5">
+																	{post.isPinned && (
+																		<Badge variant="default" className="text-[9px] py-0 px-1.5 h-4 shrink-0">
+																			Đã ghim
+																		</Badge>
+																	)}
+																	<span>{post.title}</span>
+																</div>
+																<p className="text-muted-foreground text-[11px] line-clamp-1 mt-0.5">
+																	{post.content}
+																</p>
+															</td>
+
+															<td className="py-3.5 px-4">
+																<div className="flex items-center gap-2">
+																	<div className="relative h-6 w-6 rounded-md overflow-hidden border border-border shrink-0">
+																		<Image
+																			src="/android-chrome-192x192.png"
+																			alt="Admin"
+																			fill
+																			sizes="24px"
+																			className="object-contain"
+																			unoptimized
+																		/>
+																	</div>
+																	<span className="font-medium text-foreground">
+																		{post.author.displayName}
+																	</span>
+																</div>
+															</td>
+
+															<td className="py-3.5 px-4 text-center">
+																<Button
+																	type="button"
+																	variant="ghost"
+																	size="sm"
+																	onClick={() => handleTogglePin(post.id)}
+																	className="h-7 w-7 p-0"
+																	title={post.isPinned ? "Bỏ ghim" : "Ghim lên đầu"}
+																>
+																	<Pin className={`h-3.5 w-3.5 ${post.isPinned ? "text-primary fill-primary" : "text-muted-foreground"}`} />
+																</Button>
+															</td>
+
+															<td className="py-3.5 px-4 text-center">
+																<div className="inline-flex items-center gap-2.5 text-[11px] text-muted-foreground">
+																	<span className="flex items-center gap-1">
+																		<Heart className="h-3 w-3 text-destructive" />
+																		<span>{post.likes?.length || 0}</span>
+																	</span>
+																	<span className="flex items-center gap-1">
+																		<MessageSquare className="h-3 w-3 text-primary" />
+																		<span>{post.comments?.length || 0}</span>
+																	</span>
+																</div>
+															</td>
+
+															<td className="py-3.5 px-4 text-center text-muted-foreground text-[11px]">
+																{new Date(post.createdAt).toLocaleDateString("vi-VN")}
+															</td>
+
+															<td className="py-3.5 px-4 text-right">
+																<div className="inline-flex items-center gap-1">
+																	<Button
+																		type="button"
+																		variant="ghost"
+																		size="sm"
+																		title="Chỉnh sửa bài viết"
+																		onClick={() => setEditingPost(post)}
+																		className="h-7 w-7 p-0"
+																	>
+																		<Edit3 className="h-3.5 w-3.5 text-muted-foreground" />
+																	</Button>
+																	<Button
+																		type="button"
+																		variant="ghost"
+																		size="sm"
+																		title="Xóa thông báo"
+																		onClick={() => handleDeletePost(post.id)}
+																		className="h-7 w-7 p-0 text-destructive hover:bg-destructive/10"
+																	>
+																		<Trash2 className="h-3.5 w-3.5" />
+																	</Button>
+																</div>
+															</td>
+														</tr>
+													))
+												)}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						)}
+
+						{/* CHẾ ĐỘ 2: SOẠN THẢO 2-CỘT CHUẨN SALEOR DASHBOARD (CREATE VIEW) */}
+						{isCreatingCommPost && (
+							<div className="space-y-6 animate-in fade-in-0 duration-200">
+								{/* Top Action Bar chuẩn Saleor */}
+								<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-card p-4 rounded-xl border border-border shadow-2xs">
+									<div className="flex items-center gap-3">
+										<Button
+											type="button"
+											variant="outline-solid"
+											size="sm"
+											onClick={() => setIsCreatingCommPost(false)}
+											className="h-8 w-8 p-0 shrink-0"
+											title="Quay lại danh sách"
+										>
+											<ArrowLeft className="h-4 w-4" />
+										</Button>
+										<div>
+											<h2 className="text-sm font-bold tracking-tight text-foreground flex items-center gap-2">
+												<span>Tạo Thông Báo Truyền Thông Mới</span>
+												<Badge variant="outline-solid" className="text-[10px] text-primary border-primary/30 py-0">
+													Bản thảo
+												</Badge>
+											</h2>
+											<p className="text-[11px] text-muted-foreground mt-0.5">
+												Soạn thảo thông điệp chính thức gửi đến toàn bộ mạng xã hội độc giả Aurabook
+											</p>
+										</div>
+									</div>
+
+									<div className="flex items-center gap-2">
+										<Button
+											type="button"
+											variant="outline-solid"
+											size="sm"
+											onClick={() => setIsCreatingCommPost(false)}
+											className="h-8 text-xs px-3"
+										>
+											Hủy
+										</Button>
+										<Button
+											type="button"
+											disabled={isSubmittingAdminPost || !adminPostTitle.trim() || !adminPostContent.trim()}
+											onClick={(e) => void handleCreateAdminPost(e)}
+											size="sm"
+											className="h-8 text-xs font-bold gap-1.5 px-4 bg-primary text-primary-foreground shadow-xs"
+										>
+											<Send className="h-3.5 w-3.5" />
+											<span>{isSubmittingAdminPost ? "Đang phát hành..." : "Phát hành thông báo"}</span>
+										</Button>
+									</div>
+								</div>
+
+								{/* Bố cục 2 Cột chuẩn Saleor Dashboard (2/3 Trái & 1/3 Phải) */}
+								<form onSubmit={handleCreateAdminPost} className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+									{/* CỘT TRÁI (2/3): THÔNG TIN CHÍNH */}
+									<div className="lg:col-span-2 space-y-6">
+										<div className="rounded-xl border border-border bg-card p-5 sm:p-6 shadow-2xs space-y-5">
+											<div className="border-b border-border pb-3">
+												<h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+													<FileText className="h-3.5 w-3.5 text-primary" />
+													<span>Thông tin chung (General Information)</span>
+												</h3>
+											</div>
+
+											<div className="space-y-4">
+												<div className="space-y-1.5">
+													<label className="text-xs font-bold text-foreground">
+														Tiêu đề thông báo / Tin tức <span className="text-destructive">*</span>
+													</label>
+													<Input
+														type="text"
+														value={adminPostTitle}
+														onChange={(e) => setAdminPostTitle(e.target.value)}
+														placeholder="Ví dụ: Cập nhật Lịch sự kiện Giao lưu Tác giả & Ra mắt Sách Tháng 10..."
+														required
+														className="h-10 text-xs bg-background"
+													/>
+												</div>
+
+												<div className="space-y-1.5">
+													<label className="text-xs font-bold text-foreground">
+														Nội dung chi tiết <span className="text-destructive">*</span>
+													</label>
+													<textarea
+														rows={8}
+														value={adminPostContent}
+														onChange={(e) => setAdminPostContent(e.target.value)}
+														placeholder="Nhập nội dung thông điệp, hướng dẫn tham gia sự kiện hoặc thông báo chính thức đến độc giả..."
+														required
+														className="w-full rounded-lg border border-input bg-background p-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring resize-y font-sans leading-relaxed"
+													/>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									{/* CỘT PHẢI (1/3): PHÂN LOẠI & LIVE PREVIEW */}
+									<div className="lg:col-span-1 space-y-6">
+										{/* Card: Phân loại & Trạng thái */}
+										<div className="rounded-xl border border-border bg-card p-5 shadow-2xs space-y-4">
+											<div className="border-b border-border pb-2.5">
+												<h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+													<SlidersHorizontal className="h-3.5 w-3.5 text-primary" />
+													<span>Phân loại & Hiển thị</span>
+												</h3>
+											</div>
+
+											<div className="space-y-3.5">
+												<div className="space-y-1">
+													<label className="text-xs font-bold text-foreground">
+														Phân loại truyền thông
+													</label>
+													<select
+														value={adminPostCategory}
+														onChange={(e) => setAdminPostCategory(e.target.value)}
+														className="w-full h-9 rounded-md border border-input bg-background px-3 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+													>
+														<option value="Thông báo">Thông báo quan trọng</option>
+														<option value="Sự kiện">Sự kiện & Workshop</option>
+														<option value="Tin sách mới">Ra mắt sách mới</option>
+														<option value="Khuyến mãi">Ưu đãi & Minigame</option>
+													</select>
+												</div>
+
+												<div className="rounded-lg border border-border bg-muted/30 p-3 space-y-1">
+													<div className="flex items-center justify-between">
+														<div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+															<Pin className="h-3.5 w-3.5 text-primary" />
+															<span>Ghim lên đầu trang</span>
+														</div>
+														<input
+															type="checkbox"
+															checked={adminPostPinned}
+															onChange={(e) => setAdminPostPinned(e.target.checked)}
+															className="h-4 w-4 rounded accent-primary cursor-pointer"
+														/>
+													</div>
+													<p className="text-[11px] text-muted-foreground">
+														Ưu tiên xuất hiện đầu tiên trên bảng tin cộng đồng.
+													</p>
+												</div>
+
+												<div className="pt-2 border-t border-border/60 text-[11px] text-muted-foreground space-y-1">
+													<div>Người phát hành: <span className="font-semibold text-foreground">Ban Quản Trị Aurabook</span></div>
+													<div>Tài khoản đại diện: <span className="font-mono text-primary">@aurabook_admin</span></div>
+												</div>
+											</div>
+										</div>
+
+										{/* Card: Xem trước trên Storefront (Live Preview) */}
+										<div className="rounded-xl border border-border bg-card p-5 shadow-2xs space-y-3">
+											<div className="border-b border-border pb-2.5 flex items-center justify-between">
+												<h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+													<Sparkles className="h-3.5 w-3.5 text-primary" />
+													<span>Xem trước trên Storefront</span>
+												</h3>
+												<span className="text-[10px] text-primary font-medium">Live</span>
+											</div>
+
+											{/* Simulated Post Card on Feed */}
+											<div className="rounded-xl border border-border bg-background p-3.5 space-y-2.5 shadow-xs">
 												<div className="flex items-center gap-2">
-													<div className="relative h-7 w-7 shrink-0 overflow-hidden rounded-full border border-border">
+													<div className="relative h-7 w-7 rounded-md overflow-hidden border border-border shrink-0">
 														<Image
-															src={
-																rev.author.avatar ||
-																"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
-															}
-															alt={rev.author.displayName}
+															src="/android-chrome-192x192.png"
+															alt="Avatar"
 															fill
 															sizes="28px"
-															className="object-cover"
+															className="object-contain"
 															unoptimized
 														/>
 													</div>
-													<span className="font-semibold text-xs text-foreground">
-														{rev.author.displayName}
-													</span>
-													<span className="text-[11px] text-muted-foreground">
-														{rev.author.username}
-													</span>
-													<span className="inline-flex items-center gap-0.5 rounded-full bg-success/10 px-2 py-0.5 text-[10px] font-semibold text-success">
-														<CheckCircle2 strokeWidth={1.75} className="h-3 w-3" />
-														Khách đã mua
-													</span>
-													{rev.isHidden && (
-														<span className="inline-flex items-center gap-0.5 rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-semibold text-destructive">
-															<EyeOff strokeWidth={1.75} className="h-3 w-3" />
-															Đã ẩn
-														</span>
-													)}
+													<div className="min-w-0">
+														<div className="text-xs font-bold text-foreground truncate flex items-center gap-1">
+															<span>Ban Quản Trị Aurabook</span>
+															<Badge variant="outline-solid" className="text-[8px] py-0 px-1 border-primary/30 text-primary">
+																Staff
+															</Badge>
+														</div>
+														<div className="text-[10px] text-muted-foreground">
+															@aurabook_admin • Vừa xong
+														</div>
+													</div>
 												</div>
 
-												{rev.book && (
-													<div className="inline-flex items-center gap-2.5 rounded-lg border border-border/70 bg-muted/20 px-3 py-1.5 text-xs">
-														<div className="relative h-8 w-6 shrink-0 overflow-hidden rounded border border-border/80">
-															<Image
-																src={
-																	rev.book.thumbnail ||
-																	"https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop&q=80"
-																}
-																alt={rev.book.title}
-																fill
-																sizes="24px"
-																className="object-cover"
-																unoptimized
-															/>
-														</div>
-														<div className="space-y-0.5">
-															<div className="font-semibold text-foreground flex items-center gap-2">
-																<span>{rev.book.title}</span>
-																<span className="text-primary font-bold">
-																	{rev.book.price}
-																</span>
-															</div>
-															{rev.book.rating && (
-																<div className="flex items-center gap-1 text-[11px] text-amber-500 font-semibold">
-																	<Star
-																		strokeWidth={1.75}
-																		className="h-3 w-3 fill-amber-400 text-amber-400"
-																	/>
-																	<span>{rev.book.rating}/5 sao</span>
-																</div>
-															)}
-														</div>
-														<Link
-															href={`/vi/channel-vnd/products/${rev.book.slug}`}
-															target="_blank"
-															rel="noopener noreferrer"
-															className="ml-auto text-primary hover:underline font-semibold text-[11px] flex items-center gap-1"
-														>
-															<span>Xem sách</span>
-															<ExternalLink strokeWidth={1.75} className="h-3 w-3" />
-														</Link>
+												<div className="space-y-1">
+													<div className="text-xs font-bold text-foreground line-clamp-2">
+														{adminPostPinned && (
+															<span className="inline-flex items-center gap-0.5 text-primary mr-1 text-[10px]">
+																<Pin className="h-2.5 w-2.5 inline fill-primary" /> [ĐÃ GHIM]
+															</span>
+														)}
+														<span className="text-primary font-bold mr-1">
+															[{adminPostCategory.toUpperCase()}]
+														</span>
+														<span>{adminPostTitle.trim() || "Tiêu đề bài viết sẽ hiển thị ở đây..."}</span>
 													</div>
-												)}
+													<p className="text-[11px] text-muted-foreground line-clamp-3 leading-relaxed">
+														{adminPostContent.trim() || "Nội dung bài viết sẽ hiển thị mô phỏng ở đây khi bạn nhập văn bản..."}
+													</p>
+												</div>
 
-												<p className="text-xs text-foreground/90 leading-relaxed whitespace-pre-line">
-													{rev.content}
-												</p>
-											</div>
-
-											<div className="flex flex-wrap items-center gap-1.5 shrink-0">
-												<Button
-													type="button"
-													variant="outline-solid"
-													size="sm"
-													onClick={() => handleTogglePin(rev.id)}
-													className="h-7 text-[11px] gap-1"
-												>
-													<Pin strokeWidth={1.75} className="h-3 w-3" />
-													<span>{rev.isPinned ? "Bỏ ghim" : "Ghim"}</span>
-												</Button>
-												<Button
-													type="button"
-													variant={rev.isHidden ? "default" : "outline-solid"}
-													size="sm"
-													onClick={() => handleToggleHide(rev.id)}
-													className={`h-7 text-[11px] gap-1 ${
-														rev.isHidden
-															? "bg-amber-600 hover:bg-amber-700 text-white"
-															: ""
-													}`}
-												>
-													{rev.isHidden ? (
-														<>
-															<Eye strokeWidth={1.75} className="h-3 w-3" />
-															<span>Hiện bài</span>
-														</>
-													) : (
-														<>
-															<EyeOff strokeWidth={1.75} className="h-3 w-3" />
-															<span>Ẩn bài</span>
-														</>
-													)}
-												</Button>
-												<Button
-													type="button"
-													variant="destructive"
-													size="sm"
-													onClick={() => handleDeletePost(rev.id)}
-													className="h-7 text-[11px] gap-1"
-												>
-													<Trash2 strokeWidth={1.75} className="h-3 w-3" />
-													<span>Gỡ bài</span>
-												</Button>
+												<div className="pt-2 border-t border-border/60 flex items-center justify-between text-[10px] text-muted-foreground">
+													<span className="flex items-center gap-1">
+														<Heart className="h-3 w-3 text-destructive" /> 0 thích
+													</span>
+													<span className="flex items-center gap-1">
+														<MessageSquare className="h-3 w-3 text-primary" /> 0 bình luận
+													</span>
+												</div>
 											</div>
 										</div>
 									</div>
-								))}
+								</form>
 							</div>
 						)}
-					</div>
-				)}
-
-				{/* TAB 3: USERS & REAL SALEOR ACCOUNT DATA */}
-				{activeTab === "users" && (
-					<div className="rounded-xl border border-border bg-card overflow-hidden shadow-2xs">
-						<div className="overflow-x-auto">
-							<table className="w-full text-left text-xs">
-								<thead className="border-b border-border bg-muted/40 font-semibold text-foreground">
-									<tr>
-										<th className="py-3 px-4">Độc giả (Mạng xã hội)</th>
-										<th className="py-3 px-4">Tài khoản thật Saleor</th>
-										<th className="py-3 px-4">Đơn hàng & Chi tiêu</th>
-										<th className="py-3 px-4">Trạng thái</th>
-										<th className="py-3 px-4 text-right">Thao tác</th>
-									</tr>
-								</thead>
-								<tbody className="divide-y divide-border">
-									{filteredUsers.length === 0 ? (
-										<tr>
-											<td colSpan={5} className="py-8 text-center text-muted-foreground">
-												Không tìm thấy thành viên nào phù hợp
-											</td>
-										</tr>
-									) : (
-										filteredUsers.map((u) => (
-											<tr
-												key={u.id}
-												className="hover:bg-muted/30 transition-colors cursor-pointer"
-												onClick={() => setSelectedUser(u)}
-											>
-												<td className="py-3 px-4">
-													<div className="flex items-center gap-2.5">
-														<div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full border border-border">
-															<Image
-																src={u.avatar}
-																alt={u.displayName}
-																fill
-																sizes="32px"
-																className="object-cover"
-																unoptimized
-															/>
-														</div>
-														<div>
-															<div className="font-semibold text-foreground">{u.displayName}</div>
-															<div className="text-[11px] text-muted-foreground">{u.username}</div>
-														</div>
-													</div>
-												</td>
-												<td className="py-3 px-4">
-													<div className="space-y-0.5">
-														<div className="font-medium text-foreground">
-															{u.realAccount?.fullName || "Chưa cập nhật"}
-														</div>
-														<div className="text-[11px] text-muted-foreground">
-															{u.realAccount?.email}
-														</div>
-													</div>
-												</td>
-												<td className="py-3 px-4">
-													<div className="space-y-0.5">
-														<div className="font-semibold text-foreground">
-															{u.realAccount?.totalSpent || "0 ₫"}
-														</div>
-														<div className="text-[11px] text-muted-foreground">
-															{u.realAccount?.ordersCount || 0} đơn hàng
-														</div>
-													</div>
-												</td>
-												<td className="py-3 px-4">
-													{u.isBlocked ? (
-														<span className="inline-flex items-center gap-1 rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-semibold text-destructive">
-															<Lock strokeWidth={1.75} className="h-3 w-3" />
-															Đã khóa
-														</span>
-													) : (
-														<span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-[10px] font-semibold text-success">
-															<CheckCircle2 strokeWidth={1.75} className="h-3 w-3" />
-															Hoạt động
-														</span>
-													)}
-												</td>
-												<td className="py-3 px-4 text-right" onClick={(e) => e.stopPropagation()}>
-													<div className="flex items-center justify-end gap-1.5">
-														<Button
-															type="button"
-															variant="outline-solid"
-															size="sm"
-															onClick={() => setSelectedUser(u)}
-															className="h-7 text-[11px] gap-1"
-														>
-															<Eye strokeWidth={1.75} className="h-3 w-3" />
-															<span>Hồ sơ thật</span>
-														</Button>
-														<Button
-															type="button"
-															variant={u.isBlocked ? "default" : "outline-solid"}
-															size="sm"
-															onClick={() => handleToggleBlock(u.id)}
-															className={`h-7 text-[11px] gap-1 ${
-																u.isBlocked
-																	? "bg-success text-success-foreground hover:bg-success/90"
-																	: "text-destructive border-destructive/30 hover:bg-destructive/10"
-															}`}
-														>
-															{u.isBlocked ? (
-																<>
-																	<Unlock strokeWidth={1.75} className="h-3 w-3" />
-																	<span>Mở khóa</span>
-																</>
-															) : (
-																<>
-																	<Lock strokeWidth={1.75} className="h-3 w-3" />
-																	<span>Khóa</span>
-																</>
-															)}
-														</Button>
-													</div>
-												</td>
-											</tr>
-										))
-									)}
-								</tbody>
-							</table>
-						</div>
-					</div>
-				)}
-
-				{/* TAB 4: SETTINGS & POLICIES (Macaw UI Form Cards) */}
-				{activeTab === "settings" && (
-					<div className="space-y-4 max-w-3xl">
-						<div className="rounded-xl border border-border bg-card p-5 space-y-4 shadow-2xs">
-							<div className="border-b border-border pb-3">
-								<h2 className="text-sm font-bold text-foreground">Quy ước & Kiểm soát Độc giả</h2>
-								<p className="text-xs text-muted-foreground mt-0.5">
-									Cấu hình điều kiện gia nhập và quyền đăng bài trong mạng xã hội
-								</p>
-							</div>
-
-							<div className="space-y-4 divide-y divide-border">
-								<div className="flex items-center justify-between pt-2">
-									<div className="space-y-0.5 pr-4">
-										<div className="text-xs font-semibold text-foreground">
-											Yêu cầu chấp nhận Điều khoản khi mới vào
-										</div>
-										<p className="text-[11px] text-muted-foreground">
-											Bắt buộc hiển thị popup cam kết quy ước cộng đồng trước khi cho phép xem và tham gia.
-										</p>
-									</div>
-									<button
-										type="button"
-										onClick={() => {
-											const next = { ...settings, requireTerms: !settings.requireTerms };
-											setSettings(next);
-											handleSaveSettings(next);
-										}}
-										className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${
-											settings.requireTerms ? "bg-primary" : "bg-muted"
-										}`}
-									>
-										<span
-											className={`pointer-events-none inline-block h-4 w-4 rounded-full bg-background shadow-xs transform transition-transform ${
-												settings.requireTerms ? "translate-x-4" : "translate-x-0"
-											}`}
-										/>
-									</button>
-								</div>
-
-								<div className="flex items-center justify-between pt-4">
-									<div className="space-y-0.5 pr-4">
-										<div className="text-xs font-semibold text-foreground">
-											Chỉ cho phép người đã mua sách đánh giá
-										</div>
-										<p className="text-[11px] text-muted-foreground">
-											Khách hàng phải có đơn hàng đã hoàn thành (Fulfillment) cho sản phẩm tương ứng mới được viết review.
-										</p>
-									</div>
-									<button
-										type="button"
-										onClick={() => {
-											const next = {
-												...settings,
-												verifiedBuyersOnly: !settings.verifiedBuyersOnly,
-											};
-											setSettings(next);
-											handleSaveSettings(next);
-										}}
-										className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${
-											settings.verifiedBuyersOnly ? "bg-primary" : "bg-muted"
-										}`}
-									>
-										<span
-											className={`pointer-events-none inline-block h-4 w-4 rounded-full bg-background shadow-xs transform transition-transform ${
-												settings.verifiedBuyersOnly ? "translate-x-4" : "translate-x-0"
-											}`}
-										/>
-									</button>
-								</div>
-
-								<div className="flex items-center justify-between pt-4">
-									<div className="space-y-0.5 pr-4">
-										<div className="text-xs font-semibold text-foreground">
-											Tự động duyệt bài viết mới
-										</div>
-										<p className="text-[11px] text-muted-foreground">
-											Bài viết và thảo luận sẽ hiển thị ngay lên Bảng tin sau khi gửi.
-										</p>
-									</div>
-									<button
-										type="button"
-										onClick={() => {
-											const next = {
-												...settings,
-												autoApprovePosts: !settings.autoApprovePosts,
-											};
-											setSettings(next);
-											handleSaveSettings(next);
-										}}
-										className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${
-											settings.autoApprovePosts ? "bg-primary" : "bg-muted"
-										}`}
-									>
-										<span
-											className={`pointer-events-none inline-block h-4 w-4 rounded-full bg-background shadow-xs transform transition-transform ${
-												settings.autoApprovePosts ? "translate-x-4" : "translate-x-0"
-											}`}
-										/>
-									</button>
-								</div>
-
-								<div className="flex items-center justify-between pt-4">
-									<div className="space-y-0.5 pr-4">
-										<div className="text-xs font-semibold text-foreground">
-											Bộ lọc chống spam & từ khóa nhạy cảm
-										</div>
-										<p className="text-[11px] text-muted-foreground">
-											Tự động gắn cờ các bài viết chứa liên kết lạ hoặc ngôn từ không chuẩn mực.
-										</p>
-									</div>
-									<button
-										type="button"
-										onClick={() => {
-											const next = {
-												...settings,
-												filterSensitiveWords: !settings.filterSensitiveWords,
-											};
-											setSettings(next);
-											handleSaveSettings(next);
-										}}
-										className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${
-											settings.filterSensitiveWords ? "bg-primary" : "bg-muted"
-										}`}
-									>
-										<span
-											className={`pointer-events-none inline-block h-4 w-4 rounded-full bg-background shadow-xs transform transition-transform ${
-												settings.filterSensitiveWords ? "translate-x-4" : "translate-x-0"
-											}`}
-										/>
-									</button>
-								</div>
-							</div>
-
-							<div className="pt-4 border-t border-border flex items-center justify-between">
-								<div>
-									{settingsSavedAlert && (
-										<span className="inline-flex items-center gap-1.5 text-xs text-success font-semibold animate-in fade-in-0">
-											<CheckCircle2 strokeWidth={2} className="h-4 w-4" />
-											Đã lưu cấu hình quản trị thành công!
-										</span>
-									)}
-								</div>
-								<Button
-									type="button"
-									onClick={() => handleSaveSettings()}
-									disabled={isSavingSettings}
-									className="text-xs h-8 px-4 font-semibold gap-1.5"
-								>
-									{isSavingSettings ? "Đang lưu..." : "Lưu thay đổi"}
-								</Button>
-							</div>
-						</div>
 					</div>
 				)}
 			</div>
 
-			{/* REAL SALEOR ACCOUNT DETAILS MODAL */}
-			{selectedUser &&
-				mounted &&
-				createPortal(
-					<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/60 backdrop-blur-xs">
-					<div className="relative w-full max-w-xl rounded-xl border border-border bg-card p-6 shadow-2xl transition-all animate-in fade-in-0 zoom-in-95 max-h-[90vh] overflow-y-auto">
-						{/* Close button */}
+			{/* ============================================================== */}
+			{/* MODALS                                                         */}
+			{/* ============================================================== */}
+
+			{/* Real Account Details Modal */}
+			{selectedUser && mounted && createPortal(
+				<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/60 backdrop-blur-xs animate-in fade-in-0">
+					<div className="relative w-full max-w-lg rounded-2xl border border-border bg-card p-6 shadow-2xl transition-all animate-in zoom-in-95">
 						<button
 							type="button"
 							onClick={() => setSelectedUser(null)}
-							className="absolute right-4 top-4 rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+							className="absolute right-4 top-4 rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
 							aria-label="Đóng"
 						>
 							<X strokeWidth={1.75} className="h-4 w-4" />

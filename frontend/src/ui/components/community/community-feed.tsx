@@ -19,6 +19,8 @@ import { CommunityProfileModal } from "./community-profile-modal";
 import { CommunityUserProfileView } from "./community-user-profile-view";
 import { CommunityCreatePost } from "./community-create-post";
 import { CommunityPostCard } from "./community-post-card";
+import { CommunityGuestLanding } from "./community-guest-landing";
+import { CommunityLoggedOutView } from "./community-logged-out-view";
 
 const LOCAL_STORAGE_TERMS_KEY = "aurabook_community_terms_accepted_v2";
 
@@ -173,8 +175,8 @@ export function CommunityFeed() {
 					setCurrentUser(userProfile);
 				}
 
-				// If NOT accepted in localStorage AND NOT in profile, enforce mandatory terms modal!
-				if (!hasAcceptedLocal && (!userProfile || !userProfile.hasAcceptedTerms)) {
+				// Only enforce mandatory terms modal on actual authenticated users whose profile hasn't accepted yet
+				if (userProfile && !hasAcceptedLocal && !userProfile.hasAcceptedTerms) {
 					setIsTermsMandatory(true);
 					setIsTermsOpen(true);
 				}
@@ -286,6 +288,117 @@ export function CommunityFeed() {
 
 		return true;
 	});
+
+	// 1. If user is logged out (guest), hide left & right sidebars completely!
+	if (!currentUser && !viewProfileTarget && !focusedPostId) {
+		return (
+			<div className="w-full min-h-[calc(100vh-4rem)] bg-[#fafafc]">
+				<CommunityTermsModal
+					isOpen={isTermsOpen}
+					mandatory={isTermsMandatory}
+					onClose={() => setIsTermsOpen(false)}
+					onAccept={handleAcceptTerms}
+				/>
+				<CommunityLoggedOutView
+					posts={posts}
+					onOpenTerms={() => {
+						setIsTermsMandatory(false);
+						setIsTermsOpen(true);
+					}}
+					onSelectPost={handleSelectPost}
+					onRequireLogin={() => {
+						setIsTermsMandatory(true);
+						setIsTermsOpen(true);
+					}}
+				/>
+			</div>
+		);
+	}
+
+	// 2. If logged out but viewing a specific post or profile, render centered without sidebars!
+	if (!currentUser && (viewProfileTarget || focusedPostId)) {
+		return (
+			<div className="w-full min-h-[calc(100vh-4rem)] bg-background">
+				<CommunityTermsModal
+					isOpen={isTermsOpen}
+					mandatory={isTermsMandatory}
+					onClose={() => setIsTermsOpen(false)}
+					onAccept={handleAcceptTerms}
+				/>
+				<div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
+					<div className="flex items-center justify-between border-b border-border pb-4">
+						<button
+							type="button"
+							onClick={handleExitProfileAndPost}
+							className="inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+						>
+							<ArrowLeft className="h-4 w-4" />
+							<span>Quay lại trang Cộng đồng Aurabook</span>
+						</button>
+						<Link
+							href="/vi/channel-vnd/login"
+							className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-1.5 text-xs font-bold text-primary-foreground"
+						>
+							Đăng nhập
+						</Link>
+					</div>
+
+					{viewProfileTarget ? (
+						<CommunityUserProfileView
+							userIdOrUsername={viewProfileTarget}
+							currentUser={currentUser}
+							onBack={handleExitProfileAndPost}
+							onEditProfile={async () => {}}
+							savedPostIds={savedPostIds}
+							onToggleSavePost={handleToggleSavePost}
+							allPosts={posts}
+							onViewOtherProfile={handleViewProfile}
+							onPostUpdated={handlePostUpdated}
+							onSelectPost={handleSelectPost}
+						/>
+					) : (
+						(() => {
+							const focusedPost = posts.find((p) => p.id === focusedPostId);
+							if (!focusedPost) {
+								return (
+									<div className="rounded-2xl border border-dashed border-border p-12 text-center space-y-3">
+										<BookOpen className="mx-auto h-9 w-9 text-muted-foreground/60" />
+										<h3 className="font-semibold text-foreground text-[15px]">
+											Không tìm thấy bài viết
+										</h3>
+										<Button
+											variant="outline-solid"
+											size="sm"
+											onClick={handleExitProfileAndPost}
+											className="rounded-xl text-[12px] font-semibold cursor-pointer"
+										>
+											← Quay lại Bảng tin
+										</Button>
+									</div>
+								);
+							}
+							return (
+								<CommunityPostCard
+									post={focusedPost}
+									currentUser={currentUser}
+									isSaved={savedPostIds.includes(focusedPost.id)}
+									onToggleSave={handleToggleSavePost}
+									onViewAuthorProfile={handleViewProfile}
+									onPostUpdated={handlePostUpdated}
+									onToggleHidePost={handleToggleHidePost}
+									initialOpenComments={true}
+									onRequireLogin={() => {
+										setIsTermsMandatory(true);
+										setIsTermsOpen(true);
+									}}
+								/>
+							);
+						})()
+					)}
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="w-full min-h-[calc(100vh-4rem)]">
@@ -601,18 +714,27 @@ export function CommunityFeed() {
 							</div>
 						) : (
 							<>
-								{/* Create Post Box (Hidden if user is blocked) */}
-								{!currentUser?.isBlocked && (
-									<CommunityCreatePost
-										currentUser={currentUser}
-										onPostCreated={handlePostCreated}
-										onRequireTermsOrProfile={() => {
-											if (!currentUser?.hasAcceptedTerms) {
-												setIsTermsMandatory(true);
-												setIsTermsOpen(true);
-											} else {
-												setIsProfileOpen(true);
-											}
+								{/* Create Post Box for authenticated users or Guest Landing for visitors */}
+								{currentUser ? (
+									!currentUser.isBlocked && (
+										<CommunityCreatePost
+											currentUser={currentUser}
+											onPostCreated={handlePostCreated}
+											onRequireTermsOrProfile={() => {
+												if (!currentUser.hasAcceptedTerms) {
+													setIsTermsMandatory(true);
+													setIsTermsOpen(true);
+												} else {
+													setIsProfileOpen(true);
+												}
+											}}
+										/>
+									)
+								) : (
+									<CommunityGuestLanding
+										onOpenTerms={() => {
+											setIsTermsMandatory(false);
+											setIsTermsOpen(true);
 										}}
 									/>
 								)}

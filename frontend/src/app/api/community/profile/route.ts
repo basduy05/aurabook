@@ -62,9 +62,8 @@ export async function GET(request: Request) {
 		console.error("[community/profile] Failed to resolve auth user:", e);
 	}
 
-	// Fallback default demo profile
-	const defaultUser = getCommunityUsers()[0];
-	return NextResponse.json({ user: defaultUser });
+	// No fallback to demo users - unauthenticated visitors are guests
+	return NextResponse.json({ user: null, isAuthenticated: false });
 }
 
 export async function POST(request: Request) {
@@ -74,9 +73,9 @@ export async function POST(request: Request) {
 			return NextResponse.json({ error: "Missing user id" }, { status: 400 });
 		}
 
-		let user = getCommunityUserById(body.id);
+		const user = getCommunityUserById(body.id);
 		if (!user) {
-			user = getCommunityUsers()[0];
+			return NextResponse.json({ error: "Hồ sơ người dùng không tồn tại hoặc đã đăng xuất." }, { status: 404 });
 		}
 
 		const updatedUser: CommunityUser = {
