@@ -1,0 +1,79 @@
+[
+  {
+    "id": "rev-1",
+    "productSlug": "dac-nhan-tam",
+    "authorName": "Nguyễn Minh Tuấn",
+    "rating": 5,
+    "title": "Cuốn sách gối đầu giường kinh điển",
+    "content": "Đắc Nhân Tâm thực sự là tác phẩm kinh điển. Giấy in của Aurabook rất đẹp, font chữ rõ ràng, đóng gói cẩn thận 3 lớp chống sốc. Rất hài lòng!",
+    "createdAt": "2026-09-15T08:30:00.000Z",
+    "isVerified": true,
+    "helpfulCount": 14
+  },
+  {
+    "id": "rev-2",
+    "productSlug": "dac-nhan-tam",
+    "authorName": "Trần Thu Hà",
+    "rating": 5,
+    "title": "Giao hàng nhanh, nội dung sâu sắc",
+    "content": "Đặt hôm trước hôm sau đã nhận được sách ở Hà Nội. Nội dung từng chương đều thấm thía, giúp mình cải thiện rất nhiều trong kỹ năng giao tiếp công việc.",
+    "createdAt": "2026-09-20T14:15:00.000Z",
+    "isVerified": true,
+    "helpfulCount": 8
+  },
+  {
+    "id": "rev-3",
+    "productSlug": "dac-nhan-tam",
+    "authorName": "Lê Hoàng Long",
+    "rating": 4,
+    "title": "Bìa đẹp, sách rất giá trị",
+    "content": "Chất lượng sách tốt, dịch mượt mà. Sẽ tiếp tục ủng hộ Aurabook thêm các đầu sách phát triển bản thân khác.",
+    "createdAt": "2026-10-01T09:45:00.000Z",
+    "isVerified": true,
+    "helpfulCount": 3
+  },
+  {
+    "id": "rev-4",
+    "productSlug": "nha-gia-kim",
+    "authorName": "Phạm Hải Đăng",
+    "rating": 5,
+    "title": "Một hành trình kỳ diệu",
+    "content": "Cuốn sách ngắn nhưng truyền cảm hứng mãnh liệt để theo đuổi ước mơ. 'Khi bạn thực sự khao khát điều gì, cả vũ trụ sẽ hợp sức giúp bạn đạt được điều đó'. Rất tuyệt vời!",
+    "createdAt": "2026-09-18T10:20:00.000Z",
+    "isVerified": true,
+    "helpfulCount": 19
+  },
+  {
+    "id": "rev-5",
+    "productSlug": "nha-gia-kim",
+    "authorName": "Vũ Mai Phương",
+    "rating": 5,
+    "title": "Sách mới tinh, thơm mùi giấy",
+    "content": "Được tặng kèm bookmark xinh xắn. Câu chuyện của chàng chăn cừu Santiago đọc đi đọc lại vẫn luôn thấy ý nghĩa mới.",
+    "createdAt": "2026-09-28T16:00:00.000Z",
+    "isVerified": true,
+    "helpfulCount": 6
+  },
+  {
+    "id": "rev-6",
+    "productSlug": "tuoi-tre-dang-gia-bao-nhieu",
+    "authorName": "Đỗ Kim Ngân",
+    "rating": 5,
+    "title": "Cuốn sách đánh thức tuổi trẻ",
+    "content": "Đọc xong thấy có thêm động lực học tập và trải nghiệm. Rất phù hợp cho các bạn học sinh, sinh viên và người mới đi làm.",
+    "createdAt": "2026-09-22T11:10:00.000Z",
+    "isVerified": true,
+    "helpfulCount": 11
+  },
+  {
+    "id": "rev-7",
+    "productSlug": "tuoi-tre-dang-gia-bao-nhieu",
+    "authorName": "Hoàng Văn Nam",
+    "rating": 4,
+    "title": "Khá thực tế và hữu ích",
+    "content": "Nhiều lời khuyên chân thành và danh sách sách đọc tham khảo rất chất lượng. Giao hàng nhanh và đóng gói kỹ.",
+    "createdAt": "2026-10-02T13:30:00.000Z",
+    "isVerified": true,
+    "helpfulCount": 4
+  }
+]
