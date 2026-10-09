@@ -1,7 +1,7 @@
 # ============================================================
-# AuraBook — Automated Restore Script
-# Chạy: .\restore_data.ps1  (Khôi phục bản mới nhất)
-# Hoặc: .\restore_data.ps1 "backups\backup_..."
+# AuraBook - Script Khoi Phuc Du Lieu
+# Chay: .\restore_data.ps1  (Khoi phuc ban moi nhat)
+# Hoac: .\restore_data.ps1 "backups\backup_..."
 # ============================================================
 param (
     [string]$BackupPath = ""

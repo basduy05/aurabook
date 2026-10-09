@@ -1,4 +1,3 @@
-import { brandConfig } from "@/config/brand";
 import { STOREFRONT_CONTENT_VERSION, type StorefrontContent } from "@/lib/content/types";
 
 /**

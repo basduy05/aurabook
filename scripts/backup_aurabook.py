@@ -12,7 +12,7 @@ if hasattr(sys.stdout, 'reconfigure'):
 def run_cmd(cmd, check=True):
     res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
     if check and res.returncode != 0:
-        print(f"Lỗi thực thi lệnh: {cmd}\n{res.stderr.strip()}")
+        print(f"Loi thuc thi lenh: {cmd}\n{res.stderr.strip()}")
         sys.exit(1)
     return res
 
@@ -27,21 +27,21 @@ def main():
     os.makedirs(latest_dir, exist_ok=True)
 
     print("=" * 60)
-    print("   AURABOOK — SAO LƯU TRẠNG THÁI CONTAINER & DỮ LIỆU")
+    print("   AURABOOK - SAO LUU TRANG THAI CONTAINER VA DU LIEU")
     print("=" * 60)
-    print(f"Thời gian: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"Thư mục lưu: {current_backup_dir}\n")
+    print(f"Thoi gian: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"Thu muc luu: {current_backup_dir}\n")
 
-    # 1. Kiểm tra container
-    print("[1/4] Kiểm tra PostgreSQL container...")
+    # 1. Kiem tra container
+    print("[1/5] Kiem tra PostgreSQL container...")
     check = run_cmd("docker ps --filter \"name=aurabook-postgres\" --format \"{{.Names}}\"", check=False)
     if not check.stdout.strip():
-        print("❌ Container aurabook-postgres không chạy. Hãy khởi động hệ thống trước!")
+        print("[!] Container aurabook-postgres khong chay. Hay khoi dong he thong truoc!")
         sys.exit(1)
-    print("  ✅ PostgreSQL container đang hoạt động.")
+    print("  [OK] PostgreSQL container dang hoat dong.")
 
     # 2. Dump Database
-    print("\n[2/4] Xuất dữ liệu Database (aurabook_db)...")
+    print("\n[2/5] Xuat du lieu Database (aurabook_db)...")
     sql_file = os.path.join(current_backup_dir, "aurabook_db.sql")
     dump_file = os.path.join(current_backup_dir, "aurabook_db.dump")
 
@@ -55,20 +55,32 @@ def main():
     run_cmd('docker exec aurabook-postgres rm -f /tmp/aurabook_db.dump')
 
     size_mb = os.path.getsize(sql_file) / (1024 * 1024)
-    print(f"  ✅ Đã xuất Database ({size_mb:.2f} MB).")
+    print(f"  [OK] Da xuat Database ({size_mb:.2f} MB).")
 
     # 3. Media files
-    print("\n[3/4] Sao lưu thư mục media...")
+    print("\n[3/5] Sao luu thu muc media...")
     media_dir = os.path.join(current_backup_dir, "media")
     os.makedirs(media_dir, exist_ok=True)
     try:
         run_cmd(f'docker cp aurabook-backend:/app/media/. "{media_dir}"', check=False)
-        print("  ✅ Đã sao lưu media.")
+        print("  [OK] Da sao luu media.")
     except Exception as e:
-        print(f"  ⚠️ Lưu media bỏ qua: {e}")
+        print(f"  [!] Luu media bo qua: {e}")
 
-    # 4. Metadata
-    print("\n[4/4] Lưu thông tin metadata...")
+    # 4. Mailpit emails database
+    print("\n[4/5] Sao luu Mailpit emails database...")
+    mailpit_file = os.path.join(current_backup_dir, "mailpit.db")
+    try:
+        run_cmd(f'docker cp aurabook-mailpit:/data/mailpit.db "{mailpit_file}"', check=False)
+        if os.path.exists(mailpit_file) and os.path.getsize(mailpit_file) > 0:
+            print("  [OK] Da sao luu Mailpit database.")
+        else:
+            print("  [OK] Mailpit dang hoat dong voi persistent storage.")
+    except Exception as e:
+        print(f"  [!] Bo qua sao luu Mailpit: {e}")
+
+    # 5. Metadata
+    print("\n[5/5] Luu thong tin metadata...")
     prod_res = run_cmd('docker exec aurabook-postgres psql -U aurabook_user -d aurabook_db -t -A -c "SELECT count(*) FROM product_product;"', check=False)
     user_res = run_cmd('docker exec aurabook-postgres psql -U aurabook_user -d aurabook_db -t -A -c "SELECT count(*) FROM account_user;"', check=False)
 
@@ -100,15 +112,15 @@ def main():
                 pass
 
     print("\n" + "=" * 60)
-    print("   🎉 SAO LƯU THÀNH CÔNG!")
+    print("   SAO LUU THANH CONG!")
     print("=" * 60)
-    print(f"Số sản phẩm: {metadata['product_count']}")
-    print(f"Số người dùng: {metadata['user_count']}")
-    print(f"Thư mục lưu trữ: {current_backup_dir}")
-    print(f"Bản sao lưu mới nhất (latest): {latest_dir}")
-    print("\nĐể khôi phục trạng thái này bất kỳ lúc nào, chạy:")
+    print(f"So san pham: {metadata['product_count']}")
+    print(f"So nguoi dung: {metadata['user_count']}")
+    print(f"Thu muc luu tru: {current_backup_dir}")
+    print(f"Ban sao luu moi nhat (latest): {latest_dir}")
+    print("\nDe khoi phuc trang thai nay bat ky luc nao, chay:")
     print("  python scripts/restore_aurabook.py")
-    print("  hoặc nhấp đúp vào restore_data.bat")
+    print("  hoac nhap dup vao restore_data.bat")
     print("=" * 60 + "\n")
 
 if __name__ == "__main__":

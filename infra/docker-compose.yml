@@ -48,6 +48,11 @@ services:
     ports:
       - "${MAILPIT_SMTP_PORT:-1025}:1025"
       - "${MAILPIT_UI_PORT:-8025}:8025"
+    environment:
+      MP_DATABASE: /data/mailpit.db
+      MP_MAX: 1000
+    volumes:
+      - mailpit_data:/data
     networks:
       - aurabook-network
 
@@ -175,6 +180,8 @@ volumes:
   redis_data:
     driver: local
   backend_media:
+    driver: local
+  mailpit_data:
     driver: local
 
 networks:

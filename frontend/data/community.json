@@ -25,7 +25,9 @@
         "user-3",
         "user-VXNlcjo0Ng=="
       ],
-      "following": [],
+      "following": [
+        "user-VXNlcjo0Ng=="
+      ],
       "savedPosts": [
         "post-2",
         "post-1"
@@ -117,7 +119,9 @@
         "registeredDate": "Gần đây",
         "lastActive": "Đang online"
       },
-      "followers": [],
+      "followers": [
+        "user-1"
+      ],
       "profileHistory": [
         {
           "id": "hist-1791466637258-o0mn",
