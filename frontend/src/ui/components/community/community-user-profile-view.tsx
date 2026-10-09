@@ -234,6 +234,32 @@ export function CommunityUserProfileView({
 						return item;
 					}),
 				);
+				setPosts((prev) =>
+					prev.map((p) => {
+						if (p.id === postId) {
+							return {
+								...p,
+								comments: p.comments.map((c) =>
+									c.id === commentId
+										? { ...c, replies: [...(c.replies || []), data.comment] }
+										: c,
+								),
+							};
+						}
+						return p;
+					}),
+				);
+				const targetPost = posts.find((p) => p.id === postId);
+				if (targetPost) {
+					onPostUpdated?.({
+						...targetPost,
+						comments: targetPost.comments.map((c) =>
+							c.id === commentId
+								? { ...c, replies: [...(c.replies || []), data.comment] }
+								: c,
+						),
+					});
+				}
 				setReplyText("");
 				setReplyingCommentId(null);
 			}
@@ -320,10 +346,17 @@ export function CommunityUserProfileView({
 								<span className="text-[13px] text-muted-foreground font-medium">
 									{user.username}
 								</span>
-								<span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-[11px] font-semibold text-success">
-									<CheckCircle2 className="h-3 w-3" />
-									Độc giả xác thực
-								</span>
+								{user.role === "admin" || user.id === "admin-aurabook" ? (
+									<span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-bold text-primary">
+										<CheckCircle2 className="h-3 w-3" />
+										Ban Quản Trị Aurabook
+									</span>
+								) : (
+									<span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-[11px] font-semibold text-success">
+										<CheckCircle2 className="h-3 w-3" />
+										Độc giả xác thực
+									</span>
+								)}
 							</div>
 
 							{/* Action Buttons */}
@@ -359,12 +392,12 @@ export function CommunityUserProfileView({
 									<Button
 										type="button"
 										onClick={handleToggleFollow}
-										disabled={isFollowLoading}
+										disabled={isFollowLoading || user.id === "admin-aurabook"}
 										size="sm"
-										variant={isFollowing ? "outline-solid" : "default"}
+										variant={isFollowing || user.id === "admin-aurabook" ? "outline-solid" : "default"}
 										className="gap-1.5 text-[12px] font-semibold rounded-xl h-8 shadow-2xs cursor-pointer"
 									>
-										{isFollowing ? (
+										{isFollowing || user.id === "admin-aurabook" ? (
 											<>
 												<UserCheck className="h-3.5 w-3.5 text-primary" />
 												<span>Đang theo dõi</span>
@@ -383,7 +416,7 @@ export function CommunityUserProfileView({
 						{/* Row 2: Bio */}
 						{user.bio ? (
 							<p className="text-[13px] text-foreground/90 leading-relaxed max-w-2xl break-words">
-								{user.bio.slice(0, 250)}
+								{user.bio.slice(0, 150)}
 							</p>
 						) : (
 							<p className="text-[12.5px] text-muted-foreground italic">
@@ -696,7 +729,10 @@ export function CommunityUserProfileView({
 								isSaved={savedPostIds.includes(post.id)}
 								onToggleSave={onToggleSavePost}
 								onViewAuthorProfile={onViewOtherProfile}
-								onPostUpdated={onPostUpdated}
+								onPostUpdated={(updated) => {
+									setPosts((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+									onPostUpdated?.(updated);
+								}}
 							/>
 						))
 					)}

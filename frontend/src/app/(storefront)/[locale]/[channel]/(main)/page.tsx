@@ -7,7 +7,7 @@ import { buildPolicyLabelValues } from "@/lib/content";
 import { formatContentLabel } from "@/lib/content/format-label";
 import { getStorefrontContent } from "@/lib/content/server";
 import { buildSaleorSrcSet } from "@/lib/images";
-import { pickTranslatedSlug } from "@/lib/saleor-translations";
+import { pickTranslatedName, pickTranslatedSlug } from "@/lib/saleor-translations";
 import { PaperSignEditorialPlaceholder } from "@/ui/components/shared/paper-sign";
 import { CategoryTileGrid, type CategoryTile } from "@/ui/sections/category-tile-grid/category-tile-grid";
 import { EditorialHero } from "@/ui/sections/editorial-hero/editorial-hero";
@@ -61,14 +61,14 @@ function pickImage(product: FeaturedProduct | undefined) {
  * category's own background image (merchandised lifestyle art); fall back to a
  * representative product thumbnail when the category has no image set.
  */
-function buildCategoryTiles(products: readonly FeaturedProduct[], max = 3): CategoryTile[] {
+function buildCategoryTiles(products: readonly FeaturedProduct[], max = 3, locale?: string): CategoryTile[] {
 	const seen = new Set<string>();
 	const tiles: CategoryTile[] = [];
 	for (const product of products) {
 		const category = product.category;
 		if (!category?.slug || seen.has(category.slug)) continue;
 		seen.add(category.slug);
-		const categoryName = category.translation?.name || category.name;
+		const categoryName = pickTranslatedName(category, locale);
 		const background = category.backgroundImage;
 		const image = background?.url ?? product.thumbnail?.url ?? null;
 		const imageAlt = background?.alt || product.thumbnail?.alt || categoryName;
@@ -126,7 +126,7 @@ async function HomePageContent({ params }: { params: HomeParams }) {
 		(product) => product.slug !== heroProduct?.slug && product.thumbnail?.url,
 	);
 	const editorialFallbackImage = pickImage(editorialProduct);
-	const categoryTiles = buildCategoryTiles(products);
+	const categoryTiles = buildCategoryTiles(products, 3, locale);
 
 	const currency = await resolveChannelCurrency(channel);
 	const policyValues = buildPolicyLabelValues(content.policies, {

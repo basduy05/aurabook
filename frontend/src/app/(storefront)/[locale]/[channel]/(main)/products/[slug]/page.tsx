@@ -293,11 +293,37 @@ async function ProductShell({
 					)}
 				</div>
 
-				<ProductReviewsSection
-					productSlug={product.slug}
-					productId={product.id}
-					productName={product.name}
-				/>
+				{(() => {
+					const catSlug = product.category?.slug?.toLowerCase() || "";
+					const catName = product.category?.name?.toLowerCase() || "";
+					const isBook =
+						catSlug.includes("book") ||
+						catSlug.includes("sach") ||
+						catName.includes("sách") ||
+						catName.includes("book") ||
+						[
+							"dac-nhan-tam",
+							"nha-gia-kim",
+							"tuoi-tre-dang-gia-bao-nhieu",
+							"tu-duy-nhanh-va-cham",
+							"cay-cam-ngot-cua-toi",
+							"hanh-trinh-ve-phuong-dong",
+							"muon-kiep-nhan-sinh",
+							"suc-manh-cua-hien-tai",
+							"battle-tested-at-brands-like-lush",
+							"own-your-stack-and-data",
+							"enterprise-cloud-on-premises-tales",
+							"headless-omnichannel-commerce",
+						].includes(product.slug.toLowerCase());
+
+					return isBook ? (
+						<ProductReviewsSection
+							productSlug={product.slug}
+							productId={product.id}
+							productName={product.name}
+						/>
+					) : null;
+				})()}
 			</div>
 		</div>
 	);

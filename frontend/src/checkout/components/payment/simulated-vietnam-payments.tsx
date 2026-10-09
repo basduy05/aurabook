@@ -4,22 +4,10 @@ import { useState, useEffect, type FC } from "react";
 import Image from "next/image";
 import { type CheckoutFragment, type AddressFragment } from "@/checkout/graphql";
 import { FlaskConical } from "lucide-react";
-import { Button } from "@/ui/components/ui/button";
-import { updateCheckoutBilling } from "@/checkout/lib/payment";
-import { executeDummyPayment } from "@/checkout/lib/payment/providers/dummy-pay";
-import { getCheckoutTransport } from "@/checkout/lib/checkout-transport";
-import { useCheckoutGatewayMessages } from "@/checkout/hooks/use-checkout-gateway-messages";
-import { useCheckoutPaymentMessages } from "@/checkout/hooks/use-checkout-payment-messages";
-import { navigateToOrderConfirmation } from "@/checkout/lib/payment/navigate-to-order";
-import {
-	markPaymentCompleting,
-	clearPaymentCompleting,
-} from "@/checkout/lib/payment/checkout-payment-completion";
 import { type BillingAddressData } from "./billing-address-section";
-import { PaymentTrustSignals } from "./payment-trust-signals";
-import { LoadingSpinner } from "@/checkout/ui-kit/loading-spinner";
 import { formatMoneyWithFallback } from "@/checkout/lib/utils/money";
 import { convertToVnd, formatVnd } from "@/checkout/lib/utils/currency-converter";
+import { useCheckoutPaymentMessages } from "@/checkout/hooks/use-checkout-payment-messages";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
@@ -132,22 +120,31 @@ export interface SimulatedVietnamPaymentsProps {
 	gatewayName?: string | null;
 	onPaymentError?: (message: string) => void;
 	onPaymentActivityChange?: (active: boolean) => void;
+	onPaymentMethodChange?: (methodId: string) => void;
 }
 
 export const SimulatedVietnamPayments: FC<SimulatedVietnamPaymentsProps> = ({
 	checkout,
-	billing,
 	gatewayName,
 	onPaymentError,
-	onPaymentActivityChange,
+	onPaymentMethodChange,
 }) => {
 	const tSteps = useTranslations("checkout.steps");
-	const tActions = useTranslations("checkout.actions");
-	const gatewayMessages = useCheckoutGatewayMessages();
 	const paymentMessages = useCheckoutPaymentMessages();
 
-	const [selectedMethodId, setSelectedMethodId] = useState<PaymentMethodId>("test-card");
-	const [isLoading, setIsLoading] = useState(false);
+	const [selectedMethodId, setSelectedMethodId] = useState<PaymentMethodId>(() => {
+		if (typeof window !== "undefined") {
+			try {
+				const saved = sessionStorage.getItem("checkout:selected_payment_method") as PaymentMethodId;
+				if (saved && (saved === "test-card" || saved === "vnpay" || saved === "momo")) {
+					return saved;
+				}
+			} catch {
+				// ignore
+			}
+		}
+		return "test-card";
+	});
 
 	const label = gatewayName?.trim() || paymentMessages.dummyGateway;
 	const grossPrice = checkout?.totalPrice?.gross;
@@ -157,6 +154,32 @@ export const SimulatedVietnamPayments: FC<SimulatedVietnamPaymentsProps> = ({
 	const vndAmount = convertToVnd(totalAmount, currency);
 	const formattedVnd = formatVnd(vndAmount);
 	const formattedTotal = formatMoneyWithFallback(grossPrice);
+
+	const handleSelectMethod = (id: PaymentMethodId) => {
+		setSelectedMethodId(id);
+		try {
+			sessionStorage.setItem("checkout:selected_payment_method", id);
+			window.dispatchEvent(new CustomEvent("checkout:payment_method_change", { detail: id }));
+		} catch {
+			// ignore
+		}
+		onPaymentMethodChange?.(id);
+	};
+
+	useEffect(() => {
+		try {
+			const saved = sessionStorage.getItem("checkout:selected_payment_method") as PaymentMethodId;
+			const initial =
+				saved && (saved === "test-card" || saved === "vnpay" || saved === "momo")
+					? saved
+					: "test-card";
+			sessionStorage.setItem("checkout:selected_payment_method", initial);
+			window.dispatchEvent(new CustomEvent("checkout:payment_method_change", { detail: initial }));
+			onPaymentMethodChange?.(initial);
+		} catch {
+			// ignore
+		}
+	}, [onPaymentMethodChange]);
 
 	// Detect if returning from an abandoned or failed external payment gateway redirect
 	useEffect(() => {
@@ -171,7 +194,7 @@ export const SimulatedVietnamPayments: FC<SimulatedVietnamPaymentsProps> = ({
 				if (vnpCode !== "00" && momoCode !== "0") {
 					const name = pendingGateway === "vnpay" ? "VNPAY" : "Ví MoMo";
 					onPaymentError?.(
-						`Giao dịch thanh toán qua ${name} chưa hoàn tất hoặc cổng thanh toán gặp sự cố (Mã lỗi cổng thanh toán / Không tìm thấy website). Vui lòng thực hiện lại đơn hàng hoặc chọn phương thức khác.`,
+						`Giao dịch thanh toán qua ${name} chưa hoàn tất hoặc cổng thanh toán gặp sự cố. Vui lòng thực hiện lại đơn hàng hoặc chọn phương thức khác.`,
 					);
 				}
 			}
@@ -179,159 +202,6 @@ export const SimulatedVietnamPayments: FC<SimulatedVietnamPaymentsProps> = ({
 			// ignore
 		}
 	}, [onPaymentError]);
-
-	const handleProceedPayment = async () => {
-		if (!checkout) return;
-		setIsLoading(true);
-		onPaymentActivityChange?.(true);
-
-		// Synchronously pre-open new tab for real external gateways (VNPAY, MoMo) to avoid browser popup blockers
-		let paymentTab: Window | null = null;
-		if (selectedMethodId !== "test-card") {
-			try {
-				paymentTab = window.open("", "_blank");
-				if (paymentTab && !paymentTab.closed) {
-					try {
-						paymentTab.document.write(
-							`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Đang kết nối cổng thanh toán...</title><style>body{margin:0;font-family:system-ui,-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;background:#fafafa;color:#222;}p{font-size:15px;}</style></head><body><p>Đang kết nối đến cổng thanh toán, vui lòng đợi trong giây lát...</p></body></html>`,
-						);
-					} catch {
-						// ignore
-					}
-				}
-			} catch {
-				// popup blocked or not supported
-			}
-		}
-
-		try {
-			// Update billing first
-			if (billing) {
-				await updateCheckoutBilling({
-					checkoutId: checkout.id,
-					sameAsBilling: billing.sameAsBilling,
-					hasShippingAddress: billing.hasShippingAddress,
-					billingData: billing.billingData,
-					shippingAddress: billing.shippingAddress,
-					userAddresses: billing.userAddresses,
-					authenticated: billing.authenticated,
-				});
-			}
-
-			// Test card — show completing screen immediately and finalize via dummy gateway
-			if (selectedMethodId === "test-card") {
-				markPaymentCompleting(checkout.id);
-
-				const testPspRef = `TEST_CARD_${Date.now()}`;
-				const methodName = "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)";
-				const note = `Phương thức thanh toán: ${methodName} (Mã GD: ${testPspRef}, Thẻ: 4242)`;
-
-				await getCheckoutTransport().recordPaymentInfo({
-					checkoutId: checkout.id,
-					methodName,
-					gateway: "test-card",
-					note,
-					metadata: {
-						card_brand: "Visa / Mastercard Test",
-						card_last4: "4242",
-						test_reference: testPspRef,
-					},
-				});
-
-				const dummyGatewayId =
-					checkout.availablePaymentGateways?.[0]?.id ?? "saleor.io.dummy-payment-app";
-				const result = await executeDummyPayment(
-					{ checkoutId: checkout.id, amount: totalAmount },
-					dummyGatewayId,
-					gatewayMessages,
-					{
-						paymentMethodName: "Thẻ thanh toán thử nghiệm",
-						pspReference: testPspRef,
-						message: "Thanh toán thành công qua thẻ thử nghiệm",
-					},
-				);
-
-				if (!result.ok) {
-					clearPaymentCompleting();
-					throw new Error(result.error);
-				}
-
-				navigateToOrderConfirmation(result.orderViewToken);
-				return;
-			}
-
-			// Real payment gateways (VNPAY, MoMo) — record pending state and fetch payment URL
-			try {
-				sessionStorage.setItem("checkout:pending_gateway", selectedMethodId);
-			} catch {
-				// ignore
-			}
-
-			const apiEndpointMap: Record<string, string> = {
-				vnpay: "/api/payment/vnpay/create",
-				momo: "/api/payment/momo/create",
-			};
-
-			const endpoint = apiEndpointMap[selectedMethodId];
-			if (!endpoint) {
-				if (paymentTab && !paymentTab.closed) paymentTab.close();
-				throw new Error("Phương thức thanh toán không hợp lệ");
-			}
-
-			const response = await fetch(endpoint, {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					orderId: checkout.id,
-					amount: totalAmount,
-					currency,
-					orderInfo: `Aurabook - Thanh toán đơn hàng`,
-				}),
-			});
-
-			const data = (await response.json()) as {
-				success: boolean;
-				paymentUrl?: string;
-				redirectUrl?: string;
-				error?: string;
-			};
-
-			if (!data.success || (!data.paymentUrl && !data.redirectUrl)) {
-				if (paymentTab && !paymentTab.closed) paymentTab.close();
-				throw new Error(
-					data.error ??
-						`Không thể kết nối đến cổng thanh toán ${selectedMethodId.toUpperCase()}. Vui lòng kiểm tra lại cấu hình hoặc thử lại.`,
-				);
-			}
-
-			// Open in new tab without overwriting current tab
-			const targetUrl = data.paymentUrl ?? data.redirectUrl!;
-			if (paymentTab && !paymentTab.closed) {
-				paymentTab.location.href = targetUrl;
-			} else {
-				const fallbackPopup = window.open(targetUrl, "_blank");
-				if (!fallbackPopup) {
-					// Fallback only if popups are completely blocked by user's browser settings
-					window.location.href = targetUrl;
-					return;
-				}
-			}
-
-			// Show loading screen (PaymentCompletingScreen) on the current checkout tab while waiting for payment
-			markPaymentCompleting(checkout.id);
-			setIsLoading(false);
-			onPaymentActivityChange?.(false);
-		} catch (err: unknown) {
-			if (paymentTab && !paymentTab.closed) {
-				paymentTab.close();
-			}
-			clearPaymentCompleting();
-			const msg = err instanceof Error ? err.message : "Lỗi khi xử lý thanh toán";
-			onPaymentError?.(msg);
-			setIsLoading(false);
-			onPaymentActivityChange?.(false);
-		}
-	};
 
 	return (
 		<section className="space-y-6">
@@ -348,7 +218,7 @@ export const SimulatedVietnamPayments: FC<SimulatedVietnamPaymentsProps> = ({
 				</p>
 				<TestCardMockup
 					isSelected={selectedMethodId === "test-card"}
-					onClick={() => setSelectedMethodId("test-card")}
+					onClick={() => handleSelectMethod("test-card")}
 				/>
 			</div>
 
@@ -377,7 +247,7 @@ export const SimulatedVietnamPayments: FC<SimulatedVietnamPaymentsProps> = ({
 									name="payment_gateway"
 									value={method.id}
 									checked={isSelected}
-									onChange={() => setSelectedMethodId(method.id)}
+									onChange={() => handleSelectMethod(method.id)}
 									className="sr-only"
 								/>
 
@@ -416,42 +286,15 @@ export const SimulatedVietnamPayments: FC<SimulatedVietnamPaymentsProps> = ({
 				</div>
 			</div>
 
-			{/* PROCEED BUTTON & TRUST SIGNALS */}
-			<div className="pt-2 space-y-3">
-				{!isVnd && selectedMethodId !== "test-card" && (
-					<div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 px-3.5 py-2.5 text-xs text-muted-foreground">
-						<span>Tỷ giá quy đổi sang cổng thanh toán:</span>
-						<span className="font-semibold text-foreground">
-							{formattedTotal} ≈ {formattedVnd}
-						</span>
-					</div>
-				)}
-
-				<Button
-					type="button"
-					size="lg"
-					onClick={handleProceedPayment}
-					disabled={isLoading}
-					className="h-12 w-full font-medium"
-				>
-					{isLoading ? (
-						<span className="flex items-center justify-center gap-2">
-							<LoadingSpinner />
-							<span>{tActions("processingPayment")}</span>
-						</span>
-					) : (
-						<span>
-							{selectedMethodId === "test-card"
-								? tActions("payTotal", { total: formattedTotal })
-								: isVnd
-									? `Tiến hành thanh toán qua ${PAYMENT_METHODS.find((m) => m.id === selectedMethodId)?.name ?? "cổng thanh toán"}`
-									: `Tiến hành thanh toán qua ${PAYMENT_METHODS.find((m) => m.id === selectedMethodId)?.name ?? "cổng thanh toán"} (${formattedVnd})`}
-						</span>
-					)}
-				</Button>
-
-				<PaymentTrustSignals />
-			</div>
+			{/* Currency conversion notice for non-VND channels when external gateway is selected */}
+			{!isVnd && selectedMethodId !== "test-card" && (
+				<div className="flex items-center justify-between rounded-lg border border-border bg-muted/40 px-3.5 py-2.5 text-xs text-muted-foreground">
+					<span>Tỷ giá quy đổi sang cổng thanh toán:</span>
+					<span className="font-semibold text-foreground">
+						{formattedTotal} ≈ {formattedVnd}
+					</span>
+				</div>
+			)}
 		</section>
 	);
 };

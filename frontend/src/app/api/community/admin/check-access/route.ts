@@ -38,9 +38,9 @@ export async function GET(request: Request) {
 			return NextResponse.json({
 				authorized: true,
 				user: {
-					id: "VXNlcjox",
-					email: "basduygame@gmail.com",
-					fullName: "Ba Duy Nguyen",
+					id: "admin-aurabook",
+					email: "admin@aurabook.vn",
+					fullName: "Quản trị viên Aurabook",
 					isStaff: true,
 				},
 			});
@@ -55,9 +55,9 @@ export async function GET(request: Request) {
 				return NextResponse.json({
 					authorized: true,
 					user: {
-						id: me.id,
-						email: me.email,
-						fullName: [me.firstName, me.lastName].filter(Boolean).join(" ") || me.email,
+						id: "admin-aurabook",
+						email: "admin@aurabook.vn",
+						fullName: "Quản trị viên Aurabook",
 						isStaff: true,
 					},
 				});
@@ -77,9 +77,9 @@ export async function GET(request: Request) {
 			const response = NextResponse.json({
 				authorized: true,
 				user: {
-					id: "VXNlcjox",
-					email: "basduygame@gmail.com",
-					fullName: "Ba Duy Nguyen",
+					id: "admin-aurabook",
+					email: "admin@aurabook.vn",
+					fullName: "Quản trị viên Aurabook",
 					isStaff: true,
 				},
 			});

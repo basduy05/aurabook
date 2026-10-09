@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { X, UserCheck, Camera, Upload, Check } from "lucide-react";
@@ -109,6 +109,18 @@ export function CommunityProfileModal({
 		reader.readAsDataURL(file);
 	};
 
+	const isUsernameCooldown = useMemo(() => {
+		if (!user?.lastUsernameChange) return { active: false, daysLeft: 0 };
+		const last = new Date(user.lastUsernameChange).getTime();
+		const diff = Date.now() - last;
+		const sevenDays = 7 * 24 * 60 * 60 * 1000;
+		if (diff < sevenDays) {
+			const daysLeft = Math.ceil((sevenDays - diff) / (24 * 60 * 60 * 1000));
+			return { active: true, daysLeft };
+		}
+		return { active: false, daysLeft: 0 };
+	}, [user?.lastUsernameChange]);
+
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!displayName.trim()) {
@@ -120,15 +132,20 @@ export function CommunityProfileModal({
 			return;
 		}
 
+		const cleanUsername = username.trim().toLowerCase().replace(/[^a-z0-9_]/g, "");
+		if (isUsernameCooldown.active && `@${cleanUsername}` !== user.username.toLowerCase()) {
+			setError(`Bạn chỉ có thể thay đổi ID người dùng sau mỗi 7 ngày. Vui lòng thử lại sau ${isUsernameCooldown.daysLeft} ngày nữa.`);
+			return;
+		}
+
 		setIsSubmitting(true);
 		setError("");
 		try {
-			const cleanUsername = username.trim().toLowerCase().replace(/[^a-z0-9_]/g, "");
 			await onSave({
 				username: `@${cleanUsername}`,
 				displayName: displayName.trim(),
 				avatar: avatar.trim() || user.avatar,
-				bio: bio.trim().slice(0, 250),
+				bio: bio.trim().slice(0, 150),
 				favoriteGenre: favoriteGenre.trim(),
 			});
 			onClose();
@@ -393,9 +410,20 @@ export function CommunityProfileModal({
 						</div>
 
 						<div>
-							<label className="block text-[13px] font-semibold text-foreground mb-1">
-								Username (@tag) <span className="text-destructive">*</span>
-							</label>
+							<div className="flex items-center justify-between mb-1">
+								<label className="block text-[13px] font-semibold text-foreground">
+									Username (@ID) <span className="text-destructive">*</span>
+								</label>
+								{isUsernameCooldown.active ? (
+									<span className="text-[11px] font-semibold text-amber-600 dark:text-amber-400">
+										Đổi lại sau {isUsernameCooldown.daysLeft} ngày
+									</span>
+								) : (
+									<span className="text-[11px] text-muted-foreground">
+										Đổi được mỗi 7 ngày
+									</span>
+								)}
+							</div>
 							<div className="relative">
 								<span className="absolute left-3 top-2.5 text-[13px] text-muted-foreground font-semibold">
 									@
@@ -403,12 +431,24 @@ export function CommunityProfileModal({
 								<Input
 									type="text"
 									value={username}
-									onChange={(e) => setUsername(e.target.value)}
+									disabled={isUsernameCooldown.active}
+									onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
 									placeholder="nguyenvana"
-									className="pl-7 text-[13px] h-9.5"
+									className={`pl-7 text-[13px] h-9.5 ${
+										isUsernameCooldown.active ? "bg-muted/60 cursor-not-allowed text-muted-foreground" : ""
+									}`}
 									required
 								/>
 							</div>
+							{isUsernameCooldown.active ? (
+								<p className="text-[11px] text-muted-foreground mt-1">
+									🔒 Bạn vừa đổi ID gần đây. Theo quy định hệ thống, ID người dùng chỉ có thể thay đổi sau mỗi 7 ngày.
+								</p>
+							) : (
+								<p className="text-[11px] text-muted-foreground mt-1">
+									Chỉ chứa chữ thường không dấu, số và gạch dưới (3 - 30 ký tự).
+								</p>
+							)}
 						</div>
 					</div>
 
@@ -431,7 +471,7 @@ export function CommunityProfileModal({
 						</select>
 					</div>
 
-					{/* Bio (Max 250 characters) */}
+					{/* Bio (Max 150 characters) */}
 					<div>
 						<div className="flex items-center justify-between mb-1">
 							<label className="block text-[13px] font-semibold text-foreground">
@@ -439,18 +479,18 @@ export function CommunityProfileModal({
 							</label>
 							<span
 								className={`text-[11px] font-medium ${
-									bio.length >= 250 ? "text-destructive font-bold" : "text-muted-foreground"
+									bio.length >= 150 ? "text-destructive font-bold" : "text-muted-foreground"
 								}`}
 							>
-								{bio.length}/250 ký tự
+								{bio.length}/150 ký tự
 							</span>
 						</div>
 						<textarea
 							rows={3}
-							maxLength={250}
+							maxLength={150}
 							value={bio}
 							onChange={(e) => setBio(e.target.value)}
-							placeholder="Chia sẻ vài dòng về sở thích, câu nói tâm đắc hoặc thói quen đọc sách của bạn (tối đa 250 ký tự)..."
+							placeholder="Chia sẻ vài dòng về sở thích, câu nói tâm đắc hoặc thói quen đọc sách của bạn (tối đa 150 ký tự)..."
 							className="w-full rounded-md border border-input bg-background px-3 py-2 text-[13px] text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring"
 						/>
 					</div>

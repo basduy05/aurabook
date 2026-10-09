@@ -16,6 +16,7 @@ import {
 	PenTool,
 	Users2,
 	BookmarkCheck,
+	Pin,
 } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { type CommunityPost } from "@/lib/community/types";
@@ -248,8 +249,11 @@ export function CommunityLoggedOutView({
 										</div>
 
 										{post.isPinned && (
-											<span className="rounded-full border border-amber-300 bg-amber-50 px-2.5 py-0.5 text-[10px] font-bold text-amber-800">
-												Đã ghim
+											<span
+												title="Bài viết được ghim"
+												className="rounded-full border border-amber-300 bg-amber-50 p-1 text-amber-800"
+											>
+												<Pin className="h-3 w-3 fill-amber-500/20" />
 											</span>
 										)}
 									</div>

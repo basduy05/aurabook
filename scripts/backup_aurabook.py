@@ -68,7 +68,7 @@ def main():
         print(f"  [!] Luu media bo qua: {e}")
 
     # 4. Mailpit emails database
-    print("\n[4/5] Sao luu Mailpit emails database...")
+    print("\n[4/6] Sao luu Mailpit emails database...")
     mailpit_file = os.path.join(current_backup_dir, "mailpit.db")
     try:
         run_cmd(f'docker cp aurabook-mailpit:/data/mailpit.db "{mailpit_file}"', check=False)
@@ -79,8 +79,19 @@ def main():
     except Exception as e:
         print(f"  [!] Bo qua sao luu Mailpit: {e}")
 
-    # 5. Metadata
-    print("\n[5/5] Luu thong tin metadata...")
+    # 5. Frontend local JSON data (GHN shipments, community posts, reviews)
+    print("\n[5/6] Sao luu du lieu ung dung frontend/data...")
+    frontend_data_dir = os.path.join(root_dir, "frontend", "data")
+    backup_data_dir = os.path.join(current_backup_dir, "data")
+    if os.path.exists(frontend_data_dir):
+        os.makedirs(backup_data_dir, exist_ok=True)
+        shutil.copytree(frontend_data_dir, backup_data_dir, dirs_exist_ok=True)
+        print(f"  [OK] Da sao luu toan bo du lieu frontend/data ({len(os.listdir(frontend_data_dir))} files).")
+    else:
+        print("  [!] Khong tim thay thu muc frontend/data de sao luu.")
+
+    # 6. Metadata
+    print("\n[6/6] Luu thong tin metadata...")
     prod_res = run_cmd('docker exec aurabook-postgres psql -U aurabook_user -d aurabook_db -t -A -c "SELECT count(*) FROM product_product;"', check=False)
     user_res = run_cmd('docker exec aurabook-postgres psql -U aurabook_user -d aurabook_db -t -A -c "SELECT count(*) FROM account_user;"', check=False)
 

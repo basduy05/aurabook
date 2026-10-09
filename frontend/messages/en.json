@@ -338,7 +338,8 @@
 			"UNFULFILLED": "Processing",
 			"UNCONFIRMED": "Pending confirmation",
 			"PARTIALLY_FULFILLED": "Partially shipped",
-			"FULFILLED": "Shipped"
+			"FULFILLED": "Shipped",
+			"COMPLETED": "Completed"
 		},
 		"fulfillment": {
 			"orderConfirmed": "Order confirmed",

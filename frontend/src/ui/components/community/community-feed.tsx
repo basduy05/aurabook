@@ -14,6 +14,7 @@ import {
 	ShoppingBag,
 	ExternalLink,
 	BookMarked,
+	ArrowUp,
 } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { type CommunityPost, type CommunityUser } from "@/lib/community/types";
@@ -37,9 +38,10 @@ export function CommunityFeed() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [activeNav, setActiveNav] = useState<CommunityNavTab>("feed");
-	const [activeTab, setActiveTab] = useState<"all" | "reviews" | "posts" | "pinned">("all");
+	const [activeTab, setActiveTab] = useState<"for-you" | "following">("for-you");
 	const [viewProfileTarget, setViewProfileTarget] = useState<string | null>(null);
 	const [focusedPostId, setFocusedPostId] = useState<string | null>(null);
+	const [pendingNewPosts, setPendingNewPosts] = useState<CommunityPost[]>([]);
 
 	// Helper to synchronize query parameters in browser URL
 	const updateUrlState = (profile: string | null, post: string | null) => {
@@ -281,6 +283,97 @@ export function CommunityFeed() {
 		loadInitialData();
 	}, []);
 
+	// Real-time polling for new posts & interactions from others every 5 seconds
+	useEffect(() => {
+		const pollPosts = async () => {
+			try {
+				const postsRes = await fetch("/api/community/posts");
+				if (!postsRes.ok) return;
+				const data = (await postsRes.json()) as { posts: CommunityPost[] };
+				if (!Array.isArray(data.posts)) return;
+
+				setPosts((currentPosts) => {
+					if (currentPosts.length === 0) {
+						return data.posts;
+					}
+
+					const existingIds = new Set(currentPosts.map((p) => p.id));
+					const incomingNew = data.posts.filter((p) => !existingIds.has(p.id));
+
+					if (incomingNew.length > 0) {
+						// Filter posts authored by other users to show the popup notification
+						const othersPosts = incomingNew.filter(
+							(p) =>
+								!currentUser ||
+								(p.author.id !== currentUser.id && p.author.username !== currentUser.username),
+						);
+
+						if (othersPosts.length > 0) {
+							setPendingNewPosts((prevPending) => {
+								const prevIds = new Set(prevPending.map((p) => p.id));
+								const brandNew = othersPosts.filter((p) => !prevIds.has(p.id));
+								if (brandNew.length > 0) {
+									return [...brandNew, ...prevPending];
+								}
+								return prevPending;
+							});
+						}
+
+						// Prepend posts created by current user immediately
+						const myOwnPosts = incomingNew.filter(
+							(p) =>
+								currentUser &&
+								(p.author.id === currentUser.id || p.author.username === currentUser.username),
+						);
+						if (myOwnPosts.length > 0) {
+							return [...myOwnPosts, ...currentPosts];
+						}
+					}
+
+					// Update existing posts in-place for real-time likes, comments, edit, pin, and hide
+					const freshMap = new Map(data.posts.map((p) => [p.id, p]));
+					let hasChanges = false;
+					const updated = currentPosts.map((p) => {
+						const fresh = freshMap.get(p.id);
+						if (!fresh) return p;
+						if (
+							fresh.likes?.length !== p.likes?.length ||
+							fresh.comments?.length !== p.comments?.length ||
+							fresh.isPinned !== p.isPinned ||
+							fresh.isHidden !== p.isHidden ||
+							fresh.title !== p.title ||
+							fresh.content !== p.content
+						) {
+							hasChanges = true;
+							return fresh;
+						}
+						return p;
+					});
+
+					return hasChanges ? updated : currentPosts;
+				});
+			} catch {
+				// Silent background error
+			}
+		};
+
+		const interval = setInterval(pollPosts, 5000);
+		return () => clearInterval(interval);
+	}, [currentUser]);
+
+	const handleApplyNewPosts = () => {
+		if (pendingNewPosts.length === 0) return;
+		setPosts((prev) => {
+			const existingIds = new Set(prev.map((p) => p.id));
+			const toAdd = pendingNewPosts.filter((p) => !existingIds.has(p.id));
+			return [...toAdd, ...prev];
+		});
+		setPendingNewPosts([]);
+		if (typeof window !== "undefined") {
+			window.scrollTo({ top: 0, behavior: "smooth" });
+		}
+	};
+
 	// Refresh bookshelf whenever activeNav switches to bookshelf or user logs in
 	useEffect(() => {
 		if (activeNav === "bookshelf") {
@@ -369,9 +462,15 @@ export function CommunityFeed() {
 
 		// Feed tab filter
 		if (activeNav === "feed") {
-			if (activeTab === "reviews") return p.isFromProductReview || !!p.book;
-			if (activeTab === "posts") return !p.isFromProductReview;
-			if (activeTab === "pinned") return p.isPinned;
+			if (activeTab === "following") {
+				const followingList = currentUser?.following || [];
+				const isFollowingAuthor =
+					followingList.includes(p.author.id) ||
+					followingList.includes(p.author.username) ||
+					p.author.id === "admin-aurabook" ||
+					p.author.username === "@aurabook_admin";
+				if (!isFollowingAuthor) return false;
+			}
 		}
 
 		return true;
@@ -516,8 +615,7 @@ export function CommunityFeed() {
 							onSelectNav={(nav) => {
 								handleExitProfileAndPost();
 								setActiveNav(nav);
-								if (nav === "reviews") setActiveTab("reviews");
-								else if (nav === "feed") setActiveTab("all");
+								if (nav === "feed") setActiveTab("for-you");
 							}}
 							savedCount={savedPostIds.length}
 							bookshelfCount={bookshelfData.books.length}
@@ -1010,55 +1108,49 @@ export function CommunityFeed() {
 									/>
 								)}
 
-								{/* Feed Filter Tabs */}
+								{/* Feed Filter Tabs - Strictly "Cho bạn" and "Đang theo dõi" */}
 								<div className="flex items-center justify-between gap-2 border-b border-border pb-3">
 									<div className="flex items-center gap-2 overflow-x-auto pb-1">
 										<button
 											type="button"
-											onClick={() => setActiveTab("all")}
+											onClick={() => setActiveTab("for-you")}
 											className={`rounded-full px-4 py-2 text-[13px] font-semibold transition-colors ${
-												activeTab === "all"
+												activeTab === "for-you"
 													? "bg-foreground text-background shadow-xs"
 													: "bg-muted text-muted-foreground hover:text-foreground"
 											}`}
 										>
-											Tất cả ({posts.length})
+											Cho bạn
 										</button>
 										<button
 											type="button"
-											onClick={() => setActiveTab("reviews")}
+											onClick={() => setActiveTab("following")}
 											className={`rounded-full px-4 py-2 text-[13px] font-semibold transition-colors ${
-												activeTab === "reviews"
+												activeTab === "following"
 													? "bg-foreground text-background shadow-xs"
 													: "bg-muted text-muted-foreground hover:text-foreground"
 											}`}
 										>
-											Đánh giá sách
-										</button>
-										<button
-											type="button"
-											onClick={() => setActiveTab("posts")}
-											className={`rounded-full px-4 py-2 text-[13px] font-semibold transition-colors ${
-												activeTab === "posts"
-													? "bg-foreground text-background shadow-xs"
-													: "bg-muted text-muted-foreground hover:text-foreground"
-											}`}
-										>
-											Thảo luận
-										</button>
-										<button
-											type="button"
-											onClick={() => setActiveTab("pinned")}
-											className={`rounded-full px-4 py-2 text-[13px] font-semibold transition-colors ${
-												activeTab === "pinned"
-													? "bg-foreground text-background shadow-xs"
-													: "bg-muted text-muted-foreground hover:text-foreground"
-											}`}
-										>
-											Được ghim
+											Đang theo dõi
 										</button>
 									</div>
 								</div>
+
+								{/* Floating Realtime New Posts Popup Banner */}
+								{pendingNewPosts.length > 0 && (
+									<div className="sticky top-20 z-30 flex justify-center -my-1 pointer-events-none animate-in fade-in slide-in-from-top-3 duration-300">
+										<button
+											type="button"
+											onClick={handleApplyNewPosts}
+											className="pointer-events-auto inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-lg shadow-primary/25 hover:bg-primary/90 hover:scale-105 active:scale-95 transition-all cursor-pointer ring-2 ring-primary-foreground/20"
+										>
+											<ArrowUp className="h-3.5 w-3.5 animate-bounce" />
+											<span>
+												Có {pendingNewPosts.length} bài viết mới • Nhấn để xem
+											</span>
+										</button>
+									</div>
+								)}
 
 								{/* Posts Feed */}
 								{isLoading ? (
@@ -1070,10 +1162,16 @@ export function CommunityFeed() {
 								) : filteredPosts.length === 0 ? (
 									<div className="rounded-2xl border border-dashed border-border p-12 text-center">
 										<BookOpen className="mx-auto h-9 w-9 text-muted-foreground/60 mb-2.5" />
-										<h3 className="font-semibold text-foreground text-[15px]">Chưa có bài viết nào</h3>
+										<h3 className="font-semibold text-foreground text-[15px]">
+											{activeTab === "following"
+												? "Chưa có bài viết từ người bạn đang theo dõi"
+												: "Chưa có bài viết nào"}
+										</h3>
 										<p className="mt-1 text-[13px] text-muted-foreground">
 											{searchQuery
 												? "Không tìm thấy kết quả phù hợp với từ khóa."
+												: activeTab === "following"
+												? "Bạn chưa theo dõi ai hoặc những người bạn theo dõi chưa đăng bài viết nào. Hãy theo dõi các độc giả khác trong cộng đồng!"
 												: "Hãy là người đầu tiên chia sẻ cảm nhận hoặc viết đánh giá sách!"}
 										</p>
 									</div>

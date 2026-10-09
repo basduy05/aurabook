@@ -92,8 +92,19 @@ def main():
     else:
         print("  [OK] Khong co file mailpit.db can phuc hoi.")
 
-    # 5. Khoi dong lai backend & celery
-    print("\n[5/5] Khoi dong lai dich vu backend va celery...")
+    # 5. Khoi phuc du lieu ung dung frontend/data
+    print("\n[5/6] Khoi phuc du lieu ung dung frontend/data...")
+    backup_data_dir = os.path.join(backup_path, "data")
+    target_frontend_data = os.path.join(root_dir, "frontend", "data")
+    if os.path.exists(backup_data_dir) and os.listdir(backup_data_dir):
+        os.makedirs(target_frontend_data, exist_ok=True)
+        shutil.copytree(backup_data_dir, target_frontend_data, dirs_exist_ok=True)
+        print("  [OK] Da khoi phuc toan bo du lieu frontend/data.")
+    else:
+        print("  [OK] Khong co du lieu frontend/data trong ban sao luu.")
+
+    # 6. Khoi dong lai backend & celery
+    print("\n[6/6] Khoi dong lai dich vu backend va celery...")
     run_cmd("docker restart aurabook-backend aurabook-celery", check=False)
     print("  [OK] Backend va Celery da khoi dong lai hoan tat.")
 

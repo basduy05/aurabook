@@ -2,7 +2,7 @@
 
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { isLocaleSlug, isStorefrontLocaleSlug } from "@/config/locale";
-import { getPairedChannelForLocale } from "@/config/locale-channel";
+import { getPairedChannelForLocale, isAllowedLocaleChannelPair } from "@/config/locale-channel";
 import { useCatalogIdentity } from "@/lib/catalog/catalog-identity-bridge";
 import {
 	appendSearchParams,
@@ -41,8 +41,11 @@ export function useStorefrontRegionNavigation() {
 			writeBrowseLocaleCookieClient(newLocale);
 		}
 
-		// When a locale×channel matrix is configured, switch to the paired market too.
-		const targetChannel = getPairedChannelForLocale(newLocale, channel);
+		// Allow independent language and currency selection:
+		// Preserve current channel if it is valid for newLocale; only fall back if incompatible.
+		const targetChannel = isAllowedLocaleChannelPair(newLocale, channel)
+			? channel
+			: getPairedChannelForLocale(newLocale, channel);
 
 		if (targetChannel !== channel && hasCartCookieForChannel(channel)) {
 			const proceed = window.confirm(

@@ -95,9 +95,9 @@ export async function POST(request: Request) {
 		const response = NextResponse.json({
 			ok: true,
 			user: {
-				id: user.id,
-				email: user.email,
-				fullName: [user.firstName, user.lastName].filter(Boolean).join(" ") || user.email,
+				id: "admin-aurabook",
+				email: "admin@aurabook.vn",
+				fullName: "Quản trị viên Aurabook",
 				isStaff: true,
 			},
 		});

@@ -1,13 +1,11 @@
 import type { OrderDetailsFragment } from "@/gql/graphql";
-import { getCustomerOrderStatusLabel } from "./order-status-labels";
+import { getCustomerOrderStatusLabel, type OrderStatusLabelKey } from "./order-status-labels";
 
 export type OrderRowLabels = {
 	orderNumber: string;
 	itemCount: string;
 	statusLabel: string;
 };
-
-type OrderStatusLabelKey = "UNFULFILLED" | "UNCONFIRMED" | "PARTIALLY_FULFILLED" | "FULFILLED";
 
 type AccountOrderTranslator = (
 	key: "orders.orderNumber" | "common.itemCount",

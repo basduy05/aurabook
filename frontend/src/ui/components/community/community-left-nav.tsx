@@ -60,9 +60,12 @@ export function CommunityLeftNav({
 
 	// Fetch real notifications from API
 	const fetchNotifications = async () => {
+		if (!currentUser?.id) {
+			setNotifications([]);
+			return;
+		}
 		try {
-			const userId = currentUser?.id || "user-1";
-			const res = await fetch(`/api/community/notifications?userId=${encodeURIComponent(userId)}`);
+			const res = await fetch(`/api/community/notifications?userId=${encodeURIComponent(currentUser.id)}`);
 			if (res.ok) {
 				const data = (await res.json()) as { notifications: CommunityNotification[] };
 				setNotifications(data.notifications || []);
@@ -74,9 +77,9 @@ export function CommunityLeftNav({
 
 	useEffect(() => {
 		fetchNotifications();
-		const interval = setInterval(fetchNotifications, 15000);
+		const interval = setInterval(fetchNotifications, 5000);
 		return () => clearInterval(interval);
-	}, [currentUser]);
+	}, [currentUser?.id]);
 
 	// Close popups when clicking outside the profile cluster
 	useEffect(() => {
@@ -93,12 +96,13 @@ export function CommunityLeftNav({
 	const unreadCount = notifications.filter((n) => !n.isRead).length;
 
 	const handleMarkAllRead = async () => {
+		if (!currentUser?.id) return;
 		setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
 		try {
 			await fetch("/api/community/notifications", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ markAll: true, userId: currentUser?.id || "user-1" }),
+				body: JSON.stringify({ markAll: true, userId: currentUser.id }),
 			});
 		} catch (e) {
 			console.error("Failed to mark all notifications read:", e);
@@ -106,12 +110,13 @@ export function CommunityLeftNav({
 	};
 
 	const handleMarkSingleRead = async (id: string) => {
+		if (!currentUser?.id) return;
 		setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)));
 		try {
 			await fetch("/api/community/notifications", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ notificationId: id, userId: currentUser?.id || "user-1" }),
+				body: JSON.stringify({ notificationId: id, userId: currentUser.id }),
 			});
 		} catch (e) {
 			console.error("Failed to mark notification read:", e);
@@ -261,8 +266,8 @@ export function CommunityLeftNav({
 							>
 								<Bell className="h-4 w-4" />
 								{unreadCount > 0 && (
-									<span className="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground">
-										{unreadCount}
+									<span className="absolute -top-1 -right-1 flex h-4 min-w-4 px-1 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground animate-pulse shadow-xs">
+										{unreadCount > 99 ? "99+" : unreadCount}
 									</span>
 								)}
 							</button>

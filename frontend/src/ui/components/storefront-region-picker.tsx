@@ -5,7 +5,6 @@ import { Check, ChevronDown, Globe, Languages, Store } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { ChannelSelectOption } from "@/config/channels";
 import { getLocaleDefinition } from "@/config/locale";
-import { getLocalesForChannel } from "@/config/locale-channel";
 import { useStorefrontRegionNavigation } from "@/hooks/use-storefront-region-navigation";
 import type { LocaleSelectOption } from "@/lib/locale-display";
 import { enrichMarketOptions, getCurrencySymbol, type MarketSelectOption } from "@/lib/market-display";
@@ -101,11 +100,8 @@ export function StorefrontRegionPicker({
 	const showMarket = channels.length > 1;
 	const marketOptions = enrichMarketOptions(channels);
 
-	const allowedLocales = getLocalesForChannel(channel);
-	const visibleLocales =
-		allowedLocales === null || allowedLocales.length <= 1
-			? locales
-			: locales.filter((item) => allowedLocales.includes(item.slug));
+	// All configured languages can be selected independently
+	const visibleLocales = locales;
 
 	const currentLocale =
 		visibleLocales.find((item) => item.slug === locale) ?? locales.find((item) => item.slug === locale);

@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { MapPin, CreditCard } from "lucide-react";
+import { MapPin, CreditCard, BookOpen, ShieldCheck, Sparkles, CheckCircle2 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { OrderByNumberDocument } from "@/gql/graphql";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
@@ -17,6 +17,8 @@ import { OrderStatusBadge } from "@/ui/components/account/order-status-badge";
 import { AccountOrderDetailSkeleton } from "@/ui/components/account/account-skeleton";
 import { type AddressDetailsFragment } from "@/gql/graphql";
 import { OrderLineReviewButton } from "@/ui/components/reviews/order-line-review-button";
+import { GHNOrderTracking } from "@/ui/components/account/ghn-order-tracking";
+import { getGHNShipmentByOrder } from "@/lib/shipping/ghn";
 
 type Props = {
 	params: Promise<{ locale: string; number: string }>;
@@ -63,6 +65,20 @@ async function OrderDetailContent({ params }: Props) {
 
 	const itemCount = order.lines.reduce((sum, l) => sum + l.quantity, 0);
 	const placedDate = formatDate(new Date(order.created), undefined, intlLocale);
+	const ghnShipment = getGHNShipmentByOrder(order.number);
+	const isCompleted = ghnShipment?.status === "delivered";
+
+	const isDigitalOrder =
+		!order.shippingAddress ||
+		order.lines.every((line) => {
+			const name = (line.variant?.product?.name || "").toLowerCase();
+			return (
+				name.includes("audiobook") ||
+				name.includes("ebook") ||
+				name.includes("điện tử") ||
+				name.includes("sách số")
+			);
+		});
 
 	return (
 		<div className="space-y-6">
@@ -71,11 +87,68 @@ async function OrderDetailContent({ params }: Props) {
 					<h1 className="text-balance text-h1">{tOrders("orderNumber", { number: order.number })}</h1>
 					<p className="mt-1 text-sm text-muted-foreground">{t("placedOn", { date: placedDate })}</p>
 				</div>
-				<OrderStatusBadge status={order.status} statusDisplay={order.statusDisplay} localeSlug={locale} />
+				<OrderStatusBadge
+					status={order.status}
+					statusDisplay={order.statusDisplay}
+					localeSlug={locale}
+					isCompleted={isCompleted}
+				/>
 			</div>
 
 			<div className="grid gap-6 lg:grid-cols-[1fr_320px]">
 				<div className="space-y-6">
+					{isDigitalOrder ? (
+						<div className="rounded-xl border border-border bg-card p-5 text-card-foreground shadow-sm">
+							<div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
+								<div className="flex items-center gap-3">
+									<div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+										<BookOpen className="h-6 w-6" />
+									</div>
+									<div>
+										<div className="flex items-center gap-2">
+											<h3 className="font-bold text-foreground text-base">Cấp phát quyền sử dụng ấn phẩm điện tử</h3>
+											<span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-600 border border-emerald-500/20">
+												Bản quyền số
+											</span>
+										</div>
+										<p className="text-xs text-muted-foreground mt-0.5">
+											Đơn hàng bao gồm ấn phẩm điện tử (Ebook / Audiobook) — Không yêu cầu vận chuyển bưu kiện vật lý
+										</p>
+									</div>
+								</div>
+								<span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600 border border-emerald-500/20">
+									<CheckCircle2 className="h-3.5 w-3.5" />
+									Đã cấp quyền truy cập
+								</span>
+							</div>
+
+							<div className="mt-4 grid gap-3 sm:grid-cols-2 text-xs">
+								<div className="rounded-lg border border-border bg-muted/20 p-3">
+									<div className="flex items-center gap-1.5 font-semibold text-foreground mb-1">
+										<Sparkles className="h-3.5 w-3.5 text-primary" />
+										<span>Phương thức cấp phát:</span>
+									</div>
+									<p className="font-medium text-foreground">Kích hoạt trực tiếp vào Thư viện tài khoản Aurabook</p>
+									<p className="text-muted-foreground mt-0.5">Quyền đọc trực tuyến và tải về không giới hạn thời gian</p>
+								</div>
+
+								<div className="rounded-lg border border-border bg-muted/20 p-3">
+									<div className="flex items-center gap-1.5 font-semibold text-foreground mb-1">
+										<ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+										<span>Bảo vệ quyền tác giả (DRM):</span>
+									</div>
+									<p className="font-medium text-foreground">Đã gắn mã số bản quyền cá nhân</p>
+									<p className="text-muted-foreground mt-0.5">Tương thích với ứng dụng Aurabook Reader và trình duyệt web</p>
+								</div>
+							</div>
+						</div>
+					) : (
+						<GHNOrderTracking
+							orderNumber={order.number}
+							initialShipment={ghnShipment as any}
+						/>
+					)}
+
 					<div className="rounded-xl border">
 						<div className="border-b px-5 py-4">
 							<h2 className="text-sm font-semibold">{t("items", { count: itemCount })}</h2>

@@ -7,6 +7,12 @@ import { getCachedChannelsList } from "@/lib/channels/get-channels-data";
  * when the channels list is unavailable (no `SALEOR_APP_TOKEN`).
  */
 export async function resolveChannelCurrency(channel: string): Promise<string> {
+	if (channel === "channel-vnd" || channel.toLowerCase().includes("vnd")) {
+		return "VND";
+	}
+	if (channel === "channel-pln" || channel.toLowerCase().includes("pln")) {
+		return "PLN";
+	}
 	const data = await getCachedChannelsList();
 	const match = data?.channels?.find((c) => c.slug === channel);
 	return match?.currencyCode ?? localeConfig.fallbackCurrency;

@@ -27,6 +27,8 @@ export interface UserProfileHistoryItem {
 	followingCount?: number;
 }
 
+export const ADMIN_USER_ID = "admin-aurabook";
+
 export interface CommunityUser {
 	id: string;
 	username: string; // e.g. @tuannm
@@ -42,6 +44,8 @@ export interface CommunityUser {
 	following?: string[]; // IDs or usernames of users followed
 	savedPosts?: string[]; // IDs of saved posts
 	profileHistory?: UserProfileHistoryItem[]; // Lịch sử thay đổi hồ sơ
+	role?: "admin" | "member";
+	lastUsernameChange?: string; // Thời điểm gần nhất thay đổi @username (quy định 7 ngày)
 }
 
 export interface CommunityComment {

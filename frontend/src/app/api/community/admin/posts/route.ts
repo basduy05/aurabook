@@ -35,11 +35,11 @@ export async function POST(request: Request) {
 
 			const post = createCommunityPost({
 				author: {
-					id: "user-1",
+					id: "admin-aurabook",
 					username: "@aurabook_admin",
-					displayName: "Ban Quản Trị Aurabook",
-					avatar: "/android-chrome-192x192.png",
-					isVerifiedBuyer: true,
+					displayName: "Quản trị viên Aurabook",
+					avatar: "/android-chrome-512x512.png",
+					isVerifiedBuyer: false,
 				},
 				title: formattedTitle,
 				content: content.trim(),

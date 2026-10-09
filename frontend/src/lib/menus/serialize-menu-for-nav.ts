@@ -11,15 +11,15 @@ export type NavMenuItem = {
 	children?: NavMenuItem[];
 };
 
-export function serializeMenuForNav(items: MenuItem[]): NavMenuItem[] {
+export function serializeMenuForNav(items: MenuItem[], locale?: string): NavMenuItem[] {
 	return items
 		.map((item) => {
-			const label = getMenuItemLabel(item);
+			const label = getMenuItemLabel(item, locale);
 			if (!label) {
 				return null;
 			}
 
-			const children = item.children?.length ? serializeMenuForNav(item.children) : undefined;
+			const children = item.children?.length ? serializeMenuForNav(item.children, locale) : undefined;
 
 			return {
 				id: item.id,

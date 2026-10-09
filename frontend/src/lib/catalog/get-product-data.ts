@@ -86,7 +86,7 @@ export async function getProductData(
 	if (!product) return null;
 
 	tagPrimaryCatalogSlug(CACHE_PROFILES.products, decodedSlug, product.slug);
-	return withTranslatedProductFields(product);
+	return withTranslatedProductFields(product, localeSlug);
 }
 
 /**
@@ -220,7 +220,7 @@ export async function getProductVariantsForPdp(
 	return {
 		variants: variants.map((variant) => ({
 			...variant,
-			name: pickTranslatedName(variant),
+			name: pickTranslatedName(variant, localeSlug),
 		})),
 		totalCount,
 		overBudget: false,
@@ -273,7 +273,7 @@ async function getProductVariantForPdp(
 	const { product: _product, ...rest } = variant;
 	return {
 		...rest,
-		name: pickTranslatedName(rest),
+		name: pickTranslatedName(rest, localeSlug),
 	};
 }
 

@@ -28,7 +28,35 @@ const SEED_SETTINGS: CommunityAdminSettings = {
 	filterSensitiveWords: true,
 };
 
+export const ADMIN_USER_ID = "admin-aurabook";
+
+export const AURABOOK_ADMIN_USER: CommunityUser = {
+	id: ADMIN_USER_ID,
+	username: "@aurabook_admin",
+	displayName: "Quản trị viên Aurabook",
+	avatar: "/android-chrome-512x512.png",
+	bio: "Tài khoản chính thức của Ban Quản Trị Aurabook. Cập nhật thông báo, chính sách và đồng hành cùng cộng đồng độc giả.",
+	favoriteGenre: "Sách chọn lọc & Thông báo",
+	hasAcceptedTerms: true,
+	isBlocked: false,
+	joinedAt: "2026-01-01T00:00:00.000Z",
+	realAccount: {
+		id: "admin-account-aurabook",
+		email: "admin@aurabook.vn",
+		fullName: "Quản trị viên Aurabook",
+		ordersCount: 0,
+		totalSpent: "0 ₫",
+		registeredDate: "01/01/2026",
+		lastActive: "Đang hoạt động",
+	},
+	savedPosts: [],
+	followers: [],
+	following: [],
+	role: "admin",
+};
+
 const SEED_USERS: CommunityUser[] = [
+	AURABOOK_ADMIN_USER,
 	{
 		id: "user-1",
 		username: "@basduy05",
@@ -50,6 +78,8 @@ const SEED_USERS: CommunityUser[] = [
 			lastActive: "Đang hoạt động",
 		},
 		savedPosts: ["post-1"],
+		following: [ADMIN_USER_ID],
+		role: "member",
 	},
 ];
 
@@ -95,10 +125,90 @@ function loadData(): CommunityData {
 		}
 		const content = fs.readFileSync(COMMUNITY_FILE, "utf8");
 		const parsed = JSON.parse(content) as CommunityData;
+		const posts = parsed.posts || SEED_POSTS;
+		const postIds = new Set(posts.map((p) => p.id));
+
+		const rawUsers = parsed.users || SEED_USERS;
+		let adminExists = false;
+		const users: CommunityUser[] = [];
+
+		for (const u of rawUsers) {
+			if (u.id === ADMIN_USER_ID || u.username === "@aurabook_admin") {
+				adminExists = true;
+				users.push({
+					...AURABOOK_ADMIN_USER,
+					...u,
+					id: ADMIN_USER_ID,
+					username: "@aurabook_admin",
+					displayName: "Quản trị viên Aurabook",
+					role: "admin",
+					avatar: "/android-chrome-512x512.png",
+					bio: (u.bio || AURABOOK_ADMIN_USER.bio).slice(0, 150),
+				});
+			} else {
+				const isBasDuy = u.realAccount?.email === "basduygame@gmail.com";
+				users.push({
+					...u,
+					role: isBasDuy ? "member" : (u.role || "member"),
+					bio: (u.bio || "").slice(0, 150),
+					savedPosts: Array.isArray(u.savedPosts)
+						? u.savedPosts.filter((id) => postIds.has(id))
+						: [],
+				});
+			}
+		}
+
+		if (!adminExists) {
+			users.unshift({ ...AURABOOK_ADMIN_USER });
+		}
+
+		// Ensure everyone automatically follows the administrator
+		const nonAdminUserIds = users.filter((u) => u.id !== ADMIN_USER_ID).map((u) => u.id);
+		const adminUser = users.find((u) => u.id === ADMIN_USER_ID);
+		if (adminUser) {
+			adminUser.followers = nonAdminUserIds;
+		}
+		for (const u of users) {
+			if (u.id !== ADMIN_USER_ID) {
+				u.following = u.following || [];
+				if (!u.following.includes(ADMIN_USER_ID)) {
+					u.following.push(ADMIN_USER_ID);
+				}
+			}
+		}
+
+		// Ensure admin posts, comments, and notifications always display the Aurabook logo
+		for (const p of posts) {
+			if (p.author.id === ADMIN_USER_ID || p.author.username === "@aurabook_admin") {
+				p.author.avatar = "/android-chrome-512x512.png";
+			}
+			if (Array.isArray(p.comments)) {
+				for (const c of p.comments) {
+					if (c.author.id === ADMIN_USER_ID || c.author.username === "@aurabook_admin") {
+						c.author.avatar = "/android-chrome-512x512.png";
+					}
+					if (Array.isArray(c.replies)) {
+						for (const r of c.replies) {
+							if (r.author.id === ADMIN_USER_ID || r.author.username === "@aurabook_admin") {
+								r.author.avatar = "/android-chrome-512x512.png";
+							}
+						}
+					}
+				}
+			}
+		}
+
+		const rawNotifs = parsed.notifications || SEED_NOTIFICATIONS;
+		for (const n of rawNotifs) {
+			if (n.sender?.id === ADMIN_USER_ID || n.sender?.username === "@aurabook_admin") {
+				n.sender.avatar = "/android-chrome-512x512.png";
+			}
+		}
+
 		return {
-			users: parsed.users || SEED_USERS,
-			posts: parsed.posts || SEED_POSTS,
-			notifications: parsed.notifications || SEED_NOTIFICATIONS,
+			users,
+			posts,
+			notifications: rawNotifs,
 			settings: parsed.settings || SEED_SETTINGS,
 		};
 	} catch (e) {
@@ -225,7 +335,7 @@ export function editCommunityPost(
 	return post;
 }
 
-export function toggleLikePost(postId: string, userIdOrIp: string): { likesCount: number; isLiked: boolean } {
+export function toggleLikePost(postId: string, userIdOrIp: string): { likesCount: number; isLiked: boolean; likes: string[] } {
 	const data = loadData();
 	const post = data.posts.find((p) => p.id === postId);
 	if (!post) {
@@ -272,7 +382,7 @@ export function toggleLikePost(postId: string, userIdOrIp: string): { likesCount
 	}
 
 	saveData(data);
-	return { likesCount: post.likes.length, isLiked };
+	return { likesCount: post.likes.length, isLiked, likes: post.likes };
 }
 
 export function addCommentToPost(
@@ -377,7 +487,34 @@ export function deleteCommunityPost(postId: string): boolean {
 	const prevLen = data.posts.length;
 	data.posts = data.posts.filter((p) => p.id !== postId);
 	if (data.posts.length !== prevLen) {
+		// Clean up savedPosts from all users
+		for (const u of data.users) {
+			if (Array.isArray(u.savedPosts)) {
+				u.savedPosts = u.savedPosts.filter((id) => id !== postId);
+			}
+		}
+
 		saveData(data);
+
+		// If post came from a product review, also remove from reviews.json
+		try {
+			const reviewsFile = path.join(DATA_DIR, "reviews.json");
+			if (fs.existsSync(reviewsFile)) {
+				const reviews = JSON.parse(fs.readFileSync(reviewsFile, "utf8")) as Review[];
+				const reviewId = postId.startsWith("post-review-")
+					? postId.replace("post-review-", "")
+					: null;
+				if (reviewId) {
+					const updatedReviews = reviews.filter((r) => r.id !== reviewId);
+					if (updatedReviews.length !== reviews.length) {
+						fs.writeFileSync(reviewsFile, JSON.stringify(updatedReviews, null, 2), "utf8");
+					}
+				}
+			}
+		} catch (e) {
+			console.error("[deleteCommunityPost] Failed to sync review deletion:", e);
+		}
+
 		return true;
 	}
 	return false;
@@ -434,6 +571,19 @@ export function toggleFollowUser(
 	}
 
 	const followerId = currentUser ? currentUser.id : currentUserId;
+
+	if (targetUser.id === ADMIN_USER_ID) {
+		// All members automatically follow admin and cannot unfollow
+		if (currentUser && !currentUser.following?.includes(ADMIN_USER_ID)) {
+			currentUser.following = [...(currentUser.following || []), ADMIN_USER_ID];
+		}
+		if (!targetUser.followers?.includes(followerId)) {
+			targetUser.followers = [...(targetUser.followers || []), followerId];
+		}
+		saveData(data);
+		return { isFollowing: true, followersCount: targetUser.followers.length };
+	}
+
 	const index = targetUser.followers.indexOf(followerId);
 	let isFollowing = false;
 
@@ -712,7 +862,7 @@ export function saveCommunityUserWithPropagation(updatedUser: Partial<CommunityU
 	const newUsername = updatedUser.username
 		? (updatedUser.username.startsWith("@") ? updatedUser.username : `@${updatedUser.username}`)
 		: oldUsername;
-	const newBio = updatedUser.bio !== undefined ? updatedUser.bio.trim() : oldBio;
+	const newBio = updatedUser.bio !== undefined ? updatedUser.bio.trim().slice(0, 150) : oldBio;
 	const newGenre = updatedUser.favoriteGenre !== undefined ? updatedUser.favoriteGenre.trim() : oldGenre;
 
 	// Check if key profile attributes changed
@@ -930,10 +1080,41 @@ export function getCommunitySidebarData(): {
 		},
 	};
 
-	const nonBookSlugs = new Set(["dry-sunglasses", "ascii-tee", "plimsolls", "canvas-sneakers", "hoodie", "t-shirt"]);
+	const nonBookSlugs = new Set([
+		"dry-sunglasses",
+		"monokai-dimmed-sunnies",
+		"ascii-tee",
+		"team-shirt",
+		"blue-polygon-shirt",
+		"dark-polygon-tee",
+		"reversed-monotype-tee",
+		"cubes-fountain-tee",
+		"darko-polo",
+		"blue-plimsolls",
+		"balance-trail-720",
+		"plimsolls",
+		"canvas-sneakers",
+		"dash-force",
+		"pirates-beanie",
+		"tactical-neck-warmer",
+		"hoodie",
+		"grey-hoodie",
+		"t-shirt",
+		"carrot-juice",
+		"apple-juice",
+		"bean-juice",
+		"banana-juice",
+		"mighty-mug",
+		"the-dash-cushion",
+		"white-parrot-cusion",
+		"gift-card",
+		"gift-card-500",
+		"gift-card-50",
+	]);
 
-	// From community posts
+	// From active, non-hidden community posts
 	for (const post of communityData.posts) {
+		if (post.isHidden) continue;
 		if (post.book?.slug && !nonBookSlugs.has(post.book.slug)) {
 			const slug = post.book.slug;
 			const known = KNOWN_BOOKS[slug];
@@ -956,69 +1137,22 @@ export function getCommunitySidebarData(): {
 		}
 	}
 
-	// From product reviews
+	// From product reviews - only add to books that currently have active community posts
 	for (const rev of reviewsList) {
 		if (rev.productSlug && !nonBookSlugs.has(rev.productSlug)) {
 			const slug = rev.productSlug;
-			const known = KNOWN_BOOKS[slug];
-			const bookTitle = known?.title || (slug === "dac-nhan-tam" ? "Đắc Nhân Tâm" : String(slug));
-			const existing = bookStats.get(slug) || {
-				title: bookTitle,
-				author: known?.author || "Tác giả Aurabook",
-				slug,
-				ratings: [] as number[],
-				count: 0,
-				thumbnail:
-					known?.thumbnail ||
-					"https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop&q=80",
-			};
-			existing.count += 1;
-			if (rev.rating) {
-				existing.ratings.push(rev.rating);
+			if (bookStats.has(slug)) {
+				const existing = bookStats.get(slug)!;
+				existing.count += 1;
+				if (rev.rating) {
+					existing.ratings.push(rev.rating);
+				}
 			}
-			bookStats.set(slug, existing);
-		}
-	}
-
-	// Default fallback books from catalog if needed
-	const defaultCatalog = [
-		{
-			title: "Đắc Nhân Tâm",
-			author: "Dale Carnegie",
-			slug: "dac-nhan-tam",
-			rating: 4.9,
-			thumbnail: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop&q=80",
-		},
-		{
-			title: "Nhà Giả Kim",
-			author: "Paulo Coelho",
-			slug: "nha-gia-kim",
-			rating: 4.8,
-			thumbnail: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300&auto=format&fit=crop&q=80",
-		},
-		{
-			title: "Tuổi Trẻ Đáng Giá Bao Nhiêu",
-			author: "Rosie Nguyễn",
-			slug: "tuoi-tre-dang-gia-bao-nhieu",
-			rating: 4.7,
-			thumbnail: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&auto=format&fit=crop&q=80",
-		},
-	];
-
-	for (const def of defaultCatalog) {
-		if (!bookStats.has(def.slug)) {
-			bookStats.set(def.slug, {
-				title: def.title,
-				author: def.author,
-				slug: def.slug,
-				ratings: [def.rating],
-				count: 0,
-				thumbnail: def.thumbnail,
-			});
 		}
 	}
 
 	const trendingBooks: TrendingBookItem[] = Array.from(bookStats.values())
+		.filter((b) => b.count > 0)
 		.map((b) => {
 			const avgRating =
 				b.ratings.length > 0

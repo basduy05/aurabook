@@ -69,7 +69,7 @@ export async function CartDrawerSlot({ params }: { params: BrowseRouteParams }) 
 export async function HeaderNavSlot({ params }: { params: BrowseRouteParams }) {
 	const { locale, channel } = await params;
 	const [navItems, content, tNavHeader] = await Promise.all([
-		getNavbarMenuItems(channel, locale).then((items) => serializeMenuForNav(items ?? [])),
+		getNavbarMenuItems(channel, locale).then((items) => serializeMenuForNav(items ?? [], locale)),
 		getStorefrontContent(channel, locale),
 		getTranslations({ locale, namespace: "nav.header" }),
 	]);
@@ -124,7 +124,7 @@ export async function HeaderActionsSlot({ params }: { params: BrowseRouteParams 
 export async function HeaderMobileMenuSlot({ params }: { params: BrowseRouteParams }) {
 	const { locale, channel } = await params;
 	const [navItems, content, tSearchBar] = await Promise.all([
-		getNavbarMenuItems(channel, locale).then((items) => serializeMenuForNav(items ?? [])),
+		getNavbarMenuItems(channel, locale).then((items) => serializeMenuForNav(items ?? [], locale)),
 		getStorefrontContent(channel, locale),
 		getTranslations({ locale, namespace: "search.bar" }),
 	]);

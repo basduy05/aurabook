@@ -444,9 +444,11 @@
 			"UNCONFIRMED": "Chờ xác nhận",
 			"PARTIALLY_FULFILLED": "Đã giao một phần",
 			"FULFILLED": "Đã xuất kho / Đang giao",
+			"COMPLETED": "Hoàn tất (Completed)",
 			"unfulfilled": "Đang chuẩn bị hàng",
 			"partiallyFulfilled": "Đã giao một phần",
-			"fulfilled": "Đã giao hàng thành công",
+			"fulfilled": "Đã xuất kho",
+			"completed": "Hoàn tất (Completed)",
 			"canceled": "Đã hủy đơn hàng"
 		},
 		"fulfillment": {

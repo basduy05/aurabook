@@ -587,6 +587,7 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 					getFieldLabel={getFieldLabel}
 					isRequiredField={isRequiredField}
 					countryAreaChoices={countryAreaChoices}
+					checkoutSubtotal={checkout.subtotalPrice?.gross?.amount ?? 0}
 				/>
 			)}
 

@@ -237,7 +237,7 @@ export const viStorefrontContent = {
 } satisfies StorefrontContent;
 
 export function getLocalizedStorefrontContent(locale?: string, channel?: string): StorefrontContent {
-	const isVi = locale === "vi" || channel === "channel-vnd";
+	const isVi = locale ? locale === "vi" : channel === "channel-vnd";
 	if (isVi) {
 		return viStorefrontContent;
 	}

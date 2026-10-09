@@ -1,10 +1,11 @@
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CheckCircle2, Truck } from "lucide-react";
 import { type OrderDetailsFragment } from "@/gql/graphql";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { formatDate, formatMoney } from "@/lib/utils";
 import { isLocalImageUrl } from "@/lib/images";
 import { resolveLocaleFromSlug } from "@/config/locale";
+import { getGHNShipmentByOrder } from "@/lib/shipping/ghn";
 import { orderStatusStyle, defaultStatusStyle } from "./order-status-config";
 import { type OrderRowLabels } from "./order-row-labels";
 import { accountRoutes } from "./routes";
@@ -17,6 +18,8 @@ type Props = {
 
 export function OrderRow({ order, localeSlug, labels }: Props) {
 	const intlLocale = resolveLocaleFromSlug(localeSlug).bcp47;
+	const ghnShipment = getGHNShipmentByOrder(order.number);
+	const isCompleted = ghnShipment?.status === "delivered";
 
 	const thumbnails = order.lines
 		.filter((l) => l.variant?.product.thumbnail)
@@ -55,8 +58,16 @@ export function OrderRow({ order, localeSlug, labels }: Props) {
 			</div>
 
 			<div className="min-w-0 flex-1">
-				<p className="text-sm font-semibold">{labels.orderNumber}</p>
-				<p className="text-[13px] text-muted-foreground">
+				<div className="flex flex-wrap items-center gap-2">
+					<p className="text-sm font-semibold">{labels.orderNumber}</p>
+					{ghnShipment && (
+						<span className="inline-flex items-center gap-1 rounded bg-orange-100 px-1.5 py-0.5 text-[11px] font-medium text-orange-800 dark:bg-orange-950/60 dark:text-orange-300">
+							<Truck className="h-3 w-3" />
+							GHN: {ghnShipment.trackingCode}
+						</span>
+					)}
+				</div>
+				<p className="text-[13px] text-muted-foreground mt-0.5">
 					<time dateTime={order.created}>{formatDate(new Date(order.created), undefined, intlLocale)}</time>
 					{" · "}
 					{labels.itemCount}
@@ -64,10 +75,22 @@ export function OrderRow({ order, localeSlug, labels }: Props) {
 			</div>
 
 			<div className="flex items-center gap-4">
-				<span className={`inline-flex items-center gap-1.5 text-[13px] font-medium ${style.className}`}>
-					<StatusIcon className="h-4 w-4" strokeWidth={1.75} />
-					<span className="hidden sm:inline">{labels.statusLabel}</span>
-				</span>
+				{isCompleted ? (
+					<span className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-emerald-700 dark:text-emerald-400">
+						<CheckCircle2 className="h-4 w-4" strokeWidth={2} />
+						<span className="hidden sm:inline">Hoàn tất (Completed)</span>
+					</span>
+				) : ghnShipment ? (
+					<span className="inline-flex items-center gap-1.5 text-[13px] font-medium text-orange-600 dark:text-orange-400">
+						<Truck className="h-4 w-4" strokeWidth={1.75} />
+						<span className="hidden sm:inline">{ghnShipment.statusDisplay}</span>
+					</span>
+				) : (
+					<span className={`inline-flex items-center gap-1.5 text-[13px] font-medium ${style.className}`}>
+						<StatusIcon className="h-4 w-4" strokeWidth={1.75} />
+						<span className="hidden sm:inline">{labels.statusLabel}</span>
+					</span>
+				)}
 				<span className="text-sm font-semibold tabular-nums">
 					{formatMoney(order.total.gross.amount, order.total.gross.currency, intlLocale)}
 				</span>

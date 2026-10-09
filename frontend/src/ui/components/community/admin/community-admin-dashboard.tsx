@@ -109,7 +109,7 @@ export function CommunityAdminDashboard() {
 
 			if (authData.authorized) {
 				setAuthStatus("authorized");
-				setAdminUser(authData.user || { id: "1", email: "basduygame@gmail.com", fullName: "Nguyễn Bá Duy", isStaff: true });
+				setAdminUser(authData.user || { id: "admin-aurabook", email: "admin@aurabook.vn", fullName: "Quản trị viên Aurabook", isStaff: true });
 			} else {
 				setAuthStatus("unauthorized");
 				setIsLoading(false);
@@ -718,46 +718,61 @@ export function CommunityAdminDashboard() {
 						{/* SUB-VIEW: KIỂM DUYỆT BÀI VIẾT (POSTS & REVIEWS) */}
 						{mgmtSubTab === "posts" && (
 							<div className="space-y-4">
-								{/* Filter Pills */}
-								<div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+								{/* Filter Pills & Create Action */}
+								<div className="flex items-center justify-between gap-2 flex-wrap">
+									<div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+										<Button
+											type="button"
+											variant={postFilter === "all" ? "default" : "outline-solid"}
+											size="sm"
+											onClick={() => setPostFilter("all")}
+											className="h-7 text-xs"
+										>
+											Tất cả ({posts.length})
+										</Button>
+										<Button
+											type="button"
+											variant={postFilter === "reviews" ? "default" : "outline-solid"}
+											size="sm"
+											onClick={() => setPostFilter("reviews")}
+											className="h-7 text-xs gap-1"
+										>
+											<BookOpen className="h-3 w-3" />
+											<span>Đánh giá từ PDP ({totalReviewsCount})</span>
+										</Button>
+										<Button
+											type="button"
+											variant={postFilter === "pinned" ? "default" : "outline-solid"}
+											size="sm"
+											onClick={() => setPostFilter("pinned")}
+											className="h-7 text-xs gap-1"
+										>
+											<Pin className="h-3 w-3" />
+											<span>Đã ghim ({posts.filter((p) => p.isPinned).length})</span>
+										</Button>
+										<Button
+											type="button"
+											variant={postFilter === "hidden" ? "default" : "outline-solid"}
+											size="sm"
+											onClick={() => setPostFilter("hidden")}
+											className="h-7 text-xs gap-1"
+										>
+											<EyeOff className="h-3 w-3" />
+											<span>Đang ẩn ({posts.filter((p) => p.isHidden).length})</span>
+										</Button>
+									</div>
+
 									<Button
 										type="button"
-										variant={postFilter === "all" ? "default" : "outline-solid"}
 										size="sm"
-										onClick={() => setPostFilter("all")}
-										className="h-7 text-xs"
+										onClick={() => {
+											setMainTab("communications");
+											setIsCreatingCommPost(true);
+										}}
+										className="h-7 text-xs gap-1 font-semibold"
 									>
-										Tất cả ({posts.length})
-									</Button>
-									<Button
-										type="button"
-										variant={postFilter === "reviews" ? "default" : "outline-solid"}
-										size="sm"
-										onClick={() => setPostFilter("reviews")}
-										className="h-7 text-xs gap-1"
-									>
-										<BookOpen className="h-3 w-3" />
-										<span>Đánh giá từ PDP ({totalReviewsCount})</span>
-									</Button>
-									<Button
-										type="button"
-										variant={postFilter === "pinned" ? "default" : "outline-solid"}
-										size="sm"
-										onClick={() => setPostFilter("pinned")}
-										className="h-7 text-xs gap-1"
-									>
-										<Pin className="h-3 w-3" />
-										<span>Đã ghim ({posts.filter((p) => p.isPinned).length})</span>
-									</Button>
-									<Button
-										type="button"
-										variant={postFilter === "hidden" ? "default" : "outline-solid"}
-										size="sm"
-										onClick={() => setPostFilter("hidden")}
-										className="h-7 text-xs gap-1"
-									>
-										<EyeOff className="h-3 w-3" />
-										<span>Đang ẩn ({posts.filter((p) => p.isHidden).length})</span>
+										<Plus className="h-3.5 w-3.5" />
+										<span>Đăng bài Quản trị viên</span>
 									</Button>
 								</div>
 
@@ -1279,8 +1294,8 @@ export function CommunityAdminDashboard() {
 															<td className="py-3.5 px-4 max-w-md">
 																<div className="font-semibold text-foreground line-clamp-1 flex items-center gap-1.5">
 																	{post.isPinned && (
-																		<Badge variant="default" className="text-[9px] py-0 px-1.5 h-4 shrink-0">
-																			Đã ghim
+																		<Badge variant="default" title="Đã ghim" className="text-[9px] py-0 px-1 h-4 shrink-0">
+																			<Pin className="h-2.5 w-2.5 fill-current" />
 																		</Badge>
 																	)}
 																	<span>{post.title}</span>
@@ -1560,8 +1575,8 @@ export function CommunityAdminDashboard() {
 												<div className="space-y-1">
 													<div className="text-xs font-bold text-foreground line-clamp-2">
 														{adminPostPinned && (
-															<span className="inline-flex items-center gap-0.5 text-primary mr-1 text-[10px]">
-																<Pin className="h-2.5 w-2.5 inline fill-primary" /> [ĐÃ GHIM]
+															<span title="Đã ghim" className="inline-flex items-center text-primary mr-1">
+																<Pin className="h-3 w-3 inline fill-primary/30" />
 															</span>
 														)}
 														<span className="text-primary font-bold mr-1">

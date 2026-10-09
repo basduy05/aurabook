@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -58,7 +58,6 @@ export function CommunityPostCard({
 	onSelectPost,
 	initialOpenComments = false,
 }: CommunityPostCardProps) {
-	const currentUserId = currentUser?.id || "guest";
 	const [currentPost, setCurrentPost] = useState<CommunityPost>(post);
 	const [likes, setLikes] = useState<string[]>(post.likes || []);
 	const [isLiking, setIsLiking] = useState(false);
@@ -76,11 +75,26 @@ export function CommunityPostCard({
 	const [replyText, setReplyText] = useState("");
 	const [isSubmittingReply, setIsSubmittingReply] = useState(false);
 
-	const isLiked = likes.includes(currentUserId);
+	useEffect(() => {
+		setCurrentPost(post);
+		setLikes(post.likes || []);
+		setComments(post.comments || []);
+	}, [post]);
+
+	const isLiked = Boolean(
+		currentUser &&
+			(likes.includes(currentUser.id) ||
+				(currentUser.username && likes.includes(currentUser.username))),
+	);
 	const isAuthor =
 		currentUser &&
 		(currentUser.id === currentPost.author.id ||
 			currentUser.username === currentPost.author.username);
+
+	const totalCommentsCount = comments.reduce(
+		(acc, c) => acc + 1 + (c.replies?.length || 0),
+		0,
+	);
 
 	const handleSaveEdit = async (_postId: string, newTitle: string, newContent: string) => {
 		const res = await fetch(`/api/community/posts/${currentPost.id}`, {
@@ -142,30 +156,43 @@ export function CommunityPostCard({
 		if (isLiking) return;
 
 		setIsLiking(true);
-		// Optimistic update
+		// Immediate optimistic update
 		const nextLikes = isLiked
-			? likes.filter((id) => id !== currentUserId)
-			: [...likes, currentUserId];
+			? likes.filter((id) => id !== currentUser.id && id !== currentUser.username)
+			: [...likes, currentUser.id];
 		setLikes(nextLikes);
+		const updatedPost = { ...currentPost, likes: nextLikes };
+		setCurrentPost(updatedPost);
+		onPostUpdated?.(updatedPost);
 
 		try {
 			const res = await fetch(`/api/community/posts/${currentPost.id}/like`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ userId: currentUserId }),
+				body: JSON.stringify({ userId: currentUser.id }),
 			});
 			if (res.ok) {
-				const data = (await res.json()) as { likesCount: number; isLiked: boolean };
-				if (data.isLiked && !nextLikes.includes(currentUserId)) {
-					setLikes([...nextLikes, currentUserId]);
-				} else if (!data.isLiked && nextLikes.includes(currentUserId)) {
-					setLikes(nextLikes.filter((id) => id !== currentUserId));
+				const data = (await res.json()) as { likesCount: number; isLiked: boolean; likes?: string[] };
+				let finalLikes = nextLikes;
+				if (Array.isArray(data.likes)) {
+					finalLikes = data.likes;
+				} else if (data.isLiked && !finalLikes.includes(currentUser.id)) {
+					finalLikes = [...finalLikes, currentUser.id];
+				} else if (!data.isLiked && (finalLikes.includes(currentUser.id) || (currentUser.username && finalLikes.includes(currentUser.username)))) {
+					finalLikes = finalLikes.filter((id) => id !== currentUser.id && id !== currentUser.username);
 				}
+				setLikes(finalLikes);
+				const syncedPost = { ...currentPost, likes: finalLikes };
+				setCurrentPost(syncedPost);
+				onPostUpdated?.(syncedPost);
 			}
 		} catch (e) {
 			console.error("Failed to toggle like:", e);
 			// Rollback on error
 			setLikes(likes);
+			const rollbackPost = { ...currentPost, likes };
+			setCurrentPost(rollbackPost);
+			onPostUpdated?.(rollbackPost);
 		} finally {
 			setIsLiking(false);
 		}
@@ -179,7 +206,32 @@ export function CommunityPostCard({
 		}
 		if (!commentText.trim() || isSubmittingComment) return;
 
+		const textToSubmit = commentText.trim();
 		setIsSubmittingComment(true);
+
+		// Immediate optimistic comment creation
+		const tempCommentId = `comm-temp-${Date.now()}`;
+		const optimisticComment: CommunityComment = {
+			id: tempCommentId,
+			author: {
+				id: currentUser.id,
+				username: currentUser.username,
+				displayName: currentUser.displayName,
+				avatar: currentUser.avatar,
+			},
+			content: textToSubmit,
+			createdAt: new Date().toISOString(),
+			replies: [],
+		};
+
+		const nextComments = [...comments, optimisticComment];
+		setComments(nextComments);
+		setCommentText("");
+		setShowComments(true);
+		const updatedPost = { ...currentPost, comments: nextComments };
+		setCurrentPost(updatedPost);
+		onPostUpdated?.(updatedPost);
+
 		try {
 			const res = await fetch(`/api/community/posts/${currentPost.id}/comment`, {
 				method: "POST",
@@ -191,17 +243,31 @@ export function CommunityPostCard({
 						displayName: currentUser.displayName,
 						avatar: currentUser.avatar,
 					},
-					content: commentText.trim(),
+					content: textToSubmit,
 				}),
 			});
 
 			if (res.ok) {
 				const data = (await res.json()) as { comment: CommunityComment };
-				setComments((prev) => [...prev, data.comment]);
-				setCommentText("");
+				const finalizedComments = nextComments.map((c) =>
+					c.id === tempCommentId ? data.comment : c,
+				);
+				setComments(finalizedComments);
+				const finalPost = { ...currentPost, comments: finalizedComments };
+				setCurrentPost(finalPost);
+				onPostUpdated?.(finalPost);
+			} else {
+				setComments(comments);
+				const rollbackPost = { ...currentPost, comments };
+				setCurrentPost(rollbackPost);
+				onPostUpdated?.(rollbackPost);
 			}
 		} catch (e) {
 			console.error("Failed to add comment:", e);
+			setComments(comments);
+			const rollbackPost = { ...currentPost, comments };
+			setCurrentPost(rollbackPost);
+			onPostUpdated?.(rollbackPost);
 		} finally {
 			setIsSubmittingComment(false);
 		}
@@ -214,7 +280,42 @@ export function CommunityPostCard({
 		}
 		if (!replyText.trim() || isSubmittingReply) return;
 
+		const textToSubmit = replyText.trim();
 		setIsSubmittingReply(true);
+
+		// Immediate optimistic reply creation
+		const tempReplyId = `reply-temp-${Date.now()}`;
+		const optimisticReply: CommunityComment = {
+			id: tempReplyId,
+			author: {
+				id: currentUser.id,
+				username: currentUser.username,
+				displayName: currentUser.displayName,
+				avatar: currentUser.avatar,
+			},
+			content: textToSubmit,
+			createdAt: new Date().toISOString(),
+			parentId: parentCommentId,
+			replies: [],
+		};
+
+		const nextComments = comments.map((c) => {
+			if (c.id === parentCommentId) {
+				return {
+					...c,
+					replies: [...(c.replies || []), optimisticReply],
+				};
+			}
+			return c;
+		});
+
+		setComments(nextComments);
+		setReplyText("");
+		setReplyingToId(null);
+		const updatedPost = { ...currentPost, comments: nextComments };
+		setCurrentPost(updatedPost);
+		onPostUpdated?.(updatedPost);
+
 		try {
 			const res = await fetch(`/api/community/posts/${currentPost.id}/comment`, {
 				method: "POST",
@@ -226,29 +327,40 @@ export function CommunityPostCard({
 						displayName: currentUser.displayName,
 						avatar: currentUser.avatar,
 					},
-					content: replyText.trim(),
+					content: textToSubmit,
 					parentId: parentCommentId,
 				}),
 			});
 
 			if (res.ok) {
 				const data = (await res.json()) as { comment: CommunityComment };
-				setComments((prev) =>
-					prev.map((c) => {
-						if (c.id === parentCommentId) {
-							return {
-								...c,
-								replies: [...(c.replies || []), data.comment],
-							};
-						}
-						return c;
-					}),
-				);
-				setReplyText("");
-				setReplyingToId(null);
+				const finalizedComments = nextComments.map((c) => {
+					if (c.id === parentCommentId) {
+						return {
+							...c,
+							replies: (c.replies || []).map((r) =>
+								r.id === tempReplyId ? data.comment : r,
+							),
+						};
+					}
+					return c;
+				});
+				setComments(finalizedComments);
+				const finalPost = { ...currentPost, comments: finalizedComments };
+				setCurrentPost(finalPost);
+				onPostUpdated?.(finalPost);
+			} else {
+				setComments(comments);
+				const rollbackPost = { ...currentPost, comments };
+				setCurrentPost(rollbackPost);
+				onPostUpdated?.(rollbackPost);
 			}
 		} catch (e) {
 			console.error("Failed to add reply:", e);
+			setComments(comments);
+			const rollbackPost = { ...currentPost, comments };
+			setCurrentPost(rollbackPost);
+			onPostUpdated?.(rollbackPost);
 		} finally {
 			setIsSubmittingReply(false);
 		}
@@ -272,6 +384,39 @@ export function CommunityPostCard({
 
 	const hasEditHistory =
 		(currentPost.editHistory && currentPost.editHistory.length > 0) || !!currentPost.updatedAt;
+
+	const nonBookSlugs = new Set([
+		"dry-sunglasses",
+		"monokai-dimmed-sunnies",
+		"ascii-tee",
+		"team-shirt",
+		"blue-polygon-shirt",
+		"dark-polygon-tee",
+		"reversed-monotype-tee",
+		"cubes-fountain-tee",
+		"darko-polo",
+		"blue-plimsolls",
+		"balance-trail-720",
+		"plimsolls",
+		"canvas-sneakers",
+		"dash-force",
+		"pirates-beanie",
+		"tactical-neck-warmer",
+		"hoodie",
+		"grey-hoodie",
+		"t-shirt",
+		"carrot-juice",
+		"apple-juice",
+		"bean-juice",
+		"banana-juice",
+		"mighty-mug",
+		"the-dash-cushion",
+		"white-parrot-cusion",
+		"gift-card",
+		"gift-card-500",
+		"gift-card-50",
+	]);
+	const isBook = currentPost.book?.slug ? !nonBookSlugs.has(currentPost.book.slug.toLowerCase()) : false;
 
 	return (
 		<article className="rounded-2xl border border-border bg-card p-5 shadow-xs transition-all hover:border-border/80 sm:p-6">
@@ -330,12 +475,17 @@ export function CommunityPostCard({
 							<span className="text-[13px] text-muted-foreground">
 								{currentPost.author.username}
 							</span>
-							{currentPost.author.isVerifiedBuyer && (
+							{currentPost.author.id === "admin-aurabook" || currentPost.author.username === "@aurabook_admin" ? (
+								<span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-[11.5px] font-bold text-primary">
+									<CheckCircle2 className="h-3.5 w-3.5" />
+									Quản trị viên
+								</span>
+							) : currentPost.author.isVerifiedBuyer && isBook ? (
 								<span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-[13px] font-semibold text-success">
 									<CheckCircle2 className="h-3.5 w-3.5" />
 									Đã mua hàng
 								</span>
-							)}
+							) : null}
 						</div>
 						<div className="flex items-center gap-2 text-[13px] text-muted-foreground mt-0.5">
 							<span>{formatDate(currentPost.createdAt)}</span>
@@ -356,7 +506,7 @@ export function CommunityPostCard({
 								</>
 							)}
 
-							{currentPost.isFromProductReview && (
+							{currentPost.isFromProductReview && isBook && (
 								<>
 									<span>•</span>
 									<span className="text-[13px] font-semibold text-primary">
@@ -371,9 +521,11 @@ export function CommunityPostCard({
 				{/* Right tags / author edit & hide / admin actions */}
 				<div className="flex items-center gap-2">
 					{currentPost.isPinned && (
-						<span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2.5 py-1 text-[13px] font-semibold text-amber-600">
-							<Pin className="h-3 w-3" />
-							Ghim
+						<span
+							title="Bài viết được ghim"
+							className="inline-flex items-center justify-center rounded-full bg-amber-500/10 p-1.5 text-amber-600 dark:text-amber-400"
+						>
+							<Pin className="h-3.5 w-3.5 fill-amber-500/20" />
 						</span>
 					)}
 
@@ -443,7 +595,7 @@ export function CommunityPostCard({
 			</div>
 
 			{/* Book Card Tag with exact title, author, price, and product link */}
-			{currentPost.book && (
+			{currentPost.book && isBook && (
 				<div className="mt-3 rounded-xl border border-border/70 bg-muted/20 p-2.5 sm:p-3 flex items-center justify-between gap-3 group transition-colors hover:border-border">
 					<div className="flex items-center gap-3 min-w-0">
 						<div className="relative w-11 h-16 shrink-0 overflow-hidden rounded-md border border-border/80 bg-muted shadow-2xs">
@@ -536,7 +688,7 @@ export function CommunityPostCard({
 						className="flex items-center gap-2 font-medium hover:text-foreground transition-colors"
 					>
 						<MessageSquare className="h-4.5 w-4.5" />
-						<span>{comments.length} Bình luận</span>
+						<span>{totalCommentsCount} Bình luận</span>
 					</button>
 				</div>
 

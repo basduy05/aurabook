@@ -34,9 +34,9 @@ const defaultFooterLinksVi = {
 	],
 };
 
-function FooterMenuChildLink({ child }: { child: MenuItem }) {
+function FooterMenuChildLink({ child, locale }: { child: MenuItem; locale?: string }) {
 	const href = getMenuItemHref(child);
-	const label = getMenuItemLabel(child);
+	const label = getMenuItemLabel(child, locale);
 	if (!href || !label) return null;
 
 	if (child.category || child.collection || child.page) {
@@ -115,7 +115,7 @@ export function FooterMenuColumns({ items, locale }: { items: MenuItem[]; locale
 					<ul className="space-y-3">
 						{item.children?.map((child) => (
 							<li key={child.id}>
-								<FooterMenuChildLink child={child} />
+								<FooterMenuChildLink child={child} locale={locale} />
 							</li>
 						))}
 					</ul>

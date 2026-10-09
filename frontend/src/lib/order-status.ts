@@ -1,10 +1,16 @@
-export type CustomerOrderStatusKey = "UNFULFILLED" | "UNCONFIRMED" | "PARTIALLY_FULFILLED" | "FULFILLED";
+export type CustomerOrderStatusKey =
+	| "UNFULFILLED"
+	| "UNCONFIRMED"
+	| "PARTIALLY_FULFILLED"
+	| "FULFILLED"
+	| "COMPLETED";
 
 const CUSTOMER_ORDER_STATUS_KEYS: Record<string, CustomerOrderStatusKey> = {
 	UNFULFILLED: "UNFULFILLED",
 	UNCONFIRMED: "UNCONFIRMED",
 	PARTIALLY_FULFILLED: "PARTIALLY_FULFILLED",
 	FULFILLED: "FULFILLED",
+	COMPLETED: "COMPLETED",
 };
 
 export function getCustomerOrderStatusLabel(

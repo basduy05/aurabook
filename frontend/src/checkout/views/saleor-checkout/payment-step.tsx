@@ -156,6 +156,26 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 	const total = checkout.totalPrice?.gross;
 	const totalStr = formatMoneyWithFallback(total);
 
+	const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>(() => {
+		if (typeof window !== "undefined") {
+			return sessionStorage.getItem("checkout:selected_payment_method") || "test-card";
+		}
+		return "test-card";
+	});
+
+	useEffect(() => {
+		const handleMethodChange = (e: Event) => {
+			const customEvent = e as CustomEvent<string>;
+			if (customEvent.detail) {
+				setSelectedPaymentMethod(customEvent.detail);
+			}
+		};
+		window.addEventListener("checkout:payment_method_change", handleMethodChange);
+		return () => {
+			window.removeEventListener("checkout:payment_method_change", handleMethodChange);
+		};
+	}, []);
+
 	const buttonText = isLoading
 		? isCompletingOrder
 			? tActions("creatingOrder")
@@ -164,7 +184,11 @@ export const PaymentStep: FC<PaymentStepProps> = ({
 				: tActions("processingPayment")
 		: isFreeOrder
 			? tActions("completeOrder")
-			: tActions("payTotal", { total: totalStr });
+			: selectedPaymentMethod === "vnpay"
+				? `Thanh toán qua VNPAY (${totalStr})`
+				: selectedPaymentMethod === "momo"
+					? `Thanh toán qua Ví MoMo (${totalStr})`
+					: tActions("payTotal", { total: totalStr });
 
 	const hasInvalidDelivery = checkout.problems?.some(
 		(p) => p.__typename === "CheckoutProblemDeliveryMethodInvalid",

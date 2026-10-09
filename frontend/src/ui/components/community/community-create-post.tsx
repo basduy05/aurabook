@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Star, Send, Book, AlertCircle, Search, X, ExternalLink } from "lucide-react";
+import { Star, Send, Book, AlertCircle, Search, X, ExternalLink, CheckCircle2, MessageSquare } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
 import { type CommunityUser, type CommunityPost } from "@/lib/community/types";
@@ -43,8 +43,40 @@ export function CommunityCreatePost({
 	const bookSearchRef = useRef<HTMLDivElement>(null);
 
 	const [rating, setRating] = useState<number>(5);
+	const [hasPurchasedBook, setHasPurchasedBook] = useState(false);
+	const [isCheckingEligibility, setIsCheckingEligibility] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState("");
+
+	useEffect(() => {
+		if (!selectedBook?.slug) {
+			setHasPurchasedBook(false);
+			setIsCheckingEligibility(false);
+			return;
+		}
+
+		let active = true;
+		setIsCheckingEligibility(true);
+		fetch(`/api/reviews/check-eligibility?productSlug=${encodeURIComponent(selectedBook.slug)}`)
+			.then((res) => (res.ok ? res.json() : null))
+			.then((raw) => {
+				const data = raw as { hasPurchased?: boolean } | null;
+				if (active) {
+					setHasPurchasedBook(!!data?.hasPurchased);
+					setIsCheckingEligibility(false);
+				}
+			})
+			.catch(() => {
+				if (active) {
+					setHasPurchasedBook(false);
+					setIsCheckingEligibility(false);
+				}
+			});
+
+		return () => {
+			active = false;
+		};
+	}, [selectedBook?.slug]);
 
 	// Rich text & Mentions
 	const contentTextareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -150,24 +182,26 @@ export function CommunityCreatePost({
 				username: currentUser?.username || "@basduy",
 				displayName: currentUser?.displayName || "Duy Nguyễn",
 				avatar: currentUser?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
-				isVerifiedBuyer: true,
+				isVerifiedBuyer: hasPurchasedBook,
 			};
+
+			const bookPayload = selectedBook
+				? {
+						title: selectedBook.title,
+						slug: selectedBook.slug,
+						price: selectedBook.price,
+						thumbnail: selectedBook.thumbnail,
+						author: selectedBook.author,
+						...(hasPurchasedBook ? { rating: rating || 5 } : {}),
+					}
+				: undefined;
 
 			const res = await fetch("/api/community/posts", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
 					author: authorPayload,
-					book: selectedBook
-						? {
-								title: selectedBook.title,
-								slug: selectedBook.slug,
-								price: selectedBook.price,
-								thumbnail: selectedBook.thumbnail,
-								author: selectedBook.author,
-								rating: rating || 5,
-							}
-						: undefined,
+					book: bookPayload,
 					title: title.trim(),
 					content: content.trim(),
 				}),
@@ -400,29 +434,51 @@ export function CommunityCreatePost({
 							</div>
 						)}
 
-						{/* Star rating for book */}
+						{/* Star rating for book or Discussion notice */}
 						{selectedBook && (
-							<div className="flex items-center gap-2 pt-1 border-t border-border/60">
-								<span className="text-[13px] text-foreground font-medium">Đánh giá sao:</span>
-								<div className="flex items-center gap-0.5">
-									{[1, 2, 3, 4, 5].map((s) => (
-										<button
-											key={s}
-											type="button"
-											onClick={() => setRating(s)}
-											className="p-0.5 text-amber-400 hover:scale-110 transition-transform"
-										>
-											<Star
-												className={`h-4 w-4 ${
-													s <= rating ? "fill-amber-400 text-amber-400" : "text-border"
-												}`}
-											/>
-										</button>
-									))}
-								</div>
-								<span className="text-[13px] font-semibold text-muted-foreground">
-									{rating}/5 sao
-								</span>
+							<div className="pt-2 border-t border-border/60">
+								{isCheckingEligibility ? (
+									<div className="text-[12px] text-muted-foreground flex items-center gap-2 py-1">
+										<div className="h-3 w-3 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+										<span>Đang kiểm tra thông tin đơn hàng...</span>
+									</div>
+								) : hasPurchasedBook ? (
+									<div className="space-y-1.5">
+										<div className="flex items-center justify-between">
+											<div className="flex items-center gap-1.5 text-[12px] font-semibold text-success">
+												<CheckCircle2 className="h-3.5 w-3.5" />
+												<span>Đã mua sách • Bạn có thể gửi đánh giá & chấm điểm</span>
+											</div>
+											<span className="text-[12px] font-semibold text-muted-foreground">
+												{rating}/5 sao
+											</span>
+										</div>
+										<div className="flex items-center gap-1">
+											{[1, 2, 3, 4, 5].map((s) => (
+												<button
+													key={s}
+													type="button"
+													onClick={() => setRating(s)}
+													className="p-1 text-amber-400 hover:scale-110 transition-transform"
+													title={`${s} sao`}
+												>
+													<Star
+														className={`h-4.5 w-4.5 ${
+															s <= rating ? "fill-amber-400 text-amber-400" : "text-border"
+														}`}
+													/>
+												</button>
+											))}
+										</div>
+									</div>
+								) : (
+									<div className="flex items-start gap-2 text-[12px] text-muted-foreground bg-muted/40 p-2.5 rounded-lg border border-border/60">
+										<MessageSquare className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+										<span>
+											Bạn chưa mua cuốn sách này trên hệ thống. Bài viết sẽ được đăng dưới dạng <strong>Thảo luận</strong> (chỉ độc giả đã mua hàng mới có thể chấm điểm đánh giá sản phẩm).
+										</span>
+									</div>
+								)}
 							</div>
 						)}
 					</div>

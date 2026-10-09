@@ -16,11 +16,40 @@ export function pickTranslatedField(
 	return fallback;
 }
 
-export function pickTranslatedName(entity: {
-	name: string;
-	translation?: { name?: string | null } | null;
-}): string {
-	return pickTranslatedField(entity.translation, "name", entity.name) ?? entity.name;
+export const VI_NAME_FALLBACKS: Record<string, string> = {
+	"Sneakers": "Giày thể thao",
+	"Sweatshirts": "Áo nỉ",
+	"Headware": "Mũ nón",
+	"Beanies": "Mũ len",
+	"Scarfs": "Khăn choàng",
+	"Sunglasses": "Kính râm",
+	"Shirts": "Áo sơ mi",
+	"T-shirts": "Áo thun",
+	"Polo shirts": "Áo polo",
+	"Juices": "Nước ép",
+	"Books": "Sách",
+	"Default Category": "Danh mục mặc định",
+	"Quản lý sách": "Sách",
+	"Apparel": "Quần áo",
+	"Accessories": "Phụ kiện",
+	"Audiobooks": "Sách nói",
+	"Homewares": "Đồ gia dụng",
+	"Groceries": "Cửa hàng tạp hóa",
+	"Gift cards": "Thẻ quà tặng",
+};
+
+export function pickTranslatedName(
+	entity: {
+		name: string;
+		translation?: { name?: string | null } | null;
+	},
+	locale?: string,
+): string {
+	const raw = pickTranslatedField(entity.translation, "name", entity.name) ?? entity.name;
+	if (locale && locale !== "vi") {
+		return raw;
+	}
+	return VI_NAME_FALLBACKS[raw] ?? raw;
 }
 
 /**
@@ -86,10 +115,10 @@ type TranslatableCategory = {
 };
 
 /** Apply Saleor translations to category/collection display fields. */
-export function withTranslatedCategoryFields<T extends TranslatableCategory>(entity: T): T {
+export function withTranslatedCategoryFields<T extends TranslatableCategory>(entity: T, locale?: string): T {
 	return {
 		...entity,
-		name: pickTranslatedName(entity),
+		name: pickTranslatedName(entity, locale),
 		description: pickTranslatedDescription(entity) ?? entity.description,
 		seoTitle: pickTranslatedSeoTitle(entity) ?? entity.seoTitle,
 		seoDescription: pickTranslatedSeoDescription(entity) ?? entity.seoDescription,
@@ -143,23 +172,23 @@ type TranslatableProduct = {
 	}> | null;
 };
 
-export function withTranslatedProductFields<T extends TranslatableProduct>(product: T): T {
+export function withTranslatedProductFields<T extends TranslatableProduct>(product: T, locale?: string): T {
 	return {
 		...product,
-		name: pickTranslatedName(product),
+		name: pickTranslatedName(product, locale),
 		description: pickTranslatedDescription(product) ?? product.description,
 		seoTitle: pickTranslatedSeoTitle(product) ?? product.seoTitle,
 		seoDescription: pickTranslatedSeoDescription(product) ?? product.seoDescription,
 		category: product.category
 			? {
 					...product.category,
-					name: pickTranslatedName(product.category),
+					name: pickTranslatedName(product.category, locale),
 				}
 			: null,
 		variants:
 			product.variants?.map((variant) => ({
 				...variant,
-				name: pickTranslatedName(variant),
+				name: pickTranslatedName(variant, locale),
 			})) ?? null,
 	};
 }

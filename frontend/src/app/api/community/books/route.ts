@@ -94,12 +94,16 @@ export async function GET(request: Request) {
 		const saleorUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL || "http://localhost:8000/graphql/";
 		const gqlQuery = `
 			query SearchBooks($search: String) {
-				products(first: 20, channel: "channel-vnd", filter: { search: $search }) {
+				products(first: 50, channel: "channel-vnd", filter: { search: $search }) {
 					edges {
 						node {
 							id
 							name
 							slug
+							category {
+								name
+								slug
+							}
 							thumbnail(size: 256) {
 								url
 							}
@@ -138,6 +142,10 @@ export async function GET(request: Request) {
 								id: string;
 								name: string;
 								slug: string;
+								category?: {
+									name?: string;
+									slug?: string;
+								} | null;
 								pricing?: {
 									priceRange?: {
 										start?: {
@@ -155,9 +163,54 @@ export async function GET(request: Request) {
 					};
 				};
 			};
-			const edges = data?.data?.products?.edges || [];
-			if (edges.length > 0) {
-				const saleorBooks: CatalogBook[] = edges.map(({ node }) => {
+
+			const NON_BOOK_SLUGS = new Set([
+				"dry-sunglasses",
+				"monokai-dimmed-sunnies",
+				"ascii-tee",
+				"team-shirt",
+				"blue-polygon-shirt",
+				"dark-polygon-tee",
+				"reversed-monotype-tee",
+				"cubes-fountain-tee",
+				"darko-polo",
+				"blue-plimsolls",
+				"balance-trail-720",
+				"plimsolls",
+				"canvas-sneakers",
+				"dash-force",
+				"pirates-beanie",
+				"tactical-neck-warmer",
+				"hoodie",
+				"grey-hoodie",
+				"t-shirt",
+				"carrot-juice",
+				"apple-juice",
+				"bean-juice",
+				"banana-juice",
+				"mighty-mug",
+				"the-dash-cushion",
+				"white-parrot-cusion",
+				"gift-card",
+				"gift-card-500",
+				"gift-card-50",
+			]);
+
+			const allEdges = data?.data?.products?.edges || [];
+			const bookEdges = allEdges.filter(({ node }) => {
+				if (NON_BOOK_SLUGS.has(node.slug.toLowerCase())) return false;
+				const catSlug = node.category?.slug?.toLowerCase() || "";
+				const catName = node.category?.name?.toLowerCase() || "";
+				return (
+					catSlug.includes("book") ||
+					catSlug.includes("sach") ||
+					catName.includes("sách") ||
+					catName.includes("book")
+				);
+			});
+
+			if (bookEdges.length > 0) {
+				const saleorBooks: CatalogBook[] = bookEdges.map(({ node }) => {
 					const amount = node.pricing?.priceRange?.start?.gross?.amount;
 					const priceFormatted = amount
 						? `${new Intl.NumberFormat("vi-VN").format(amount)} ₫`

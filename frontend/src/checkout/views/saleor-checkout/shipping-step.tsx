@@ -48,8 +48,24 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 	const hasShippingAddress = !!checkout.shippingAddress;
 	const savedDeliveryId = checkout.delivery?.id;
 
+	const isVietnam = checkout.shippingAddress?.country?.code === "VN";
+	const filteredDeliveries = useMemo(() => {
+		if (!isVietnam) return deliveries;
+		// For Vietnam, prioritize Vietnamese domestic shipping methods (GHN) and hide demo foreign options
+		const domestic = deliveries.filter((d) => {
+			const name = (d.shippingMethod?.name || "").toLowerCase();
+			return (
+				name.includes("ghn") ||
+				name.includes("giao hàng") ||
+				name.includes("tiêu chuẩn") ||
+				name.includes("hỏa tốc")
+			);
+		});
+		return domestic.length > 0 ? domestic : deliveries;
+	}, [deliveries, isVietnam]);
+
 	const [userSelectedMethod, setUserSelectedMethod] = useState<string | undefined>();
-	const selectedMethod = resolveSelectedDeliveryId(userSelectedMethod, deliveries, savedDeliveryId);
+	const selectedMethod = resolveSelectedDeliveryId(userSelectedMethod, filteredDeliveries, savedDeliveryId);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const { availabilityIssue, setAvailabilityIssue } = useCheckoutAvailability();
@@ -117,9 +133,9 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 		[selectedMethod, savedDeliveryId, onComplete, checkout, isSubmitting, setAvailabilityIssue, t],
 	);
 
-	const showSpinner = isLoadingDeliveries && !isSubmitting && deliveries.length === 0;
+	const showSpinner = isLoadingDeliveries && !isSubmitting && filteredDeliveries.length === 0;
 	const canContinue =
-		!isSubmitting && deliveries.length > 0 && !!selectedMethod && !showSpinner && !availabilityIssue;
+		!isSubmitting && filteredDeliveries.length > 0 && !!selectedMethod && !showSpinner && !availabilityIssue;
 	const buttonText = isSubmitting
 		? tActions("saving")
 		: showSpinner
@@ -149,7 +165,7 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 						<div className="h-5 w-5 animate-spin rounded-full border-2 border-foreground border-t-transparent" />
 						<p className="text-sm text-muted-foreground">{t("shipping.loadingMethods")}</p>
 					</div>
-				) : deliveries.length === 0 ? (
+				) : filteredDeliveries.length === 0 ? (
 					<div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
 						<p className="text-sm text-amber-800">
 							{!hasShippingAddress
@@ -161,7 +177,7 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 					</div>
 				) : (
 					<div className={cn("space-y-3", isSubmitting && "pointer-events-none opacity-60")}>
-						{deliveries.map((delivery) => {
+						{filteredDeliveries.map((delivery) => {
 							const method = delivery.shippingMethod;
 							if (!method) return null;
 
@@ -206,23 +222,45 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 									>
 										{isSelected ? <div className="h-2.5 w-2.5 rounded-full bg-foreground" /> : null}
 									</div>
-									<Icon className={cn("h-5 w-5", isEco ? "text-green-600" : "text-muted-foreground")} />
+									{method.name.includes("GHN") ? (
+										<img
+											src="/images/ghn-logo.webp"
+											alt="GHN"
+											className="h-6 w-auto object-contain bg-white rounded px-1 py-0.5 border border-border/40 shrink-0"
+										/>
+									) : (
+										<Icon className={cn("h-5 w-5", isEco ? "text-green-600" : "text-muted-foreground")} />
+									)}
 									<div className="flex-1">
 										<div className="flex items-center gap-2">
 											<span className="font-medium">{method.name}</span>
+											{method.name.includes("GHN") && (
+												<span className="rounded-full bg-orange-500/10 border border-orange-500/20 px-2 py-0.5 text-[11px] font-bold text-orange-600 dark:text-orange-400">
+													GHN Express
+												</span>
+											)}
+											{isFree && (
+												<span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+													Miễn phí vận chuyển
+												</span>
+											)}
 											{isEco ? (
 												<span className="rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-700">
 													Eco
 												</span>
 											) : null}
 										</div>
-										{method.minimumDeliveryDays && method.maximumDeliveryDays ? (
+										{method.name.includes("GHN") ? (
+											<p className="text-xs text-muted-foreground mt-0.5">
+												Xuất phát từ Kho Tổng Aurabook (12 Duy Tân, Cầu Giấy, Hà Nội) • {method.minimumDeliveryDays || 1}-{method.maximumDeliveryDays || 3} ngày{isFree ? " • Ưu đãi đơn hàng từ 500.000 ₫" : ""}
+											</p>
+										) : method.minimumDeliveryDays && method.maximumDeliveryDays ? (
 											<p className="text-sm text-muted-foreground">
 												{method.minimumDeliveryDays}-{method.maximumDeliveryDays} business days
 											</p>
 										) : null}
 									</div>
-									<span className={cn("font-medium", isFree && "text-green-600")}>
+									<span className={cn("font-medium", isFree && "font-semibold text-emerald-600 dark:text-emerald-400")}>
 										{formatShippingPrice(method.price)}
 									</span>
 								</label>

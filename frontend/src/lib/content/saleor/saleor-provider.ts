@@ -1,5 +1,5 @@
 import { StorefrontContentPagesDocument } from "@/gql/graphql";
-import { defaultStorefrontContent } from "@/lib/content/defaults";
+import { getLocalizedStorefrontContent } from "@/lib/content/defaults";
 import { STOREFRONT_PAGE_TYPES } from "@/lib/content/constants";
 import type { ContentProvider } from "@/lib/content/provider";
 import type { StorefrontContent } from "@/lib/content/types";
@@ -59,9 +59,10 @@ export const saleorContentProvider: ContentProvider = {
 			mapCheckoutPage(resolveStorefrontPageForType(bySlug, STOREFRONT_PAGE_TYPES.checkout, channel)),
 		];
 
+		const baseContent = getLocalizedStorefrontContent(locale, channel);
 		return mapperPartials.reduce<StorefrontContent>(
 			(content, partial) => mergeStorefrontContent(content, partial),
-			defaultStorefrontContent,
+			baseContent,
 		);
 	},
 };

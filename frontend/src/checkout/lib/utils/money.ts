@@ -32,7 +32,7 @@ export const formatShippingPrice = <TMoney extends Money>(money: MightNotExist<T
 		return "—";
 	}
 	if (money.amount === 0) {
-		return "Free";
+		return "Miễn phí";
 	}
 	return getFormattedMoney(money);
 };

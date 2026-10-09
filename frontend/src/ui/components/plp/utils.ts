@@ -102,8 +102,8 @@ export function toProductCardData(
 	const colors = extractColorsFromVariants(variantSample);
 	const sizes = extractSizesFromVariants(variantSample);
 
-	const productName = pickTranslatedName(product);
-	const categoryName = product.category ? pickTranslatedName(product.category) : null;
+	const productName = pickTranslatedName(product, locale);
+	const categoryName = product.category ? pickTranslatedName(product.category, locale) : null;
 
 	return {
 		id: product.id,

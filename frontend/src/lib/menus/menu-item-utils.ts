@@ -2,11 +2,11 @@ import type { MenuItem } from "@/lib/menus/get-menu-data";
 import { pickTranslatedName, pickTranslatedSlug, pickTranslatedTitle } from "@/lib/saleor-translations";
 import { isSafeExternalHref, isSafeMailtoHref, sanitizeNavHref } from "@/lib/url/safe-href";
 
-export function getMenuItemLabel(item: MenuItem): string | null {
-	if (item.category?.name) return pickTranslatedName(item.category);
-	if (item.collection?.name) return pickTranslatedName(item.collection);
+export function getMenuItemLabel(item: MenuItem, locale?: string): string | null {
+	if (item.category?.name) return pickTranslatedName(item.category, locale);
+	if (item.collection?.name) return pickTranslatedName(item.collection, locale);
 	if (item.page?.title) return pickTranslatedTitle(item.page);
-	if (item.name) return pickTranslatedName(item);
+	if (item.name) return pickTranslatedName(item, locale);
 	return null;
 }
 

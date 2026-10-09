@@ -31,23 +31,18 @@ export async function GET(request: Request) {
 		if (ordersRes.ok && ordersRes.data?.me?.orders?.edges) {
 			for (const edge of ordersRes.data.me.orders.edges) {
 				const order = edge.node;
+				if (order.status?.toLowerCase() === "canceled") continue;
 				// check line items
 				for (const line of order.lines) {
 					const slug = line.variant?.product?.slug?.toLowerCase().trim();
-					if (slug === productSlug) {
+					const name = line.variant?.product?.name?.toLowerCase().trim();
+					if (productSlug && (slug === productSlug || name === productSlug)) {
 						hasPurchased = true;
 						break;
 					}
 				}
 				if (hasPurchased) break;
 			}
-			// If customer has any fulfilled order in testing environment, grant purchase privilege
-			if (!hasPurchased && ordersRes.data.me.orders.edges.length > 0) {
-				hasPurchased = true;
-			}
-		} else {
-			// If logged in customer
-			hasPurchased = true;
 		}
 
 		return NextResponse.json({
