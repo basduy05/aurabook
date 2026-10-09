@@ -8,10 +8,17 @@ import {
 	Bookmark,
 	ShieldAlert,
 	ArrowLeft,
+	CheckCircle2,
+	Lock,
+	Clock,
+	ShoppingBag,
+	ExternalLink,
+	BookMarked,
 } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { type CommunityPost, type CommunityUser } from "@/lib/community/types";
 import { type TrendingBookItem, type ActiveReaderItem } from "@/lib/community/storage";
+import { type BookshelfItem } from "@/app/api/community/bookshelf/route";
 import { CommunityRightNav } from "./community-right-nav";
 import { CommunityLeftNav, type CommunityNavTab } from "./community-left-nav";
 import { CommunityTermsModal } from "./community-terms-modal";
@@ -114,29 +121,93 @@ export function CommunityFeed() {
 	const [isTermsMandatory, setIsTermsMandatory] = useState(false);
 	const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-	// Saved posts state (synced with localStorage)
-	const [savedPostIds, setSavedPostIds] = useState<string[]>(() => {
-		if (typeof window !== "undefined") {
-			try {
-				const saved = localStorage.getItem("aurabook_community_saved_post_ids");
-				if (saved) return JSON.parse(saved) as string[];
-			} catch {}
-		}
-		return ["post-1"];
+	// Saved posts state (real user data synced with backend)
+	const [savedPostIds, setSavedPostIds] = useState<string[]>([]);
+
+	// Bookshelf state (real digital books with reading progress)
+	const [bookshelfData, setBookshelfData] = useState<{
+		books: BookshelfItem[];
+		stats: {
+			totalBooks: number;
+			readingCount: number;
+			finishedCount: number;
+			notStartedCount: number;
+		};
+		isLoading: boolean;
+	}>({
+		books: [],
+		stats: { totalBooks: 0, readingCount: 0, finishedCount: 0, notStartedCount: 0 },
+		isLoading: false,
 	});
 
-	const handleToggleSavePost = (postId: string) => {
-		setSavedPostIds((prev) => {
-			const next = prev.includes(postId)
-				? prev.filter((id) => id !== postId)
-				: [...prev, postId];
-			if (typeof window !== "undefined") {
-				try {
-					localStorage.setItem("aurabook_community_saved_post_ids", JSON.stringify(next));
-				} catch {}
+	const loadBookshelfData = async (userId?: string) => {
+		try {
+			setBookshelfData((prev) => ({ ...prev, isLoading: true }));
+			const url = userId
+				? `/api/community/bookshelf?userId=${encodeURIComponent(userId)}`
+				: "/api/community/bookshelf";
+			const res = await fetch(url);
+			if (res.ok) {
+				const data = (await res.json()) as {
+					books?: BookshelfItem[];
+					stats?: {
+						totalBooks: number;
+						readingCount: number;
+						finishedCount: number;
+						notStartedCount: number;
+					};
+				};
+				setBookshelfData({
+					books: data.books || [],
+					stats: data.stats || {
+						totalBooks: 0,
+						readingCount: 0,
+						finishedCount: 0,
+						notStartedCount: 0,
+					},
+					isLoading: false,
+				});
+			} else {
+				setBookshelfData((prev) => ({ ...prev, isLoading: false }));
 			}
-			return next;
-		});
+		} catch (e) {
+			console.error("[community] Failed to load bookshelf:", e);
+			setBookshelfData((prev) => ({ ...prev, isLoading: false }));
+		}
+	};
+
+	const handleToggleSavePost = async (postId: string) => {
+		if (!currentUser) {
+			setIsTermsMandatory(false);
+			setIsTermsOpen(true);
+			return;
+		}
+
+		const isCurrentlySaved = savedPostIds.includes(postId);
+		const nextSaved = isCurrentlySaved
+			? savedPostIds.filter((id) => id !== postId)
+			: [...savedPostIds, postId];
+		setSavedPostIds(nextSaved);
+
+		try {
+			const res = await fetch(`/api/community/user/${encodeURIComponent(currentUser.id)}`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ action: "save", postId }),
+			});
+			if (res.ok) {
+				const data = (await res.json()) as { isSaved: boolean; savedPosts: string[] };
+				if (Array.isArray(data.savedPosts)) {
+					setSavedPostIds(data.savedPosts);
+					setCurrentUser((prev) => (prev ? { ...prev, savedPosts: data.savedPosts } : null));
+				}
+			}
+		} catch (e) {
+			console.error("[community] Failed to toggle save post:", e);
+			setSavedPostIds((prev) =>
+				isCurrentlySaved ? [...prev, postId] : prev.filter((id) => id !== postId),
+			);
+		}
 	};
 
 	// Fetch real sidebar statistics (trending books & active readers)
@@ -173,6 +244,13 @@ export function CommunityFeed() {
 					const profileData = (await profileRes.json()) as { user: CommunityUser };
 					userProfile = profileData.user;
 					setCurrentUser(userProfile);
+					if (userProfile?.savedPosts && Array.isArray(userProfile.savedPosts)) {
+						setSavedPostIds(userProfile.savedPosts);
+					} else {
+						setSavedPostIds([]);
+					}
+				} else {
+					setSavedPostIds([]);
 				}
 
 				// Only enforce mandatory terms modal on actual authenticated users whose profile hasn't accepted yet
@@ -190,6 +268,9 @@ export function CommunityFeed() {
 
 				// 4. Fetch real sidebar statistics
 				await loadSidebarData();
+
+				// 5. Fetch real bookshelf data
+				await loadBookshelfData(userProfile?.id);
 			} catch (e) {
 				console.error("[community] Failed to load data:", e);
 			} finally {
@@ -199,6 +280,13 @@ export function CommunityFeed() {
 
 		loadInitialData();
 	}, []);
+
+	// Refresh bookshelf whenever activeNav switches to bookshelf or user logs in
+	useEffect(() => {
+		if (activeNav === "bookshelf") {
+			loadBookshelfData(currentUser?.id);
+		}
+	}, [activeNav, currentUser?.id]);
 
 	// Accept terms
 	const handleAcceptTerms = async () => {
@@ -432,6 +520,7 @@ export function CommunityFeed() {
 								else if (nav === "feed") setActiveTab("all");
 							}}
 							savedCount={savedPostIds.length}
+							bookshelfCount={bookshelfData.books.length}
 							currentUser={currentUser}
 							onOpenProfile={() => setIsProfileOpen(true)}
 							onViewSelfProfile={() => {
@@ -626,26 +715,208 @@ export function CommunityFeed() {
 
 						{/* Different view depending on selected left navigation */}
 						{activeNav === "bookshelf" ? (
-							<div className="rounded-2xl border border-border bg-card p-6 shadow-xs space-y-4">
-								<div className="flex items-center gap-2 border-b border-border pb-3">
-									<Library className="h-5 w-5 text-primary" />
-									<h2 className="text-[15px] font-semibold text-foreground">
-										Tủ sách cá nhân của tôi
-									</h2>
-								</div>
-								<div className="grid grid-cols-2 gap-4 pt-2">
-									<div className="rounded-xl bg-muted/30 p-4 border border-border/60">
-										<span className="text-[13px] text-muted-foreground block font-medium">Đang đọc</span>
-										<span className="text-xl font-bold text-foreground mt-1 block">2 cuốn</span>
+							<div className="space-y-6">
+								{/* Bookshelf Header */}
+								<div className="rounded-2xl border border-border bg-card p-5 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+									<div className="flex items-start sm:items-center gap-3">
+										<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+											<Library className="h-5 w-5" />
+										</div>
+										<div>
+											<div className="flex items-center gap-2">
+												<h2 className="text-[16px] font-semibold text-foreground">
+													Tủ sách cá nhân của tôi
+												</h2>
+												<span className="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-bold text-primary">
+													{bookshelfData.books.length} tác phẩm
+												</span>
+											</div>
+											<p className="text-[13px] text-muted-foreground mt-0.5">
+												Chỉ hiển thị các quyển sách đã mua và đã được cấp phát quyền đọc điện tử (DRM)
+											</p>
+										</div>
 									</div>
-									<div className="rounded-xl bg-muted/30 p-4 border border-border/60">
-										<span className="text-[13px] text-muted-foreground block font-medium">Đã đọc xong</span>
-										<span className="text-xl font-bold text-foreground mt-1 block">12 cuốn</span>
+									<div className="flex items-center gap-2 shrink-0">
+										<Link href="/products">
+											<Button variant="outline-solid" size="sm" className="h-8 text-[12px] gap-1.5 font-medium">
+												<ShoppingBag className="h-3.5 w-3.5" />
+												Kho sách
+											</Button>
+										</Link>
+										<Button
+											variant="ghost"
+											size="sm"
+											onClick={() => setActiveNav("feed")}
+											className="h-8 text-[12px] font-medium"
+										>
+											Về bảng tin
+										</Button>
 									</div>
 								</div>
-								<p className="text-[13px] text-muted-foreground pt-2 leading-relaxed">
-									Mẹo: Khi bạn để lại nhận xét cho sách đã mua, tác phẩm sẽ tự động lưu vào tủ sách này.
-								</p>
+
+								{/* Real Stats Bar */}
+								<div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+									<div className="rounded-xl bg-card border border-border/80 p-3.5 shadow-2xs">
+										<div className="flex items-center justify-between text-muted-foreground">
+											<span className="text-[12px] font-medium">Đang đọc</span>
+											<BookOpen className="h-3.5 w-3.5 text-primary" />
+										</div>
+										<span className="text-xl font-bold text-foreground mt-1.5 block">
+											{bookshelfData.stats.readingCount} <span className="text-[13px] font-normal text-muted-foreground">cuốn</span>
+										</span>
+									</div>
+									<div className="rounded-xl bg-card border border-border/80 p-3.5 shadow-2xs">
+										<div className="flex items-center justify-between text-muted-foreground">
+											<span className="text-[12px] font-medium">Đã đọc xong</span>
+											<CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+										</div>
+										<span className="text-xl font-bold text-foreground mt-1.5 block">
+											{bookshelfData.stats.finishedCount} <span className="text-[13px] font-normal text-muted-foreground">cuốn</span>
+										</span>
+									</div>
+									<div className="rounded-xl bg-card border border-border/80 p-3.5 shadow-2xs">
+										<div className="flex items-center justify-between text-muted-foreground">
+											<span className="text-[12px] font-medium">Chưa bắt đầu</span>
+											<Clock className="h-3.5 w-3.5 text-muted-foreground" />
+										</div>
+										<span className="text-xl font-bold text-foreground mt-1.5 block">
+											{bookshelfData.stats.notStartedCount} <span className="text-[13px] font-normal text-muted-foreground">cuốn</span>
+										</span>
+									</div>
+									<div className="rounded-xl bg-card border border-border/80 p-3.5 shadow-2xs">
+										<div className="flex items-center justify-between text-muted-foreground">
+											<span className="text-[12px] font-medium">Tổng sách số</span>
+											<Lock className="h-3.5 w-3.5 text-primary" />
+										</div>
+										<span className="text-xl font-bold text-foreground mt-1.5 block">
+											{bookshelfData.stats.totalBooks} <span className="text-[13px] font-normal text-muted-foreground">bản quyền</span>
+										</span>
+									</div>
+								</div>
+
+								{/* Books Grid or Empty State */}
+								{bookshelfData.isLoading ? (
+									<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+										{[1, 2].map((i) => (
+											<div key={i} className="h-52 rounded-2xl bg-muted/40 animate-pulse border border-border" />
+										))}
+									</div>
+								) : !currentUser ? (
+									<div className="rounded-2xl border border-dashed border-border p-12 text-center bg-card">
+										<Lock className="mx-auto h-9 w-9 text-muted-foreground/60 mb-2.5" />
+										<h3 className="font-semibold text-foreground text-[15px]">Vui lòng đăng nhập</h3>
+										<p className="mt-1 text-[13px] text-muted-foreground max-w-sm mx-auto">
+											Đăng nhập để xem danh sách các cuốn sách điện tử bạn đã mua và được cấp quyền đọc.
+										</p>
+										<Link href="/login" className="mt-4 inline-block">
+											<Button size="sm" className="h-8 text-[13px] font-medium">
+												Đăng nhập ngay
+											</Button>
+										</Link>
+									</div>
+								) : bookshelfData.books.length === 0 ? (
+									<div className="rounded-2xl border border-dashed border-border p-12 text-center bg-card">
+										<BookMarked className="mx-auto h-9 w-9 text-muted-foreground/60 mb-2.5" />
+										<h3 className="font-semibold text-foreground text-[15px]">Tủ sách chưa có ấn phẩm nào</h3>
+										<p className="mt-1.5 text-[13px] text-muted-foreground max-w-md mx-auto leading-relaxed">
+											Tủ sách chỉ hiển thị những quyển sách bạn đã mua và đã được cấp phát quyền đọc điện tử (DRM). Khi bạn hoàn tất mua sách điện tử hoặc audiobook, tác phẩm sẽ tự động xuất hiện tại đây.
+										</p>
+										<Link href="/products" className="mt-4 inline-block">
+											<Button variant="outline-solid" size="sm" className="h-8 text-[13px] font-medium gap-1.5">
+												<ShoppingBag className="h-3.5 w-3.5" />
+												Khám phá kho sách điện tử
+											</Button>
+										</Link>
+									</div>
+								) : (
+									<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+										{bookshelfData.books.map((book) => (
+											<div
+												key={book.id}
+												className="group relative flex flex-col justify-between rounded-2xl border border-border bg-card p-4 transition-all duration-200 hover:border-primary/40 hover:shadow-xs"
+											>
+												<div className="flex gap-3.5">
+													{/* Real Book Thumbnail */}
+													<div className="relative h-28 w-20 shrink-0 overflow-hidden rounded-xl border border-border/70 bg-muted/30 shadow-2xs">
+														{/* eslint-disable-next-line @next/next/no-img-element */}
+														<img
+															src={book.thumbnail}
+															alt={book.title}
+															className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+															loading="lazy"
+														/>
+														<div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
+													</div>
+
+													{/* Book Details */}
+													<div className="min-w-0 flex-1 space-y-1">
+														<div className="flex items-center gap-1.5 flex-wrap">
+															<span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700 dark:text-emerald-400">
+																<CheckCircle2 className="h-2.5 w-2.5" />
+																Đã cấp quyền đọc
+															</span>
+															<span className="rounded-md bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground uppercase">
+																{book.format}
+															</span>
+														</div>
+
+														<Link
+															href={`/products/${book.productSlug}`}
+															className="block font-semibold text-[14px] text-foreground hover:text-primary transition-colors line-clamp-2 leading-snug"
+														>
+															{book.title}
+														</Link>
+
+														<p className="text-[12px] text-muted-foreground truncate">
+															{book.categoryName} • Đơn #{book.orderNumber}
+														</p>
+													</div>
+												</div>
+
+												{/* Reading Progress */}
+												<div className="mt-3.5 pt-3 border-t border-border/60 space-y-2">
+													<div className="flex items-center justify-between text-[11px]">
+														<span className="text-muted-foreground font-medium">Tiến độ đọc:</span>
+														<span className="font-semibold text-foreground">
+															{book.readingProgress.percent}% (Trang {book.readingProgress.currentPage}/{book.readingProgress.totalPages})
+														</span>
+													</div>
+													<div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+														<div
+															className="h-full bg-primary transition-all duration-300 rounded-full"
+															style={{ width: `${Math.max(book.readingProgress.percent, 3)}%` }}
+														/>
+													</div>
+												</div>
+
+												{/* Action Buttons */}
+												<div className="mt-3 flex items-center gap-2">
+													<Link href={`/products/${book.productSlug}`} className="flex-1">
+														<Button
+															size="sm"
+															className="w-full h-8 text-[12px] font-medium gap-1.5"
+														>
+															<BookOpen className="h-3.5 w-3.5" />
+															Đọc sách
+														</Button>
+													</Link>
+													{book.orderNumber && book.orderNumber !== "DRM-LICENSED" && (
+														<Link href={`/vi/channel-vnd/account/orders/${book.orderNumber}`}>
+															<Button
+																variant="outline-solid"
+																size="sm"
+																className="h-8 px-2.5 text-[12px] text-muted-foreground hover:text-foreground"
+																title="Xem đơn hàng đã mua"
+															>
+																<ExternalLink className="h-3.5 w-3.5" />
+															</Button>
+														</Link>
+													)}
+												</div>
+											</div>
+										))}
+									</div>
+								)}
 							</div>
 						) : activeNav === "saved" ? (
 							<div className="space-y-6">

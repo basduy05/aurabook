@@ -13,8 +13,7 @@ CHUNK_OVERLAP = 64  # token overlap giữa các chunk
 
 
 def _split_text_recursive(text: str, chunk_size: int = CHUNK_SIZE, overlap: int = CHUNK_OVERLAP) -> list[str]:
-    """
-    Recursive Character Text Splitter.
+    """Recursive Character Text Splitter.
     Ưu tiên split theo: paragraph → sentence → word
     """
     if len(text) <= chunk_size * 4:
@@ -50,8 +49,7 @@ def _split_text_recursive(text: str, chunk_size: int = CHUNK_SIZE, overlap: int 
 
 @shared_task(bind=True, max_retries=3, default_retry_delay=60)
 def vectorize_book(self, product_id: str, product_slug: str, full_text: str) -> dict:
-    """
-    Celery task: Chia nhỏ văn bản sách → tạo embeddings → lưu vào DB.
+    """Celery task: Chia nhỏ văn bản sách → tạo embeddings → lưu vào DB.
     Được kích hoạt khi admin upload nội dung sách mới.
     """
     logger.info("Bắt đầu vectorize sách product_id=%s", product_id)

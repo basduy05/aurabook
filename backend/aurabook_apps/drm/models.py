@@ -1,13 +1,14 @@
 import uuid
+
 from django.db import models
 from django.utils import timezone
 
 
 class DRMSession(models.Model):
-    """
-    Lưu session key đã mã hóa cho mỗi phiên đọc sách.
+    """Lưu session key đã mã hóa cho mỗi phiên đọc sách.
     Session key plaintext KHÔNG bao giờ được lưu — chỉ lưu ciphertext.
     """
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user_email = models.EmailField(db_index=True)
     # Saleor Product ID (UUID hoặc global ID)
@@ -38,6 +39,7 @@ class DRMSession(models.Model):
 
 class ReadingProgress(models.Model):
     """Lưu tiến độ đọc sách của từng user."""
+
     user_email = models.EmailField(db_index=True)
     product_id = models.CharField(max_length=255, db_index=True)
     current_page = models.PositiveIntegerField(default=1)

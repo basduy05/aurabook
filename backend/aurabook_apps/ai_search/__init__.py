@@ -1,5 +1,4 @@
-"""
-AuraBook AI Search App
+"""AuraBook AI Search App
 ======================
 Tính năng:
   - Gemini text-embedding-004 (768-dim) vector embeddings

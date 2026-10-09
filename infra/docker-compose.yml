@@ -2,6 +2,8 @@
 # AuraBook — Saleor Stack (Full Platform)
 # ============================================================
 
+name: aurabook
+
 services:
   postgres:
     image: pgvector/pgvector:pg16
@@ -122,6 +124,7 @@ services:
       - aurabook-network
 
   frontend:
+    profiles: ["docker-frontend"]
     build:
       context: ../frontend
       dockerfile: Dockerfile

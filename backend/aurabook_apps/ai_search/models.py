@@ -1,12 +1,13 @@
 import uuid
+
 from django.db import models
 
 
 class BookChunk(models.Model):
-    """
-    Lưu chunks văn bản sách đã được vector hóa.
+    """Lưu chunks văn bản sách đã được vector hóa.
     Mỗi chunk là một đoạn nhỏ (~512 tokens) của nội dung sách.
     """
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     # Saleor Product ID
     product_id = models.CharField(max_length=255, db_index=True)

@@ -1,6 +1,7 @@
 import os
 import secrets
 import struct
+
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 # DRM_MASTER_KEY phải là 32 bytes hex string (64 hex chars)
@@ -15,8 +16,7 @@ def generate_session_key() -> bytes:
 
 
 def encrypt_session_key(session_key: bytes) -> tuple[bytes, bytes]:
-    """
-    Mã hóa session key bằng master key (AES-256-GCM).
+    """Mã hóa session key bằng master key (AES-256-GCM).
     Trả về: (nonce, ciphertext)
     """
     aesgcm = AESGCM(_MASTER_KEY)
@@ -32,8 +32,7 @@ def decrypt_session_key(nonce: bytes, ciphertext: bytes) -> bytes:
 
 
 def encrypt_chunk(plaintext: bytes, session_key: bytes, chunk_index: int) -> bytes:
-    """
-    Mã hóa một chunk nội dung sách (AES-256-GCM).
+    """Mã hóa một chunk nội dung sách (AES-256-GCM).
     Nonce được derive từ chunk_index để tránh nonce reuse.
     Trả về: nonce (12 bytes) + ciphertext
     """
@@ -45,8 +44,7 @@ def encrypt_chunk(plaintext: bytes, session_key: bytes, chunk_index: int) -> byt
 
 
 def decrypt_chunk(data: bytes, session_key: bytes) -> bytes:
-    """
-    Giải mã chunk (để test/verify, không expose ở client-side).
+    """Giải mã chunk (để test/verify, không expose ở client-side).
     data = nonce (12 bytes) + ciphertext
     """
     aesgcm = AESGCM(session_key)

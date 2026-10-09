@@ -1,9 +1,11 @@
 import uuid
+
 from django.db import models
 
 
 class AudioTeaser(models.Model):
     """60s audio teaser cho mỗi sách."""
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     product_id = models.CharField(max_length=255, unique=True, db_index=True)
     product_slug = models.CharField(max_length=255, db_index=True)

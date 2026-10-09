@@ -1,6 +1,5 @@
-import os
-import base64
 import logging
+import os
 from typing import Any
 
 from google import genai
@@ -16,8 +15,7 @@ _client = genai.Client(api_key=GEMINI_API_KEY) if GEMINI_API_KEY else None
 
 
 def get_text_embedding(text: str) -> list[float]:
-    """
-    Tạo vector embedding 768-dim từ text bằng Gemini text-embedding-004.
+    """Tạo vector embedding 768-dim từ text bằng Gemini text-embedding-004.
     Trả về list[float] độ dài 768.
     """
     if not _client:
@@ -35,8 +33,7 @@ def get_text_embedding(text: str) -> list[float]:
 
 
 def ocr_book_cover(image_bytes: bytes) -> dict[str, Any]:
-    """
-    Dùng Gemini 2.0 Flash Vision để OCR bìa sách.
+    """Dùng Gemini 2.0 Flash Vision để OCR bìa sách.
     Trả về metadata: title, author, publisher, isbn, description
     """
     if not _client:
@@ -73,8 +70,7 @@ def ocr_book_cover(image_bytes: bytes) -> dict[str, Any]:
 
 
 def rag_query_stream(query: str, product_id: str, chunks: list[str]):
-    """
-    Generator: RAG Q&A với SSE streaming.
+    """Generator: RAG Q&A với SSE streaming.
     Dùng Gemini để trả lời câu hỏi dựa trên context chunks.
     Yield từng token để SSE.
     """

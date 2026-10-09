@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * Classify a Chrome/Firefox HAR from one storefront page view into Paper cost buckets.
  *

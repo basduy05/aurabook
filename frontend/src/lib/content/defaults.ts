@@ -37,7 +37,7 @@ export const defaultStorefrontContent = {
 		homepage: {
 			hero: {
 				heading: "Discover our collection",
-				subheading: brandConfig.tagline,
+				subheading: "Discover our collection.",
 				primaryCtaLabel: "Shop all",
 			},
 			featuredCollection: {

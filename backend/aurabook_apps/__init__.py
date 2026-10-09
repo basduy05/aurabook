@@ -1,5 +1,4 @@
-"""
-AuraBook Custom Saleor Apps
+"""AuraBook Custom Saleor Apps
 ===========================
 Các apps này tích hợp vào Saleor backend như Django apps độc lập.
 

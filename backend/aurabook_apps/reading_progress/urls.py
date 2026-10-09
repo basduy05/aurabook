@@ -3,14 +3,15 @@
 # App này giữ lại để routing /aurabook/reading/library
 
 from django.urls import path
+
 from aurabook_apps.drm.views import ReadingProgressView
 
 
 def library_view(request):
     """GET /aurabook/reading/library — Danh sách sách đã mua + progress."""
-    import json
-    from aurabook_apps.drm.models import ReadingProgress
     from django.http import JsonResponse
+
+    from aurabook_apps.drm.models import ReadingProgress
 
     user_email = request.GET.get("user_email")
     if not user_email:

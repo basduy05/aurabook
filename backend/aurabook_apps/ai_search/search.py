@@ -1,11 +1,10 @@
-import struct
 import logging
 from typing import Any
 
 from django.db import connection
 
-from .models import BookChunk
 from .gemini_client import get_text_embedding
+from .models import BookChunk
 
 logger = logging.getLogger(__name__)
 
@@ -20,8 +19,7 @@ def _cosine_similarity_sql(embedding: list[float]) -> str:
 
 
 def hybrid_search_rrf(query: str, limit: int = 20) -> list[dict[str, Any]]:
-    """
-    Hybrid Search với Reciprocal Rank Fusion (RRF k=60).
+    """Hybrid Search với Reciprocal Rank Fusion (RRF k=60).
 
     Bước 1: Fulltext search (SQL LIKE / tsvector)
     Bước 2: Vector semantic search (pgvector cosine similarity)

@@ -2,7 +2,7 @@ import copy
 import logging
 import os
 import re
-from typing import Any, Optional
+from typing import Any
 
 from saleor.product.models import (
     Category,
@@ -30,8 +30,7 @@ def is_vietnamese(text: str) -> bool:
 
 
 def translate_text(text: str, source_lang: str, target_lang: str) -> str:
-    """
-    Dịch chuỗi văn bản với cơ chế Multi-Tier:
+    """Dịch chuỗi văn bản với cơ chế Multi-Tier:
     - Tier 1: Gemini AI (nếu có GEMINI_API_KEY)
     - Tier 2: deep-translator MyMemory (miễn phí, không cần key)
     - Tier 3: Trả về chuỗi gốc nếu lỗi
@@ -86,8 +85,7 @@ def translate_text(text: str, source_lang: str, target_lang: str) -> str:
 
 
 def translate_editorjs_description(desc: Any, source_lang: str, target_lang: str) -> Any:
-    """
-    Dịch trường description dạng EditorJS blocks JSON của Saleor mà không làm hỏng cấu trúc rich text.
+    """Dịch trường description dạng EditorJS blocks JSON của Saleor mà không làm hỏng cấu trúc rich text.
     """
     if not desc:
         return desc
@@ -101,15 +99,14 @@ def translate_editorjs_description(desc: Any, source_lang: str, target_lang: str
                 if text_val and isinstance(text_val, str):
                     block["data"]["text"] = translate_text(text_val, source_lang, target_lang)
         return new_desc
-    elif isinstance(desc, str):
+    if isinstance(desc, str):
         return translate_text(desc, source_lang, target_lang)
 
     return desc
 
 
 def sync_product_translations(product: Product) -> list[ProductTranslation]:
-    """
-    Tự động dịch và đồng bộ bản dịch song ngữ (EN <-> VI) cho sản phẩm vào bảng ProductTranslation.
+    """Tự động dịch và đồng bộ bản dịch song ngữ (EN <-> VI) cho sản phẩm vào bảng ProductTranslation.
     """
     # Xác định ngôn ngữ nguồn của sản phẩm gốc
     source_is_vi = is_vietnamese(product.name)
@@ -163,8 +160,7 @@ def sync_product_translations(product: Product) -> list[ProductTranslation]:
 
 
 def sync_category_translations(category: Category) -> list[CategoryTranslation]:
-    """
-    Tự động dịch danh mục sang cả tiếng Anh và tiếng Việt.
+    """Tự động dịch danh mục sang cả tiếng Anh và tiếng Việt.
     """
     source_is_vi = is_vietnamese(category.name)
     source_lang = "vi" if source_is_vi else "en"

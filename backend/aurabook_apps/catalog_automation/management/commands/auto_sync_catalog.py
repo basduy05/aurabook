@@ -1,6 +1,6 @@
 import sys
+
 from django.core.management.base import BaseCommand
-from saleor.product.models import Category, Product, ProductVariant
 
 from aurabook_apps.catalog_automation.currency import (
     ensure_product_published_in_all_channels,
@@ -10,6 +10,7 @@ from aurabook_apps.catalog_automation.translator import (
     sync_category_translations,
     sync_product_translations,
 )
+from saleor.product.models import Category, Product
 
 
 class Command(BaseCommand):

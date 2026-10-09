@@ -2,14 +2,14 @@ import json
 import logging
 
 from django.http import JsonResponse, StreamingHttpResponse
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 
-from .search import hybrid_search_rrf
-from .gemini_client import ocr_book_cover, rag_query_stream, get_text_embedding
-from .tasks import vectorize_book
+from .gemini_client import ocr_book_cover, rag_query_stream
 from .models import BookChunk
+from .search import hybrid_search_rrf
+from .tasks import vectorize_book
 
 logger = logging.getLogger(__name__)
 

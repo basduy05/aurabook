@@ -37,7 +37,7 @@ export const INTEGRATED_GATEWAYS: readonly IntegratedGatewayDefinition[] = [
 	},
 	{
 		type: "dummy",
-		submitMode: "client",
+		submitMode: "server",
 		findGateway: (gateways) => findDummyGateway(gateways),
 		isEnabled: isDummyPaymentAllowed,
 		matchesGateway: isDummyGateway,

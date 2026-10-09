@@ -1,7 +1,6 @@
-import os
 import logging
+import os
 from decimal import Decimal
-from typing import Optional
 
 from saleor.channel.models import Channel
 from saleor.product.models import (
@@ -22,8 +21,7 @@ DEFAULT_RATES = {
 
 
 def get_exchange_rate(from_currency: str, to_currency: str) -> float:
-    """
-    Tính tỷ giá giữa 2 đơn vị tiền tệ từ bảng tỷ giá USD cơ sở.
+    """Tính tỷ giá giữa 2 đơn vị tiền tệ từ bảng tỷ giá USD cơ sở.
     """
     from_curr = from_currency.upper()
     to_curr = to_currency.upper()
@@ -39,8 +37,7 @@ def get_exchange_rate(from_currency: str, to_currency: str) -> float:
 
 
 def convert_price(amount: Decimal, from_currency: str, to_currency: str) -> Decimal:
-    """
-    Quy đổi giá tiền từ from_currency sang to_currency với quy tắc làm tròn chuẩn e-commerce.
+    """Quy đổi giá tiền từ from_currency sang to_currency với quy tắc làm tròn chuẩn e-commerce.
     - VND: làm tròn đến hàng nghìn (ví dụ 149,000 đ hoặc 150,000 đ)
     - USD / EUR / PLN: làm tròn 2 chữ số thập phân (ví dụ 5.99)
     """
@@ -55,15 +52,13 @@ def convert_price(amount: Decimal, from_currency: str, to_currency: str) -> Deci
         # Làm tròn hàng nghìn
         rounded = round(converted, -3)
         return Decimal(str(int(rounded)))
-    else:
-        # Làm tròn 2 chữ số thập phân
-        rounded = round(converted, 2)
-        return Decimal(f"{rounded:.2f}")
+    # Làm tròn 2 chữ số thập phân
+    rounded = round(converted, 2)
+    return Decimal(f"{rounded:.2f}")
 
 
 def sync_variant_channel_listings(variant: ProductVariant) -> list[ProductVariantChannelListing]:
-    """
-    Tự động đồng bộ và sinh giá cho biến thể trên tất cả các kênh (VND, USD, PLN...).
+    """Tự động đồng bộ và sinh giá cho biến thể trên tất cả các kênh (VND, USD, PLN...).
     Nếu variant đã có giá ở 1 kênh (ví dụ VND), hệ thống sẽ tự động tính và tạo listing
     cho các kênh còn lại (USD) để không bị lỗi 'sản phẩm không khả dụng' khi chuyển kênh.
     """
@@ -134,9 +129,8 @@ def sync_variant_channel_listings(variant: ProductVariant) -> list[ProductVarian
     return synced_listings
 
 
-def ensure_product_published_in_all_channels(product: Product, channels: Optional[list[Channel]] = None):
-    """
-    Đảm bảo sản phẩm có ProductChannelListing được publish trên tất cả các kênh đang active.
+def ensure_product_published_in_all_channels(product: Product, channels: list[Channel] | None = None):
+    """Đảm bảo sản phẩm có ProductChannelListing được publish trên tất cả các kênh đang active.
     """
     if channels is None:
         channels = list(Channel.objects.filter(is_active=True))

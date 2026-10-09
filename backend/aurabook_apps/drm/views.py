@@ -5,11 +5,11 @@ from datetime import timedelta
 import requests
 from django.http import JsonResponse
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 
-from .crypto import generate_session_key, encrypt_session_key, decrypt_session_key
+from .crypto import encrypt_session_key, generate_session_key
 from .models import DRMSession, ReadingProgress
 
 logger = logging.getLogger(__name__)
@@ -26,8 +26,7 @@ def _get_token_from_request(request) -> str | None:
 
 
 def _verify_order_paid(user_email: str, product_id: str, token: str) -> str | None:
-    """
-    Kiểm tra Saleor GraphQL để xác minh user có order PAID/FULFILLED cho product_id.
+    """Kiểm tra Saleor GraphQL để xác minh user có order PAID/FULFILLED cho product_id.
     Trả về order_id nếu hợp lệ, None nếu không.
     """
     query = """
@@ -141,8 +140,7 @@ class DRMSessionRevokeView(View):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class ReadingProgressView(View):
-    """
-    GET  /aurabook/drm/progress/{product_id} → Lấy tiến độ đọc
+    """GET  /aurabook/drm/progress/{product_id} → Lấy tiến độ đọc
     POST /aurabook/drm/progress/{product_id} → Cập nhật tiến độ
     """
 

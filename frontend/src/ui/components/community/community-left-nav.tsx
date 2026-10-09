@@ -27,6 +27,7 @@ interface CommunityLeftNavProps {
 	activeNav: CommunityNavTab;
 	onSelectNav: (tab: CommunityNavTab) => void;
 	savedCount?: number;
+	bookshelfCount?: number;
 	currentUser: CommunityUser | null;
 	onOpenProfile: () => void;
 	onOpenTerms: () => void;
@@ -40,7 +41,8 @@ interface CommunityLeftNavProps {
 export function CommunityLeftNav({
 	activeNav,
 	onSelectNav,
-	savedCount = 2,
+	savedCount = 0,
+	bookshelfCount = 0,
 	currentUser,
 	onOpenProfile,
 	onOpenTerms,
@@ -132,8 +134,8 @@ export function CommunityLeftNav({
 	}[] = [
 		{ id: "feed", label: "Bảng tin cộng đồng", icon: Home },
 		{ id: "reviews", label: "Đánh giá & Nhận xét sách", icon: BookOpen },
-		{ id: "saved", label: "Bài viết đã lưu", icon: Bookmark, badge: savedCount },
-		{ id: "bookshelf", label: "Tủ sách của tôi", icon: BookMarked },
+		{ id: "saved", label: "Bài viết đã lưu", icon: Bookmark, badge: savedCount > 0 ? savedCount : undefined },
+		{ id: "bookshelf", label: "Tủ sách của tôi", icon: BookMarked, badge: bookshelfCount > 0 ? bookshelfCount : undefined },
 	];
 
 	return (

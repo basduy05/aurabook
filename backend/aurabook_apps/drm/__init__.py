@@ -1,5 +1,4 @@
-"""
-AuraBook DRM App
+"""AuraBook DRM App
 ================
 Quản lý bảo mật bản quyền số (Digital Rights Management) cho e-book.
 

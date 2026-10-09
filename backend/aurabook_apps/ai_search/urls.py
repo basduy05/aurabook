@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import HybridSearchView, RAGQueryView, OCRCoverView, VectorizeBookView
+
+from .views import HybridSearchView, OCRCoverView, RAGQueryView, VectorizeBookView
 
 urlpatterns = [
     path("hybrid", HybridSearchView.as_view(), name="search-hybrid"),

@@ -103,6 +103,7 @@ export function toChannelSelectOptions(
 ): ChannelSelectOption[] {
 	const activeList = channels ? filterToStorefrontChannels(channels, allowedSlugs) : [];
 	const found = new Set<string>();
+	const inactiveSlugs = new Set((channels ?? []).filter((c) => c.isActive === false).map((c) => c.slug));
 	const options: ChannelSelectOption[] = [];
 
 	for (const item of activeList) {
@@ -117,7 +118,7 @@ export function toChannelSelectOptions(
 	}
 
 	for (const slug of allowedSlugs) {
-		if (!found.has(slug)) {
+		if (!found.has(slug) && !inactiveSlugs.has(slug)) {
 			const fallback = getChannelFallback(slug);
 			options.push({
 				id: `channel-${slug}`,

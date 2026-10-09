@@ -1,12 +1,11 @@
-import os
-import mimetypes
 import logging
+import os
 
-from django.http import FileResponse, JsonResponse, HttpResponse
+from django.conf import settings
+from django.http import FileResponse, JsonResponse
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
-from django.conf import settings
 
 from .models import AudioTeaser
 
@@ -60,8 +59,7 @@ class AudioTeaserUploadView(View):
         file_path = os.path.join(save_dir, filename)
 
         with open(file_path, "wb") as f:
-            for chunk in audio_file.chunks():
-                f.write(chunk)
+            f.writelines(audio_file.chunks())
 
         relative_path = f"audio_teasers/{filename}"
         mime_type = audio_file.content_type or "audio/wav"

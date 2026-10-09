@@ -2,15 +2,14 @@
   "name": "aurabook-monorepo",
   "version": "0.1.0",
   "private": true,
-  "workspaces": [
-    "apps/*"
-  ],
   "scripts": {
-    "dev:web": "npm run dev --workspace=apps/web",
-    "build:web": "npm run build --workspace=apps/web",
-    "lint:web": "npm run lint --workspace=apps/web",
-    "compose:up": "docker compose up -d",
-    "compose:down": "docker compose down",
-    "compose:logs": "docker compose logs -f"
+    "dev:frontend": "pnpm --prefix frontend dev",
+    "build:frontend": "pnpm --prefix frontend build",
+    "test:frontend": "pnpm --prefix frontend test:run",
+    "lint:frontend": "pnpm --prefix frontend lint",
+    "typecheck:frontend": "pnpm --prefix frontend typecheck",
+    "compose:up": "docker compose -f infra/docker-compose.yml up -d",
+    "compose:down": "docker compose -f infra/docker-compose.yml stop",
+    "compose:logs": "docker compose -f infra/docker-compose.yml logs -f"
   }
 }
