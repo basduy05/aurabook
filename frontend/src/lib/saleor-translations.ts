@@ -46,10 +46,10 @@ export function pickTranslatedName(
 	locale?: string,
 ): string {
 	const raw = pickTranslatedField(entity.translation, "name", entity.name) ?? entity.name;
-	if (locale && locale !== "vi") {
-		return raw;
+	if (locale === "vi") {
+		return VI_NAME_FALLBACKS[raw] ?? raw;
 	}
-	return VI_NAME_FALLBACKS[raw] ?? raw;
+	return raw;
 }
 
 /**

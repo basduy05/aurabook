@@ -10,6 +10,8 @@ export const badgeVariants = cva(
 				default: "bg-primary text-primary-foreground",
 				secondary: "bg-secondary text-secondary-foreground",
 				destructive: "bg-destructive text-destructive-foreground",
+				success: "border border-success/30 bg-success/10 text-success font-semibold",
+				"success-solid": "border-transparent bg-success text-success-foreground font-semibold",
 				bestseller: "badge-bestseller border bg-transparent",
 				"outline-solid": "border border-border text-foreground",
 			},

@@ -1,9 +1,12 @@
 "use client";
 
-import { useState, type FC } from "react";
+import { useState, useMemo, useEffect, type FC } from "react";
 import { useTranslations } from "next-intl";
-import { MapPin, Loader2, CheckCircle2, Truck, AlertCircle } from "lucide-react";
+import { MapPin, Loader2, CheckCircle2, Truck, AlertCircle, Building2 } from "lucide-react";
 import { Label } from "@/ui/components/ui/label";
+import { Badge } from "@/ui/components/ui/badge";
+import { Button } from "@/ui/components/ui/button";
+import { isInnerCityAddress } from "@/lib/vietnam-administrative/data";
 import { FormSelect, FieldError, AddressFields } from "../address-form-fields";
 import { HybridAddressSelector } from "@/checkout/components/shipping-address";
 import type { ShippingCountryOption } from "@/checkout/lib/checkout-types";
@@ -80,7 +83,77 @@ export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
 		message: string;
 		detectedInfo?: string;
 		ghnFee?: number;
+		isInnerCity?: boolean;
+		hasHouseNumber?: boolean;
+		warningMessage?: string;
 	} | null>(null);
+
+	// Real-time live GHN fee query directly from backend/GHN API
+	const [liveGHNFee, setLiveGHNFee] = useState<{
+		fee: number;
+		serviceName: string;
+		estimatedDays: string;
+		isFreeShipping: boolean;
+		isInnerCity: boolean;
+	} | null>(null);
+
+	const manualIsInnerCity = useMemo(() => {
+		if (countryCode !== "VN" || !formData.countryArea) return false;
+		return isInnerCityAddress(formData.countryArea, formData.city || "");
+	}, [countryCode, formData.countryArea, formData.city]);
+
+	// Tự động tính cước GHN theo thời gian thực khi địa chỉ thay đổi, không bao giờ bị cố định số tiền
+	useEffect(() => {
+		if (countryCode !== "VN" || !formData.countryArea || !formData.city) {
+			setLiveGHNFee(null);
+			return;
+		}
+
+		let isSubscribed = true;
+		const timer = setTimeout(() => {
+			fetch("/api/shipping/ghn/fee", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					destinationProvince: formData.countryArea,
+					destinationDistrict: formData.city,
+					orderValue: checkoutSubtotal || 0,
+					weightGrams: 500,
+				}),
+			})
+				.then((res) => (res.ok ? (res.json() as Promise<any>) : null))
+				.then((data: any) => {
+					if (!isSubscribed || !data) return;
+					const isInner = isInnerCityAddress(formData.countryArea, formData.city);
+					setLiveGHNFee({
+						fee: data.fee,
+						serviceName: data.serviceName,
+						estimatedDays: data.estimatedDays,
+						isFreeShipping: data.isFreeShipping,
+						isInnerCity: isInner,
+					});
+
+					// Đồng bộ trạng thái cước hiển thị cho vị trí hiện tại
+					setLocationStatus((prev) => {
+						if (!prev) return null;
+						return {
+							...prev,
+							ghnFee: data.fee,
+							isInnerCity: isInner,
+							detectedInfo: [formData.streetAddress1, formData.city, formData.countryArea]
+								.filter(Boolean)
+								.join(", "),
+						};
+					});
+				})
+				.catch(() => {});
+		}, 300);
+
+		return () => {
+			isSubscribed = false;
+			clearTimeout(timer);
+		};
+	}, [countryCode, formData.countryArea, formData.city, checkoutSubtotal, formData.streetAddress1]);
 
 	const handleDetectLocation = () => {
 		if (typeof window === "undefined" || !navigator.geolocation) {
@@ -160,8 +233,11 @@ export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
 						setLocationStatus({
 							type: "success",
 							message: `Đã tự động điền địa chỉ nhận hàng chính xác! (Cước GHN: ${feeFormatted})`,
-							detectedInfo: `${addr.streetAddress1}, ${addr.city}, ${addr.countryArea}`,
+							detectedInfo: [addr.streetAddress1, addr.city, addr.countryArea].filter(Boolean).join(", "),
 							ghnFee: isFreeShipping ? 0 : data.ghnShipping?.fee,
+							isInnerCity: data.isInnerCity,
+							hasHouseNumber: data.hasHouseNumber,
+							warningMessage: data.warningMessage,
 						});
 					} else {
 						throw new Error("Không nhận diện được địa chỉ.");
@@ -246,11 +322,13 @@ export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
 									Hệ thống sẽ định vị GPS để tự động điền địa chỉ nhận hàng chính xác và tính cước GHN từ Kho Hà Nội.
 								</p>
 							</div>
-							<button
+							<Button
 								type="button"
+								variant="default"
+								size="sm"
 								onClick={handleDetectLocation}
 								disabled={isLocating}
-								className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-3.5 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-all shadow-xs disabled:opacity-60 shrink-0 cursor-pointer"
+								className="cursor-pointer gap-2 shrink-0 font-semibold rounded-xl"
 							>
 								{isLocating ? (
 									<>
@@ -263,21 +341,21 @@ export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
 										<span>Lấy vị trí hiện tại</span>
 									</>
 								)}
-							</button>
+							</Button>
 						</div>
 
 						{locationStatus && (
 							<div
 								className={`rounded-lg p-3 text-xs flex items-start gap-2.5 animate-in fade-in-0 duration-200 border ${
 									locationStatus.type === "success"
-										? "bg-emerald-500/10 border-emerald-500/30 text-emerald-800 dark:text-emerald-300"
+										? "bg-success/10 border-success/30 text-foreground"
 										: locationStatus.type === "prompt"
 										? "bg-secondary border-border text-foreground"
 										: "bg-destructive/10 border-destructive/20 text-destructive"
 								}`}
 							>
 								{locationStatus.type === "success" && (
-									<CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+									<CheckCircle2 className="h-4 w-4 text-success shrink-0 mt-0.5" />
 								)}
 								{locationStatus.type === "prompt" && (
 									<Loader2 className="h-4 w-4 text-primary animate-spin shrink-0 mt-0.5" />
@@ -285,12 +363,33 @@ export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
 								{locationStatus.type === "error" && (
 									<AlertCircle className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
 								)}
-								<div className="space-y-1 flex-1">
+								<div className="space-y-1.5 flex-1">
 									<p className="font-semibold">{locationStatus.message}</p>
 									{locationStatus.detectedInfo && (
 										<p className="text-[11px] text-muted-foreground">
 											📍 {locationStatus.detectedInfo}
 										</p>
+									)}
+									{locationStatus.warningMessage && (
+										<div className="flex items-center gap-1.5 rounded-md bg-amber-500/10 border border-amber-500/30 px-2 py-1 text-[11px] text-amber-700 dark:text-amber-300 font-medium">
+											<AlertCircle className="h-3.5 w-3.5 shrink-0" />
+											<span>{locationStatus.warningMessage}</span>
+										</div>
+									)}
+									{locationStatus.isInnerCity !== undefined && (
+										<div className="flex items-center gap-1.5 text-[11px] font-medium pt-0.5">
+											{locationStatus.isInnerCity ? (
+												<span className="inline-flex items-center gap-1 text-success font-semibold">
+													<Building2 className="h-3.5 w-3.5" />
+													<span>Khu vực Nội thành — Hỗ trợ GHN Giao Hỏa Tốc (2 - 4h)</span>
+												</span>
+											) : (
+												<span className="inline-flex items-center gap-1 text-muted-foreground">
+													<Truck className="h-3.5 w-3.5" />
+													<span>Khu vực Ngoại thành / Tỉnh — Áp dụng GHN Tiêu Chuẩn (1 - 3 ngày)</span>
+												</span>
+											)}
+										</div>
 									)}
 									{locationStatus.ghnFee !== undefined && (
 										<div className="flex items-center gap-1.5 text-[11px] font-semibold text-primary pt-0.5">
@@ -337,6 +436,57 @@ export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
 						onFieldChange={onFieldChange}
 						countryAreaChoices={countryAreaChoices}
 					/>
+
+					{/* Real-time Inner City & House Number Indicator for Vietnam */}
+					{countryCode === "VN" && formData.countryArea && (
+						<div className="space-y-3 pt-1">
+							<div className="flex items-center justify-between rounded-xl border border-border bg-secondary/30 p-3 text-xs animate-in fade-in-0 duration-200">
+								<div className="flex items-center gap-2.5">
+									<Building2 className="h-4 w-4 text-primary shrink-0" />
+									<div>
+										<span className="font-semibold text-foreground">
+											{manualIsInnerCity ? "Địa chỉ thuộc Khu vực Nội thành" : "Địa chỉ thuộc Khu vực Ngoại thành / Tỉnh"}
+										</span>
+										<p className="text-[11px] text-muted-foreground mt-0.5">
+											{manualIsInnerCity
+												? "Đủ điều kiện chọn phương thức vận chuyển Giao Hỏa Tốc (Nội thành) ở bước tiếp theo."
+												: "Địa chỉ này áp dụng phương thức Giao Hàng Nhanh (GHN) Tiêu Chuẩn."}
+										</p>
+									</div>
+								</div>
+								<Badge variant={manualIsInnerCity ? "success" : "outline-solid"} className="shrink-0 text-[11px] font-medium">
+									{manualIsInnerCity ? "Nội thành" : "Ngoại thành / Tỉnh"}
+								</Badge>
+							</div>
+
+							{/* Live Real-time GHN Shipping Fee confirmation card */}
+							{liveGHNFee && (
+								<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-primary/25 bg-primary/5 p-3.5 text-xs animate-in fade-in-0 duration-200 text-card-foreground">
+									<div className="flex items-center gap-2.5">
+										<Truck className="h-4 w-4 text-primary shrink-0" />
+										<div>
+											<div className="flex items-center gap-2 font-semibold text-foreground">
+												<span>{liveGHNFee.serviceName}</span>
+												{liveGHNFee.isFreeShipping && (
+													<Badge variant="success" className="px-1.5 py-0 text-[10px]">Freeship</Badge>
+												)}
+											</div>
+											<p className="text-[11px] text-muted-foreground mt-0.5">
+												Xuất phát: Kho Tổng Aurabook Hà Nội • Dự kiến: {liveGHNFee.estimatedDays}
+											</p>
+										</div>
+									</div>
+									<div className="sm:text-right shrink-0">
+										<span className="text-sm font-bold text-primary tabular-nums">
+											{liveGHNFee.isFreeShipping
+												? "0 ₫ (Miễn phí)"
+												: `${new Intl.NumberFormat("vi-VN").format(liveGHNFee.fee)} ₫`}
+										</span>
+									</div>
+								</div>
+							)}
+						</div>
+					)}
 				</>
 			)}
 		</section>

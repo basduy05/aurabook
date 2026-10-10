@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
-import { calculateGHNFee } from "@/lib/shipping/ghn";
+import { calculateGHNFeeAsync } from "@/lib/shipping/ghn";
+import {
+	findProvince,
+	findDistrict,
+	isInnerCityAddress,
+} from "@/lib/vietnam-administrative/data";
 
 export async function POST(request: Request) {
 	try {
@@ -63,78 +68,99 @@ export async function POST(request: Request) {
 			}
 		}
 
-		// Parse Vietnamese administrative units
-		// 1. Province / City (Tỉnh / Thành phố)
-		const rawProvince =
-			addressData.state ||
-			addressData.city ||
-			(addressData.display_name?.includes("Hà Nội") ? "Hà Nội" : "") ||
-			(addressData.display_name?.includes("Hồ Chí Minh") ? "Thành phố Hồ Chí Minh" : "") ||
-			"Hà Nội";
+		// Parse Vietnamese administrative units (Chuẩn 2 cấp: Cấp 1 Tỉnh/Thành phố & Cấp 2 Quận/Huyện)
+		// 1. Cấp 1: Tỉnh / Thành phố
+		const rawProvinceCandidates = [
+			addressData.state,
+			addressData.city,
+		].filter(Boolean) as string[];
 
-		let province = rawProvince.replace(/^(tỉnh|thành phố|tp\.?)\s+/i, "").trim();
-		if (province.toLowerCase() === "hà nội" || province.toLowerCase() === "hanoi") {
-			province = "Hà Nội";
-		} else if (province.toLowerCase().includes("hồ chí minh") || province.toLowerCase().includes("ho chi minh")) {
-			province = "Thành phố Hồ Chí Minh";
-		} else if (province.toLowerCase().includes("đà nẵng") || province.toLowerCase().includes("da nang")) {
-			province = "Đà Nẵng";
+		let detectedProv = findProvince(rawProvinceCandidates[0] || "");
+		if (!detectedProv && addressData.display_name) {
+			for (const p of ["Hà Nội", "Hồ Chí Minh", "Đà Nẵng", "Hải Phòng", "Cần Thơ"]) {
+				if (addressData.display_name.includes(p)) {
+					detectedProv = findProvince(p);
+					break;
+				}
+			}
 		}
+		const province = detectedProv ? detectedProv.name : (rawProvinceCandidates[0] || "Thành phố Hà Nội");
 
-		// 2. District (Quận / Huyện / Thị xã) - Maps to Saleor 'city' field
-		let district = "";
-		if (addressData.county && !addressData.county.toLowerCase().includes("hà nội") && !addressData.county.toLowerCase().includes("hồ chí minh")) {
-			district = addressData.county;
-		} else if (addressData.city_district) {
-			district = addressData.city_district;
-		}
+		// 2. Cấp 2: Quận / Huyện / Thị xã / TP thuộc tỉnh
+		const rawDistrictCandidates = [
+			addressData.county,
+			addressData.city_district,
+			addressData.suburb,
+		].filter(Boolean) as string[];
 
-		if (!district && addressData.suburb) {
-			if (/^(quận|huyện|thị xã|tp\.?|thành phố)\s+/i.test(addressData.suburb)) {
-				district = addressData.suburb;
+		let detectedDist: ReturnType<typeof findDistrict> | undefined;
+		if (detectedProv) {
+			for (const cand of rawDistrictCandidates) {
+				detectedDist = findDistrict(detectedProv, cand);
+				if (detectedDist) break;
+			}
+			if (!detectedDist && addressData.display_name) {
+				for (const d of detectedProv.districts) {
+					if (addressData.display_name.toLowerCase().includes(d.name.toLowerCase())) {
+						detectedDist = d;
+						break;
+					}
+				}
+			}
+
+			// Tra cứu dự phòng theo phường / đường phố nếu Nominatim không trả về quận huyện hoặc gán nhầm
+			const textToScan = `${addressData.road || ""} ${addressData.suburb || ""} ${addressData.neighbourhood || ""} ${addressData.display_name || ""}`.toLowerCase();
+			const isInnerHanoiCoords = detectedProv.name.includes("Hà Nội") && longitude > 105.70;
+
+			if (detectedProv.name.includes("Hà Nội")) {
+				// Nếu tọa độ thuộc vùng nội thành (Kinh độ > 105.70) và xuất hiện "la thành" -> 100% là Đê La Thành nội thành, không phải Sơn Tây
+				if (isInnerHanoiCoords && /la thành|đê la thành/i.test(textToScan)) {
+					detectedDist = findDistrict(detectedProv, "Quận Đống Đa");
+				} else if (/ngọc hà|liễu giai|kim mã|giảng võ|điện biên|quán thánh|trúc bạch|cống vị|đội cấn|thành công|vĩnh phúc|phúc xá|ngọc khánh|hoàng hoa thám/i.test(textToScan)) {
+					detectedDist = findDistrict(detectedProv, "Quận Ba Đình");
+				} else if (/dịch vọng|mai dịch|nghĩa tân|nghĩa đô|yên hòa|trung hòa|quan hoa|duy tân|xuân thủy|cầu giấy|trần duy hưng|hoàng quốc việt/i.test(textToScan)) {
+					detectedDist = findDistrict(detectedProv, "Quận Cầu Giấy");
+				} else if (/hàng bạc|hàng đào|tràng tiền|lý thái tổ|đồng xuân|cửa nam|hoàn kiếm|đinh tiên hoàng|phố huế|bà triệu/i.test(textToScan)) {
+					detectedDist = findDistrict(detectedProv, "Quận Hoàn Kiếm");
+				} else if (/la thành|đê la thành|ô chợ dừa|láng hạ|láng thượng|văn miếu|quốc tử giám|khâm thiên|kim liên|đống đa|thái hà|thái thịnh|chùa bộc|hoàng cầu|tôn đức thắng/i.test(textToScan)) {
+					detectedDist = findDistrict(detectedProv, "Quận Đống Đa");
+				} else if (/bạch mai|bách khoa|minh khai|trương định|hai bà trưng|thanh nhàn|đại cồ việt/i.test(textToScan)) {
+					detectedDist = findDistrict(detectedProv, "Quận Hai Bà Trưng");
+				} else if (/khương trung|khương mai|nhân chính|thanh xuân|nguyễn trãi|nguyễn tuân|lê văn lương/i.test(textToScan)) {
+					detectedDist = findDistrict(detectedProv, "Quận Thanh Xuân");
+				} else if (/mỹ đình|mễ trì|cầu diễn|tây mỗ|đại mỗ|nam từ liêm|trung văn/i.test(textToScan)) {
+					detectedDist = findDistrict(detectedProv, "Quận Nam Từ Liêm");
+				} else if (/xuân đỉnh|cổ nhuế|đông ngạc|bắc từ liêm|thụy phương/i.test(textToScan)) {
+					detectedDist = findDistrict(detectedProv, "Quận Bắc Từ Liêm");
+				} else if (/quang trung|hà cầu|vạn phúc|mộ lao|văn quán|hà đông|la khê/i.test(textToScan)) {
+					detectedDist = findDistrict(detectedProv, "Quận Hà Đông");
+				} else if (/bưởi|thụy khuê|quảng an|xuân la|yên phụ|tây hồ|nhật tân/i.test(textToScan)) {
+					detectedDist = findDistrict(detectedProv, "Quận Tây Hồ");
+				} else if (/giáp bát|hoàng liệt|định công|tân mai|hoàng mai|linh đàm/i.test(textToScan)) {
+					detectedDist = findDistrict(detectedProv, "Quận Hoàng Mai");
+				} else if (/bồ đề|gia thụy|ngọc lâm|sài đồng|long biên|việt hưng/i.test(textToScan)) {
+					detectedDist = findDistrict(detectedProv, "Quận Long Biên");
+				}
+			} else if (detectedProv.name.includes("Hồ Chí Minh")) {
+				if (/bến nghé|bến thành|cầu kho|đa kao|tân định/i.test(textToScan)) {
+					detectedDist = findDistrict(detectedProv, "Quận 1");
+				} else if (/thảo điền|an phú|thủ thiêm|thủ đức/i.test(textToScan)) {
+					detectedDist = findDistrict(detectedProv, "Thành phố Thủ Đức");
+				}
 			}
 		}
 
-		if (!district && addressData.display_name) {
-			const districtMatch = addressData.display_name.match(/(quận\s+[^,]+|huyện\s+[^,]+|thị xã\s+[^,]+)/i);
-			if (districtMatch) {
-				district = districtMatch[1].trim();
-			}
-		}
+		// Tuyệt đối không gán chuỗi cấp 3 (Phường/Xã) vào trường cấp 2 (Quận/Huyện)
+		const fallbackDistrict = (detectedProv?.districts[0]?.name) || "Quận Cầu Giấy";
+		const validCandidate = rawDistrictCandidates.find((c) => !c.startsWith("Phường") && !c.startsWith("Xã") && !c.startsWith("Thị trấn"));
+		const district = detectedDist ? detectedDist.name : (validCandidate || fallbackDistrict);
 
-		if (!district) {
-			if (addressData.road?.toLowerCase().includes("la thành") || addressData.road?.toLowerCase().includes("giảng võ") || addressData.road?.toLowerCase().includes("kim mã")) {
-				district = "Quận Ba Đình";
-			} else if (addressData.road?.toLowerCase().includes("duy tân") || addressData.road?.toLowerCase().includes("cầu giấy")) {
-				district = "Quận Cầu Giấy";
-			} else {
-				district = "Quận Ba Đình";
-			}
-		}
-
-		// 3. Ward (Phường / Xã)
-		let ward = "";
-		if (addressData.suburb && /^(phường|xã|thị trấn)\s+/i.test(addressData.suburb)) {
-			ward = addressData.suburb;
-		} else if (addressData.quarter) {
-			ward = addressData.quarter.startsWith("Phường") ? addressData.quarter : `Phường ${addressData.quarter}`;
-		} else if (addressData.neighbourhood) {
-			ward = addressData.neighbourhood.startsWith("Phường") ? addressData.neighbourhood : `Phường ${addressData.neighbourhood}`;
-		}
-
-		if (!ward && addressData.display_name) {
-			const wardMatch = addressData.display_name.match(/(phường\s+[^,]+|xã\s+[^,]+|thị trấn\s+[^,]+)/i);
-			if (wardMatch) {
-				ward = wardMatch[1].trim();
-			}
-		}
-
-		if (!ward && addressData.road?.toLowerCase().includes("la thành")) {
-			ward = "Phường Giảng Võ";
-		}
-
-		// 4. House Number and Road
-		const road = addressData.road || "";
+		// 3. Đường / Phố & Số nhà (Địa chỉ cụ thể)
+		const road: string =
+			(typeof addressData.road === "string" ? addressData.road : "") ||
+			(typeof addressData.pedestrian === "string" ? String(addressData.pedestrian) : "") ||
+			(typeof addressData.street === "string" ? String(addressData.street) : "") ||
+			"";
 		let houseNumber = addressData.house_number || "";
 		if (!houseNumber && addressData.display_name) {
 			const numMatch = addressData.display_name.match(/^(\d+[A-Za-z]?)\s*,/);
@@ -143,34 +169,51 @@ export async function POST(request: Request) {
 			}
 		}
 
-		// 5. Specific Street Address (Số nhà + Tên đường + Phường/Xã)
-		const streetPrefix = houseNumber ? (houseNumber.toLowerCase().startsWith("số") ? houseNumber : `Số ${houseNumber}`) : "";
-		const roadPart = road ? (streetPrefix ? `${streetPrefix} ${road}` : road) : streetPrefix;
-		const streetParts = [roadPart, ward].filter(Boolean);
-		const streetAddress1 = streetParts.length > 0 ? streetParts.join(", ") : (road || `${district}, ${province}`);
+		// Địa chỉ chi tiết (streetAddress1): Số nhà + tên đường (tuyệt đối KHÔNG chứa Toàn quốc, Việt Nam)
+		let streetAddress1 = "";
+		if (houseNumber && road) {
+			const prefix = houseNumber.toLowerCase().startsWith("số") ? houseNumber : `Số ${houseNumber}`;
+			streetAddress1 = `${prefix} ${road}`;
+		} else if (road) {
+			streetAddress1 = road;
+		} else if (houseNumber) {
+			streetAddress1 = houseNumber.toLowerCase().startsWith("số") ? houseNumber : `Số ${houseNumber}`;
+		}
 
-		// Pre-calculate GHN shipping fee from Hanoi Warehouse to this detected location
-		const ghnFee = calculateGHNFee({
+		// Pre-calculate GHN shipping fee directly from GHN API
+		const ghnFee = await calculateGHNFeeAsync({
 			destinationProvince: province,
 			destinationDistrict: district,
-			destinationWard: ward,
 			orderValue: Number(orderValue) || 0,
 			weightGrams: 500,
 		});
+
+		// 4. Kiểm tra điều kiện Nội thành (Level 2: Quận nội thành)
+		const isInnerCity = detectedDist ? detectedDist.isInnerCity : isInnerCityAddress(province, district);
+		const hasHouseNumber = Boolean(houseNumber && houseNumber.trim().length > 0);
 
 		return NextResponse.json({
 			success: true,
 			address: {
 				countryCode: "VN",
 				countryName: "Việt Nam",
-				countryArea: province, // Tỉnh / Thành phố
-				city: district, // Quận / Huyện (Saleor city field)
-				cityArea: ward, // Phường / Xã
+				countryArea: province, // Cấp 1: Tỉnh / Thành phố
+				city: district, // Cấp 2: Quận / Huyện (Saleor city field)
+				cityArea: "",
 				streetAddress1,
 				postalCode: addressData.postcode || "100000",
 				latitude,
 				longitude,
+				houseNumber,
+				road,
+				hasHouseNumber,
+				isInnerCity,
 			},
+			isInnerCity,
+			hasHouseNumber,
+			warningMessage: !hasHouseNumber
+				? (road ? `Đã nhận diện đường ${road} — Vui lòng bổ sung Số nhà / Căn hộ cụ thể` : "Chưa nhận diện được số nhà — Vui lòng nhập bổ sung Số nhà, tên đường")
+				: undefined,
 			ghnShipping: ghnFee,
 		});
 	} catch (error) {

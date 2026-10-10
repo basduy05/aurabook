@@ -4,10 +4,10 @@ import { OrderStatus } from "@/gql/graphql";
 type StatusConfig = { icon: LucideIcon; className: string };
 
 export const orderStatusStyle: Record<OrderStatus, StatusConfig> = {
-	[OrderStatus.Fulfilled]: { icon: CheckCircle2, className: "text-green-700" },
+	[OrderStatus.Fulfilled]: { icon: CheckCircle2, className: "text-success" },
 	[OrderStatus.PartiallyFulfilled]: { icon: PackageCheck, className: "text-blue-700" },
 	[OrderStatus.Unfulfilled]: { icon: Clock, className: "text-amber-600" },
-	[OrderStatus.Canceled]: { icon: XCircle, className: "text-red-600" },
+	[OrderStatus.Canceled]: { icon: XCircle, className: "text-destructive" },
 	[OrderStatus.Returned]: { icon: RotateCcw, className: "text-muted-foreground" },
 	[OrderStatus.PartiallyReturned]: { icon: RotateCcw, className: "text-amber-600" },
 	[OrderStatus.Draft]: { icon: Circle, className: "text-muted-foreground" },
@@ -18,7 +18,7 @@ export const orderStatusStyle: Record<OrderStatus, StatusConfig> = {
 export const orderStatusBadgeStyle: Record<OrderStatus, StatusConfig & { badgeClassName: string }> = {
 	[OrderStatus.Fulfilled]: {
 		...orderStatusStyle[OrderStatus.Fulfilled],
-		badgeClassName: "text-green-700 bg-green-50 border-green-200",
+		badgeClassName: "text-success bg-success/10 border-success/30",
 	},
 	[OrderStatus.PartiallyFulfilled]: {
 		...orderStatusStyle[OrderStatus.PartiallyFulfilled],
@@ -30,7 +30,7 @@ export const orderStatusBadgeStyle: Record<OrderStatus, StatusConfig & { badgeCl
 	},
 	[OrderStatus.Canceled]: {
 		...orderStatusStyle[OrderStatus.Canceled],
-		badgeClassName: "text-red-700 bg-red-50 border-red-200",
+		badgeClassName: "text-destructive bg-destructive/10 border-destructive/30",
 	},
 	[OrderStatus.Returned]: {
 		...orderStatusStyle[OrderStatus.Returned],

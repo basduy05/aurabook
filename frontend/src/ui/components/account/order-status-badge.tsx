@@ -1,6 +1,7 @@
 import { Circle, CheckCircle2 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { type OrderStatus } from "@/gql/graphql";
+import { Badge } from "@/ui/components/ui/badge";
 import { orderStatusBadgeStyle } from "./order-status-config";
 import { getCustomerOrderStatusLabel } from "./order-status-labels";
 
@@ -16,10 +17,10 @@ export async function OrderStatusBadge({ status, statusDisplay, localeSlug, isCo
 	
 	if (isCompleted || status === "COMPLETED") {
 		return (
-			<span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300 bg-emerald-50 px-3 py-1 text-sm font-semibold text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300">
+			<Badge variant="success" className="gap-1.5 px-3 py-1 text-sm font-semibold">
 				<CheckCircle2 className="h-4 w-4" strokeWidth={2} />
 				{tStatus("COMPLETED")}
-			</span>
+			</Badge>
 		);
 	}
 

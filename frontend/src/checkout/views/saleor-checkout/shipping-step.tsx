@@ -20,6 +20,7 @@ import {
 import { formatShippingPrice } from "@/checkout/lib/utils/money";
 import { MobileStickyAction } from "./mobile-sticky-action";
 import { useCheckoutStepNumber } from "@/checkout/hooks/use-checkout-steps";
+import { isInnerCityAddress } from "@/lib/vietnam-administrative/data";
 import { useTranslations } from "next-intl";
 
 interface ShippingStepProps {
@@ -49,11 +50,35 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 	const savedDeliveryId = checkout.delivery?.id;
 
 	const isVietnam = checkout.shippingAddress?.country?.code === "VN";
+	const isInnerCity = useMemo(() => {
+		if (!isVietnam || !checkout.shippingAddress) return false;
+		const addr = checkout.shippingAddress;
+		return isInnerCityAddress(
+			addr.countryArea || "",
+			addr.city || "",
+		);
+	}, [isVietnam, checkout.shippingAddress]);
+
 	const filteredDeliveries = useMemo(() => {
 		if (!isVietnam) return deliveries;
-		// For Vietnam, prioritize Vietnamese domestic shipping methods (GHN) and hide demo foreign options
+		// For Vietnam, prioritize Vietnamese domestic shipping methods (GHN)
+		// Enforce: only show Inner-City (Hỏa Tốc / Nội thành) if destination address is verified as inner-city
 		const domestic = deliveries.filter((d) => {
 			const name = (d.shippingMethod?.name || "").toLowerCase();
+			const isInnerCityMethod =
+				name.includes("hỏa tốc") ||
+				name.includes("nội thành") ||
+				name.includes("express");
+
+			if (isInnerCityMethod && !isInnerCity) {
+				return false;
+			}
+
+			// If inner-city, exclude the 22k suburban rate so customer receives 16.5k inner-city rate
+			if (isInnerCity && name.includes("kho hà nội") && !name.includes("nội thành") && !name.includes("miễn phí")) {
+				return false;
+			}
+
 			return (
 				name.includes("ghn") ||
 				name.includes("giao hàng") ||
@@ -62,7 +87,7 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 			);
 		});
 		return domestic.length > 0 ? domestic : deliveries;
-	}, [deliveries, isVietnam]);
+	}, [deliveries, isVietnam, isInnerCity]);
 
 	const [userSelectedMethod, setUserSelectedMethod] = useState<string | undefined>();
 	const selectedMethod = resolveSelectedDeliveryId(userSelectedMethod, filteredDeliveries, savedDeliveryId);

@@ -1,12 +1,51 @@
 [
   {
+    "id": "ship-1791648664018",
+    "orderId": "7",
+    "orderNumber": "7",
+    "trackingCode": "GHN78177303VN",
+    "carrier": "Giao Hàng Nhanh (GHN)",
+    "serviceType": "standard",
+    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)",
+    "fee": 16500,
+    "codAmount": 0,
+    "weightGrams": 500,
+    "status": "ready_to_pick",
+    "statusDisplay": "Chờ lấy hàng",
+    "sender": {
+      "name": "Nhà sách Aurabook",
+      "phone": "0912345678",
+      "address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu",
+      "warehouseName": "Kho Tổng Aurabook Hà Nội"
+    },
+    "recipient": {
+      "name": "Duy Nguyễn",
+      "phone": "0912345678",
+      "address": "123 Lê Lợi",
+      "province": "Thành phố Hà Nội",
+      "district": "Quận Cầu Giấy"
+    },
+    "itemsSummary": "Đơn hàng sách Aurabook",
+    "createdAt": "2026-10-10T16:11:04.018Z",
+    "estimatedDeliveryDate": "2026-10-13T16:11:04.018Z",
+    "history": [
+      {
+        "status": "ready_to_pick",
+        "statusName": "Chờ lấy hàng",
+        "description": "Đơn hàng đã được tạo. Chờ GHN điều phối tài xế đến lấy hàng tại Kho Tổng Aurabook Hà Nội.",
+        "time": "2026-10-10T16:11:04.018Z",
+        "location": "Kho Tổng Aurabook Hà Nội - 12 Duy Tân, Cầu Giấy"
+      }
+    ]
+  },
+  {
     "id": "ship-1791566353382",
     "orderId": "6",
     "orderNumber": "6",
     "trackingCode": "GHN13723819VN",
     "carrier": "Giao Hàng Nhanh (GHN)",
     "serviceType": "standard",
-    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)",
+    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Nội thành HN)",
     "fee": 16500,
     "codAmount": 0,
     "weightGrams": 500,
@@ -19,22 +58,37 @@
       "warehouseName": "Kho Tổng Aurabook Hà Nội"
     },
     "recipient": {
-      "name": "Độc giả Aurabook",
+      "name": "Duy Nguyễn",
       "phone": "0912345678",
-      "address": "Toàn quốc, Việt Nam",
-      "province": "Hà Nội",
-      "district": "Cầu Giấy"
+      "address": "Số 88 Đường La Thành",
+      "province": "Thành phố Hà Nội",
+      "district": "Quận Ba Đình"
     },
     "itemsSummary": "Đơn hàng sách Aurabook",
     "createdAt": "2026-10-09T17:19:13.382Z",
-    "estimatedDeliveryDate": "2026-10-12T17:19:13.382Z",
+    "estimatedDeliveryDate": "2026-10-10T17:19:13.382Z",
+    "deliveredAt": "2026-10-10T09:30:00.000Z",
     "history": [
       {
         "status": "delivered",
         "statusName": "Giao hàng thành công (Completed)",
         "description": "Người nhận đã nhận hàng thành công và thanh toán. Đơn hàng hoàn tất.",
-        "time": "2026-10-09T17:19:24.051Z",
-        "location": "Toàn quốc, Việt Nam"
+        "time": "2026-10-10T09:30:00.000Z",
+        "location": "Số 88 Đường La Thành, Ba Đình, Hà Nội"
+      },
+      {
+        "status": "delivering",
+        "statusName": "Đang giao hàng",
+        "description": "Kiện hàng đã tới bưu cục phát. Shipper GHN đang trên đường giao đến bạn.",
+        "time": "2026-10-10T07:15:00.000Z",
+        "location": "Bưu cục phát GHN Ba Đình"
+      },
+      {
+        "status": "storing",
+        "statusName": "Đã nhập kho phân loại",
+        "description": "Kiện hàng đã nhập trung tâm khai thác GHN Hà Nội và đang được luân chuyển.",
+        "time": "2026-10-09T20:00:00.000Z",
+        "location": "Bưu cục Trung tâm GHN Hà Nội"
       },
       {
         "status": "ready_to_pick",
@@ -43,8 +97,7 @@
         "time": "2026-10-09T17:19:13.382Z",
         "location": "Kho Tổng Aurabook Hà Nội - 12 Duy Tân, Cầu Giấy"
       }
-    ],
-    "deliveredAt": "2026-10-09T17:19:24.051Z"
+    ]
   },
   {
     "id": "ship-1791565939977",
@@ -54,7 +107,7 @@
     "carrier": "Giao Hàng Nhanh (GHN)",
     "serviceType": "standard",
     "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)",
-    "fee": 16500,
+    "fee": 22000,
     "codAmount": 0,
     "weightGrams": 500,
     "status": "delivered",
@@ -66,64 +119,37 @@
       "warehouseName": "Kho Tổng Aurabook Hà Nội"
     },
     "recipient": {
-      "name": "Độc giả Aurabook",
+      "name": "Duy Nguyễn",
       "phone": "0912345678",
-      "address": "Toàn quốc, Việt Nam",
-      "province": "Hà Nội",
-      "district": "Cầu Giấy"
+      "address": "Số 12 Đường Lâm",
+      "province": "Thành phố Hà Nội",
+      "district": "Thị xã Sơn Tây"
     },
     "itemsSummary": "Đơn hàng sách Aurabook",
     "createdAt": "2026-10-09T17:12:19.977Z",
-    "estimatedDeliveryDate": "2026-10-12T17:12:19.977Z",
+    "estimatedDeliveryDate": "2026-10-10T17:12:19.977Z",
+    "deliveredAt": "2026-10-10T11:00:00.000Z",
     "history": [
       {
         "status": "delivered",
         "statusName": "Giao hàng thành công (Completed)",
         "description": "Người nhận đã nhận hàng thành công và thanh toán. Đơn hàng hoàn tất.",
-        "time": "2026-10-09T17:13:20.574Z",
-        "location": "Toàn quốc, Việt Nam"
+        "time": "2026-10-10T11:00:00.000Z",
+        "location": "Số 12 Đường Lâm, Sơn Tây, Hà Nội"
       },
       {
         "status": "delivering",
         "statusName": "Đang giao hàng",
         "description": "Kiện hàng đã tới bưu cục phát. Shipper GHN đang trên đường giao đến bạn.",
-        "time": "2026-10-09T17:13:17.776Z",
-        "location": "Hà Nội"
+        "time": "2026-10-10T08:30:00.000Z",
+        "location": "Bưu cục phát GHN Sơn Tây"
       },
       {
-        "status": "ready_to_pick",
-        "statusName": "Chờ lấy hàng",
-        "description": "Chờ tài xế GHN đến nhận kiện hàng tại Kho Tổng Aurabook Hà Nội.",
-        "time": "2026-10-09T17:13:15.035Z",
-        "location": "Kho Tổng Aurabook Hà Nội"
-      },
-      {
-        "status": "delivered",
-        "statusName": "Giao hàng thành công (Completed)",
-        "description": "Người nhận đã nhận hàng thành công và thanh toán. Đơn hàng hoàn tất.",
-        "time": "2026-10-09T17:13:11.440Z",
-        "location": "Toàn quốc, Việt Nam"
-      },
-      {
-        "status": "delivering",
-        "statusName": "Đang giao hàng",
-        "description": "Kiện hàng đã tới bưu cục phát. Shipper GHN đang trên đường giao đến bạn.",
-        "time": "2026-10-09T17:13:08.984Z",
-        "location": "Hà Nội"
-      },
-      {
-        "status": "delivered",
-        "statusName": "Giao hàng thành công (Completed)",
-        "description": "Người nhận đã nhận hàng thành công và thanh toán. Đơn hàng hoàn tất.",
-        "time": "2026-10-09T17:12:39.895Z",
-        "location": "Toàn quốc, Việt Nam"
-      },
-      {
-        "status": "delivering",
-        "statusName": "Đang giao hàng",
-        "description": "Kiện hàng đã tới bưu cục phát. Shipper GHN đang trên đường giao đến bạn.",
-        "time": "2026-10-09T17:12:36.109Z",
-        "location": "Hà Nội"
+        "status": "storing",
+        "statusName": "Đã nhập kho phân loại",
+        "description": "Kiện hàng đã nhập trung tâm khai thác GHN Hà Nội và đang được luân chuyển.",
+        "time": "2026-10-09T21:00:00.000Z",
+        "location": "Bưu cục Trung tâm GHN Hà Nội"
       },
       {
         "status": "ready_to_pick",
@@ -132,8 +158,7 @@
         "time": "2026-10-09T17:12:19.977Z",
         "location": "Kho Tổng Aurabook Hà Nội - 12 Duy Tân, Cầu Giấy"
       }
-    ],
-    "deliveredAt": "2026-10-09T17:13:20.574Z"
+    ]
   },
   {
     "id": "ship-ghn-001",
@@ -142,8 +167,8 @@
     "trackingCode": "GHN83921001VN",
     "carrier": "Giao Hàng Nhanh (GHN)",
     "serviceType": "standard",
-    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)",
-    "fee": 22000,
+    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Nội thành HN)",
+    "fee": 16500,
     "codAmount": 0,
     "weightGrams": 450,
     "status": "delivered",
@@ -157,10 +182,9 @@
     "recipient": {
       "name": "Bùi Anh Duy",
       "phone": "0987654321",
-      "address": "Số 144 Xuân Thủy, Phường Dịch Vọng Hậu",
-      "province": "Hà Nội",
-      "district": "Cầu Giấy",
-      "ward": "Phường Dịch Vọng Hậu"
+      "address": "Số 144 Xuân Thủy",
+      "province": "Thành phố Hà Nội",
+      "district": "Quận Cầu Giấy"
     },
     "itemsSummary": "Đại Việt Sử Ký Toàn Thư (Bản đặc biệt)",
     "createdAt": "2026-10-08T13:57:11.000Z",
@@ -189,13 +213,6 @@
         "location": "Trung tâm trung chuyển GHN Long Biên"
       },
       {
-        "status": "picking",
-        "statusName": "Đang lấy hàng",
-        "description": "Tài xế GHN đã tiếp nhận kiện hàng tại Kho Tổng Aurabook Hà Nội.",
-        "time": "2026-10-08T15:20:00.000Z",
-        "location": "Kho Tổng Aurabook Hà Nội - 12 Duy Tân"
-      },
-      {
         "status": "ready_to_pick",
         "statusName": "Chờ lấy hàng",
         "description": "Đơn hàng đã được tạo. Chờ GHN điều phối tài xế đến lấy hàng tại Kho Tổng Aurabook Hà Nội.",
@@ -211,8 +228,8 @@
     "trackingCode": "GHN83921002VN",
     "carrier": "Giao Hàng Nhanh (GHN)",
     "serviceType": "standard",
-    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)",
-    "fee": 22000,
+    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Nội thành HN)",
+    "fee": 16500,
     "codAmount": 0,
     "weightGrams": 600,
     "status": "delivered",
@@ -227,9 +244,8 @@
       "name": "Bùi Anh Duy",
       "phone": "0987654321",
       "address": "Số 25 Lý Thường Kiệt",
-      "province": "Hà Nội",
-      "district": "Hoàn Kiếm",
-      "ward": "Phường Hàng Bài"
+      "province": "Thành phố Hà Nội",
+      "district": "Quận Hoàn Kiếm"
     },
     "itemsSummary": "Tâm Lý Học Tội Phạm",
     "createdAt": "2026-10-08T13:58:08.000Z",
@@ -241,28 +257,21 @@
         "statusName": "Giao hàng thành công (Completed)",
         "description": "Người nhận đã nhận hàng thành công và thanh toán. Đơn hàng hoàn tất.",
         "time": "2026-10-09T16:06:24.751Z",
-        "location": "Số 25 Lý Thường Kiệt"
+        "location": "Số 25 Lý Thường Kiệt, Hoàn Kiếm, Hà Nội"
       },
       {
         "status": "delivering",
         "statusName": "Đang giao hàng",
         "description": "Kiện hàng đã tới bưu cục phát. Shipper GHN đang trên đường giao đến bạn.",
-        "time": "2026-10-09T16:06:19.858Z",
-        "location": "Hà Nội"
+        "time": "2026-10-09T12:00:00.000Z",
+        "location": "Bưu cục phát GHN Hoàn Kiếm"
       },
       {
-        "status": "delivered",
-        "statusName": "Giao hàng thành công (Completed)",
-        "description": "Người nhận đã nhận hàng thành công và ký nhận. Đơn hàng hoàn tất.",
-        "time": "2026-10-09T11:45:00.000Z",
-        "location": "25 Lý Thường Kiệt, Hoàn Kiếm, Hà Nội"
-      },
-      {
-        "status": "delivering",
-        "statusName": "Đang giao hàng",
-        "description": "Shipper GHN đang trên đường giao hàng đến bạn.",
-        "time": "2026-10-09T09:30:00.000Z",
-        "location": "Bưu cục GHN Hoàn Kiếm"
+        "status": "storing",
+        "statusName": "Đã nhập kho phân loại",
+        "description": "Kiện hàng đã nhập trung tâm khai thác GHN Hà Nội và đang được luân chuyển.",
+        "time": "2026-10-08T18:00:00.000Z",
+        "location": "Bưu cục Trung tâm GHN Hà Nội"
       },
       {
         "status": "ready_to_pick",
@@ -280,8 +289,8 @@
     "trackingCode": "GHN83921003VN",
     "carrier": "Giao Hàng Nhanh (GHN)",
     "serviceType": "standard",
-    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)",
-    "fee": 22000,
+    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Nội thành HN)",
+    "fee": 16500,
     "codAmount": 0,
     "weightGrams": 500,
     "status": "delivered",
@@ -295,10 +304,9 @@
     "recipient": {
       "name": "Quản trị viên Aurabook",
       "phone": "0901234567",
-      "address": "12 Duy Tân, Cầu Giấy",
-      "province": "Hà Nội",
-      "district": "Cầu Giấy",
-      "ward": "Dịch Vọng Hậu"
+      "address": "12 Duy Tân",
+      "province": "Thành phố Hà Nội",
+      "district": "Quận Cầu Giấy"
     },
     "itemsSummary": "Bộ Sách Văn Học Kinh Điển",
     "createdAt": "2026-10-08T13:58:52.000Z",
@@ -310,7 +318,21 @@
         "statusName": "Giao hàng thành công (Completed)",
         "description": "Người nhận đã nhận hàng thành công. Đơn hàng hoàn tất.",
         "time": "2026-10-09T14:15:00.000Z",
-        "location": "Cầu Giấy, Hà Nội"
+        "location": "12 Duy Tân, Cầu Giấy, Hà Nội"
+      },
+      {
+        "status": "delivering",
+        "statusName": "Đang giao hàng",
+        "description": "Kiện hàng đã tới bưu cục phát. Shipper GHN đang trên đường giao đến bạn.",
+        "time": "2026-10-09T10:00:00.000Z",
+        "location": "Bưu cục phát GHN Cầu Giấy"
+      },
+      {
+        "status": "storing",
+        "statusName": "Đã nhập kho phân loại",
+        "description": "Kiện hàng đã nhập trung tâm khai thác GHN Hà Nội và đang được luân chuyển.",
+        "time": "2026-10-08T19:00:00.000Z",
+        "location": "Bưu cục Trung tâm GHN Hà Nội"
       },
       {
         "status": "ready_to_pick",
@@ -328,8 +350,8 @@
     "trackingCode": "GHN83921004VN",
     "carrier": "Giao Hàng Nhanh (GHN)",
     "serviceType": "standard",
-    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)",
-    "fee": 22000,
+    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Nội thành HN)",
+    "fee": 16500,
     "codAmount": 0,
     "weightGrams": 400,
     "status": "delivered",
@@ -344,9 +366,8 @@
       "name": "Khách hàng Mẫu",
       "phone": "0911223344",
       "address": "Số 88 Hai Bà Trưng",
-      "province": "Hà Nội",
-      "district": "Hoàn Kiếm",
-      "ward": "Tràng Tiền"
+      "province": "Thành phố Hà Nội",
+      "district": "Quận Hoàn Kiếm"
     },
     "itemsSummary": "Nghệ Thuật Tư Duy Rành Mạch",
     "createdAt": "2026-10-08T13:58:52.000Z",
@@ -358,7 +379,21 @@
         "statusName": "Giao hàng thành công (Completed)",
         "description": "Người nhận đã nhận hàng thành công. Đơn hàng hoàn tất.",
         "time": "2026-10-09T15:00:00.000Z",
-        "location": "Hoàn Kiếm, Hà Nội"
+        "location": "88 Hai Bà Trưng, Hoàn Kiếm, Hà Nội"
+      },
+      {
+        "status": "delivering",
+        "statusName": "Đang giao hàng",
+        "description": "Kiện hàng đã tới bưu cục phát. Shipper GHN đang trên đường giao đến bạn.",
+        "time": "2026-10-09T11:00:00.000Z",
+        "location": "Bưu cục phát GHN Hoàn Kiếm"
+      },
+      {
+        "status": "storing",
+        "statusName": "Đã nhập kho phân loại",
+        "description": "Kiện hàng đã nhập trung tâm khai thác GHN Hà Nội và đang được luân chuyển.",
+        "time": "2026-10-08T19:00:00.000Z",
+        "location": "Bưu cục Trung tâm GHN Hà Nội"
       },
       {
         "status": "ready_to_pick",

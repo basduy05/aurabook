@@ -405,8 +405,23 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
 							</div>
 							<div className="flex justify-between">
 								<dt className="text-muted-foreground">{t("shipping")}</dt>
-								<dd className={cn(shipping === 0 && "text-green-600")}>
-									{shipping === 0 ? tCommon("free") : formatMoney(shipping)}
+								<dd
+									className={cn(
+										(shipping === 0 && (subtotal >= 500000 || checkout?.delivery)) &&
+											"text-green-600 font-medium",
+									)}
+								>
+									{checkout && !checkout.delivery ? (
+										subtotal >= 500000 ? (
+											<span className="text-green-600 font-medium">{tCommon("free")}</span>
+										) : (
+											<span className="text-xs text-muted-foreground">Tính ở bước tiếp theo</span>
+										)
+									) : shipping === 0 ? (
+										tCommon("free")
+									) : (
+										formatMoney(shipping)
+									)}
 								</dd>
 							</div>
 							{tax > 0 && (
@@ -427,7 +442,11 @@ export const OrderSummary: FC<OrderSummaryProps> = ({
 						<div className="mt-4 flex items-baseline justify-between border-t border-border/50 pt-4">
 							<div className="flex flex-col">
 								<span className="text-base font-semibold">{t("total")}</span>
-								{tax > 0 && <span className="text-xs text-muted-foreground">{t("includingVat")}</span>}
+								{checkout && !checkout.delivery && subtotal < 500000 ? (
+									<span className="text-[11px] text-muted-foreground">Chưa bao gồm phí vận chuyển</span>
+								) : tax > 0 ? (
+									<span className="text-xs text-muted-foreground">{t("includingVat")}</span>
+								) : null}
 							</div>
 							<data value={total} className="text-xl font-semibold tabular-nums">
 								{formatMoney(total)}

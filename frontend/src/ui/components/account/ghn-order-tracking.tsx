@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import {
-	Package,
 	CheckCircle2,
 	Clock,
 	MapPin,
@@ -11,10 +10,11 @@ import {
 	Check,
 	Building2,
 	Navigation,
-	AlertCircle,
 	ChevronDown,
 	ChevronUp,
 } from "lucide-react";
+import { Badge } from "@/ui/components/ui/badge";
+import { Button } from "@/ui/components/ui/button";
 
 export interface GHNTrackingCheckpoint {
 	status: string;
@@ -81,12 +81,10 @@ export function GHNLogo({ className = "h-8 w-auto" }: { className?: string }) {
 	);
 }
 
-export function GHNOrderTracking({ orderNumber, initialShipment, onStatusChange }: GHNOrderTrackingProps) {
+export function GHNOrderTracking({ orderNumber, initialShipment }: GHNOrderTrackingProps) {
 	const [shipment, setShipment] = useState<GHNShipmentData | null>(initialShipment || null);
 	const [loading, setLoading] = useState(!initialShipment);
-	const [updating, setUpdating] = useState(false);
 	const [copied, setCopied] = useState(false);
-	const [notification, setNotification] = useState<string | null>(null);
 	// Default to collapsed as requested
 	const [isCollapsed, setIsCollapsed] = useState(true);
 
@@ -122,43 +120,6 @@ export function GHNOrderTracking({ orderNumber, initialShipment, onStatusChange 
 		navigator.clipboard.writeText(code);
 		setCopied(true);
 		setTimeout(() => setCopied(false), 2000);
-	};
-
-	const handleSimulateStatus = async (newStatus: "ready_to_pick" | "delivering" | "delivered") => {
-		if (!shipment) return;
-		setUpdating(true);
-		setNotification(null);
-
-		try {
-			const res = await fetch("/api/shipping/ghn/update-status", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					trackingCode: shipment.trackingCode,
-					orderNumber: shipment.orderNumber,
-					status: newStatus,
-				}),
-			});
-
-			const data = (await res.json()) as { shipment?: GHNShipmentData; error?: string };
-			if (res.ok && data.shipment) {
-				setShipment(data.shipment);
-				if (newStatus === "delivered") {
-					setNotification("🎉 GHN đã giao hàng thành công! Đơn hàng được cập nhật thành trạng thái Hoàn tất (Completed).");
-				} else {
-					setNotification(`🚚 Đã cập nhật trạng thái GHN: ${data.shipment.statusDisplay}`);
-				}
-				if (onStatusChange) {
-					onStatusChange(newStatus);
-				}
-			} else {
-				setNotification(`❌ Lỗi cập nhật: ${data.error || "Không thể cập nhật"}`);
-			}
-		} catch (e) {
-			setNotification("❌ Lỗi mạng khi kết nối GHN");
-		} finally {
-			setUpdating(false);
-		}
 	};
 
 	if (loading) {
@@ -217,56 +178,46 @@ export function GHNOrderTracking({ orderNumber, initialShipment, onStatusChange 
 				</div>
 
 				<div className="flex items-center gap-2">
-					<button
+					<Button
+						variant="outline-solid"
+						size="sm"
 						onClick={() => copyTrackingCode(shipment.trackingCode)}
-						className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-secondary/60 transition-colors"
+						className="h-8 gap-1.5 px-2.5 text-xs font-medium cursor-pointer"
 						title="Sao chép mã vận đơn"
 					>
-						{copied ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
-						{copied ? "Đã chép" : "Sao chép mã"}
-					</button>
+						{copied ? <Check className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5 text-muted-foreground" />}
+						<span>{copied ? "Đã chép" : "Sao chép mã"}</span>
+					</Button>
 
-					<span
-						className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
-							isCompleted
-								? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 dark:bg-emerald-950/40 dark:text-emerald-400"
-								: "bg-primary/10 text-primary border border-primary/20 dark:bg-primary/20 dark:text-primary-foreground"
-						}`}
-					>
-						{isCompleted ? <CheckCircle2 className="h-3.5 w-3.5" /> : <Clock className="h-3.5 w-3.5" />}
-						{isCompleted ? "Đã hoàn tất (Completed)" : shipment.statusDisplay}
-					</span>
+					{isCompleted ? (
+						<Badge variant="success" className="gap-1.5 px-3 py-1 text-xs font-semibold">
+							<CheckCircle2 className="h-3.5 w-3.5" />
+							<span>Đã hoàn tất (Completed)</span>
+						</Badge>
+					) : (
+						<Badge variant="outline-solid" className="gap-1.5 px-3 py-1 text-xs font-medium">
+							<Clock className="h-3.5 w-3.5 text-muted-foreground" />
+							<span>{shipment.statusDisplay}</span>
+						</Badge>
+					)}
 
 					{/* Accordion toggle button */}
-					<button
+					<Button
+						variant="outline-solid"
+						size="sm"
 						onClick={() => setIsCollapsed(!isCollapsed)}
-						className="inline-flex items-center gap-1 rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-secondary/70 transition-colors"
+						className="h-8 gap-1 px-2.5 text-xs font-medium cursor-pointer"
 						title={isCollapsed ? "Mở rộng chi tiết vận đơn GHN" : "Thu gọn chi tiết"}
 					>
 						<span>{isCollapsed ? "Chi tiết" : "Thu gọn"}</span>
 						{isCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
-					</button>
+					</Button>
 				</div>
 			</div>
 
 			{/* Collapsible Content */}
 			{!isCollapsed && (
 				<div className="mt-5 border-t border-border pt-4 space-y-5 animate-in fade-in-50 duration-200">
-					{/* Notification message */}
-					{notification && (
-						<div
-							className={`flex items-center gap-2 rounded-lg p-3 text-xs font-medium ${
-								notification.startsWith("🎉")
-									? "bg-emerald-500/10 text-emerald-700 border border-emerald-500/30 dark:text-emerald-400"
-									: notification.startsWith("❌")
-									? "bg-destructive/10 text-destructive border border-destructive/30"
-									: "bg-secondary text-secondary-foreground border border-border"
-							}`}
-						>
-							<AlertCircle className="h-4 w-4 shrink-0" />
-							<span>{notification}</span>
-						</div>
-					)}
 
 					{/* Origin and Destination Info Cards */}
 					<div className="grid gap-3 sm:grid-cols-2 text-xs">
@@ -289,7 +240,7 @@ export function GHNOrderTracking({ orderNumber, initialShipment, onStatusChange 
 								{shipment.recipient.name} ({shipment.recipient.phone})
 							</p>
 							<p className="text-muted-foreground mt-0.5">
-								{shipment.recipient.address}, {shipment.recipient.district}, {shipment.recipient.province}
+								{[shipment.recipient.address, shipment.recipient.district, shipment.recipient.province].filter(Boolean).join(", ")}
 							</p>
 							<p className="text-muted-foreground">Dịch vụ: {shipment.serviceName}</p>
 						</div>
@@ -315,7 +266,7 @@ export function GHNOrderTracking({ orderNumber, initialShipment, onStatusChange 
 											<div
 												className={`flex h-7 w-7 items-center justify-center rounded-full border-2 text-xs font-bold transition-all ${
 													idx < currentStepIndex || (isCompleted && idx === 3)
-														? "border-emerald-500 bg-emerald-500 text-white"
+														? "border-success bg-success text-success-foreground"
 														: isCurrent
 														? "border-primary bg-primary text-primary-foreground shadow-sm ring-4 ring-primary/20"
 														: "border-border bg-background text-muted-foreground"
@@ -359,7 +310,7 @@ export function GHNOrderTracking({ orderNumber, initialShipment, onStatusChange 
 
 						<div className="space-y-3">
 							{shipment.history.map((cp, idx) => (
-								<div key={idx} className="flex items-start gap-3 text-xs">
+								<div key={`${cp.status}-${cp.time}-${idx}`} className="flex items-start gap-3 text-xs">
 									<div
 										className={`mt-0.5 h-2 w-2 rounded-full shrink-0 ${
 											idx === 0 ? "bg-primary ring-2 ring-primary/30" : "bg-muted-foreground/40"
@@ -386,43 +337,6 @@ export function GHNOrderTracking({ orderNumber, initialShipment, onStatusChange 
 									</div>
 								</div>
 							))}
-						</div>
-					</div>
-
-					{/* Quick Admin/Demo Simulation Controls */}
-					<div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
-						<div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-							<Package className="h-3.5 w-3.5 text-primary" />
-							<span className="font-medium">Mô phỏng trạng thái GHN (Kiểm thử):</span>
-						</div>
-
-						<div className="flex flex-wrap items-center gap-2">
-							<button
-								disabled={updating || shipment.status === "ready_to_pick"}
-								onClick={() => handleSimulateStatus("ready_to_pick")}
-								className="rounded-lg border border-border px-2.5 py-1.5 text-xs font-medium hover:bg-secondary disabled:opacity-50 transition-colors"
-							>
-								Chờ lấy hàng
-							</button>
-							<button
-								disabled={updating || shipment.status === "delivering"}
-								onClick={() => handleSimulateStatus("delivering")}
-								className="rounded-lg border border-border px-2.5 py-1.5 text-xs font-medium hover:bg-secondary disabled:opacity-50 transition-colors"
-							>
-								Đang giao
-							</button>
-							<button
-								disabled={updating || isCompleted}
-								onClick={() => handleSimulateStatus("delivered")}
-								className="rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 text-xs font-semibold shadow-sm disabled:opacity-50 transition-colors flex items-center gap-1.5"
-							>
-								{updating ? (
-									<RefreshCw className="h-3.5 w-3.5 animate-spin" />
-								) : (
-									<CheckCircle2 className="h-3.5 w-3.5" />
-								)}
-								Giao thành công (Completed)
-							</button>
 						</div>
 					</div>
 				</div>

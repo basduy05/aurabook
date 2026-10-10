@@ -18,7 +18,8 @@ import { AccountOrderDetailSkeleton } from "@/ui/components/account/account-skel
 import { type AddressDetailsFragment } from "@/gql/graphql";
 import { OrderLineReviewButton } from "@/ui/components/reviews/order-line-review-button";
 import { GHNOrderTracking } from "@/ui/components/account/ghn-order-tracking";
-import { getGHNShipmentByOrder } from "@/lib/shipping/ghn";
+import { getGHNShipmentByOrder, createGHNShipment } from "@/lib/shipping/ghn";
+import { Badge } from "@/ui/components/ui/badge";
 
 type Props = {
 	params: Promise<{ locale: string; number: string }>;
@@ -65,7 +66,30 @@ async function OrderDetailContent({ params }: Props) {
 
 	const itemCount = order.lines.reduce((sum, l) => sum + l.quantity, 0);
 	const placedDate = formatDate(new Date(order.created), undefined, intlLocale);
-	const ghnShipment = getGHNShipmentByOrder(order.number);
+	let ghnShipment = getGHNShipmentByOrder(order.number);
+	if (!ghnShipment && order.shippingAddress) {
+		const addr = order.shippingAddress;
+		const recipientName =
+			[addr.firstName, addr.lastName].filter(Boolean).join(" ") || "Độc giả Aurabook";
+		ghnShipment = createGHNShipment({
+			orderId: order.id,
+			orderNumber: order.number,
+			recipientName,
+			recipientPhone: addr.phone || "0912345678",
+			recipientAddress: addr.streetAddress1 || "Địa chỉ nhận hàng",
+			province: addr.countryArea || "Thành phố Hà Nội",
+			district: addr.city || "Quận Cầu Giấy",
+			itemsSummary: `Đơn hàng #${order.number} (${itemCount} cuốn sách)`,
+			weightGrams: 500,
+			serviceType: "standard",
+		});
+	}
+
+	const customerName =
+		[order.shippingAddress?.firstName, order.shippingAddress?.lastName].filter(Boolean).join(" ") ||
+		[order.billingAddress?.firstName, order.billingAddress?.lastName].filter(Boolean).join(" ") ||
+		"";
+
 	const isCompleted = ghnShipment?.status === "delivered";
 
 	const isDigitalOrder =
@@ -107,19 +131,19 @@ async function OrderDetailContent({ params }: Props) {
 									<div>
 										<div className="flex items-center gap-2">
 											<h3 className="font-bold text-foreground text-base">Cấp phát quyền sử dụng ấn phẩm điện tử</h3>
-											<span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-600 border border-emerald-500/20">
+											<Badge variant="success" className="px-2.5 py-0.5 text-[11px]">
 												Bản quyền số
-											</span>
+											</Badge>
 										</div>
 										<p className="text-xs text-muted-foreground mt-0.5">
 											Đơn hàng bao gồm ấn phẩm điện tử (Ebook / Audiobook) — Không yêu cầu vận chuyển bưu kiện vật lý
 										</p>
 									</div>
 								</div>
-								<span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600 border border-emerald-500/20">
+								<Badge variant="success" className="gap-1.5 px-3 py-1 text-xs">
 									<CheckCircle2 className="h-3.5 w-3.5" />
 									Đã cấp quyền truy cập
-								</span>
+								</Badge>
 							</div>
 
 							<div className="mt-4 grid gap-3 sm:grid-cols-2 text-xs">
@@ -134,7 +158,7 @@ async function OrderDetailContent({ params }: Props) {
 
 								<div className="rounded-lg border border-border bg-muted/20 p-3">
 									<div className="flex items-center gap-1.5 font-semibold text-foreground mb-1">
-										<ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+										<ShieldCheck className="h-3.5 w-3.5 text-success" />
 										<span>Bảo vệ quyền tác giả (DRM):</span>
 									</div>
 									<p className="font-medium text-foreground">Đã gắn mã số bản quyền cá nhân</p>
@@ -196,6 +220,7 @@ async function OrderDetailContent({ params }: Props) {
 													productSlug={product.slug}
 													productName={productName}
 													productId={product.id}
+													defaultAuthorName={customerName}
 												/>
 											</div>
 										</div>

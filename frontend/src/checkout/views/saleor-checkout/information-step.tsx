@@ -310,6 +310,17 @@ const InformationStepForm: FC<InformationStepFormProps> = ({
 							newErrors[field] = `${getFieldLabel(field)} is required`;
 						}
 					});
+					if (effectiveCountryCode === "VN") {
+						if (!formData.countryArea) {
+							newErrors.countryArea = "Vui lòng chọn Tỉnh / Thành phố";
+						}
+						if (!formData.city) {
+							newErrors.city = "Vui lòng chọn Quận / Huyện / Thị xã";
+						}
+						if (!formData.streetAddress1) {
+							newErrors.streetAddress1 = "Vui lòng nhập địa chỉ chi tiết";
+						}
+					}
 				}
 			}
 

@@ -74,14 +74,14 @@ export async function Footer({ locale, channel }: { locale: string; channel: str
 					</div>
 					<div className="flex items-center gap-6">
 						<Link
-							href="/privacy"
+							href={buildStorefrontPath(locale, channel, "/privacy")}
 							prefetch={false}
 							className="text-xs text-inverse-muted transition-colors hover:text-inverse-subtle"
 						>
 							{locale === "vi" ? "Chính sách bảo mật" : "Privacy Policy"}
 						</Link>
 						<Link
-							href="/terms"
+							href={buildStorefrontPath(locale, channel, "/terms")}
 							prefetch={false}
 							className="text-xs text-inverse-muted transition-colors hover:text-inverse-subtle"
 						>

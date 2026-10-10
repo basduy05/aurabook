@@ -68,7 +68,12 @@ export function FooterMenuColumns({ items, locale }: { items: MenuItem[]; locale
 	const supportTitle = isVi ? "Hỗ trợ khách hàng" : "Support";
 	const companyTitle = isVi ? "Về chúng tôi" : "Company";
 
-	if (items.length === 0) {
+	// Filter out any stale Saleor demo items
+	const sanitizedItems = items.filter(
+		(item) => !item.name.toLowerCase().includes("saleor") && !item.name.toLowerCase().includes("graphql"),
+	);
+
+	if (sanitizedItems.length === 0) {
 		return (
 			<>
 				<div>
@@ -109,7 +114,7 @@ export function FooterMenuColumns({ items, locale }: { items: MenuItem[]; locale
 
 	return (
 		<>
-			{items.map((item) => (
+			{sanitizedItems.map((item) => (
 				<div key={item.id}>
 					<h4 className="mb-4 text-sm font-medium text-inverse">{item.name}</h4>
 					<ul className="space-y-3">

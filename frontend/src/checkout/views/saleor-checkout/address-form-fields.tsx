@@ -1,6 +1,6 @@
 "use client";
 
-import { type FC, type ReactNode } from "react";
+import { useMemo, type FC, type ReactNode } from "react";
 import { User, MapPin, Building, Phone, type LucideIcon } from "lucide-react";
 import { Input } from "@/ui/components/ui/input";
 import { Label } from "@/ui/components/ui/label";
@@ -13,6 +13,7 @@ import {
 	typeTags,
 } from "@/checkout/lib/consts/input-attributes";
 import { uniqueSelectOptions } from "@/checkout/lib/unique-select-options";
+import { findProvince, VIETNAM_PROVINCES } from "@/lib/vietnam-administrative/data";
 
 // =============================================================================
 // Constants
@@ -82,8 +83,8 @@ export const FormSelect: FC<FormSelectProps> = ({
 					{placeholder}
 				</option>
 			)}
-			{uniqueOptions.map((option) => (
-				<option key={option.value} value={option.value}>
+			{uniqueOptions.map((option, idx) => (
+				<option key={`${option.value || "opt"}-${idx}`} value={option.value}>
 					{option.label}
 				</option>
 			))}
@@ -173,11 +174,86 @@ export const AddressFields: FC<AddressFieldsProps> = ({
 	idPrefix = "",
 	autocompleteSection = "shipping",
 }) => {
+	const isVietnam = Boolean(
+		countryAreaChoices?.length ||
+			formData.countryArea ||
+			formData.countryCode === "VN" ||
+			formData.country === "VN" ||
+			!formData.countryCode,
+	);
+
+	// Ensure province choices always exist for Vietnam
+	const effectiveProvinceChoices = useMemo(() => {
+		if (countryAreaChoices && countryAreaChoices.length > 0) {
+			return countryAreaChoices;
+		}
+		if (isVietnam) {
+			return VIETNAM_PROVINCES.map((p) => ({
+				raw: p.name,
+				verbose: p.name,
+			}));
+		}
+		return [];
+	}, [countryAreaChoices, isVietnam]);
+
+	// Pairs grouping: Vietnam groups Province + District together on one row
+	const fieldPairs: [AddressField, AddressField][] = isVietnam
+		? [
+				["firstName", "lastName"],
+				["countryArea", "city"],
+				["phone", "postalCode"],
+		  ]
+		: addressFieldPairs;
+
+	// Proper field ordering for Vietnam
+	const sortedFields = useMemo(() => {
+		if (!isVietnam) return orderedFields;
+		const priority: Record<string, number> = {
+			firstName: 1,
+			lastName: 2,
+			countryArea: 3,
+			city: 4,
+			streetAddress1: 5,
+			streetAddress2: 6,
+			phone: 7,
+			postalCode: 8,
+			companyName: 9,
+		};
+		// Include countryArea if missing from orderedFields for Vietnam
+		const fields = [...orderedFields];
+		if (!fields.includes("countryArea" as AddressField)) {
+			fields.push("countryArea" as AddressField);
+		}
+		return fields.sort((a, b) => (priority[a] || 99) - (priority[b] || 99));
+	}, [orderedFields, isVietnam]);
+
 	const renderField = (field: AddressField): ReactNode => {
 		if (field === "countryCode") return null;
 
-		const label = getFieldLabel(field);
-		const isRequired = isRequiredField(field);
+		let label = getFieldLabel(field);
+		let isRequired = isRequiredField(field);
+
+		if (isVietnam) {
+			if (field === "countryArea") {
+				label = "Tỉnh / Thành phố";
+				isRequired = true;
+			} else if (field === "city") {
+				label = "Quận / Huyện / Thị xã";
+				isRequired = true;
+			} else if (field === "streetAddress1") {
+				label = "Địa chỉ chi tiết (Số nhà, tên đường)";
+				isRequired = true;
+			} else if (field === "streetAddress2") {
+				label = "Số nhà, căn hộ bổ sung";
+				isRequired = false;
+			} else if (field === "postalCode") {
+				label = "Mã bưu chính";
+				isRequired = false;
+			} else if (field === "phone") {
+				label = "Số điện thoại";
+			}
+		}
+
 		const error = errors[field];
 		const Icon = addressFieldIcons[field];
 		const fieldId = `${idPrefix}${field}`;
@@ -189,12 +265,12 @@ export const AddressFields: FC<AddressFieldsProps> = ({
 		const fieldLabel = (
 			<Label htmlFor={fieldId} className="text-sm font-medium">
 				{label}
-				{!isRequired && <span className="ml-1 font-normal text-muted-foreground">(optional)</span>}
+				{!isRequired && <span className="ml-1 font-normal text-muted-foreground">(tùy chọn)</span>}
 			</Label>
 		);
 
-		// State/Province dropdown
-		if (field === "countryArea" && countryAreaChoices?.length) {
+		// State/Province dropdown (Cấp 1: Tỉnh / Thành phố)
+		if (field === "countryArea" && effectiveProvinceChoices.length > 0) {
 			return (
 				<div key={field} className="space-y-1.5">
 					{fieldLabel}
@@ -202,11 +278,15 @@ export const AddressFields: FC<AddressFieldsProps> = ({
 						id={fieldId}
 						name={field}
 						value={formData[field] || ""}
-						onChange={(value) => onFieldChange(field, value)}
+						onChange={(value) => {
+							onFieldChange(field, value);
+							// Khi đổi Tỉnh/Thành phố, reset Quận/Huyện để tính cước lại chính xác
+							onFieldChange("city", "");
+						}}
 						error={error}
-						placeholder={`Select ${label.toLowerCase()}`}
+						placeholder="Chọn Tỉnh / Thành phố"
 						autoComplete={autoComplete}
-						options={countryAreaChoices.map(({ raw, verbose }) => ({
+						options={effectiveProvinceChoices.map(({ raw, verbose }) => ({
 							value: typeof raw === "string" ? raw : "",
 							label: typeof verbose === "string" ? verbose : "",
 						}))}
@@ -214,6 +294,48 @@ export const AddressFields: FC<AddressFieldsProps> = ({
 					<FieldError error={error} />
 				</div>
 			);
+		}
+
+		// District dropdown (Cấp 2: Quận / Huyện / Thị xã / TP thuộc tỉnh)
+		if (field === "city") {
+			const provinceInfo = formData.countryArea ? findProvince(formData.countryArea) : undefined;
+			if (provinceInfo && provinceInfo.districts?.length > 0) {
+				return (
+					<div key={field} className="space-y-1.5">
+						{fieldLabel}
+						<FormSelect
+							id={fieldId}
+							name={field}
+							value={formData[field] || ""}
+							onChange={(value) => onFieldChange(field, value)}
+							error={error}
+							placeholder="Chọn Quận / Huyện / Thị xã"
+							autoComplete={autoComplete}
+							options={provinceInfo.districts.map((d) => ({
+								value: d.name,
+								label: d.isInnerCity ? `${d.name} (Nội thành)` : d.name,
+							}))}
+						/>
+						<FieldError error={error} />
+					</div>
+				);
+			} else if (isVietnam && !formData.countryArea) {
+				return (
+					<div key={field} className="space-y-1.5">
+						{fieldLabel}
+						<FormSelect
+							id={fieldId}
+							name={field}
+							value=""
+							onChange={() => {}}
+							error={error}
+							placeholder="Vui lòng chọn Tỉnh / Thành phố trước"
+							options={[]}
+						/>
+						<FieldError error={error} />
+					</div>
+				);
+			}
 		}
 
 		// Text input
@@ -240,18 +362,18 @@ export const AddressFields: FC<AddressFieldsProps> = ({
 	const rendered = new Set<string>();
 	const elements: ReactNode[] = [];
 
-	orderedFields.forEach((field) => {
+	sortedFields.forEach((field) => {
 		if (field === "countryCode") return;
 
-		const pair = addressFieldPairs.find((p) => p.includes(field));
+		const pair = fieldPairs.find((p) => p.includes(field));
 		if (pair) {
 			const pairKey = pair.join("-");
 			if (rendered.has(pairKey)) return;
 			rendered.add(pairKey);
 
 			const [f1, f2] = pair;
-			const has1 = orderedFields.includes(f1);
-			const has2 = orderedFields.includes(f2);
+			const has1 = sortedFields.includes(f1);
+			const has2 = sortedFields.includes(f2);
 
 			if (has1 && has2) {
 				elements.push(

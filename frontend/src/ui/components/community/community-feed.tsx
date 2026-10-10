@@ -479,7 +479,7 @@ export function CommunityFeed() {
 	// 1. If user is logged out (guest), hide left & right sidebars completely!
 	if (!currentUser && !viewProfileTarget && !focusedPostId) {
 		return (
-			<div className="w-full min-h-[calc(100vh-4rem)] bg-[#fafafc]">
+			<div className="w-full min-h-[calc(100vh-4rem)] bg-background text-foreground">
 				<CommunityTermsModal
 					isOpen={isTermsOpen}
 					mandatory={isTermsMandatory}
