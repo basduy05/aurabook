@@ -78,13 +78,13 @@ export const FormSelect: FC<FormSelectProps> = ({
 				error && "border-destructive",
 			)}
 		>
-			{placeholder && (
-				<option value="" disabled>
+			{placeholder ? (
+				<option key="__placeholder" value="" disabled>
 					{placeholder}
 				</option>
-			)}
+			) : null}
 			{uniqueOptions.map((option, idx) => (
-				<option key={`${option.value || "opt"}-${idx}`} value={option.value}>
+				<option key={option.value ? `opt-${option.value}` : `opt-idx-${idx}`} value={option.value}>
 					{option.label}
 				</option>
 			))}
@@ -205,26 +205,30 @@ export const AddressFields: FC<AddressFieldsProps> = ({
 		  ]
 		: addressFieldPairs;
 
-	// Proper field ordering for Vietnam
+	// Proper field ordering for Vietnam (deduplicated)
 	const sortedFields = useMemo(() => {
-		if (!isVietnam) return orderedFields;
-		const priority: Record<string, number> = {
-			firstName: 1,
-			lastName: 2,
-			countryArea: 3,
-			city: 4,
-			streetAddress1: 5,
-			streetAddress2: 6,
-			phone: 7,
-			postalCode: 8,
-			companyName: 9,
-		};
-		// Include countryArea if missing from orderedFields for Vietnam
-		const fields = [...orderedFields];
-		if (!fields.includes("countryArea" as AddressField)) {
-			fields.push("countryArea" as AddressField);
-		}
-		return fields.sort((a, b) => (priority[a] || 99) - (priority[b] || 99));
+		const rawFields = !isVietnam
+			? orderedFields
+			: (() => {
+					const priority: Record<string, number> = {
+						firstName: 1,
+						lastName: 2,
+						countryArea: 3,
+						city: 4,
+						streetAddress1: 5,
+						streetAddress2: 6,
+						phone: 7,
+						postalCode: 8,
+						companyName: 9,
+					};
+					// Include countryArea if missing from orderedFields for Vietnam
+					const fields = [...orderedFields];
+					if (!fields.includes("countryArea" as AddressField)) {
+						fields.push("countryArea" as AddressField);
+					}
+					return fields.sort((a, b) => (priority[a] || 99) - (priority[b] || 99));
+			  })();
+		return Array.from(new Set(rawFields));
 	}, [orderedFields, isVietnam]);
 
 	const renderField = (field: AddressField): ReactNode => {
@@ -272,7 +276,7 @@ export const AddressFields: FC<AddressFieldsProps> = ({
 		// State/Province dropdown (Cấp 1: Tỉnh / Thành phố)
 		if (field === "countryArea" && effectiveProvinceChoices.length > 0) {
 			return (
-				<div key={field} className="space-y-1.5">
+				<div className="space-y-1.5">
 					{fieldLabel}
 					<FormSelect
 						id={fieldId}
@@ -301,7 +305,7 @@ export const AddressFields: FC<AddressFieldsProps> = ({
 			const provinceInfo = formData.countryArea ? findProvince(formData.countryArea) : undefined;
 			if (provinceInfo && provinceInfo.districts?.length > 0) {
 				return (
-					<div key={field} className="space-y-1.5">
+					<div className="space-y-1.5">
 						{fieldLabel}
 						<FormSelect
 							id={fieldId}
@@ -321,7 +325,7 @@ export const AddressFields: FC<AddressFieldsProps> = ({
 				);
 			} else if (isVietnam && !formData.countryArea) {
 				return (
-					<div key={field} className="space-y-1.5">
+					<div className="space-y-1.5">
 						{fieldLabel}
 						<FormSelect
 							id={fieldId}
@@ -340,7 +344,7 @@ export const AddressFields: FC<AddressFieldsProps> = ({
 
 		// Text input
 		return (
-			<div key={field} className="space-y-1.5">
+			<div className="space-y-1.5">
 				{fieldLabel}
 				<FormInput
 					id={fieldId}
@@ -377,17 +381,17 @@ export const AddressFields: FC<AddressFieldsProps> = ({
 
 			if (has1 && has2) {
 				elements.push(
-					<div key={pairKey} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+					<div key={`pair-${pairKey}`} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 						{renderField(f1)}
 						{renderField(f2)}
 					</div>,
 				);
 			} else {
-				if (has1) elements.push(renderField(f1));
-				if (has2) elements.push(renderField(f2));
+				if (has1) elements.push(<div key={`field-${f1}`}>{renderField(f1)}</div>);
+				if (has2) elements.push(<div key={`field-${f2}`}>{renderField(f2)}</div>);
 			}
 		} else {
-			elements.push(renderField(field));
+			elements.push(<div key={`field-${field}`}>{renderField(field)}</div>);
 		}
 	});
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useMemo, type ReactNode } from "react";
 
 interface CartContextType {
 	isOpen: boolean;
@@ -18,18 +18,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
 	const closeCart = useCallback(() => setIsOpen(false), []);
 	const toggleCart = useCallback(() => setIsOpen((prev) => !prev), []);
 
-	return (
-		<CartContext.Provider
-			value={{
-				isOpen,
-				openCart,
-				closeCart,
-				toggleCart,
-			}}
-		>
-			{children}
-		</CartContext.Provider>
+	const value = useMemo(
+		() => ({
+			isOpen,
+			openCart,
+			closeCart,
+			toggleCart,
+		}),
+		[isOpen, openCart, closeCart, toggleCart],
 	);
+
+	return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
 
 export function useCart() {

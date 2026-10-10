@@ -1,5 +1,44 @@
 [
   {
+    "id": "ship-1791655518312",
+    "orderId": "T3JkZXI6ODhiZGEzNTgtM2Q3YS00N2QzLThiMGUtNGNmOTM1ZjhhYjJh",
+    "orderNumber": "9",
+    "trackingCode": "GHN79111707VN",
+    "carrier": "Giao Hàng Nhanh (GHN)",
+    "serviceType": "standard",
+    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)",
+    "fee": 22000,
+    "codAmount": 0,
+    "weightGrams": 500,
+    "status": "ready_to_pick",
+    "statusDisplay": "Chờ lấy hàng tại Kho Hà Nội",
+    "sender": {
+      "name": "Nhà sách Aurabook",
+      "phone": "0912345678",
+      "address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu",
+      "warehouseName": "Kho Tổng Aurabook Hà Nội"
+    },
+    "recipient": {
+      "name": "Duy Bas",
+      "phone": "+84912345678",
+      "address": "Coc Thon",
+      "province": "Hà Nội",
+      "district": "HUYỆN BA VÌ"
+    },
+    "itemsSummary": "Đơn hàng #9 (1 cuốn sách)",
+    "createdAt": "2026-10-10T18:05:18.312Z",
+    "estimatedDeliveryDate": "2026-10-13T18:05:18.312Z",
+    "history": [
+      {
+        "status": "ready_to_pick",
+        "statusName": "Chờ lấy hàng",
+        "description": "Đơn hàng đã được tạo. Chờ GHN điều phối tài xế đến lấy hàng tại Kho Tổng Aurabook Hà Nội.",
+        "time": "2026-10-10T18:05:18.312Z",
+        "location": "Kho Tổng Aurabook Hà Nội - 12 Duy Tân, Cầu Giấy"
+      }
+    ]
+  },
+  {
     "id": "ship-1791648664018",
     "orderId": "7",
     "orderNumber": "7",

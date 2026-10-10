@@ -89,9 +89,19 @@ export function resolveSelectedVariantId(
 	variantParam: string | undefined,
 ): string | undefined {
 	const variants = product.variants ?? [];
-	if (variantParam) return variantParam;
+	if (variantParam) {
+		const decoded = decodeURIComponent(variantParam);
+		const match = variants.find((v) => v.id === decoded || v.id === variantParam);
+		if (match) return match.id;
+		return decoded;
+	}
 	if (variants.length === 1) return variants[0]?.id;
 	const total = product.variantTotalCount ?? product.productVariants?.totalCount ?? null;
 	if (total === 1 && variants[0]?.id) return variants[0].id;
-	return undefined;
+
+	// Pre-select the first in-stock variant so the Add to Cart button is ready immediately
+	const inStockVariant = variants.find((v) => (v.quantityAvailable ?? 0) > 0);
+	if (inStockVariant) return inStockVariant.id;
+
+	return variants[0]?.id;
 }

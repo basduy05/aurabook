@@ -36,7 +36,8 @@ export async function VariantGalleryDynamic({
 		overVariantBudget: overBudget,
 	};
 	const selectedVariantId = resolveSelectedVariantId(productWithVariants, variantParam);
-	const selectedVariant = variants.find((v) => v.id === selectedVariantId);
+	const decodedVariantId = selectedVariantId ? decodeURIComponent(selectedVariantId) : undefined;
+	const selectedVariant = variants.find((v) => v.id === selectedVariantId || v.id === decodedVariantId);
 	const images = getGalleryImages(productWithVariants, selectedVariant);
 
 	const { Gallery } = activeGalleryVariant();

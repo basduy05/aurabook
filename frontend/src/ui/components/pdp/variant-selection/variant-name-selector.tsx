@@ -60,7 +60,8 @@ export function VariantNameSelector({
 		.filter((p): p is number => p !== undefined && p !== null);
 	const showPrices = prices.length > 1 && new Set(prices).size > 1;
 
-	const selectedVariant = variants.find((v) => v.id === selectedVariantId);
+	const decodedSelectedId = selectedVariantId ? decodeURIComponent(selectedVariantId) : undefined;
+	const selectedVariant = variants.find((v) => v.id === selectedVariantId || v.id === decodedSelectedId);
 
 	return (
 		<div className="space-y-3">
@@ -80,7 +81,7 @@ export function VariantNameSelector({
 				style={{ transitionDelay: isPending ? "100ms" : "0ms" }}
 			>
 				{variants.map((variant) => {
-					const isSelected = variant.id === selectedVariantId;
+					const isSelected = variant.id === selectedVariantId || variant.id === decodedSelectedId;
 					const isOutOfStock = (variant.quantityAvailable ?? 0) <= 0;
 					const price = variant.pricing?.price?.gross;
 					const undiscountedPrice = variant.pricing?.priceUndiscounted?.gross;

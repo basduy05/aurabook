@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useState, createContext, useContext } from "react";
+import { type ReactNode, useState, createContext, useContext, useCallback, useMemo } from "react";
 import { Menu } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Logo } from "../../logo";
@@ -29,7 +29,8 @@ export const MobileMenu = ({ children }: Props) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const t = useTranslations("nav.mobileMenu");
 
-	const close = () => setIsOpen(false);
+	const close = useCallback(() => setIsOpen(false), []);
+	const contextValue = useMemo(() => ({ close }), [close]);
 
 	return (
 		<Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -49,7 +50,7 @@ export const MobileMenu = ({ children }: Props) => {
 					<SheetCloseButton className="static" />
 				</SheetHeader>
 				<nav className="flex-1 overflow-y-auto" aria-label={t("title")}>
-					<MobileMenuContext.Provider value={{ close }}>
+					<MobileMenuContext.Provider value={contextValue}>
 						<ul
 							className="flex flex-col whitespace-nowrap p-4 [&>*:nth-child(n+2)]:border-t [&>*:nth-child(n+2)]:border-border [&>li]:py-3"
 							id="mobile-menu"

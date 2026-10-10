@@ -111,10 +111,14 @@ export async function POST(request: Request) {
 			// Tra cứu dự phòng theo phường / đường phố nếu Nominatim không trả về quận huyện hoặc gán nhầm
 			const textToScan = `${addressData.road || ""} ${addressData.suburb || ""} ${addressData.neighbourhood || ""} ${addressData.display_name || ""}`.toLowerCase();
 			const isInnerHanoiCoords = detectedProv.name.includes("Hà Nội") && longitude > 105.70;
+			const isSonTayCoords = detectedProv.name.includes("Hà Nội") && (longitude < 105.65 || /đường lâm|sơn tây/i.test(textToScan));
 
 			if (detectedProv.name.includes("Hà Nội")) {
-				// Nếu tọa độ thuộc vùng nội thành (Kinh độ > 105.70) và xuất hiện "la thành" -> 100% là Đê La Thành nội thành, không phải Sơn Tây
-				if (isInnerHanoiCoords && /la thành|đê la thành/i.test(textToScan)) {
+				// Nếu ở khu vực Sơn Tây / Đường Lâm (Kinh độ < 105.65 hoặc có từ khóa Đường Lâm/Sơn Tây)
+				if (isSonTayCoords || /đường lâm|sơn tây|viên sơn|trung hưng|thanh mỹ|xuân khanh|kim sơn|sơn đông|cổ đông/i.test(textToScan)) {
+					detectedDist = findDistrict(detectedProv, "Thị xã Sơn Tây");
+				} else if (isInnerHanoiCoords && /la thành|đê la thành/i.test(textToScan)) {
+					// Chỉ gán Quận Đống Đa cho "La Thành" khi tọa độ thực sự ở vùng nội thành Hà Nội (Kinh độ > 105.70)
 					detectedDist = findDistrict(detectedProv, "Quận Đống Đa");
 				} else if (/ngọc hà|liễu giai|kim mã|giảng võ|điện biên|quán thánh|trúc bạch|cống vị|đội cấn|thành công|vĩnh phúc|phúc xá|ngọc khánh|hoàng hoa thám/i.test(textToScan)) {
 					detectedDist = findDistrict(detectedProv, "Quận Ba Đình");
@@ -122,7 +126,7 @@ export async function POST(request: Request) {
 					detectedDist = findDistrict(detectedProv, "Quận Cầu Giấy");
 				} else if (/hàng bạc|hàng đào|tràng tiền|lý thái tổ|đồng xuân|cửa nam|hoàn kiếm|đinh tiên hoàng|phố huế|bà triệu/i.test(textToScan)) {
 					detectedDist = findDistrict(detectedProv, "Quận Hoàn Kiếm");
-				} else if (/la thành|đê la thành|ô chợ dừa|láng hạ|láng thượng|văn miếu|quốc tử giám|khâm thiên|kim liên|đống đa|thái hà|thái thịnh|chùa bộc|hoàng cầu|tôn đức thắng/i.test(textToScan)) {
+				} else if (/ô chợ dừa|láng hạ|láng thượng|văn miếu|quốc tử giám|khâm thiên|kim liên|đống đa|thái hà|thái thịnh|chùa bộc|hoàng cầu|tôn đức thắng/i.test(textToScan)) {
 					detectedDist = findDistrict(detectedProv, "Quận Đống Đa");
 				} else if (/bạch mai|bách khoa|minh khai|trương định|hai bà trưng|thanh nhàn|đại cồ việt/i.test(textToScan)) {
 					detectedDist = findDistrict(detectedProv, "Quận Hai Bà Trưng");

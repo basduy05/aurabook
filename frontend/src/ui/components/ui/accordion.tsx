@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useMemo, type ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -29,18 +29,23 @@ interface AccordionProps {
 export function Accordion({ type = "multiple", defaultValue = [], children, className }: AccordionProps) {
 	const [openItems, setOpenItems] = useState<string[]>(defaultValue);
 
-	const toggle = (value: string) => {
-		if (type === "single") {
-			setOpenItems((prev) => (prev.includes(value) ? [] : [value]));
-		} else {
-			setOpenItems((prev) =>
-				prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value],
-			);
-		}
-	};
+	const toggle = useCallback(
+		(value: string) => {
+			if (type === "single") {
+				setOpenItems((prev) => (prev.includes(value) ? [] : [value]));
+			} else {
+				setOpenItems((prev) =>
+					prev.includes(value) ? prev.filter((item) => item !== value) : [...prev, value],
+				);
+			}
+		},
+		[type],
+	);
+
+	const contextValue = useMemo(() => ({ openItems, toggle }), [openItems, toggle]);
 
 	return (
-		<AccordionContext.Provider value={{ openItems, toggle }}>
+		<AccordionContext.Provider value={contextValue}>
 			<div className={cn("w-full", className)}>{children}</div>
 		</AccordionContext.Provider>
 	);

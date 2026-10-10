@@ -6,6 +6,7 @@ import { MapPin, Loader2, CheckCircle2, Truck, AlertCircle, Building2 } from "lu
 import { Label } from "@/ui/components/ui/label";
 import { Badge } from "@/ui/components/ui/badge";
 import { Button } from "@/ui/components/ui/button";
+import { cn } from "@/lib/utils";
 import { isInnerCityAddress } from "@/lib/vietnam-administrative/data";
 import { FormSelect, FieldError, AddressFields } from "../address-form-fields";
 import { HybridAddressSelector } from "@/checkout/components/shipping-address";
@@ -315,29 +316,29 @@ export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
 						<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 							<div className="space-y-0.5">
 								<div className="flex items-center gap-2 text-sm font-semibold text-foreground">
-									<MapPin className="h-4 w-4 text-primary shrink-0" />
+									<MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
 									<span>Tự động nhận diện địa chỉ nhận hàng</span>
 								</div>
 								<p className="text-[12px] text-muted-foreground">
-									Hệ thống sẽ định vị GPS để tự động điền địa chỉ nhận hàng chính xác và tính cước GHN từ Kho Hà Nội.
+									Hệ thống định vị vị trí hiện tại để tự động điền địa chỉ và tính cước GHN từ Kho Hà Nội.
 								</p>
 							</div>
 							<Button
 								type="button"
-								variant="default"
+								variant="outline-solid"
 								size="sm"
 								onClick={handleDetectLocation}
 								disabled={isLocating}
-								className="cursor-pointer gap-2 shrink-0 font-semibold rounded-xl"
+								className="cursor-pointer gap-2 shrink-0 font-medium rounded-lg text-xs"
 							>
 								{isLocating ? (
 									<>
 										<Loader2 className="h-3.5 w-3.5 animate-spin" />
-										<span>Đang xác định vị trí...</span>
+										<span>Đang xác định...</span>
 									</>
 								) : (
 									<>
-										<MapPin className="h-3.5 w-3.5" />
+										<MapPin className="h-3.5 w-3.5 text-muted-foreground" />
 										<span>Lấy vị trí hiện tại</span>
 									</>
 								)}
@@ -346,58 +347,51 @@ export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
 
 						{locationStatus && (
 							<div
-								className={`rounded-lg p-3 text-xs flex items-start gap-2.5 animate-in fade-in-0 duration-200 border ${
+								className={cn(
+									"rounded-xl border p-3.5 text-xs flex items-start gap-3 animate-in fade-in-0 duration-200",
 									locationStatus.type === "success"
-										? "bg-success/10 border-success/30 text-foreground"
+										? "border-border bg-secondary/40 text-foreground"
 										: locationStatus.type === "prompt"
-										? "bg-secondary border-border text-foreground"
-										: "bg-destructive/10 border-destructive/20 text-destructive"
-								}`}
+										? "border-border bg-secondary/30 text-foreground"
+										: "border-destructive/30 bg-destructive/10 text-destructive",
+								)}
 							>
 								{locationStatus.type === "success" && (
-									<CheckCircle2 className="h-4 w-4 text-success shrink-0 mt-0.5" />
+									<div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+										<CheckCircle2 className="h-4 w-4" />
+									</div>
 								)}
 								{locationStatus.type === "prompt" && (
-									<Loader2 className="h-4 w-4 text-primary animate-spin shrink-0 mt-0.5" />
+									<div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+										<Loader2 className="h-4 w-4 animate-spin" />
+									</div>
 								)}
 								{locationStatus.type === "error" && (
-									<AlertCircle className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
+									<div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+										<AlertCircle className="h-4 w-4" />
+									</div>
 								)}
-								<div className="space-y-1.5 flex-1">
-									<p className="font-semibold">{locationStatus.message}</p>
+								<div className="space-y-1.5 flex-1 min-w-0">
+									<div className="flex items-center justify-between gap-2">
+										<p className="font-semibold text-foreground">{locationStatus.message}</p>
+										<button
+											type="button"
+											onClick={() => setLocationStatus(null)}
+											className="text-[11px] text-muted-foreground hover:text-foreground cursor-pointer"
+										>
+											Đóng
+										</button>
+									</div>
 									{locationStatus.detectedInfo && (
-										<p className="text-[11px] text-muted-foreground">
-											📍 {locationStatus.detectedInfo}
+										<p className="text-[12px] text-muted-foreground flex items-center gap-1.5">
+											<MapPin className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+											<span className="truncate">{locationStatus.detectedInfo}</span>
 										</p>
 									)}
 									{locationStatus.warningMessage && (
-										<div className="flex items-center gap-1.5 rounded-md bg-amber-500/10 border border-amber-500/30 px-2 py-1 text-[11px] text-amber-700 dark:text-amber-300 font-medium">
-											<AlertCircle className="h-3.5 w-3.5 shrink-0" />
+										<div className="flex items-center gap-2 rounded-lg border border-border bg-background/60 px-2.5 py-1.5 text-[11px] text-muted-foreground">
+											<AlertCircle className="h-3.5 w-3.5 text-amber-500 shrink-0" />
 											<span>{locationStatus.warningMessage}</span>
-										</div>
-									)}
-									{locationStatus.isInnerCity !== undefined && (
-										<div className="flex items-center gap-1.5 text-[11px] font-medium pt-0.5">
-											{locationStatus.isInnerCity ? (
-												<span className="inline-flex items-center gap-1 text-success font-semibold">
-													<Building2 className="h-3.5 w-3.5" />
-													<span>Khu vực Nội thành — Hỗ trợ GHN Giao Hỏa Tốc (2 - 4h)</span>
-												</span>
-											) : (
-												<span className="inline-flex items-center gap-1 text-muted-foreground">
-													<Truck className="h-3.5 w-3.5" />
-													<span>Khu vực Ngoại thành / Tỉnh — Áp dụng GHN Tiêu Chuẩn (1 - 3 ngày)</span>
-												</span>
-											)}
-										</div>
-									)}
-									{locationStatus.ghnFee !== undefined && (
-										<div className="flex items-center gap-1.5 text-[11px] font-semibold text-primary pt-0.5">
-											<Truck className="h-3 w-3" />
-											<span>
-												Ước tính cước GHN từ Kho Hà Nội:{" "}
-												{new Intl.NumberFormat("vi-VN").format(locationStatus.ghnFee)} ₫
-											</span>
 										</div>
 									)}
 								</div>
@@ -437,53 +431,52 @@ export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
 						countryAreaChoices={countryAreaChoices}
 					/>
 
-					{/* Real-time Inner City & House Number Indicator for Vietnam */}
+					{/* Real-time GHN Shipping Fee confirmation card */}
 					{countryCode === "VN" && formData.countryArea && (
-						<div className="space-y-3 pt-1">
-							<div className="flex items-center justify-between rounded-xl border border-border bg-secondary/30 p-3 text-xs animate-in fade-in-0 duration-200">
-								<div className="flex items-center gap-2.5">
-									<Building2 className="h-4 w-4 text-primary shrink-0" />
-									<div>
-										<span className="font-semibold text-foreground">
-											{manualIsInnerCity ? "Địa chỉ thuộc Khu vực Nội thành" : "Địa chỉ thuộc Khu vực Ngoại thành / Tỉnh"}
-										</span>
-										<p className="text-[11px] text-muted-foreground mt-0.5">
-											{manualIsInnerCity
-												? "Đủ điều kiện chọn phương thức vận chuyển Giao Hỏa Tốc (Nội thành) ở bước tiếp theo."
-												: "Địa chỉ này áp dụng phương thức Giao Hàng Nhanh (GHN) Tiêu Chuẩn."}
+						<div className="rounded-xl border border-border bg-card p-4 space-y-3 shadow-sm text-card-foreground animate-in fade-in-0 duration-200">
+							<div className="flex items-start justify-between gap-3">
+								<div className="flex items-start gap-3">
+									<div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+										<Truck className="h-4 w-4" />
+									</div>
+									<div className="space-y-0.5">
+										<div className="flex items-center gap-2">
+											<span className="text-sm font-semibold text-foreground">
+												{liveGHNFee?.serviceName || "Giao Hàng Nhanh (GHN)"}
+											</span>
+											<Badge
+												variant={manualIsInnerCity ? "default" : "secondary"}
+												className="text-[10px] font-medium"
+											>
+												{manualIsInnerCity ? "Nội thành" : "Ngoại thành / Tỉnh"}
+											</Badge>
+										</div>
+										<p className="text-[11px] text-muted-foreground">
+											Xuất phát: Kho Tổng Aurabook Hà Nội • Thời gian:{" "}
+											{liveGHNFee?.estimatedDays || (manualIsInnerCity ? "1 - 2 ngày" : "2 - 3 ngày")}
 										</p>
 									</div>
 								</div>
-								<Badge variant={manualIsInnerCity ? "success" : "outline-solid"} className="shrink-0 text-[11px] font-medium">
-									{manualIsInnerCity ? "Nội thành" : "Ngoại thành / Tỉnh"}
-								</Badge>
-							</div>
-
-							{/* Live Real-time GHN Shipping Fee confirmation card */}
-							{liveGHNFee && (
-								<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-primary/25 bg-primary/5 p-3.5 text-xs animate-in fade-in-0 duration-200 text-card-foreground">
-									<div className="flex items-center gap-2.5">
-										<Truck className="h-4 w-4 text-primary shrink-0" />
-										<div>
-											<div className="flex items-center gap-2 font-semibold text-foreground">
-												<span>{liveGHNFee.serviceName}</span>
-												{liveGHNFee.isFreeShipping && (
-													<Badge variant="success" className="px-1.5 py-0 text-[10px]">Freeship</Badge>
-												)}
-											</div>
-											<p className="text-[11px] text-muted-foreground mt-0.5">
-												Xuất phát: Kho Tổng Aurabook Hà Nội • Dự kiến: {liveGHNFee.estimatedDays}
-											</p>
-										</div>
-									</div>
-									<div className="sm:text-right shrink-0">
-										<span className="text-sm font-bold text-primary tabular-nums">
-											{liveGHNFee.isFreeShipping
-												? "0 ₫ (Miễn phí)"
-												: `${new Intl.NumberFormat("vi-VN").format(liveGHNFee.fee)} ₫`}
-										</span>
-									</div>
+								<div className="text-right shrink-0">
+									<span className="text-base font-bold text-foreground tabular-nums">
+										{liveGHNFee?.isFreeShipping
+											? "0 ₫"
+											: liveGHNFee?.fee != null
+											? `${new Intl.NumberFormat("vi-VN").format(liveGHNFee.fee)} ₫`
+											: "16.500 ₫"}
+									</span>
+									{liveGHNFee?.isFreeShipping && (
+										<p className="text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
+											Miễn phí vận chuyển
+										</p>
+									)}
 								</div>
+							</div>
+							{manualIsInnerCity && (
+								<p className="text-[11px] text-muted-foreground border-t border-border/50 pt-2 flex items-center gap-1.5">
+									<Building2 className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+									<span>Đủ điều kiện chọn thêm phương thức Giao Hỏa Tốc (2 - 4h) ở bước tiếp theo.</span>
+								</p>
 							)}
 						</div>
 					)}

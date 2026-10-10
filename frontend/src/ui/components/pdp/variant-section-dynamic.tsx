@@ -64,7 +64,8 @@ export async function VariantSectionDynamic({
 	};
 
 	const selectedVariantID = resolveSelectedVariantId(productWithVariants, variantParam);
-	const selectedVariant = variants.find(({ id }) => id === selectedVariantID);
+	const decodedVariantID = selectedVariantID ? decodeURIComponent(selectedVariantID) : undefined;
+	const selectedVariant = variants.find(({ id }) => id === selectedVariantID || id === decodedVariantID);
 
 	const isAvailable =
 		strategy !== "matrix"
