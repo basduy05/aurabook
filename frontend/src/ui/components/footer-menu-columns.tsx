@@ -3,13 +3,11 @@ import type { MenuItem } from "@/lib/menus/get-menu-data";
 import { getMenuItemHref, getMenuItemLabel } from "@/lib/menus/menu-item-utils";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { NavHrefLink } from "@/ui/atoms/nav-href-link";
-
 const defaultFooterLinks = {
 	support: [
 		{ label: "Contact Us", href: "/contact" },
 		{ label: "FAQs", href: "/faq" },
 		{ label: "Shipping", href: "/shipping" },
-		{ label: "Returns", href: "/returns" },
 	],
 	company: [
 		{ label: "About", href: "/about" },
@@ -24,7 +22,6 @@ const defaultFooterLinksVi = {
 		{ label: "Liên hệ chúng tôi", href: "/contact" },
 		{ label: "Câu hỏi thường gặp", href: "/faq" },
 		{ label: "Chính sách vận chuyển", href: "/shipping" },
-		{ label: "Chính sách đổi trả", href: "/returns" },
 	],
 	company: [
 		{ label: "Giới thiệu Aurabook", href: "/about" },
@@ -68,10 +65,19 @@ export function FooterMenuColumns({ items, locale }: { items: MenuItem[]; locale
 	const supportTitle = isVi ? "Hỗ trợ khách hàng" : "Support";
 	const companyTitle = isVi ? "Về chúng tôi" : "Company";
 
-	// Filter out any stale Saleor demo items
-	const sanitizedItems = items.filter(
-		(item) => !item.name.toLowerCase().includes("saleor") && !item.name.toLowerCase().includes("graphql"),
-	);
+	// Filter out any stale Saleor demo items or removed policy items
+	const sanitizedItems = items
+		.filter(
+			(item) => !item.name.toLowerCase().includes("saleor") && !item.name.toLowerCase().includes("graphql"),
+		)
+		.map((item) => ({
+			...item,
+			children: item.children?.filter((child) => {
+				const href = (child.url || "").toLowerCase();
+				const name = (child.name || "").toLowerCase();
+				return !href.includes("/returns") && !name.includes("đổi trả") && !name.includes("returns");
+			}),
+		}));
 
 	if (sanitizedItems.length === 0) {
 		return (
