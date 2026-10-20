@@ -6,6 +6,8 @@ import { AnnouncementBarSkeleton } from "@/ui/sections/announcement-bar/announce
 import { ScrollToTopOnNavigate } from "@/ui/components/shared/scroll-to-top-on-navigate";
 import { AnnouncementBarSlot, CartDrawerSlot } from "./browse-chrome-slots";
 import { MainChrome } from "./main-chrome";
+import { ConditionalHeader } from "@/ui/components/conditional-header";
+import { VoiceAgentWidget } from "@/ui/components/voice-agent/voice-agent-widget";
 
 // Define the title template here so it cascades to every browse page (products, search,
 // categories, …) — a plain-string title would not propagate the brand suffix to children.
@@ -30,14 +32,17 @@ export default function RootLayout({ children, params }: LayoutProps) {
 			<Suspense fallback={null}>
 				<ScrollToTopOnNavigate />
 			</Suspense>
-			<Suspense fallback={<AnnouncementBarSkeleton />}>
-				<AnnouncementBarSlot params={params} />
-			</Suspense>
+			<ConditionalHeader>
+				<Suspense fallback={<AnnouncementBarSkeleton />}>
+					<AnnouncementBarSlot params={params} />
+				</Suspense>
+			</ConditionalHeader>
 			<StorefrontProviders>
 				<MainChrome params={params}>{children}</MainChrome>
 				<Suspense fallback={null}>
 					<CartDrawerSlot params={params} />
 				</Suspense>
+				<VoiceAgentWidget />
 			</StorefrontProviders>
 		</>
 	);

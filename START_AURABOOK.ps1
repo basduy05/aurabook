@@ -39,8 +39,21 @@ if ($backendReady) {
     Write-Host "  [!] Backend dang khoi dong, tiep tuc bat storefront..." -ForegroundColor Yellow
 }
 
-# 2. Kiem tra Frontend Next.js (port 3000)
-Write-Host "`n[2/3] Kiem tra Frontend Next.js (Storefront)..." -ForegroundColor Yellow
+# 2. Khoi dong AuraBook Piper TTS Engine (MC Hoai My 1000-Epoch - Port 5050)
+Write-Host "`n[2/4] Kiem tra AuraBook Piper TTS Engine (Port 5050)..." -ForegroundColor Yellow
+$p5050 = netstat -ano 2>$null | Select-String ":5050 " | Select-String "LISTENING"
+if (-not $p5050) {
+    Write-Host "  -> Dang khoi dong Piper TTS (vi_VN-hoaimy-aurabook.onnx)..." -ForegroundColor Cyan
+    $ttsScript = Join-Path $ROOT "ecommerce-ai-platform\voice-agent\backend\aurabook_piper_tts_server.py"
+    Start-Process python.exe -ArgumentList "$ttsScript" -WindowStyle Minimized
+    Start-Sleep -Seconds 2
+    Write-Host "  [OK] Piper TTS Server da san sang tai http://localhost:5050" -ForegroundColor Green
+} else {
+    Write-Host "  [OK] Piper TTS Server da dang hoat dong tren port 5050." -ForegroundColor Green
+}
+
+# 3. Kiem tra Frontend Next.js (port 3000)
+Write-Host "`n[3/4] Kiem tra Frontend Next.js (Storefront)..." -ForegroundColor Yellow
 $p3 = netstat -ano 2>$null | Select-String ":3000 " | Select-String "LISTENING"
 if (-not $p3) {
     Write-Host "  -> Dang khoi dong Next.js dev server tren port 3000..." -ForegroundColor Cyan
@@ -55,12 +68,13 @@ if (-not $p3) {
     Write-Host "  [OK] Frontend da dang chay tren port 3000." -ForegroundColor Green
 }
 
-# 3. Thong bao san sang va mo trinh duyet
-Write-Host "`n[3/3] San sang truy cap!" -ForegroundColor Yellow
+# 4. Thong bao san sang va mo trinh duyet
+Write-Host "`n[4/4] San sang truy cap!" -ForegroundColor Yellow
 Write-Host "============================================================" -ForegroundColor Green
 Write-Host "   AURABOOK DA KHOI DONG THANH CONG!" -ForegroundColor Green
 Write-Host "============================================================" -ForegroundColor Green
 Write-Host "  Storefront (Khach hang)   : http://localhost:3000" -ForegroundColor Cyan
+Write-Host "  Voice & TTS Engine (5050)  : http://localhost:5050/health" -ForegroundColor Cyan
 Write-Host "  Admin Dashboard (Quan tri): http://localhost:9000/dashboard/" -ForegroundColor Cyan
 Write-Host "  Mailpit (Hom thu test)     : http://localhost:8025" -ForegroundColor Cyan
 Write-Host "  GraphQL API Backend        : http://localhost:8000/graphql/" -ForegroundColor Cyan

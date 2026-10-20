@@ -20,5 +20,11 @@ export const LinkWithChannel = ({
 		return <Link {...props} href={href} />;
 	}
 
-	return <Link {...props} href={buildStorefrontPath(locale, channel, href)} />;
+	// Avoid duplicate prefixing if href already contains /{locale}/{channel}
+	const prefix = `/${locale}/${channel}`;
+	const targetPath = href === prefix || href.startsWith(`${prefix}/`) || href.startsWith(`${prefix}?`)
+		? href.slice(prefix.length) || "/"
+		: href;
+
+	return <Link {...props} href={buildStorefrontPath(locale, channel, targetPath)} />;
 };

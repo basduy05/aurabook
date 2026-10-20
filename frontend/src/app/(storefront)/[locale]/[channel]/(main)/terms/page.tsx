@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BookOpen, Scale, CreditCard, Truck, RefreshCcw, HelpCircle, ChevronRight, CheckCircle2 } from "lucide-react";
@@ -17,7 +18,31 @@ export async function generateMetadata(props: {
 	};
 }
 
-export default async function TermsPage(props: {
+function TermsPageFallback() {
+	return (
+		<div className="container-content py-10 pb-20 animate-pulse">
+			<div className="mb-6 h-4 w-36 rounded bg-muted" />
+			<div className="mb-10 h-28 max-w-3xl rounded-2xl bg-muted" />
+			<div className="mb-12 h-44 rounded-2xl bg-muted" />
+			<div className="space-y-6">
+				<div className="h-44 rounded-2xl bg-muted" />
+				<div className="h-44 rounded-2xl bg-muted" />
+			</div>
+		</div>
+	);
+}
+
+export default function TermsPage(props: {
+	params: Promise<{ locale: string; channel: string }>;
+}) {
+	return (
+		<Suspense fallback={<TermsPageFallback />}>
+			<TermsContent params={props.params} />
+		</Suspense>
+	);
+}
+
+async function TermsContent(props: {
 	params: Promise<{ locale: string; channel: string }>;
 }) {
 	const { locale, channel } = await props.params;

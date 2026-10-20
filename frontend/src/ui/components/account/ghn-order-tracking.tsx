@@ -5,7 +5,6 @@ import {
 	CheckCircle2,
 	Clock,
 	MapPin,
-	RefreshCw,
 	Copy,
 	Check,
 	Building2,
@@ -15,6 +14,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/ui/components/ui/badge";
 import { Button } from "@/ui/components/ui/button";
+import { Loader } from "@/ui/atoms/loader";
 
 export interface GHNTrackingCheckpoint {
 	status: string;
@@ -124,13 +124,8 @@ export function GHNOrderTracking({ orderNumber, initialShipment }: GHNOrderTrack
 
 	if (loading) {
 		return (
-			<div className="rounded-xl border border-border bg-card p-5 text-card-foreground shadow-sm">
-				<div className="flex items-center gap-3">
-					<RefreshCw className="h-5 w-5 animate-spin text-primary" />
-					<p className="text-sm font-medium text-muted-foreground">
-						Đang tải dữ liệu vận chuyển Giao Hàng Nhanh (GHN)...
-					</p>
-				</div>
+			<div className="rounded-xl border border-border bg-card p-6 text-card-foreground shadow-sm flex flex-col items-center justify-center">
+				<Loader size="md" text="Đang tải dữ liệu vận chuyển Giao Hàng Nhanh (GHN)..." />
 			</div>
 		);
 	}

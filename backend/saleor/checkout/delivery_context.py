@@ -170,7 +170,15 @@ class CollectionPointInfo(DeliveryMethodBase):
 
 def is_shipping_required(lines: list["CheckoutLineInfo"]):
     """Check if shipping is required for given checkout lines."""
-    return any(line_info.product_type.is_shipping_required for line_info in lines)
+    for line_info in lines:
+        if not line_info.product_type.is_shipping_required:
+            continue
+        variant = getattr(line_info, "variant", None)
+        if variant and hasattr(variant, "is_shipping_required"):
+            if not variant.is_shipping_required():
+                continue
+        return True
+    return False
 
 
 def get_valid_internal_shipping_methods_for_checkout_info(

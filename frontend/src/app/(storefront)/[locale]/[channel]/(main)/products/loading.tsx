@@ -1,3 +1,5 @@
+import { Loader } from "@/ui/atoms/loader";
+
 /**
  * Product list skeleton - fallback for cache misses.
  *
@@ -7,8 +9,9 @@
 export default function ProductsLoading() {
 	return (
 		<div className="container-content flex-1 animate-skeleton-delayed-long py-4 opacity-0 sm:py-6 lg:py-10">
-			<div className="mb-8">
+			<div className="mb-8 flex items-center justify-between">
 				<div className="h-8 w-48 animate-pulse rounded bg-muted" />
+				<Loader size="sm" text="Đang tải danh mục sách..." />
 			</div>
 
 			{/* Matches ProductGrid: grid-cols-2 lg:grid-cols-3 */}

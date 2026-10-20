@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { Loader } from "@/ui/atoms/loader";
 import { PDP_GALLERY_LAYOUT, PDP_LAYOUT_CLASSES } from "./gallery-layout";
 import { GallerySkeleton } from "./variant-gallery-dynamic";
 import { VariantSectionSkeleton } from "./variant-section-fallback";
@@ -62,6 +63,12 @@ export function ProductRouteSkeleton({ surface = "page" }: ProductRouteSkeletonP
 					</div>
 
 					<div className={layout.infoColumn}>
+						<div className="order-1 mb-3 flex items-center gap-2">
+							<Loader size="sm" />
+							<span className="text-xs font-medium text-muted-foreground animate-pulse">
+								Đang nạp dữ liệu chi tiết ấn phẩm...
+							</span>
+						</div>
 						<div className="order-2 h-10 w-3/4 max-w-md animate-pulse rounded bg-muted" />
 						<VariantSectionSkeleton />
 						{layout.attributesPlacement === "info" && (

@@ -71,3 +71,13 @@ Thumbs.db
 *.swp
 *.swo
 
+# AI Models, Checkpoints & Datasets (Exceed GitHub 100MB limit)
+trainingdata/
+*.ckpt
+*.tar.gz
+*.onnx
+
+# Dynamic audio cache
+ecommerce-ai-platform/data/audio_cache/
+
+

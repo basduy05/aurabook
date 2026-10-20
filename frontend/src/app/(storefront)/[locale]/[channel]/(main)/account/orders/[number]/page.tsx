@@ -20,6 +20,7 @@ import { OrderLineReviewButton } from "@/ui/components/reviews/order-line-review
 import { GHNOrderTracking } from "@/ui/components/account/ghn-order-tracking";
 import { getGHNShipmentByOrder, createGHNShipment } from "@/lib/shipping/ghn";
 import { Badge } from "@/ui/components/ui/badge";
+import { buttonClassName } from "@/ui/components/ui/button";
 
 type Props = {
 	params: Promise<{ locale: string; number: string }>;
@@ -164,6 +165,24 @@ async function OrderDetailContent({ params }: Props) {
 									<p className="font-medium text-foreground">Đã gắn mã số bản quyền cá nhân</p>
 									<p className="text-muted-foreground mt-0.5">Tương thích với ứng dụng Aurabook Reader và trình duyệt web</p>
 								</div>
+							</div>
+
+							<div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
+								<div className="flex items-center gap-2 text-xs text-muted-foreground">
+									<CheckCircle2 className="h-4 w-4 text-success" />
+									<span>Đã kích hoạt bản quyền Readium LCP DRM</span>
+								</div>
+								<LinkWithChannel
+									href="/community?tab=bookshelf"
+									className={buttonClassName({
+										asLink: true,
+										size: "sm",
+										className: "gap-2 shadow-xs",
+									})}
+								>
+									<BookOpen className="h-4 w-4" />
+									<span>Đọc trong Tủ sách cộng đồng</span>
+								</LinkWithChannel>
 							</div>
 						</div>
 					) : (

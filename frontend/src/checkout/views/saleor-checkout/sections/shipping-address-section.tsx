@@ -2,10 +2,11 @@
 
 import { useState, useMemo, useEffect, type FC } from "react";
 import { useTranslations } from "next-intl";
-import { MapPin, Loader2, CheckCircle2, Truck, AlertCircle, Building2 } from "lucide-react";
+import { MapPin, CheckCircle2, Truck, AlertCircle, Building2 } from "lucide-react";
 import { Label } from "@/ui/components/ui/label";
 import { Badge } from "@/ui/components/ui/badge";
 import { Button } from "@/ui/components/ui/button";
+import { Loader } from "@/ui/atoms/loader";
 import { cn } from "@/lib/utils";
 import { isInnerCityAddress } from "@/lib/vietnam-administrative/data";
 import { FormSelect, FieldError, AddressFields } from "../address-form-fields";
@@ -333,7 +334,7 @@ export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
 							>
 								{isLocating ? (
 									<>
-										<Loader2 className="h-3.5 w-3.5 animate-spin" />
+										<Loader size="sm" className="mr-1" />
 										<span>Đang xác định...</span>
 									</>
 								) : (
@@ -363,7 +364,7 @@ export const ShippingAddressSection: FC<ShippingAddressSectionProps> = ({
 								)}
 								{locationStatus.type === "prompt" && (
 									<div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
-										<Loader2 className="h-4 w-4 animate-spin" />
+										<Loader size="sm" />
 									</div>
 								)}
 								{locationStatus.type === "error" && (

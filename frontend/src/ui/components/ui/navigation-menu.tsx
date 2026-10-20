@@ -49,7 +49,7 @@ const NavigationMenuTrigger = React.forwardRef<
 		className={cn(navigationMenuTriggerClassName, className)}
 		{...props}
 	>
-		{children}{" "}
+		{children}
 		<ChevronDown
 			className="relative top-px ml-1 h-3 w-3 transition duration-300 group-data-[state=open]:rotate-180"
 			aria-hidden="true"
@@ -78,29 +78,15 @@ const NavigationMenuViewport = React.forwardRef<
 >(({ className, style, ...props }, ref) => {
 	const [header, setHeader] = React.useState<HTMLElement | null>(null);
 
-	React.useLayoutEffect(() => {
-		setHeader(document.getElementById(STOREFRONT_HEADER_ID));
+	React.useEffect(() => {
+		const el = document.getElementById(STOREFRONT_HEADER_ID);
+		if (el) {
+			setHeader(el);
+		}
 	}, []);
 
-	const viewport = (
-		<NavigationMenuPrimitive.Viewport
-			ref={ref}
-			className={cn(
-				"relative w-full overflow-hidden rounded-none bg-background text-foreground shadow-none",
-				"h-[var(--radix-navigation-menu-viewport-height)]",
-				className,
-			)}
-			style={{
-				...style,
-				width: "100%",
-				["--radix-navigation-menu-viewport-width" as string]: "100%",
-			}}
-			{...props}
-		/>
-	);
-
 	if (!header) {
-		return <div className="hidden">{viewport}</div>;
+		return null;
 	}
 
 	return ReactDOM.createPortal(
@@ -108,7 +94,20 @@ const NavigationMenuViewport = React.forwardRef<
 			data-slot="mega-menu-panel"
 			className="absolute inset-x-0 top-full z-30 hidden border-b border-border bg-background shadow-none [&:has([data-state=open])]:block"
 		>
-			{viewport}
+			<NavigationMenuPrimitive.Viewport
+				ref={ref}
+				className={cn(
+					"relative w-full overflow-hidden rounded-none bg-background text-foreground shadow-none",
+					"h-[var(--radix-navigation-menu-viewport-height)]",
+					className,
+				)}
+				style={{
+					...style,
+					width: "100%",
+					["--radix-navigation-menu-viewport-width" as string]: "100%",
+				}}
+				{...props}
+			/>
 		</div>,
 		header,
 	);

@@ -1,5 +1,4 @@
 import { type ReactNode, Suspense } from "react";
-import { getTranslations } from "next-intl/server";
 import { AuthFormSection } from "@/ui/components/auth/auth-form-section";
 import { AccountLogin } from "@/ui/components/account/account-login";
 import { AccountNav } from "@/ui/components/account/account-nav";
@@ -16,13 +15,10 @@ type LayoutProps = {
 	params: Promise<{ locale: string; channel: string }>;
 };
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
-	const { locale } = await params;
-	const t = await getTranslations({ locale, namespace: "account.metadata" });
-	return {
-		title: t("accountTitle"),
-	};
-}
+export const metadata = {
+	title: "Tài khoản của tôi | AuraBook",
+	description: "Quản lý thông tin cá nhân, đơn hàng và địa chỉ giao hàng tại AuraBook.",
+};
 
 export default function AccountLayout({ children, params }: LayoutProps) {
 	return (

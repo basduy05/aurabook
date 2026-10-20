@@ -12,6 +12,8 @@ import { SearchIcon } from "lucide-react";
 import { buttonClassName } from "@/ui/components/ui/button";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { buildStorefrontPath } from "@/lib/storefront-path";
+import { graphRAGStore, type BookRecommendationDetail } from "@/lib/graphrag/graph-store";
+import { GraphRAGAnalysisSection } from "./graphrag-analysis-section";
 
 // Prefetch: default (auto). Search is reached via form submit, not `prefetch={true}` links.
 
@@ -96,7 +98,7 @@ async function SearchContent({
 	const sortParam = Array.isArray(searchParams.sort) ? searchParams.sort[0] : searchParams.sort;
 	const sortBy = parseSearchSortParam(sortParam);
 
-	// Search using Saleor
+	// 1. Tìm kiếm bình thường bằng Saleor GraphQL
 	const result = await searchProducts({
 		query,
 		channel: params.channel,
@@ -107,7 +109,38 @@ async function SearchContent({
 		sortBy,
 	});
 
-	const { products, pagination } = result;
+	let { products, pagination } = result;
+	let isGraphRAGResult = false;
+	let graphRAGInfo: {
+		reasoningSummary: string;
+		matchedConcepts: string[];
+		queryInterpretation: string;
+		recommendations: BookRecommendationDetail[];
+		supplementaryRecommendations?: BookRecommendationDetail[];
+		hasDirectMatch?: boolean;
+	} | null = null;
+
+	// 2. NẾU KHÔNG TÌM THẤY KẾT QUẢ THƯỜNG -> CHUYỂN NGAY LẬP TỨC SANG GRAPHRAG THEO NGỮ CẢNH
+	if (pagination.totalCount === 0 || products.length === 0) {
+		const ragResult = graphRAGStore.searchProductsByContext(query, {
+			channel: params.channel,
+			locale: params.locale,
+		});
+
+		if (ragResult.products.length > 0) {
+			products = ragResult.products;
+			pagination = { totalCount: ragResult.totalCount };
+			isGraphRAGResult = true;
+			graphRAGInfo = {
+				reasoningSummary: ragResult.reasoningSummary,
+				matchedConcepts: ragResult.matchedConcepts,
+				queryInterpretation: ragResult.queryInterpretation,
+				recommendations: ragResult.recommendations,
+				supplementaryRecommendations: ragResult.supplementaryRecommendations,
+				hasDirectMatch: ragResult.hasDirectMatch,
+			};
+		}
+	}
 
 	const isFirstPage = !cursor;
 
@@ -129,29 +162,65 @@ async function SearchContent({
 		<div>
 			{isFirstPage && <SearchCommerceEvent channel={params.channel} zero={false} />}
 			{/* Header with count and sort */}
-			<div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-				<div>
-					<h1 className="text-balance text-h1">{t("resultsFor", { query })}</h1>
+			<div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+				<div className="min-w-0 flex-1">
+					<h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-foreground whitespace-nowrap overflow-hidden text-ellipsis">
+						{isGraphRAGResult
+							? graphRAGInfo?.hasDirectMatch === false
+								? `Chưa có sách về "${query}" - Gợi ý khám phá:`
+								: `Kết quả tìm kiếm ngữ cảnh: "${query}"`
+							: t("resultsFor", { query })}
+					</h1>
 					<p className="mt-1 text-sm text-muted-foreground">
-						{t("resultCount", { count: pagination.totalCount })}
+						{isGraphRAGResult
+							? graphRAGInfo?.hasDirectMatch === false
+								? `Kho sách hiện chưa có ấn phẩm chuyên đề này. Dưới đây là các đầu sách nổi bật hiện có trong kho:`
+								: `Tìm thấy ${pagination.totalCount} ấn phẩm tri thức phù hợp theo ngữ cảnh tự do qua GraphRAG AI`
+							: t("resultCount", { count: pagination.totalCount })}
 					</p>
 				</div>
 				<SearchSort />
 			</div>
 
-			{/* Results grid */}
-			<SearchResults products={products} />
-
-			{/* Pagination */}
-			{(pagination.hasNextPage || pagination.hasPreviousPage) && (
-				<Pagination
-					pageInfo={{
-						hasNextPage: pagination.hasNextPage ?? false,
-						hasPreviousPage: pagination.hasPreviousPage ?? false,
-						startCursor: pagination.prevCursor,
-						endCursor: pagination.nextCursor,
-					}}
+			{/* KẾT QUẢ TÌM KIẾM NGỮ CẢNH GRAPHRAG */}
+			{isGraphRAGResult && graphRAGInfo ? (
+				<GraphRAGAnalysisSection
+					query={query}
+					totalCount={pagination.totalCount}
+					matchedConcepts={graphRAGInfo.matchedConcepts}
+					queryInterpretation={graphRAGInfo.queryInterpretation}
+					reasoningSummary={graphRAGInfo.reasoningSummary}
+					recommendations={graphRAGInfo.recommendations}
+					supplementaryRecommendations={graphRAGInfo.supplementaryRecommendations}
+					hasDirectMatch={graphRAGInfo.hasDirectMatch}
 				/>
+			) : (
+				<>
+					{/* Results grid thông thường cho các từ khóa tìm kiếm */}
+					<section id="search-results-grid" className="scroll-mt-24 pt-6 mt-4 border-t border-border/60 transition-all">
+						<div className="mb-6">
+							<h2 className="text-lg sm:text-xl font-bold text-foreground tracking-tight">
+								Kho ấn phẩm ({pagination.totalCount})
+							</h2>
+							<p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+								{t("resultsFor", { query })}
+							</p>
+						</div>
+						<SearchResults products={products} />
+					</section>
+
+					{/* Pagination */}
+					{(pagination.hasNextPage || pagination.hasPreviousPage) && (
+						<Pagination
+							pageInfo={{
+								hasNextPage: pagination.hasNextPage ?? false,
+								hasPreviousPage: pagination.hasPreviousPage ?? false,
+								startCursor: pagination.prevCursor,
+								endCursor: pagination.nextCursor,
+							}}
+						/>
+					)}
+				</>
 			)}
 		</div>
 	);

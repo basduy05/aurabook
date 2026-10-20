@@ -1263,7 +1263,10 @@ ALLOWED_MIME_TYPES = {
     "image/png": [".png"],
     "image/tiff": [".tiff", ".tif"],
     "image/webp": [".webp"],
-    # Documents
+    # Documents & Ebooks
+    "application/epub+zip": [".epub"],
+    "application/pdf": [".pdf"],
+    "application/x-mobipocket-ebook": [".mobi"],
     "application/msword": [".doc"],
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [
         ".docx"

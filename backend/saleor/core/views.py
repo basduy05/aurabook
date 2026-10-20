@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 
 
 def home(request):
-    storefront_url = os.environ.get("STOREFRONT_URL", "")
-    dashboard_url = os.environ.get("DASHBOARD_URL", "")
+    storefront_url = os.environ.get("STOREFRONT_URL", "http://localhost:3000")
+    dashboard_url = os.environ.get("DASHBOARD_URL", "http://localhost:9000/dashboard/")
     return TemplateResponse(
         request,
         "home/index.html",

@@ -76,7 +76,7 @@ export async function HeaderNavSlot({ params }: { params: BrowseRouteParams }) {
 
 	return (
 		<nav
-			className="hidden flex-1 justify-center lg:ml-10 lg:flex xl:ml-14"
+			className="hidden flex-1 justify-center lg:flex lg:mx-3 xl:mx-6 min-w-0"
 			aria-label={tNavHeader("mainAriaLabel")}
 		>
 			<NavLinksDesktop items={navItems} nav={content.chrome.nav} />
@@ -89,7 +89,7 @@ export async function HeaderSearchSlot({ params }: { params: BrowseRouteParams }
 	const tSearchBar = await getTranslations({ locale, namespace: "search.bar" });
 
 	return (
-		<div className="hidden md:flex md:max-w-md md:flex-1 md:justify-end lg:flex-none">
+		<div className="hidden md:flex md:w-56 lg:w-60 xl:w-72 md:justify-end shrink-0">
 			<SearchBar
 				locale={locale}
 				channel={channel}

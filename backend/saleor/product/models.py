@@ -445,7 +445,15 @@ class ProductVariant(SortableModel, ModelWithMetadata, ModelWithExternalReferenc
         return self.weight or self.product.weight or self.product.product_type.weight
 
     def is_shipping_required(self) -> bool:
-        return self.product.product_type.is_shipping_required
+        if not self.product.product_type.is_shipping_required:
+            return False
+        # Ebook and digital items do not require physical shipping
+        if self.sku and self.sku.upper().startswith(("EB-", "DIGITAL-", "EBOOK-")):
+            return False
+        name_lower = (self.name or "").lower()
+        if "ebook" in name_lower or "điện tử" in name_lower or "digital" in name_lower:
+            return False
+        return True
 
     def is_gift_card(self) -> bool:
         return self.product.product_type.kind == ProductTypeKind.GIFT_CARD

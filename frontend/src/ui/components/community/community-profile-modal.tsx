@@ -83,7 +83,17 @@ export function CommunityProfileModal({
 		}
 	}, [user, isOpen]);
 
-	if (!isOpen || !user) return null;
+	const isUsernameCooldown = useMemo(() => {
+		if (!user?.lastUsernameChange) return { active: false, daysLeft: 0 };
+		const last = new Date(user.lastUsernameChange).getTime();
+		const diff = Date.now() - last;
+		const sevenDays = 7 * 24 * 60 * 60 * 1000;
+		if (diff < sevenDays) {
+			const daysLeft = Math.ceil((sevenDays - diff) / (24 * 60 * 60 * 1000));
+			return { active: true, daysLeft };
+		}
+		return { active: false, daysLeft: 0 };
+	}, [user?.lastUsernameChange]);
 
 	const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
@@ -109,20 +119,9 @@ export function CommunityProfileModal({
 		reader.readAsDataURL(file);
 	};
 
-	const isUsernameCooldown = useMemo(() => {
-		if (!user?.lastUsernameChange) return { active: false, daysLeft: 0 };
-		const last = new Date(user.lastUsernameChange).getTime();
-		const diff = Date.now() - last;
-		const sevenDays = 7 * 24 * 60 * 60 * 1000;
-		if (diff < sevenDays) {
-			const daysLeft = Math.ceil((sevenDays - diff) / (24 * 60 * 60 * 1000));
-			return { active: true, daysLeft };
-		}
-		return { active: false, daysLeft: 0 };
-	}, [user?.lastUsernameChange]);
-
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+		if (!user) return;
 		if (!displayName.trim()) {
 			setError("Vui lòng nhập tên hiển thị");
 			return;

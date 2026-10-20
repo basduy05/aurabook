@@ -482,11 +482,13 @@ class CheckoutLine(SyncWebhookControlContextModelObjectType[models.CheckoutLine]
     def resolve_requires_shipping(
         root: SyncWebhookControlContext[models.CheckoutLine], info: ResolveInfo
     ):
-        def is_shipping_required(product_type):
-            return product_type.is_shipping_required
+        def is_shipping_required(variant):
+            if not variant:
+                return True
+            return variant.is_shipping_required()
 
         return (
-            ProductTypeByVariantIdLoader(info.context)
+            ProductVariantByIdLoader(info.context)
             .load(root.node.variant_id)
             .then(is_shipping_required)
         )
@@ -1179,16 +1181,15 @@ class Checkout(SyncWebhookControlContextModelObjectType[models.Checkout]):
         root: SyncWebhookControlContext[models.Checkout], info: ResolveInfo
     ):
         def is_shipping_required(lines):
-            product_ids = [line_info.product.id for line_info in lines]
-
-            def with_product_types(product_types):
-                return any(pt.is_shipping_required for pt in product_types)
-
-            return (
-                ProductTypeByProductIdLoader(info.context)
-                .load_many(product_ids)
-                .then(with_product_types)
-            )
+            for line_info in lines:
+                if not line_info.product_type.is_shipping_required:
+                    continue
+                variant = getattr(line_info, "variant", None)
+                if variant and hasattr(variant, "is_shipping_required"):
+                    if not variant.is_shipping_required():
+                        continue
+                return True
+            return False
 
         return (
             CheckoutLinesInfoByCheckoutTokenLoader(info.context)

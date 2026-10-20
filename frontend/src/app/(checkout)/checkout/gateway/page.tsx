@@ -11,10 +11,10 @@ import {
 	QrCode,
 	CreditCard,
 	Lock,
-	RefreshCw,
 	Sparkles,
 } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
+import { Loader } from "@/ui/atoms/loader";
 
 function GatewayContent() {
 	const searchParams = useSearchParams();
@@ -295,8 +295,8 @@ function GatewayContent() {
 								className={`w-full py-6 text-base font-bold shadow-md rounded-xl ${providerConfig.brandColor}`}
 							>
 								{isProcessing ? (
-									<div className="flex items-center justify-center gap-2">
-										<RefreshCw className="w-5 h-5 animate-spin" />
+									<div className="flex items-center justify-center gap-2 text-white">
+										<Loader size="sm" className="text-white fill-white" />
 										<span>Ngân hàng đang xử lý giao dịch…</span>
 									</div>
 								) : (
@@ -343,10 +343,7 @@ export default function GatewayPage() {
 		<Suspense
 			fallback={
 				<div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
-					<div className="flex items-center gap-2 text-sm text-slate-500 font-medium">
-						<RefreshCw className="w-4 h-4 animate-spin text-blue-600" />
-						<span>Đang kết nối đến cổng thanh toán…</span>
-					</div>
+					<Loader size="lg" text="Đang kết nối đến cổng thanh toán bảo mật…" />
 				</div>
 			}
 		>

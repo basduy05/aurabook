@@ -517,12 +517,6 @@ export function updateGHNStatus(
 		return { shipment: target, isCompleted: newStatus === "delivered" };
 	}
 
-	// 2. Prevent backward transition if order was already delivered
-	if (target.status === "delivered" && newStatus !== "delivered") {
-		console.warn(`[GHN] Vận đơn ${target.trackingCode} đã hoàn tất giao hàng, không thể hoàn tác về ${newStatus}.`);
-		return { shipment: target, isCompleted: true };
-	}
-
 	const now = new Date();
 	const nowIso = now.toISOString();
 
@@ -570,6 +564,8 @@ export function updateGHNStatus(
 
 	if (newStatus === "delivered") {
 		target.deliveredAt = nowIso;
+	} else {
+		target.deliveredAt = undefined;
 	}
 
 	// Ensure chronological history with realistic timestamp spacing

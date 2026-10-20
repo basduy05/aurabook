@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { Send, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { Send, CheckCircle2 } from "lucide-react";
+import { Loader } from "@/ui/atoms/loader";
 
 export function ContactFormClient({ isVi = true }: { isVi?: boolean }) {
 	const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
@@ -138,7 +139,7 @@ export function ContactFormClient({ isVi = true }: { isVi?: boolean }) {
 			>
 				{status === "submitting" ? (
 					<>
-						<Loader2 className="h-4 w-4 animate-spin" />
+						<Loader size="sm" className="mr-1 text-primary-foreground fill-primary-foreground" />
 						{isVi ? "Đang gửi thông tin..." : "Sending..."}
 					</>
 				) : (

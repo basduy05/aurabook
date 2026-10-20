@@ -216,6 +216,8 @@ export async function VariantSectionDynamic({
 					disabledReason={disabledReason}
 					secureCheckoutLabel={secureCheckoutLabel}
 					freeShippingTrustLabel={freeShippingTrustLabel}
+					productSlug={product.slug}
+					productName={product.name}
 				/>
 
 				<StickyBar productName={product.name} price={price} show={!isAddToCartDisabled} />

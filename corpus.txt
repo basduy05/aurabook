@@ -1,0 +1,226 @@
+import os
+import random
+
+WORK_DIR = os.environ.get("WORK_DIR", "/content/drive/MyDrive/Piper_Viet_TTS")
+OUTPUT_FILE = f"{WORK_DIR}/corpus.txt" if os.path.exists("/content") or os.environ.get("WORK_DIR") else "corpus_sentences.txt"
+TARGET_COUNT = 3000
+
+# ==============================================================================
+# BỘ CÂU MẪU ĐỐI THOẠI CHATBOT AGENT CHĂM SÓC KHÁCH HÀNG (VOICE AI CSKH) AU-RA-BÚC
+# QUY CHUẨN:
+# 1. Thuần Việt 100%, không có từ tiếng Anh (phiên âm: Au-ra-búc, đê-rờ-mờ, i-búc, ô-đi-ô, Đi-phi, oép ri-đơ, quy-rờ...)
+# 2. Số và tiền tệ viết hoàn toàn bằng chữ (hai mươi, một trăm năm mươi nghìn đồng, năm sao...)
+# 3. Câu từ có nghĩa thực tế, logic, đúng vai trò Chatbot Agent CSKH:
+#    - Tra cứu đơn hàng & hành trình vận chuyển Giao Hàng Nhanh
+#    - Hủy đơn hàng, hoàn tiền, đổi địa chỉ
+#    - Tìm kiếm sách, báo giá, tư vấn theo tác giả / thể loại (Đi-phi)
+#    - Hướng dẫn đọc sách điện tử bảo mật đê-rờ-mờ lờ-xê-pê trên oép ri-đơ
+#    - Chính sách đổi trả sách lỗi, khiếu nại, kết nối tổng đài viên
+# ==============================================================================
+
+# Dữ liệu thực tế của hệ thống
+book_titles = [
+    "Đắc Nhân Tâm", "Nhà Giả Kim", "Hoàng Tử Bé", "Tuổi Trẻ Đáng Giá Bao Nhiêu",
+    "Cà Phê Cùng Tony", "Tôi Tự Học", "Hành Trình Về Phương Đông", "Lối Sống Tối Giản",
+    "Tâm Lý Học Về Tiền", "Khởi Nghiệp Tinh Gọn", "Muôn Kiếp Nhân Sinh", "Hiểu Về Trái Tim",
+    "Sức Mạnh Của Hiện Tại", "Tư Duy Nhanh Và Chậm", "Dám Bị Ghét", "Chiến Binh Cầu Vồng",
+    "Kỷ Nguyên Trí Tuệ Nhân Tạo", "Hạt Giống Tâm Hồn", "Không Gia Đình", "Những Người Khốn Khổ"
+]
+
+genres = [
+    "tâm lý học ứng dụng", "kinh doanh và quản trị", "văn học kinh điển",
+    "tiểu thuyết trinh thám", "kỹ năng phát triển bản thân", "lịch sử và văn hóa Việt Nam",
+    "triết học đời sống", "khoa học và công nghệ thông tin", "nuôi dạy con và gia đình", "truyện thiếu nhi"
+]
+
+order_codes = [
+    "một không hai ba", "hai không năm sáu", "ba một bốn tám", "bốn năm bảy hai",
+    "năm sáu chín một", "sáu hai ba tám", "bảy một chín không", "tám ba bốn năm",
+    "chín hai một sáu", "ba bảy tám bốn", "năm hai một chín", "bảy sáu ba hai"
+]
+
+cities = [
+    "Hà Nội", "thành phố Hồ Chí Minh", "Đà Nẵng", "Hải Phòng", "Cần Thơ",
+    "Huế", "Nha Trang", "Bình Dương", "Đồng Nai", "Quảng Ninh", "Vũng Tàu", "Đà Lạt"
+]
+
+customer_titles = [
+    "anh Nam", "chị Lan", "anh Tuấn", "chị Mai", "anh Dũng",
+    "chị Thảo", "anh Hùng", "chị Hương", "anh Minh", "chị Linh"
+]
+
+price_strings = [
+    "tám mươi nghìn đồng", "một trăm nghìn đồng", "một trăm hai mươi nghìn đồng",
+    "một trăm ba mươi lăm nghìn đồng", "một trăm năm mươi nghìn đồng", "một trăm tám mươi nghìn đồng",
+    "hai trăm nghìn đồng", "hai trăm hai mươi nghìn đồng", "hai trăm năm mươi nghìn đồng",
+    "ba trăm nghìn đồng", "ba trăm năm mươi nghìn đồng"
+]
+
+time_strings = [
+    "trong chiều nay", "trước mười tám giờ chiều nay", "trong sáng ngày mai",
+    "trước mười hai giờ trưa mai", "trong vòng hai ngày làm việc", "trong ngày hôm nay"
+]
+
+cancellation_reasons = [
+    "muốn đổi địa chỉ nhận hàng mới", "đặt nhầm số lượng sách", "chọn nhầm phương thức thanh toán",
+    "muốn đổi sang bản bìa cứng", "chưa có nhu cầu đọc cuốn này vào lúc này", "tìm thấy cuốn sách tương tự trong tủ sách"
+]
+
+# 1. NHÓM TRA CỨU ĐƠN HÀNG (ORDER LOOKUP & TRACKING)
+order_lookup_templates = [
+    # Câu hỏi của khách hàng
+    "Kiểm tra giúp tôi đơn hàng mã số {order_code} đã được gửi đi chưa ạ?",
+    "Cho tôi hỏi đơn hàng {order_code} của tôi bao giờ thì giao đến nơi vậy bạn?",
+    "Tôi muốn tra cứu tình trạng vận chuyển của đơn hàng sách {book} mã số {order_code}.",
+    "Bưu tá Giao Hàng Nhanh đã nhận kiện hàng {order_code} gửi về {city} chưa bạn ơi?",
+    "Đơn hàng mã số {order_code} của tôi hiện tại đang ở bưu cục nào rồi?",
+    "Tôi đã đặt mua cuốn {book} hôm qua, mã đơn là {order_code}, kiểm tra giúp tôi nhé.",
+    "Bạn kiểm tra xem đơn hàng {order_code} của tôi đã xuất kho bãi chưa?",
+    "Đơn hàng gửi về {city} mã số {order_code} dự kiến khi nào thì tới tay tôi?",
+    
+    # Câu trả lời của Chatbot Agent
+    "Dạ vâng {customer}, đơn hàng mã số {order_code} của bạn đã được xuất kho và đang trên đường vận chuyển.",
+    "Tôi đã kiểm tra mã đơn {order_code}, kiện hàng hiện đang ở bưu cục {city} và dự kiến giao {time}.",
+    "Đơn hàng {order_code} gồm cuốn sách {book} đã được bàn giao cho bưu tá Giao Hàng Nhanh {time} nhé.",
+    "Dạ {customer}, đơn hàng {order_code} của bạn đang được đóng gói chống sốc rất cẩn thận tại kho hàng.",
+    "Hệ thống ghi nhận đơn hàng mã số {order_code} đã giao thành công vào sáng nay, bạn đã nhận được sách chưa ạ?",
+    "Đơn hàng gửi về {city} của bạn đang được chuyển phát hỏa tốc, bưu tá sẽ gọi điện trước khi giao nhé.",
+    "Mã số vận đơn Giao Hàng Nhanh cho đơn hàng {order_code} của bạn là gờ-hắt-nờ {order_code}.",
+    "Dạ, đơn hàng {order_code} có giá trị thanh toán là {price}, bạn nhớ chuẩn bị tiền mặt khi nhận hàng nhé."
+]
+
+# 2. NHÓM HỦY ĐƠN HÀNG & HOÀN TIỀN (ORDER CANCELLATION & REFUND)
+order_cancel_templates = [
+    # Câu hỏi của khách hàng
+    "Tôi muốn hủy đơn hàng mã số {order_code} vì tôi {cancel_reason}.",
+    "Bạn ơi hủy giúp tôi đơn hàng {order_code} vừa đặt được không?",
+    "Tôi lỡ đặt nhầm cuốn {book}, tôi muốn hủy đơn {order_code} ngay bây giờ.",
+    "Nếu tôi hủy đơn hàng mã số {order_code} thì số tiền {price} bao giờ được hoàn lại?",
+    "Đơn hàng {order_code} đã gửi đi chưa, nếu chưa thì cho tôi hủy nhé.",
+    "Tôi muốn hủy đơn cũ mã số {order_code} để đặt lại đơn mới với mã giảm giá khác.",
+    
+    # Câu trả lời của Chatbot Agent
+    "Dạ vâng {customer}, đơn hàng {order_code} chưa xuất kho nên tôi đã hỗ trợ hủy thành công cho bạn rồi nhé.",
+    "Yêu cầu hủy đơn hàng mã số {order_code} của bạn đã được ghi nhận thành công trên hệ thống Au-ra-búc.",
+    "Dạ rất tiếc, đơn hàng {order_code} đã bàn giao cho bên bưu cục nên không thể hủy trực tiếp, bạn vui lòng từ chối nhận khi bưu tá liên hệ nhé.",
+    "Số tiền {price} của đơn hàng {order_code} đã được làm thủ tục hoàn về tài khoản của bạn trong vòng ba ngày làm việc.",
+    "Dạ {customer}, tôi đã hủy đơn hàng {order_code} theo yêu cầu, bạn có cần tôi hướng dẫn chọn lại sách không ạ?",
+    "Hệ thống đã gửi thư điện tử xác nhận hủy đơn hàng mã số {order_code} về địa chỉ cá nhân của bạn rồi nhé."
+]
+
+# 3. NHÓM TÌM KIẾM SÁCH & TƯ VẤN NỘI DUNG (BOOK SEARCH & RAG RECOMMENDATION)
+book_search_templates = [
+    # Câu hỏi của khách hàng
+    "Bên bạn có cuốn sách {book} không, giá bán hiện tại là bao nhiêu vậy?",
+    "Tư vấn giúp tôi một cuốn sách hay thuộc thể loại {genre} với.",
+    "Tôi đang muốn tìm các tác phẩm cùng chủ đề với cuốn {book}, bạn gợi ý giúp tôi nhé.",
+    "Cuốn sách {book} này dày bao nhiêu trang và nội dung chính nói về điều gì?",
+    "Tác phẩm {book} hiện tại đang có sẵn hàng tại kho hay phải chờ đặt trước?",
+    "Bên bạn có bản sách điện tử i-búc của cuốn {book} để đọc ngay trên máy không?",
+    "Tôi muốn tìm sách về {genre} dành cho người mới bắt đầu đọc, có cuốn nào phù hợp không?",
+    
+    # Câu trả lời của Chatbot Agent
+    "Dạ có ạ, cuốn sách {book} hiện đang có sẵn tại kho với mức giá ưu đãi là {price}.",
+    "Nếu bạn yêu thích thể loại {genre}, tôi xin gợi ý cuốn {book}, tác phẩm này nhận được rất nhiều đánh giá năm sao.",
+    "Cuốn sách {book} thuộc thể loại {genre}, nội dung mang lại góc nhìn sâu sắc về tư duy và cuộc sống.",
+    "Dạ {customer}, cuốn sách {book} hiện đang được giảm giá hai mươi phần trăm, giá bán chỉ còn {price}.",
+    "Hệ thống Đi-phi của Au-ra-búc đã tìm thấy thông tin chi tiết về cuốn {book}, cuốn sách này dày ba trăm hai mươi trang.",
+    "Tác phẩm {book} hiện có cả bản in bìa cứng sang trọng và bản sách điện tử i-búc đọc trực tuyến.",
+    "Tôi đã thêm cuốn sách {book} vào giỏ hàng của bạn rồi, bạn có muốn xem thêm tựa sách nào khác không ạ?"
+]
+
+# 4. NHÓM BẢN QUYỀN ĐÊ-RỜ-MỜ & TRÌNH ĐỌC TRỰC TUYẾN OÉP RI-ĐƠ (DRM LCP & WEB READER)
+drm_reader_templates = [
+    # Câu hỏi của khách hàng
+    "Tại sao tôi không mở được sách {book} trên trình đọc trực tuyến oép ri-đơ vậy bạn?",
+    "Hệ thống báo tài khoản của tôi đang mở ở một thẻ khác là sao, xử lý thế nào?",
+    "Cuốn sách điện tử i-búc {book} có thể tải về đọc ngoại tuyến được không ạ?",
+    "Chính sách bảo vệ bản quyền đê-rờ-mờ lờ-xê-pê của Au-ra-búc hoạt động như thế nào?",
+    "Làm sao để tôi đổi màu nền giấy ngà và chỉnh cỡ chữ to hơn khi đọc trên oép ri-đơ?",
+    
+    # Câu trả lời của Chatbot Agent
+    "Dạ {customer}, công nghệ đê-rờ-mờ lờ-xê-pê chỉ cho phép mở sách trên một thẻ trình duyệt duy nhất để bảo vệ quyền tác giả.",
+    "Bạn vui lòng đóng thẻ trình duyệt cũ hoặc bấm nút mở khóa phiên đọc trên trang cá nhân là vào đọc lại được ngay nhé.",
+    "Bạn có thể tùy chỉnh cỡ chữ to nhỏ, chọn màu nền vàng chống mỏi mắt hoặc bật chế độ ban đêm trên thanh công cụ.",
+    "Tiến độ đọc của cuốn {book} đã được lưu tự động, lần sau bạn đăng nhập hệ thống sẽ mở đúng trang bạn đang đọc dở.",
+    "Mỗi bản sách điện tử i-búc mua tại Au-ra-búc đều được cấp giấy phép bản quyền đê-rờ-mờ vĩnh viễn cho tài khoản của bạn.",
+    "Để bảo mật nội dung cho tác giả, trình đọc oép ri-đơ không hỗ trợ tính năng in ấn hoặc sao chép văn bản ra ngoài."
+]
+
+# 5. NHÓM ĐỔI TRẢ, GIAO NHẬN & HỖ TRỢ KỸ THUẬT (RETURNS, SHIPPING & ESCALATION)
+support_templates = [
+    # Câu hỏi của khách hàng
+    "Sách giao đến bị cong mép bìa do vận chuyển thì tôi có được đổi cuốn mới không?",
+    "Chính sách bảo hành đổi trả sách của Au-ra-búc quy định trong thời gian bao lâu?",
+    "Cước phí vận chuyển đơn hàng về {city} là bao nhiêu vậy bạn?",
+    "Tôi muốn nói chuyện trực tiếp với nhân viên tổng đài thì làm thế nào?",
+    "Đơn hàng của tôi bị giao chậm hơn dự kiến, bạn kiểm tra lại giúp tôi với.",
+    
+    # Câu trả lời của Chatbot Agent
+    "Dạ {customer}, Au-ra-búc hỗ trợ đổi mới miễn phí trong vòng bảy ngày nếu sách bị lỗi in ấn hoặc hư hại do vận chuyển.",
+    "Đơn hàng mua sách có giá trị từ ba trăm nghìn đồng trở lên sẽ được miễn phí vận chuyển trên toàn quốc.",
+    "Cước phí giao hàng tiêu chuẩn về {city} là hai mươi lăm nghìn đồng, thời gian nhận hàng từ một đến hai ngày.",
+    "Dạ được chứ ạ, tôi đang chuyển tiếp kết nối của bạn đến nhân viên tổng đài chăm sóc khách hàng, xin vui lòng giữ máy.",
+    "Bạn chỉ cần chụp lại hình ảnh cuốn sách bị lỗi gửi qua mục hỗ trợ, bưu tá sẽ mang cuốn mới đến đổi tận nhà cho bạn.",
+    "Tôi rất xin lỗi vì sự chậm trễ này, tôi đã hối thúc bưu tá Giao Hàng Nhanh ưu tiên phát kiện hàng {time} cho bạn rồi ạ."
+]
+
+# 6. NHÓM CÂU CHÀO, ĐIỀU HƯỚNG & KẾT THÚC HỘI THOẠI LỊCH SỰ
+conversational_templates = [
+    "Dạ Au-ra-búc xin chào! Tôi là trợ lý ảo hỗ trợ tra cứu đơn hàng và tìm kiếm sách, tôi có thể giúp gì cho bạn hôm nay ạ?",
+    "Xin chào {customer}, rất vui được gặp lại bạn, bạn cần kiểm tra đơn hàng hay tìm tựa sách nào ạ?",
+    "Vâng ạ, tôi đã hiểu yêu cầu của {customer}, xin vui lòng chờ trong giây lát để hệ thống tra cứu cơ sở dữ liệu.",
+    "Dạ không có chi, đó là nhiệm vụ của tôi, bạn có cần hỗ trợ thêm thông tin gì khác nữa không ạ?",
+    "Cảm ơn bạn đã tin tưởng mua sách tại Au-ra-búc, chúc bạn một ngày tràn đầy năng lượng và nhiều niềm vui!",
+    "Xin lỗi bạn, tôi chưa nghe rõ câu vừa rồi, bạn có thể vui lòng nói lại vào mi-crô một lần nữa được không ạ?",
+    "Nếu bạn cần thêm bất kỳ sự trợ giúp nào về tài khoản hoặc đơn hàng, đừng ngần ngại gọi tôi nhé."
+]
+
+def generate_sentence(template):
+    """Điền dữ liệu thực tế vào mẫu câu để tạo ra câu thoại có ý nghĩa hoàn chỉnh."""
+    return template.format(
+        book=random.choice(book_titles),
+        genre=random.choice(genres),
+        order_code=random.choice(order_codes),
+        city=random.choice(cities),
+        customer=random.choice(customer_titles),
+        price=random.choice(price_strings),
+        time=random.choice(time_strings),
+        cancel_reason=random.choice(cancellation_reasons)
+    )
+
+def build_corpus(target_count=TARGET_COUNT, output_path=OUTPUT_FILE):
+    """Tạo ra tập câu thoại đa dạng, chuẩn Tiếng Việt và giàu ý nghĩa nghiệp vụ."""
+    all_templates = (
+        order_lookup_templates * 4 +
+        order_cancel_templates * 3 +
+        book_search_templates * 4 +
+        drm_reader_templates * 3 +
+        support_templates * 3 +
+        conversational_templates * 2
+    )
+
+    sentences = set()
+
+    # Sinh câu từ các mẫu hội thoại với các thực thể thay đổi
+    while len(sentences) < target_count:
+        tpl = random.choice(all_templates)
+        sentence = generate_sentence(tpl).strip()
+        sentences.add(sentence)
+
+    sentence_list = list(sentences)[:target_count]
+    random.shuffle(sentence_list)
+
+    # Ghi tệp
+    dir_name = os.path.dirname(output_path)
+    if dir_name:
+        os.makedirs(dir_name, exist_ok=True)
+    with open(output_path, "w", encoding="utf-8") as f:
+        for s in sentence_list:
+            f.write(s + "\n")
+
+    print(f"Da tao thanh cong {len(sentence_list)} cau thoai Chatbot CSKH thuan Viet tai: {output_path}")
+    return sentence_list
+
+if __name__ == "__main__":
+    build_corpus(TARGET_COUNT, OUTPUT_FILE)

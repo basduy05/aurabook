@@ -8,7 +8,9 @@ import { buildStorefrontPath } from "@/lib/storefront-path";
 
 const RESERVED_ROOT_SEGMENTS = new Set([
 	"admin",
+	"system-admin",
 	"community-admin",
+	"ai-admin",
 	"api",
 	"checkout",
 	"order",
@@ -90,7 +92,22 @@ export function middleware(request: NextRequest) {
 	// Canonical format: /{locale}/{channel}/…
 	if (isStorefrontLocaleSlug(first)) {
 		if (second && isChannelSlug(second)) {
+			if (rest[0] === "system-admin" || rest[0] === "ai-admin" || rest[0] === "community-admin") {
+				const url = request.nextUrl.clone();
+				const target = rest[0] === "system-admin" ? "system-admin" : "system-admin";
+				const sub = rest.slice(1).join("/");
+				url.pathname = `/${target}${sub ? `/${sub}` : ""}`;
+				return NextResponse.redirect(url, 308);
+			}
 			return withBrowseLocaleCookie(request, NextResponse.next(), first);
+		}
+
+		if (second === "system-admin" || second === "ai-admin" || second === "community-admin") {
+			const url = request.nextUrl.clone();
+			const target = "system-admin";
+			const sub = rest.join("/");
+			url.pathname = `/${target}${sub ? `/${sub}` : ""}`;
+			return NextResponse.redirect(url, 308);
 		}
 
 		// /{locale} only → add default/paired channel
@@ -106,10 +123,26 @@ export function middleware(request: NextRequest) {
 
 	// Legacy: /{channel}/… → /{defaultLocale}/{channel}/…
 	if (isChannelSlug(first)) {
+		if (second === "system-admin" || second === "ai-admin" || second === "community-admin") {
+			const url = request.nextUrl.clone();
+			const target = "system-admin";
+			const sub = rest.join("/");
+			url.pathname = `/${target}${sub ? `/${sub}` : ""}`;
+			return NextResponse.redirect(url, 308);
+		}
 		const url = request.nextUrl.clone();
 		const suffix = [second, ...rest].filter(Boolean).join("/");
 		url.pathname = buildStorefrontPath(defaultLocale, first, suffix ? `/${suffix}` : "");
 		return withBrowseLocaleCookie(request, NextResponse.redirect(url, 308), defaultLocale);
+	}
+
+	// Bare storefront path without /{locale}/{channel} (e.g. /reader/..., /products/..., /community/...)
+	const targetChannel = getPairedChannelForLocale(resolvedLocale, resolvedChannel) || defaultChannel;
+	if (targetChannel) {
+		const url = request.nextUrl.clone();
+		const suffix = [first, second, ...rest].filter(Boolean).join("/");
+		url.pathname = buildStorefrontPath(resolvedLocale, targetChannel, suffix ? `/${suffix}` : "");
+		return withBrowseLocaleCookie(request, NextResponse.redirect(url, 308), resolvedLocale);
 	}
 
 	return NextResponse.next();

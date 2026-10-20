@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import {
 	BookOpen,
 	Library,
@@ -17,6 +18,7 @@ import {
 	ArrowUp,
 } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
+import { Loader } from "@/ui/atoms/loader";
 import { type CommunityPost, type CommunityUser } from "@/lib/community/types";
 import { type TrendingBookItem, type ActiveReaderItem } from "@/lib/community/storage";
 import { type BookshelfItem } from "@/app/api/community/bookshelf/route";
@@ -92,6 +94,11 @@ export function CommunityFeed() {
 			const params = new URLSearchParams(window.location.search);
 			const userParam = params.get("user") || params.get("u");
 			const postParam = params.get("post") || params.get("postId");
+
+			const tabParam = params.get("tab");
+			if (tabParam === "bookshelf" || tabParam === "reviews" || tabParam === "saved" || tabParam === "feed") {
+				setActiveNav(tabParam as CommunityNavTab);
+			}
 
 			if (userParam) {
 				setViewProfileTarget(userParam);
@@ -894,10 +901,8 @@ export function CommunityFeed() {
 
 								{/* Books Grid or Empty State */}
 								{bookshelfData.isLoading ? (
-									<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-										{[1, 2].map((i) => (
-											<div key={i} className="h-52 rounded-2xl bg-muted/40 animate-pulse border border-border" />
-										))}
+									<div className="flex flex-col items-center justify-center py-16 bg-card border border-border rounded-2xl shadow-2xs">
+										<Loader size="lg" text="Đang nạp dữ liệu tủ sách bản quyền..." />
 									</div>
 								) : !currentUser ? (
 									<div className="rounded-2xl border border-dashed border-border p-12 text-center bg-card">
@@ -989,15 +994,18 @@ export function CommunityFeed() {
 
 												{/* Action Buttons */}
 												<div className="mt-3 flex items-center gap-2">
-													<Link href={`/products/${book.productSlug}`} className="flex-1">
+													<LinkWithChannel
+														href={`/reader/${book.productSlug}?title=${encodeURIComponent(book.title)}&license=${encodeURIComponent("lcp-" + book.id)}&back=/community?tab=bookshelf`}
+														className="flex-1"
+													>
 														<Button
 															size="sm"
 															className="w-full h-8 text-[12px] font-medium gap-1.5"
 														>
 															<BookOpen className="h-3.5 w-3.5" />
-															Đọc sách
+															Đọc sách ngay
 														</Button>
-													</Link>
+													</LinkWithChannel>
 													{book.orderNumber && book.orderNumber !== "DRM-LICENSED" && (
 														<Link href={`/vi/channel-vnd/account/orders/${book.orderNumber}`}>
 															<Button
@@ -1044,10 +1052,8 @@ export function CommunityFeed() {
 
 								{/* Saved Posts Feed */}
 								{isLoading ? (
-									<div className="space-y-4">
-										{[1, 2].map((i) => (
-											<div key={i} className="h-44 rounded-2xl bg-muted/40 animate-pulse border border-border" />
-										))}
+									<div className="flex flex-col items-center justify-center py-16 bg-card border border-border rounded-2xl shadow-2xs">
+										<Loader size="lg" text="Đang tải danh sách bài viết đã lưu..." />
 									</div>
 								) : filteredPosts.length === 0 ? (
 									<div className="rounded-2xl border border-dashed border-border p-12 text-center">
@@ -1155,7 +1161,10 @@ export function CommunityFeed() {
 								{/* Posts Feed */}
 								{isLoading ? (
 									<div className="space-y-4">
-										{[1, 2, 3].map((i) => (
+										<div className="flex flex-col items-center justify-center py-12 bg-card border border-border rounded-2xl shadow-2xs">
+											<Loader size="lg" text="Đang tải dòng thời gian cộng đồng AuraBook..." />
+										</div>
+										{[1, 2].map((i) => (
 											<div key={i} className="h-44 rounded-2xl bg-muted/40 animate-pulse border border-border" />
 										))}
 									</div>

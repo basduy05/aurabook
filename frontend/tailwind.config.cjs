@@ -91,7 +91,8 @@ module.exports = {
 				emphasized: "var(--ease-emphasized)",
 			},
 			fontFamily: {
-				sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
+				sans: ["var(--font-geist-sans)", "'Be Vietnam Pro'", "system-ui", "sans-serif"],
+				serif: ["'Literata'", "'Merriweather'", "'Lora'", "Georgia", "Cambria", "serif"],
 				mono: ["var(--font-geist-mono)", "monospace"],
 			},
 			// Semantic type scale — fluid sizes from brand.css with weight/tracking/leading

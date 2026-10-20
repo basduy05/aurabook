@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict ifjWeMGj3M8EAIRPvhfWmsLrDXiWXx76RaaqSezhhYK33bgsNUcEbhUcicYQamn
+\restrict PnslLgL408HXPefgvvsWEjq0EF5oiyvwPwk5RhwelGe7LSIoBXw8KRK7K3zraui
 
 -- Dumped from database version 16.15 (Debian 16.15-1.pgdg12+2)
 -- Dumped by pg_dump version 16.15 (Debian 16.15-1.pgdg12+2)
@@ -4602,6 +4602,9 @@ COPY public.account_address (id, first_name, last_name, company_name, street_add
 25	Duy	Nguyễn		số nhà 12 đường Cam Thượng		HUYỆN BA VÌ		VN	Hà Nội	+84362632175		{}	{}	f
 28	Duy	Bas		Coc Thon	Cam Thuong	HUYỆN BA VÌ	100000	VN	Hà Nội	+84912345678		{}	{}	f
 27	Duy	Bas		Coc Thon	Cam Thuong	HUYỆN BA VÌ	100000	VN	Hà Nội	+84912345678		{}	{}	f
+61	Duy	Nguyen Ba		Coc Thon, Cam Thuong	Ba Vi	QUẬN THANH XUÂN	100000	VN	Hà Nội	+84362632175		{}	{}	f
+62	Duy	Nguyen Ba		Coc Thon, Cam Thuong	Ba Vi	QUẬN THANH XUÂN	100000	VN	Hà Nội	+84362632175		{}	{}	f
+63	Duy	Nguyen Ba		Coc Thon, Cam Thuong	Ba Vi	QUẬN THANH XUÂN	100000	VN	Hà Nội	+84362632175		{}	{}	f
 \.
 
 
@@ -4620,6 +4623,9 @@ COPY public.account_customerevent (id, date, type, parameters, user_id, app_id, 
 12	2026-10-09 17:40:10.895126+00	placed_order	{}	6	\N	0a7b5191-5bec-490c-9fd8-aa550e6c80bf
 13	2026-10-10 17:32:41.499765+00	placed_order	{}	6	\N	b6582232-9eba-49a2-afcc-807bc51d5710
 14	2026-10-10 18:05:05.259371+00	placed_order	{}	6	\N	88bda358-3d7a-47d3-8b0e-4cf935f8ab2a
+47	2026-10-15 10:15:14.978772+00	placed_order	{}	6	\N	acad3bf8-42f4-41f4-be29-2a0ac1c5701b
+48	2026-10-17 16:29:55.438785+00	account_created	{}	7	\N	\N
+49	2026-10-19 03:46:55.611483+00	placed_order	{}	6	\N	ae9dfdec-db0e-4b7b-b315-6807c6b451f3
 \.
 
 
@@ -5223,10 +5229,11 @@ COPY public.account_staffnotificationrecipient (id, staff_email, active, user_id
 
 COPY public.account_user (id, is_superuser, email, is_staff, is_active, password, date_joined, last_login, default_billing_address_id, default_shipping_address_id, note, first_name, last_name, avatar, private_metadata, metadata, jwt_token_key, language_code, search_document, updated_at, uuid, external_reference, last_password_reset_request, is_confirmed, last_confirm_email_request, number_of_orders, search_vector, customer_type_id) FROM stdin;
 2	f	customer@example.com	f	t	pbkdf2_sha256$1000000$IYO0B8K4uGcCgWcN39qspD$yLCRJU/0N94fKHZwjgPphciK6IVoPZSkSEGCu4PMR4w=	2026-10-08 07:25:35.222499+00	2026-10-08 07:26:00.983257+00	\N	\N	\N	Khách	Hàng		{}	{}	tYdd7vaPyVYX	en		2026-10-08 07:26:00.983409+00	cc071f17-16e3-4a53-86e0-38eb75667270	\N	2026-10-08 08:38:18.326821+00	t	\N	0	\N	\N
-1	t	basduygame@gmail.com	t	t	pbkdf2_sha256$1000000$ScyUZA9j0qj8MXbDgDyaKO$+g53Mp6JCWgtoZFTj0HbBissPHu52tL5dNuw4xNtVqo=	2026-10-08 07:25:34.670974+00	2026-10-10 18:02:00.310293+00	\N	\N	\N	Ba Duy	Nguyen		{}	{"onboarding": "{\\"onboardingExpanded\\":true,\\"stepsCompleted\\":[\\"get-started\\",\\"view-extensions\\",\\"explore-orders\\",\\"invite-staff\\"],\\"stepsExpanded\\":{}}", "sidebar_app_webhook_alert_state": "{\\"lastClickDate\\":\\"2026-10-09T17:18:26.586Z\\",\\"lastFailedAttemptDate\\":\\"\\"}"}	VaLwhMRt2eV0	en		2026-10-10 18:02:00.310465+00	5b0648de-22b5-4ffb-907b-74b2f34c54b2	\N	2026-10-09 06:57:45.902424+00	t	\N	0	'ba':1A 'basduygame@gmail.com':4A 'duy':2A 'gmail.com':5B 'nguyen':3A	1
-6	f	basduy05@gmail.com	f	t	pbkdf2_sha256$1000000$yi9vfvWaNeUkk3AEn2Safp$YUfrOn1icawYDjJW/57OSYvqSxkBD9kKw0nhOzf3y+g=	2026-10-09 16:16:41.021344+00	2026-10-10 18:10:35.862658+00	\N	\N	\N				{}	{}	doDGkOooGOAl	en		2026-10-10 18:10:35.862801+00	2bd6eab4-6e15-469e-b039-f4fb3d599921	\N	\N	t	\N	5	'basduy05@gmail.com':1A 'gmail.com':2B	1
-4	t	admin@example.com	t	t	pbkdf2_sha256$1000000$V1U9blCavygryPagvC58lq$kysawB3NammHoZbUfvxH9LirR5vYcvGtICeGWtDwIsQ=	2026-10-09 15:04:57.722594+00	2026-10-09 16:25:02.318371+00	\N	\N	\N				{}	{"onboarding": "{\\"onboardingExpanded\\":true,\\"stepsCompleted\\":[\\"get-started\\",\\"explore-orders\\"],\\"stepsExpanded\\":{}}"}	7VbODWADAx7b	en		2026-10-09 16:25:03.94872+00	fe882b22-6646-43b1-a551-44ab934ae13e	\N	\N	t	\N	0	\N	\N
+4	t	admin@example.com	t	t	pbkdf2_sha256$1000000$V1U9blCavygryPagvC58lq$kysawB3NammHoZbUfvxH9LirR5vYcvGtICeGWtDwIsQ=	2026-10-09 15:04:57.722594+00	2026-10-19 14:23:12.114917+00	\N	\N	\N				{}	{"onboarding": "{\\"onboardingExpanded\\":true,\\"stepsCompleted\\":[\\"get-started\\",\\"explore-orders\\",\\"view-extensions\\"],\\"stepsExpanded\\":{}}", "sidebar_app_webhook_alert_state": "{\\"lastClickDate\\":\\"2026-10-19T13:49:51.041Z\\",\\"lastFailedAttemptDate\\":\\"\\"}"}	7VbODWADAx7b	en		2026-10-19 14:23:12.115304+00	fe882b22-6646-43b1-a551-44ab934ae13e	\N	\N	t	\N	0	\N	\N
+6	f	basduy05@gmail.com	f	t	pbkdf2_sha256$1000000$yi9vfvWaNeUkk3AEn2Safp$YUfrOn1icawYDjJW/57OSYvqSxkBD9kKw0nhOzf3y+g=	2026-10-09 16:16:41.021344+00	2026-10-19 16:08:33.754612+00	62	\N	\N				{}	{}	doDGkOooGOAl	en		2026-10-19 16:08:33.754961+00	2bd6eab4-6e15-469e-b039-f4fb3d599921	\N	\N	t	\N	7	'basduy05@gmail.com':1A 'gmail.com':2B	1
 5	f	baduynguyen210705@gmail.com	t	t		2026-10-09 15:39:38.32072+00	\N	\N	\N	\N	Duy	Nguyen Ba		{}	{}	pY0pAMPXgcuk	en		2026-10-09 15:39:38.330744+00	bfd536c5-198d-40cd-9660-c8f194f6c948	\N	\N	t	\N	0	'ba':3A 'baduynguyen210705@gmail.com':4A 'duy':1A 'gmail.com':5B 'nguyen':2A	1
+7	f	usertest@gmail.com	f	t	pbkdf2_sha256$1000000$Hxuhd4CAWC23cpsIoB49A1$BiOSslL6MFS4kFrODZK2ozIFg5E9tK2clXIM9S9SE+k=	2026-10-17 16:29:52.674969+00	2026-10-19 17:05:34.781611+00	\N	\N	\N	Duyduyy	Nguyen		{}	{}	dRJVzqobBElC	en		2026-10-19 17:05:34.781961+00	aa0d588f-14b4-44c2-9956-f46fdeb3b2bf	\N	\N	t	\N	0	'duyduyy':1A 'gmail.com':4B 'nguyen':2A 'usertest@gmail.com':3A	1
+1	t	basduygame@gmail.com	t	t	pbkdf2_sha256$1000000$ScyUZA9j0qj8MXbDgDyaKO$+g53Mp6JCWgtoZFTj0HbBissPHu52tL5dNuw4xNtVqo=	2026-10-08 07:25:34.670974+00	2026-10-19 17:07:17.299124+00	\N	\N	\N	Ba Duy	Nguyen		{}	{"onboarding": "{\\"onboardingExpanded\\":true,\\"stepsCompleted\\":[\\"get-started\\",\\"view-extensions\\",\\"explore-orders\\",\\"invite-staff\\"],\\"stepsExpanded\\":{}}", "sidebar_app_webhook_alert_state": "{\\"lastClickDate\\":\\"2026-10-19T10:33:11.746Z\\",\\"lastFailedAttemptDate\\":\\"\\"}"}	VaLwhMRt2eV0	en		2026-10-19 17:07:17.299271+00	5b0648de-22b5-4ffb-907b-74b2f34c54b2	\N	2026-10-09 06:57:45.902424+00	t	\N	0	'ba':1A 'basduygame@gmail.com':4A 'duy':2A 'gmail.com':5B 'nguyen':3A	1
 \.
 
 
@@ -5235,6 +5242,7 @@ COPY public.account_user (id, is_superuser, email, is_staff, is_active, password
 --
 
 COPY public.account_user_addresses (id, user_id, address_id) FROM stdin;
+1	6	62
 \.
 
 
@@ -5811,7 +5819,7 @@ COPY public.ai_search_bookchunk (id, product_id, product_slug, chunk_index, chun
 --
 
 COPY public.app_app (id, private_metadata, metadata, name, created_at, is_active, about_app, app_url, configuration_url, data_privacy, data_privacy_url, homepage_url, identifier, support_url, type, version, manifest_url, audience, is_installed, author, uuid, brand_logo_default, removed_at) FROM stdin;
-1	{}	{}	Quản trị Cộng đồng & Độc giả	2026-10-08 08:12:21.567072+00	t	Quản lý, kiểm duyệt bài viết và tra cứu thông tin tài khoản thật từ Saleor	http://localhost:3000/community-admin	http://localhost:3000/community-admin	\N	\N	http://localhost:3000/vi/channel-vnd/community	aurabook.community.admin	\N	thirdparty	1.0.0	http://localhost:3000/api/community/admin/manifest	\N	t	\N	66ce7852-d1c5-4b4d-930d-bc330e97c9a2		\N
+3	{}	{}	Quản trị Hệ thống	2026-10-19 03:53:56.692912+00	t	Trung tâm Quản trị Hợp nhất: Quản trị Độc giả, Kiểm duyệt Cộng đồng & Hệ sinh thái AI (Voice CSKH, GraphRAG, DRM Security)	http://localhost:3000/system-admin	http://localhost:3000/system-admin	\N	\N	http://localhost:3000/system-admin	aurabook.system.admin	\N	thirdparty	1.0.0	http://localhost:3000/api/system/admin/manifest	\N	t	\N	559c14f1-d90a-45aa-82af-e7fc4bc9af27		\N
 \.
 
 
@@ -5820,11 +5828,10 @@ COPY public.app_app (id, private_metadata, metadata, name, created_at, is_active
 --
 
 COPY public.app_app_permissions (id, app_id, permission_id) FROM stdin;
-1	1	344
-2	1	111
-3	1	291
-4	1	292
-5	1	431
+11	3	344
+12	3	403
+13	3	172
+14	3	111
 \.
 
 
@@ -5873,7 +5880,6 @@ COPY public.app_appproblem (id, created_at, updated_at, message, key, count, is_
 --
 
 COPY public.app_apptoken (id, name, auth_token, app_id, token_last_4) FROM stdin;
-1	Storefront Token	pbkdf2_sha256$1000000$MFCk0z0QgBbdAj6K0UVlMZ$RYt/jNH1pULm/rPQdSaJ3Ve19wns0oWEZuY7XZzfPwU=	1	YWNU
 \.
 
 
@@ -6026,6 +6032,10 @@ COPY public.attribute_assignedpageattributevalue (id, sort_order, value_id, page
 --
 
 COPY public.attribute_assignedproductattributevalue (id, sort_order, value_id, product_id) FROM stdin;
+1	0	437	4
+2	0	438	1
+3	0	439	2
+4	0	440	3
 \.
 
 
@@ -6145,6 +6155,7 @@ COPY public.attribute_attribute (id, slug, name, metadata, private_metadata, inp
 85	empty-cart-start-label	Empty cart start label	{}	{}	plain-text	f	t	f	f	f	0	f	page-type	\N	\N	\N	1
 86	empty-cart-go-back-label	Empty cart go back label	{}	{}	plain-text	f	t	f	f	f	0	f	page-type	\N	\N	\N	1
 87	empty-session-title	Empty session title	{}	{}	plain-text	f	t	f	f	f	0	f	page-type	\N	\N	\N	1
+92	tep-ebook	Tệp Ebook (EPUB / PDF)	{}	{}	file	f	t	f	f	f	0	f	product-type	\N	\N	\N	\N
 \.
 
 
@@ -6259,6 +6270,7 @@ COPY public.attribute_attributepage (id, sort_order, attribute_id, page_type_id)
 --
 
 COPY public.attribute_attributeproduct (id, attribute_id, product_type_id, sort_order) FROM stdin;
+1	92	2	0
 \.
 
 
@@ -6333,6 +6345,7 @@ COPY public.attribute_attributetranslation (id, language_code, name, attribute_i
 --
 
 COPY public.attribute_attributevalue (id, name, attribute_id, slug, sort_order, value, content_type, file_url, rich_text, "boolean", date_time, reference_page_id, reference_product_id, plain_text, reference_variant_id, external_reference, reference_category_id, reference_collection_id, "numeric") FROM stdin;
+437	Tri_Tue_Do_Thai_-_Eran_Katz_b94f5a7c.epub	92	tri_tue_do_thai_-_eran_katz_b94f5a7cepub	\N		application/epub+zip	file_upload/Tri_Tue_Do_Thai_-_Eran_Katz_b94f5a7c.epub	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 106	Elastane	36	elastane	1		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 107	Polyester	36	polyester	2		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 108	39	37	39	0		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
@@ -6444,7 +6457,6 @@ COPY public.attribute_attributevalue (id, name, attribute_id, slug, sort_order, 
 157	Dark Slate Gray	48	dark-slate-gray	12	#2F4F4F			null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 195	320	51	141_51	10		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	320
 196	Made with Recycled Fibers: Yes	56	56_true	2		\N	\N	null	t	\N	\N	\N	\N	\N	\N	\N	\N	\N
-273	Monospace Tee	64	137_134	66		\N	\N	null	\N	\N	\N	134	\N	\N	\N	\N	\N	\N
 197	Hand wash cold or gentle machine cycle. Air dry flat. Do not bleach.	46	143_46	11		\N	\N	null	\N	\N	\N	\N	Hand wash cold or gentle machine cycle. Air dry flat. Do not bleach.	\N	\N	\N	\N	\N
 198	180	51	143_51	11		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	180
 199	Made with Recycled Fibers: No	56	56_false	3		\N	\N	null	f	\N	\N	\N	\N	\N	\N	\N	\N	\N
@@ -6464,7 +6476,6 @@ COPY public.attribute_attributevalue (id, name, attribute_id, slug, sort_order, 
 221	Machine wash cold. Lay flat to dry to maintain collar shape.	46	136_46	14		\N	\N	null	\N	\N	\N	\N	Machine wash cold. Lay flat to dry to maintain collar shape.	\N	\N	\N	\N	\N
 222	230	51	136_51	14		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	230
 223	Polo	57	polo	4		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
-304	Neck Warmer	64	141_143	100		\N	\N	null	\N	\N	\N	143	\N	\N	\N	\N	\N	\N
 225	220	51	135_51	15		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	220
 226	Machine wash warm, inside out. Tumble dry low. Do not iron print.	46	138_46	16		\N	\N	null	\N	\N	\N	\N	Machine wash warm, inside out. Tumble dry low. Do not iron print.	\N	\N	\N	\N	\N
 227	200	51	138_51	16		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	200
@@ -6480,64 +6491,10 @@ COPY public.attribute_attributevalue (id, name, attribute_id, slug, sort_order, 
 238	3	53	129_53	4		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	3
 239	Waterproof: Yes	61	61_true	3		\N	\N	null	t	\N	\N	\N	\N	\N	\N	\N	\N	\N
 240	3	53	128_53	5		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	3
-241	Apple Juice	63	4_152	22		\N	\N	null	\N	\N	\N	152	\N	\N	\N	\N	\N	\N
-242	Banana Juice	63	4_154	23		\N	\N	null	\N	\N	\N	154	\N	\N	\N	\N	\N	\N
-243	Bean Juice	63	4_153	24		\N	\N	null	\N	\N	\N	153	\N	\N	\N	\N	\N	\N
-244	Carrot Juice	63	4_155	25		\N	\N	null	\N	\N	\N	155	\N	\N	\N	\N	\N	\N
-245	Mighty Mug	63	6_150	26		\N	\N	null	\N	\N	\N	150	\N	\N	\N	\N	\N	\N
-246	The Dash Cushion	63	6_151	27		\N	\N	null	\N	\N	\N	151	\N	\N	\N	\N	\N	\N
-247	White Parrot Cushion	63	6_162	28		\N	\N	null	\N	\N	\N	162	\N	\N	\N	\N	\N	\N
-248	Monospace Tee	63	5_134	29		\N	\N	null	\N	\N	\N	134	\N	\N	\N	\N	\N	\N
-249	Paul's Balance 420	63	5_130	30		\N	\N	null	\N	\N	\N	130	\N	\N	\N	\N	\N	\N
-251	Blue Plimsolls	63	5_128	31		\N	\N	null	\N	\N	\N	128	\N	\N	\N	\N	\N	\N
-252	Blue Polygon Shirt	63	5_137	32		\N	\N	null	\N	\N	\N	137	\N	\N	\N	\N	\N	\N
-253	Cubes Fountain Tee	63	5_161	33		\N	\N	null	\N	\N	\N	161	\N	\N	\N	\N	\N	\N
-254	Dark Polygon Tee	63	5_138	34		\N	\N	null	\N	\N	\N	138	\N	\N	\N	\N	\N	\N
-255	Darko Polo	63	5_136	35		\N	\N	null	\N	\N	\N	136	\N	\N	\N	\N	\N	\N
-256	Dash Force	63	5_129	36		\N	\N	null	\N	\N	\N	129	\N	\N	\N	\N	\N	\N
-257	DRY Sunglasses	63	5_144	37		\N	\N	null	\N	\N	\N	144	\N	\N	\N	\N	\N	\N
-258	Grey Hoodie	63	5_131	38		\N	\N	null	\N	\N	\N	131	\N	\N	\N	\N	\N	\N
-259	Monokai Dimmed Sunnies	63	5_156	39		\N	\N	null	\N	\N	\N	156	\N	\N	\N	\N	\N	\N
-260	Pirate's Beanie	63	5_141	40		\N	\N	null	\N	\N	\N	141	\N	\N	\N	\N	\N	\N
-261	Reversed Monotype Tee	63	5_157	41		\N	\N	null	\N	\N	\N	157	\N	\N	\N	\N	\N	\N
-262	Neck Warmer	63	5_143	42		\N	\N	null	\N	\N	\N	143	\N	\N	\N	\N	\N	\N
-263	Team Shirt	63	5_135	43		\N	\N	null	\N	\N	\N	135	\N	\N	\N	\N	\N	\N
-267	Cubes Fountain Tee	64	134_161	67		\N	\N	null	\N	\N	\N	161	\N	\N	\N	\N	\N	\N
-268	Dark Polygon Tee	64	134_138	68		\N	\N	null	\N	\N	\N	138	\N	\N	\N	\N	\N	\N
-269	Reversed Monotype Tee	64	134_157	69		\N	\N	null	\N	\N	\N	157	\N	\N	\N	\N	\N	\N
-270	Reversed Monotype Tee	64	137_157	70		\N	\N	null	\N	\N	\N	157	\N	\N	\N	\N	\N	\N
-271	Cubes Fountain Tee	64	137_161	71		\N	\N	null	\N	\N	\N	161	\N	\N	\N	\N	\N	\N
-272	Dark Polygon Tee	64	137_138	72		\N	\N	null	\N	\N	\N	138	\N	\N	\N	\N	\N	\N
+438	Dac_Nhan_Tam_-_Dale_Carnegie_05453c85.epub	92	dac_nhan_tam_-_dale_carnegie_05453c85epub	\N		application/epub+zip	file_upload/Dac_Nhan_Tam_-_Dale_Carnegie_05453c85.epub	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 203	Plant-based proteins and natural energy booster.	58	153_58	5		\N	\N	{"time": 1768297267140, "blocks": [{"id": "JOUUEmUIli", "data": {"text": "Plant-based proteins and natural energy booster."}, "type": "paragraph"}], "version": "2.30.7"}	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 205	High in potassium and natural sugars.	58	154_58	6		\N	\N	{"time": 1768297274317, "blocks": [{"id": "6zyouegcVX", "data": {"text": "High in potassium and natural sugars."}, "type": "paragraph"}], "version": "2.30.7"}	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
-274	Reversed Monotype Tee	64	161_157	73		\N	\N	null	\N	\N	\N	157	\N	\N	\N	\N	\N	\N
-276	Dark Polygon Tee	64	161_138	74		\N	\N	null	\N	\N	\N	138	\N	\N	\N	\N	\N	\N
-277	Monospace Tee	64	161_134	75		\N	\N	null	\N	\N	\N	134	\N	\N	\N	\N	\N	\N
-278	Reversed Monotype Tee	64	138_157	76		\N	\N	null	\N	\N	\N	157	\N	\N	\N	\N	\N	\N
-279	Cubes Fountain Tee	64	138_161	77		\N	\N	null	\N	\N	\N	161	\N	\N	\N	\N	\N	\N
-281	Monospace Tee	64	138_134	78		\N	\N	null	\N	\N	\N	134	\N	\N	\N	\N	\N	\N
-283	Cubes Fountain Tee	64	157_161	79		\N	\N	null	\N	\N	\N	161	\N	\N	\N	\N	\N	\N
-284	Dark Polygon Tee	64	157_138	80		\N	\N	null	\N	\N	\N	138	\N	\N	\N	\N	\N	\N
-285	Monospace Tee	64	157_134	81		\N	\N	null	\N	\N	\N	134	\N	\N	\N	\N	\N	\N
-286	Blue Polygon Shirt	64	135_137	82		\N	\N	null	\N	\N	\N	137	\N	\N	\N	\N	\N	\N
-287	Team Shirt	64	135_135	83		\N	\N	null	\N	\N	\N	135	\N	\N	\N	\N	\N	\N
-288	Monospace Tee	64	135_134	84		\N	\N	null	\N	\N	\N	134	\N	\N	\N	\N	\N	\N
-289	Dark Polygon Tee	64	136_138	85		\N	\N	null	\N	\N	\N	138	\N	\N	\N	\N	\N	\N
 207	Rich in antioxidants and vitamin C.	58	152_58	7		\N	\N	{"time": 1768297248330, "blocks": [{"id": "W9hAVCIo0P", "data": {"text": "Rich in antioxidants and vitamin C."}, "type": "paragraph"}], "version": "2.30.7"}	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
-290	Carrot Juice	64	152_155	86		\N	\N	null	\N	\N	\N	155	\N	\N	\N	\N	\N	\N
-291	Banana Juice	64	152_154	87		\N	\N	null	\N	\N	\N	154	\N	\N	\N	\N	\N	\N
-292	Bean Juice	64	152_153	88		\N	\N	null	\N	\N	\N	153	\N	\N	\N	\N	\N	\N
-293	Banana Juice	64	155_154	89		\N	\N	null	\N	\N	\N	154	\N	\N	\N	\N	\N	\N
-294	Bean Juice	64	155_153	90		\N	\N	null	\N	\N	\N	153	\N	\N	\N	\N	\N	\N
-295	Apple Juice	64	155_152	91		\N	\N	null	\N	\N	\N	152	\N	\N	\N	\N	\N	\N
-296	Apple Juice	64	153_152	92		\N	\N	null	\N	\N	\N	152	\N	\N	\N	\N	\N	\N
-297	Banana Juice	64	153_154	93		\N	\N	null	\N	\N	\N	154	\N	\N	\N	\N	\N	\N
-298	Carrot Juice	64	153_155	94		\N	\N	null	\N	\N	\N	155	\N	\N	\N	\N	\N	\N
-299	Carrot Juice	64	154_155	95		\N	\N	null	\N	\N	\N	155	\N	\N	\N	\N	\N	\N
-300	Bean Juice	64	154_153	96		\N	\N	null	\N	\N	\N	153	\N	\N	\N	\N	\N	\N
-301	Apple Juice	64	154_152	97		\N	\N	null	\N	\N	\N	152	\N	\N	\N	\N	\N	\N
-302	The Dash Cushion	64	162_151	98		\N	\N	null	\N	\N	\N	151	\N	\N	\N	\N	\N	\N
-303	White Parrot Cushion	64	151_162	99		\N	\N	null	\N	\N	\N	162	\N	\N	\N	\N	\N	\N
 366	audiobook-enterprise-sample.mp3	72	audiobook-enterprise-sample-mp3	4		audio/mpeg	file_upload/audiobook-enterprise-sample.mp3	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 345	Business	66	business	0		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 343	Standard	65	standard	0		image/png	file_upload/audio-quality-standard-black.png	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
@@ -6549,28 +6506,7 @@ COPY public.attribute_attributevalue (id, name, attribute_id, slug, sort_order, 
 386	Mua ngay	6	storefront-chrome-channel-vnd-announcement-link-la	1		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 224	Hand wash or gentle cycle due to Elastane. Do not wring or use dryer.	46	135_46	15		\N	\N	null	\N	\N	\N	\N	Hand wash or gentle cycle due to Elastane. Do not wring or use dryer.	\N	\N	\N	\N	\N
 201	Excellent source of beta-carotene.	58	155_58	4		\N	\N	{"time": 1768297261252, "blocks": [{"id": "MJIlQSqNjb", "data": {"text": "Excellent source of beta-carotene."}, "type": "paragraph"}], "version": "2.30.7"}	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
-305	Pirate's Beanie	64	143_141	101		\N	\N	null	\N	\N	\N	141	\N	\N	\N	\N	\N	\N
-306	Gift card 50	64	160_164	102		\N	\N	null	\N	\N	\N	164	\N	\N	\N	\N	\N	\N
-307	Gift card 500	64	160_163	103		\N	\N	null	\N	\N	\N	163	\N	\N	\N	\N	\N	\N
-308	Gift card 100	64	164_160	104		\N	\N	null	\N	\N	\N	160	\N	\N	\N	\N	\N	\N
-309	Gift card 500	64	164_163	105		\N	\N	null	\N	\N	\N	163	\N	\N	\N	\N	\N	\N
-310	Gift card 50	64	163_164	106		\N	\N	null	\N	\N	\N	164	\N	\N	\N	\N	\N	\N
-311	Gift card 100	64	163_160	107		\N	\N	null	\N	\N	\N	160	\N	\N	\N	\N	\N	\N
-312	Dash Force	64	128_129	108		\N	\N	null	\N	\N	\N	129	\N	\N	\N	\N	\N	\N
-313	Paul's Balance 420	64	128_130	109		\N	\N	null	\N	\N	\N	130	\N	\N	\N	\N	\N	\N
-314	Plimsolls	64	129_128	110		\N	\N	null	\N	\N	\N	128	\N	\N	\N	\N	\N	\N
-315	Paul's Balance 420	64	129_130	111		\N	\N	null	\N	\N	\N	130	\N	\N	\N	\N	\N	\N
-316	Plimsolls	64	130_128	112		\N	\N	null	\N	\N	\N	128	\N	\N	\N	\N	\N	\N
-317	Dash Force	64	130_129	113		\N	\N	null	\N	\N	\N	129	\N	\N	\N	\N	\N	\N
-325	DRY Sunglasses	64	156_144	115		\N	\N	null	\N	\N	\N	144	\N	\N	\N	\N	\N	\N
-339	Reversed Monotype Tee	64	131_157	116		\N	\N	null	\N	\N	\N	157	\N	\N	\N	\N	\N	\N
-340	Cubes Fountain Tee	64	131_161	117		\N	\N	null	\N	\N	\N	161	\N	\N	\N	\N	\N	\N
-341	Dark Polygon Tee	64	131_138	118		\N	\N	null	\N	\N	\N	138	\N	\N	\N	\N	\N	\N
-342	Monospace Tee	64	131_134	119		\N	\N	null	\N	\N	\N	134	\N	\N	\N	\N	\N	\N
-179	Enterprise Cloud + On-premises	45	11_146	4		\N	\N	null	\N	\N	\N	146	\N	\N	\N	\N	\N	\N
-180	Own your stack and data	45	11_147	5		\N	\N	null	\N	\N	\N	147	\N	\N	\N	\N	\N	\N
-181	Battle-tested at brands like Lush	45	12_145	6		\N	\N	null	\N	\N	\N	145	\N	\N	\N	\N	\N	\N
-182	Headless + Omnichannel in a pill	45	13_126	7		\N	\N	null	\N	\N	\N	126	\N	\N	\N	\N	\N	\N
+439	Bon_Thoa_Uoc_-_Don_Miguel_Ruiz_1a64a6c9.epub	92	bon_thoa_uoc_-_don_miguel_ruiz_1a64a6c9epub	\N		application/epub+zip	file_upload/Bon_Thoa_Uoc_-_Don_Miguel_Ruiz_1a64a6c9.epub	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 184	2023-06-01	59	147_59	3		\N	\N	null	\N	2023-06-01 00:00:00+00	\N	\N	\N	\N	\N	\N	\N	\N
 185	Adam Nowak	55	147_11	4		\N	\N	null	\N	\N	11	\N	\N	\N	\N	\N	\N	\N
 186	How to build hybrid enterprise systems without the DevOps overhead.	49	146_49	5		\N	\N	null	\N	\N	\N	\N	How to build hybrid enterprise systems without the DevOps overhead.	\N	\N	\N	\N	\N
@@ -6581,18 +6517,6 @@ COPY public.attribute_attributevalue (id, name, attribute_id, slug, sort_order, 
 191	A fast-paced guide to launching new markets with headless and omnichannel strategies.	49	126_49	7		\N	\N	null	\N	\N	\N	\N	A fast-paced guide to launching new markets with headless and omnichannel strategies.	\N	\N	\N	\N	\N
 192	2022-06-15	59	126_59	5		\N	\N	null	\N	2022-06-15 00:00:00+00	\N	\N	\N	\N	\N	\N	\N	\N
 193	Sophia Keller	55	126_13	7		\N	\N	null	\N	\N	13	\N	\N	\N	\N	\N	\N	\N
-326	Battle-tested at brands like Lush	64	126_145	120		\N	\N	null	\N	\N	\N	145	\N	\N	\N	\N	\N	\N
-327	Enterprise Cloud + On-premises	64	126_146	121		\N	\N	null	\N	\N	\N	146	\N	\N	\N	\N	\N	\N
-328	Own your stack and data	64	126_147	122		\N	\N	null	\N	\N	\N	147	\N	\N	\N	\N	\N	\N
-329	Enterprise Cloud + On-premises	64	145_146	123		\N	\N	null	\N	\N	\N	146	\N	\N	\N	\N	\N	\N
-330	Headless + Omnichannel in a pill	64	145_126	124		\N	\N	null	\N	\N	\N	126	\N	\N	\N	\N	\N	\N
-331	Own your stack and data	64	145_147	125		\N	\N	null	\N	\N	\N	147	\N	\N	\N	\N	\N	\N
-332	Battle-tested at brands like Lush	64	146_145	126		\N	\N	null	\N	\N	\N	145	\N	\N	\N	\N	\N	\N
-333	Headless + Omnichannel in a pill	64	146_126	127		\N	\N	null	\N	\N	\N	126	\N	\N	\N	\N	\N	\N
-334	Own your stack and data	64	146_147	128		\N	\N	null	\N	\N	\N	147	\N	\N	\N	\N	\N	\N
-335	Battle-tested at brands like Lush	64	147_145	129		\N	\N	null	\N	\N	\N	145	\N	\N	\N	\N	\N	\N
-336	Enterprise Cloud + On-premises	64	147_146	130		\N	\N	null	\N	\N	\N	146	\N	\N	\N	\N	\N	\N
-337	Headless + Omnichannel in a pill	64	147_126	131		\N	\N	null	\N	\N	\N	126	\N	\N	\N	\N	\N	\N
 344	Hi-Res 24-bit	65	hi-res-24-bit	1		image/png	file_upload/audio-quality-hi-res-black.png	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 346	Technology	66	technology	1		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 347	Strategy	66	strategy	2		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
@@ -6607,7 +6531,6 @@ COPY public.attribute_attributevalue (id, name, attribute_id, slug, sort_order, 
 367	audiobook-headless-sample.mp3	72	audiobook-headless-sample-mp3	5		audio/mpeg	file_upload/audiobook-headless-sample.mp3	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 369	audiobook-battle-tested-sample.mp3	72	audiobook-battle-tested-sample-mp3	6		audio/mpeg	file_upload/audiobook-battle-tested-sample.mp3	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 380	audiobook-stack-and-data-sample.mp3	72	audiobook-stack-and-data-sample-mp3	7		audio/mpeg	file_upload/audiobook-stack-and-data-sample.mp3	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
-324	Monokai Dimmed Sunnies	64	144_156	114		\N	\N	null	\N	\N	\N	156	\N	\N	\N	\N	\N	\N
 183	A practical guide to owning your data and escaping vendor lock-in.	49	147_49	4		\N	\N	null	\N	\N	\N	\N	A practical guide to owning your data and escaping vendor lock-in.	\N	\N	\N	\N	\N
 1	75	1	storefront-policy-free-shipping-threshold	0		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	75
 381	ann-2026	3	storefront-chrome-announcement-id	0		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
@@ -6656,6 +6579,7 @@ COPY public.attribute_attributevalue (id, name, attribute_id, slug, sort_order, 
 424	Vui lòng tải lại trang hoặc tạo đơn hàng mới.	88	storefront-checkout-empty-session-message	0		\N	\N	null	\N	\N	\N	\N	Vui lòng tải lại trang hoặc tạo đơn hàng mới.	\N	\N	\N	\N	\N
 425	Nhận thông báo ưu đãi và sự kiện sách mới qua email	89	storefront-checkout-marketing-opt-in-label	0		\N	\N	null	\N	\N	\N	\N	Nhận thông báo ưu đãi và sự kiện sách mới qua email	\N	\N	\N	\N	\N
 426	Thanh toán an toàn & bảo mật tuyệt đối	90	storefront-checkout-trust-secure-checkout	0		\N	\N	null	\N	\N	\N	\N	Thanh toán an toàn & bảo mật tuyệt đối	\N	\N	\N	\N	\N
+440	Sapiens_Luoc_Su_Loai_Nguoi_-_Yuval_Noah_Harari_ef634343.epub	92	sapiens_luoc_su_loai_nguoi_-_yuval_noah_harari_ef634343epub	\N		application/epub+zip	file_upload/Sapiens_Luoc_Su_Loai_Nguoi_-_Yuval_Noah_Harari_ef634343.epub	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 427	Hỗ trợ nhiều phương thức thanh toán tiện lợi	91	storefront-checkout-trust-stripe-processor	0		\N	\N	null	\N	\N	\N	\N	Hỗ trợ nhiều phương thức thanh toán tiện lợi	\N	\N	\N	\N	\N
 428	Giỏ hàng thanh toán trống	83	storefront-checkout-channel-vnd-empty-cart-title	1		\N	\N	null	\N	\N	\N	\N	Giỏ hàng thanh toán trống	\N	\N	\N	\N	\N
 429	Hãy chọn cho mình cuốn sách ưng ý trước khi thanh toán nhé.	84	storefront-checkout-channel-vnd-empty-cart-body	1		\N	\N	null	\N	\N	\N	\N	Hãy chọn cho mình cuốn sách ưng ý trước khi thanh toán nhé.	\N	\N	\N	\N	\N
@@ -6720,10 +6644,6 @@ COPY public.attribute_attributevaluetranslation (id, language_code, name, attrib
 44	pl	Siatka	174	null	\N
 46	pl	Szkło	176	null	\N
 47	pl	Ceramika	177	null	\N
-48	pl	Enterprise Cloud + lokalnie	179	null	\N
-49	pl	Bądź właścicielem swojego stosu technologicznego i danych	180	null	\N
-50	pl	Sprawdzone w boju przez marki takie jak Lush	181	null	\N
-51	pl	Headless + Omnichannel w pigułce	182	null	\N
 53	pl	Jak budować hybrydowe systemy korporacyjne bez zbędnych kosztów operacyjnych DevOps.	186	null	Jak budować hybrydowe systemy korporacyjne bez zbędnych kosztów operacyjnych DevOps.
 54	pl	Lekcje od globalnych marek na temat bezwysiłkowego skalowania handlu cyfrowego.	189	null	Lekcje od globalnych marek na temat bezwysiłkowego skalowania handlu cyfrowego.
 55	pl	Szybki przewodnik po wchodzeniu na nowe rynki dzięki strategiom headless i omnichannel.	191	null	Szybki przewodnik po wchodzeniu na nowe rynki dzięki strategiom headless i omnichannel.
@@ -6748,48 +6668,6 @@ COPY public.attribute_attributevaluetranslation (id, language_code, name, attrib
 72	pl	Prać w pralce w ciepłej wodzie, na lewej stronie. Suszyć w suszarce bębnowej w niskiej temperaturze. Nie prasować nadruku.	233	null	Prać w pralce w ciepłej wodzie, na lewej stronie. Suszyć w suszarce bębnowej w niskiej temperaturze. Nie prasować nadruku.
 73	pl	Wodoodporny: Nie	236	null	\N
 74	pl	Wodoodporny: Tak	239	null	\N
-75	pl	Sok jabłkowy	241	null	\N
-76	pl	Sok bananowy	242	null	\N
-77	pl	Sok z fasoli	243	null	\N
-78	pl	Sok marchwiowy	244	null	\N
-79	pl	Kubek Mighty	245	null	\N
-80	pl	Poduszka Dash	246	null	\N
-81	pl	Poduszka Biała Papuga	247	null	\N
-82	pl	Koszulka Monospace	248	null	\N
-83	pl	Paul's Balance 420	249	null	\N
-84	pl	Niebieskie tenisówki	251	null	\N
-85	pl	Niebieska koszula Polygon	252	null	\N
-86	pl	Koszulka Cubes Fountain	253	null	\N
-87	pl	Ciemna koszulka Polygon	254	null	\N
-88	pl	Polo Darko	255	null	\N
-89	pl	Dash Force	256	null	\N
-90	pl	Okulary przeciwsłoneczne DRY	257	null	\N
-91	pl	Szara bluza z kapturem	258	null	\N
-92	pl	Okulary przeciwsłoneczne Monokai Dimmed	259	null	\N
-93	pl	Czapka piracka (Beanie)	260	null	\N
-94	pl	Koszulka Reversed Monotype	261	null	\N
-95	pl	Tenisówki	314	null	\N
-96	pl	Paul's Balance 420	315	null	\N
-97	pl	Tenisówki	316	null	\N
-98	pl	Dash Force	317	null	\N
-99	pl	Okulary przeciwsłoneczne Monokai Dimmed	324	null	\N
-100	pl	Okulary przeciwsłoneczne DRY	325	null	\N
-101	pl	Sprawdzone w boju przez marki takie jak Lush	326	null	\N
-102	pl	Enterprise Cloud + lokalnie (On-premises)	327	null	\N
-103	pl	Bądź właścicielem swojego stosu i danych	328	null	\N
-104	pl	Enterprise Cloud + lokalnie (On-premises)	329	null	\N
-105	pl	Headless + Omnichannel w pigułce	330	null	\N
-106	pl	Bądź właścicielem swojego stosu i danych	331	null	\N
-107	pl	Sprawdzone w boju przez marki takie jak Lush	332	null	\N
-108	pl	Headless + Omnichannel w pigułce	333	null	\N
-109	pl	Bądź właścicielem swojego stosu i danych	334	null	\N
-110	pl	Sprawdzone w boju przez marki takie jak Lush	335	null	\N
-111	pl	Enterprise Cloud + lokalnie (On-premises)	336	null	\N
-112	pl	Headless + Omnichannel w pigułce	337	null	\N
-113	pl	Koszulka Reversed Monotype	339	null	\N
-114	pl	Koszulka Cubes Fountain	340	null	\N
-115	pl	Ciemna koszulka Polygon	341	null	\N
-116	pl	Koszulka Monospace	342	null	\N
 \.
 
 
@@ -6866,170 +6744,6 @@ f2eddaf0-4482-4b58-9032-74ae0374502b	\N	41	Giao Hàng Nhanh (GHN) - Hỏa Tốc 
 --
 
 COPY public.checkout_checkoutline (quantity, checkout_id, variant_id, price_override, created_at, old_id, id, metadata, private_metadata, currency, tax_rate, total_price_gross_amount, total_price_net_amount, is_gift, undiscounted_unit_price_amount, prior_unit_price_amount, price_override_reason) FROM stdin;
-1	3876db15-6cb5-4713-aaab-2b4fda094351	324	\N	2026-10-08 08:26:43.476473+00	\N	0bb49233-01fd-4e68-98d6-fea93686ffb0	{}	{}	USD	0.0000	3.800	3.800	f	3.800	\N	\N
-1	f34a5a83-8d33-492a-aef3-442807c5a817	370	\N	2026-10-08 08:30:27.56212+00	\N	971224f3-7a8c-421b-b31d-d4325193d5b5	{}	{}	VND	0.0000	95000.000	95000.000	f	95000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	384	\N	2026-10-10 17:37:35.01423+00	\N	6dac8509-1556-4b93-88e0-3360f822ca0f	{}	{}	VND	0.0000	0.000	0.000	f	35000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	348	\N	2026-10-10 17:37:35.153762+00	\N	2c00ff84-51f5-46b8-9671-3d982697d905	{}	{}	VND	0.0000	0.000	0.000	f	195000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	349	\N	2026-10-10 17:37:35.287943+00	\N	ee1b70ca-5c4f-4370-941a-5a66d63efb3d	{}	{}	VND	0.0000	0.000	0.000	f	195000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	350	\N	2026-10-10 17:37:35.41372+00	\N	375e12ff-3cf2-4ed0-b959-104e0ee3e740	{}	{}	VND	0.0000	0.000	0.000	f	195000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	351	\N	2026-10-10 17:37:35.538033+00	\N	3ecdbaea-f38f-4f63-befd-019cd44b0705	{}	{}	VND	0.0000	0.000	0.000	f	195000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	352	\N	2026-10-10 17:37:35.658323+00	\N	d736d84d-45f6-4d37-9077-0db11cfcd8c6	{}	{}	VND	0.0000	0.000	0.000	f	195000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	340	\N	2026-10-10 17:37:35.785236+00	\N	6d6f7d59-c25f-4702-93c2-11e6539c97a3	{}	{}	VND	0.0000	0.000	0.000	f	850000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	341	\N	2026-10-10 17:37:35.917883+00	\N	909d1487-888c-43df-b3bc-c826c8cec5f3	{}	{}	VND	0.0000	0.000	0.000	f	850000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	342	\N	2026-10-10 17:37:36.047009+00	\N	3e57488a-5fd7-4d01-b263-c889921aec08	{}	{}	VND	0.0000	0.000	0.000	f	850000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	343	\N	2026-10-10 17:37:36.177505+00	\N	3a592a3a-861d-492d-ba94-f33ee7f9322a	{}	{}	VND	0.0000	0.000	0.000	f	850000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	344	\N	2026-10-10 17:37:36.312096+00	\N	321bea1d-4df6-4709-9084-1fd4eeca36ce	{}	{}	VND	0.0000	0.000	0.000	f	850000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	386	\N	2026-10-10 17:37:36.455731+00	\N	ca4920a8-c0be-4755-85a9-d007775aec49	{}	{}	VND	0.0000	0.000	0.000	f	39000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	372	\N	2026-10-10 17:37:36.598208+00	\N	4f0c5d51-3b03-460d-affa-18c150e345da	{}	{}	VND	0.0000	0.000	0.000	f	119000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	373	\N	2026-10-10 17:37:36.736033+00	\N	fb1fffb3-b7c5-4aa6-9782-4c003fa8eb12	{}	{}	VND	0.0000	0.000	0.000	f	119000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	374	\N	2026-10-10 17:37:36.875048+00	\N	dff336bd-f0e0-4fe1-b8ae-aa40e91af447	{}	{}	VND	0.0000	0.000	0.000	f	119000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	385	\N	2026-10-10 17:37:37.030553+00	\N	52ca6458-2c59-4027-8007-cd0eac95b800	{}	{}	VND	0.0000	0.000	0.000	f	32000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	333	\N	2026-10-10 17:37:37.169917+00	\N	e9fdd7a7-a031-4143-a615-a6e2537e08b4	{}	{}	VND	0.0000	0.000	0.000	f	490000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	332	\N	2026-10-10 17:37:37.311456+00	\N	ffe99bc5-d320-4344-a67a-9ae5271f027d	{}	{}	VND	0.0000	0.000	0.000	f	490000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	334	\N	2026-10-10 17:37:37.457365+00	\N	f5305495-6d5a-4a67-8d9f-c9b1486089ca	{}	{}	VND	0.0000	0.000	0.000	f	490000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	404	\N	2026-10-10 17:37:37.604219+00	\N	97d8922a-c3f0-44d0-be37-544389753e0b	{}	{}	VND	0.0000	0.000	0.000	f	490000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	405	\N	2026-10-10 17:37:37.754092+00	\N	5262b753-7457-4d01-a479-602bdbacedad	{}	{}	VND	0.0000	0.000	0.000	f	490000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	406	\N	2026-10-10 17:37:37.916029+00	\N	ecf481f1-df05-4af8-b7d7-a329fed90cb9	{}	{}	VND	0.0000	0.000	0.000	f	490000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	407	\N	2026-10-10 17:37:38.064955+00	\N	ac930625-9f0e-4f2f-8945-ee6c0db735bc	{}	{}	VND	0.0000	0.000	0.000	f	490000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	408	\N	2026-10-10 17:37:38.216558+00	\N	f784705f-609a-47ff-aeff-952bb87faa56	{}	{}	VND	0.0000	0.000	0.000	f	490000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	409	\N	2026-10-10 17:37:38.368151+00	\N	905a1214-a7c7-4bb5-9c19-a99661dce31d	{}	{}	VND	0.0000	0.000	0.000	f	490000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	410	\N	2026-10-10 17:37:38.549708+00	\N	50a8450e-f413-4f51-bbb4-e66075ee9df4	{}	{}	VND	0.0000	0.000	0.000	f	490000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	361	\N	2026-10-10 17:37:38.704431+00	\N	7301ab76-cc00-4db1-9f2a-a36b98b46a0f	{}	{}	VND	0.0000	0.000	0.000	f	220000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	362	\N	2026-10-10 17:37:38.862053+00	\N	3f49612e-f9b7-4cc5-8cab-14c99a7b6bd7	{}	{}	VND	0.0000	0.000	0.000	f	220000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	363	\N	2026-10-10 17:37:39.022225+00	\N	726dc9b9-05ad-4b60-a917-a9fcc55a927c	{}	{}	VND	0.0000	0.000	0.000	f	220000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	387	\N	2026-10-10 17:37:39.191471+00	\N	73a70074-5faf-404f-a140-75e7f1a9fa76	{}	{}	VND	0.0000	0.000	0.000	f	35000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	394	\N	2026-10-10 17:37:39.418194+00	\N	b5ec660f-8229-4f16-8e11-cdff57594ee2	{}	{}	VND	0.0000	0.000	0.000	f	230000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	395	\N	2026-10-10 17:37:39.575826+00	\N	f0b13fa5-9d8f-4e3d-a218-d2a9b0f1d620	{}	{}	VND	0.0000	0.000	0.000	f	230000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	396	\N	2026-10-10 17:37:39.753941+00	\N	67d9d8f4-21f9-4994-bb0f-147d5a835267	{}	{}	VND	0.0000	0.000	0.000	f	230000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	397	\N	2026-10-10 17:37:39.922161+00	\N	67adc1b9-5ff5-498f-896f-eaadeb5d76f1	{}	{}	VND	0.0000	0.000	0.000	f	230000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	398	\N	2026-10-10 17:37:40.126959+00	\N	dc1391d3-ea79-4f6d-8e66-63130eda23ef	{}	{}	VND	0.0000	0.000	0.000	f	230000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	358	\N	2026-10-10 17:37:40.29314+00	\N	d2f5a0cb-b700-431c-a532-c5a771359623	{}	{}	VND	0.0000	0.000	0.000	f	290000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	359	\N	2026-10-10 17:37:40.464237+00	\N	609c2764-5cd1-4122-a2ea-b402d9886953	{}	{}	VND	0.0000	0.000	0.000	f	290000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	360	\N	2026-10-10 17:37:40.636857+00	\N	7b674f4c-0181-4f66-8d70-69fc2401fc7f	{}	{}	VND	0.0000	0.000	0.000	f	290000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	364	\N	2026-10-10 17:37:40.839223+00	\N	4df8e38f-9081-4ce1-82a6-b869d24b469f	{}	{}	VND	0.0000	0.000	0.000	f	210000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	365	\N	2026-10-10 17:37:41.011817+00	\N	39e34fba-53ec-445e-829a-dfeb38a83d67	{}	{}	VND	0.0000	0.000	0.000	f	210000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	366	\N	2026-10-10 17:37:41.183308+00	\N	171a58fc-0e99-4eeb-ba6c-c1434085b16f	{}	{}	VND	0.0000	0.000	0.000	f	210000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	335	\N	2026-10-10 17:37:41.372482+00	\N	1f40af62-cbf7-4d5c-b966-6c47f95d2d7a	{}	{}	VND	0.0000	0.000	0.000	f	720000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	336	\N	2026-10-10 17:37:41.593494+00	\N	a2e588f7-ac2b-4a89-b258-5eb541d9e38a	{}	{}	VND	0.0000	0.000	0.000	f	720000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	337	\N	2026-10-10 17:37:41.784713+00	\N	90809f72-6d1c-4234-9276-52e02bac3c0a	{}	{}	VND	0.0000	0.000	0.000	f	720000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	338	\N	2026-10-10 17:37:41.971389+00	\N	19dbcd64-2150-4748-8e32-476226a06408	{}	{}	VND	0.0000	0.000	0.000	f	720000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	339	\N	2026-10-10 17:37:42.153042+00	\N	efda4b27-bc31-4952-9895-47490b0426eb	{}	{}	VND	0.0000	0.000	0.000	f	720000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	371	\N	2026-10-10 17:37:42.404738+00	\N	01fed84d-6fca-4dad-ab50-d1b3e8d94a21	{}	{}	VND	0.0000	0.000	0.000	f	165000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	375	\N	2026-10-10 17:37:42.598129+00	\N	c52b0229-aa40-40ec-8fd4-0f5fce9ab44c	{}	{}	VND	0.0000	0.000	0.000	f	149000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	376	\N	2026-10-10 17:37:42.787001+00	\N	8eb6bbce-86fc-4343-985a-08dc5bd50f5c	{}	{}	VND	0.0000	0.000	0.000	f	149000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	377	\N	2026-10-10 17:37:43.001171+00	\N	b5cb5849-e070-4af1-9d85-f1714197c448	{}	{}	VND	0.0000	0.000	0.000	f	149000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	378	\N	2026-10-10 17:37:43.195482+00	\N	828099b0-24e5-4ede-a51d-0c009102ae59	{}	{}	VND	0.0000	0.000	0.000	f	149000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	393	\N	2026-10-10 17:37:43.428892+00	\N	c6fc4f67-84b6-4250-82b2-10f6931358e7	{}	{}	VND	0.0000	0.000	0.000	f	1000000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	401	\N	2026-10-10 17:37:43.66306+00	\N	08c4cebb-0290-4027-9c1c-79a7b02bc6e3	{}	{}	VND	0.0000	0.000	0.000	f	500000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	400	\N	2026-10-10 17:37:43.858192+00	\N	d48c8f60-7fa0-40e2-ab55-1effe348e92f	{}	{}	VND	0.0000	0.000	0.000	f	5000000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	345	\N	2026-10-10 17:37:44.072649+00	\N	779cc370-1ce0-4e67-bb24-c5d07fa3f1ba	{}	{}	VND	0.0000	0.000	0.000	f	420000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	411	\N	2026-10-10 17:37:44.314019+00	\N	e6b762ad-f378-4c17-a941-4c8fd6256c69	{}	{}	VND	0.0000	0.000	0.000	f	420000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	412	\N	2026-10-10 17:37:44.524196+00	\N	dd765ed6-08c8-4d33-a519-62b0d80ed4ae	{}	{}	VND	0.0000	0.000	0.000	f	420000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	413	\N	2026-10-10 17:37:44.720693+00	\N	4a3cf41c-4882-4cd7-b5de-67668665666a	{}	{}	VND	0.0000	0.000	0.000	f	420000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	414	\N	2026-10-10 17:37:44.936797+00	\N	a22c39b7-5628-4782-9940-e983e91af9e3	{}	{}	VND	0.0000	0.000	0.000	f	420000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	419	\N	2026-10-10 17:37:45.172405+00	\N	d7874e6f-0c0c-4015-920d-47fb85fb4139	{}	{}	VND	0.0000	0.000	0.000	f	420000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	418	\N	2026-10-10 17:37:45.38397+00	\N	64d08906-b70d-44ef-b216-709b4ebce09a	{}	{}	VND	0.0000	0.000	0.000	f	420000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	417	\N	2026-10-10 17:37:45.58968+00	\N	e69f9f0f-8bab-4d27-a07d-7e553b9751e3	{}	{}	VND	0.0000	0.000	0.000	f	420000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	420	\N	2026-10-10 17:37:45.826427+00	\N	54c7bdd4-8e68-4a76-a7c4-26fb085ef248	{}	{}	VND	0.0000	0.000	0.000	f	420000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	415	\N	2026-10-10 17:37:46.03545+00	\N	a0ffa06e-a3c5-4125-a51b-ef575e4f75de	{}	{}	VND	0.0000	0.000	0.000	f	420000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	416	\N	2026-10-10 17:37:46.244826+00	\N	dc747f22-2892-4298-be49-636011cfa570	{}	{}	VND	0.0000	0.000	0.000	f	420000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	324	\N	2026-10-10 17:37:46.48082+00	\N	c8fe3901-68c0-41b5-8f90-3b7625fdb7b3	{}	{}	VND	0.0000	0.000	0.000	f	89000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	382	\N	2026-10-10 17:37:46.70608+00	\N	6806dcf0-6470-4bb2-a55f-11ace4f0b946	{}	{}	VND	0.0000	0.000	0.000	f	110000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	388	\N	2026-10-10 17:37:46.914704+00	\N	58fbcd3c-d763-4129-886a-d30963185afb	{}	{}	VND	0.0000	0.000	0.000	f	180000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	379	\N	2026-10-10 17:37:47.124691+00	\N	ef9d81d1-d1a4-42b5-bb01-7fe148364709	{}	{}	VND	0.0000	0.000	0.000	f	99000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	380	\N	2026-10-10 17:37:47.3708+00	\N	1e64febb-e07c-4cc3-80f9-1610c50db478	{}	{}	VND	0.0000	0.000	0.000	f	99000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	368	\N	2026-10-10 17:37:47.589428+00	\N	5f63e260-e729-4310-922a-7898e9773683	{}	{}	VND	0.0000	0.000	0.000	f	125000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	389	\N	2026-10-10 17:37:47.807176+00	\N	9041c36b-c39c-4bdb-bbe0-dabaafbd3f06	{}	{}	VND	0.0000	0.000	0.000	f	205000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	390	\N	2026-10-10 17:37:48.068277+00	\N	9a468068-9665-4cc6-8a0f-a2fa3b1e891c	{}	{}	VND	0.0000	0.000	0.000	f	205000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	370	\N	2026-10-10 17:37:48.329935+00	\N	e4f16996-1cc5-41aa-8d78-cde37c954147	{}	{}	VND	0.0000	0.000	0.000	f	95000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	353	\N	2026-10-10 17:37:48.558844+00	\N	46111b8f-3812-458e-bd13-8fc711903081	{}	{}	VND	0.0000	0.000	0.000	f	185000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	354	\N	2026-10-10 17:37:48.818984+00	\N	a535f95c-38f7-4958-80ed-7b8e104b3052	{}	{}	VND	0.0000	0.000	0.000	f	185000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	355	\N	2026-10-10 17:37:49.044992+00	\N	c112fce4-90a1-4880-a3d6-cc579adb128e	{}	{}	VND	0.0000	0.000	0.000	f	185000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	356	\N	2026-10-10 17:37:49.311024+00	\N	e69e9ac9-cbda-4e15-9043-4f2393c327b3	{}	{}	VND	0.0000	0.000	0.000	f	185000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	357	\N	2026-10-10 17:37:49.617565+00	\N	ba968bd3-6dee-4ce3-a3a1-ee0d0ae3b8e7	{}	{}	VND	0.0000	0.000	0.000	f	185000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	383	\N	2026-10-10 17:37:49.874451+00	\N	318eacd6-5279-43af-b3ec-f50c3a8a3b2e	{}	{}	VND	0.0000	0.000	0.000	f	175000.000	\N	\N
-1	d60bff3a-3412-43e8-95b9-815817d747f7	399	\N	2026-10-10 17:37:50.120898+00	\N	d7761210-4f89-4548-861d-582ad0089feb	{}	{}	VND	0.0000	0.000	0.000	f	185000.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	384	\N	2026-10-10 17:37:50.497386+00	\N	2887dd01-da70-4445-8aa1-35ed5e361d92	{}	{}	USD	0.0000	0.000	0.000	f	1.500	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	348	\N	2026-10-10 17:37:50.622265+00	\N	71672fff-16b4-4c20-aadf-868e556bda7c	{}	{}	USD	0.0000	0.000	0.000	f	8.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	349	\N	2026-10-10 17:37:50.746962+00	\N	d5acacef-0b6f-477d-b9f1-1ec58bca2da7	{}	{}	USD	0.0000	0.000	0.000	f	8.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	350	\N	2026-10-10 17:37:50.872586+00	\N	f119f34b-cbf1-4f1b-a2fa-1d5ae845be7f	{}	{}	USD	0.0000	0.000	0.000	f	8.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	351	\N	2026-10-10 17:37:50.999593+00	\N	80616187-14ba-44dc-a9c2-4a15f36b4f35	{}	{}	USD	0.0000	0.000	0.000	f	8.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	352	\N	2026-10-10 17:37:51.126734+00	\N	654637e7-1e51-41e6-beae-7e90fa68def0	{}	{}	USD	0.0000	0.000	0.000	f	8.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	340	\N	2026-10-10 17:37:51.254166+00	\N	cabe4a8f-c0a0-4915-b83f-999b6b719a55	{}	{}	USD	0.0000	0.000	0.000	f	35.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	341	\N	2026-10-10 17:37:51.40475+00	\N	b4bda665-f842-4a3d-8386-8d223f2685ab	{}	{}	USD	0.0000	0.000	0.000	f	35.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	342	\N	2026-10-10 17:37:51.562748+00	\N	e12dffe5-b817-4fa8-b38c-47f6c2cc71d5	{}	{}	USD	0.0000	0.000	0.000	f	35.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	343	\N	2026-10-10 17:37:51.712232+00	\N	af821c33-3897-4e8a-a2ec-7835d7b22ccc	{}	{}	USD	0.0000	0.000	0.000	f	35.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	344	\N	2026-10-10 17:37:51.85245+00	\N	f06fc5ed-6d93-4d7f-b6ff-b69041dea3f3	{}	{}	USD	0.0000	0.000	0.000	f	35.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	386	\N	2026-10-10 17:37:52.024697+00	\N	fac39340-2124-464c-8efd-d22fc99b4c37	{}	{}	USD	0.0000	0.000	0.000	f	1.650	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	372	\N	2026-10-10 17:37:52.158725+00	\N	37db5b14-f165-44f3-aa32-b8bf36e30cff	{}	{}	USD	0.0000	0.000	0.000	f	4.900	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	373	\N	2026-10-10 17:37:52.321737+00	\N	3979ee2e-cf11-46aa-9ade-1c8cff52487f	{}	{}	USD	0.0000	0.000	0.000	f	4.900	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	374	\N	2026-10-10 17:37:52.467638+00	\N	d0b4f0c4-316c-48da-ac18-8396dc8e11e8	{}	{}	USD	0.0000	0.000	0.000	f	4.900	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	385	\N	2026-10-10 17:37:52.612588+00	\N	ad63f0b9-3080-45ba-a22f-8a96cfc506ed	{}	{}	USD	0.0000	0.000	0.000	f	1.350	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	333	\N	2026-10-10 17:37:52.756904+00	\N	150f4408-1348-4a56-b6bd-8187d38ac0c6	{}	{}	USD	0.0000	0.000	0.000	f	20.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	332	\N	2026-10-10 17:37:52.903149+00	\N	68782cdb-2292-46a4-975c-ff97b3ea13c4	{}	{}	USD	0.0000	0.000	0.000	f	20.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	334	\N	2026-10-10 17:37:53.046232+00	\N	b7216c65-cbef-4278-a07c-fbd7ed10b688	{}	{}	USD	0.0000	0.000	0.000	f	20.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	404	\N	2026-10-10 17:37:53.200778+00	\N	f4890ba5-c3d6-4c61-913e-923676de45d8	{}	{}	USD	0.0000	0.000	0.000	f	20.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	405	\N	2026-10-10 17:37:53.371045+00	\N	bba3293a-3910-473a-bee5-509e17284fc4	{}	{}	USD	0.0000	0.000	0.000	f	20.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	406	\N	2026-10-10 17:37:53.534319+00	\N	7a6e13f4-df48-436f-b320-817bf4f8ff7c	{}	{}	USD	0.0000	0.000	0.000	f	20.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	407	\N	2026-10-10 17:37:53.688855+00	\N	5c67c505-5068-411f-82b0-9af942517a15	{}	{}	USD	0.0000	0.000	0.000	f	20.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	408	\N	2026-10-10 17:37:53.840886+00	\N	1edfaa12-d5e7-4c06-8f9d-7d268eae9870	{}	{}	USD	0.0000	0.000	0.000	f	20.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	409	\N	2026-10-10 17:37:53.997745+00	\N	eba458a4-9c36-482f-b3c4-49a717f52720	{}	{}	USD	0.0000	0.000	0.000	f	20.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	410	\N	2026-10-10 17:37:54.154507+00	\N	5abb8cca-6be1-4368-a40a-e26048d2307b	{}	{}	USD	0.0000	0.000	0.000	f	20.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	361	\N	2026-10-10 17:37:54.311698+00	\N	da8d0e88-55f3-4dff-9078-a1c9fa3a1044	{}	{}	USD	0.0000	0.000	0.000	f	9.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	362	\N	2026-10-10 17:37:54.467141+00	\N	70745e40-bdd4-4ad1-a61f-8e0087743466	{}	{}	USD	0.0000	0.000	0.000	f	9.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	363	\N	2026-10-10 17:37:54.660518+00	\N	49a6c4e2-314d-43f2-aa27-4556538e55ec	{}	{}	USD	0.0000	0.000	0.000	f	9.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	387	\N	2026-10-10 17:37:54.841954+00	\N	b412d3c5-8f98-4af0-84fc-d53767bbb26c	{}	{}	USD	0.0000	0.000	0.000	f	1.500	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	394	\N	2026-10-10 17:37:55.028161+00	\N	1976b03b-ee43-40a4-a169-2cbf00fde9e4	{}	{}	USD	0.0000	0.000	0.000	f	9.500	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	395	\N	2026-10-10 17:37:55.198834+00	\N	989e627b-9c8d-488e-8f95-f18b5d9b2b10	{}	{}	USD	0.0000	0.000	0.000	f	9.500	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	396	\N	2026-10-10 17:37:55.368043+00	\N	f40ba1b3-d2d7-4aba-a834-0ff48cc7e06e	{}	{}	USD	0.0000	0.000	0.000	f	9.500	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	397	\N	2026-10-10 17:37:55.535711+00	\N	792fd2c9-c147-4aef-a054-a6d8806edf78	{}	{}	USD	0.0000	0.000	0.000	f	9.500	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	398	\N	2026-10-10 17:37:55.722452+00	\N	aaae6026-c6a7-40c5-ab46-66b76ea18a98	{}	{}	USD	0.0000	0.000	0.000	f	9.500	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	358	\N	2026-10-10 17:37:55.894733+00	\N	df843301-4ced-40da-8c2e-12ce2e37050d	{}	{}	USD	0.0000	0.000	0.000	f	12.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	359	\N	2026-10-10 17:37:56.100102+00	\N	b41ccdf7-7425-40e5-a23d-fb2b61ab80f4	{}	{}	USD	0.0000	0.000	0.000	f	12.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	360	\N	2026-10-10 17:37:56.276461+00	\N	fffb2d36-3836-40b2-b224-7259887a328e	{}	{}	USD	0.0000	0.000	0.000	f	12.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	364	\N	2026-10-10 17:37:56.444491+00	\N	2a4615c7-35e4-4cb2-b0c1-63074b86526e	{}	{}	USD	0.0000	0.000	0.000	f	8.500	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	365	\N	2026-10-10 17:37:56.617156+00	\N	1451468c-26d8-4780-b825-8dc992dd6ff6	{}	{}	USD	0.0000	0.000	0.000	f	8.500	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	366	\N	2026-10-10 17:37:56.831075+00	\N	532347ad-fd72-4881-b1ed-703e4087115f	{}	{}	USD	0.0000	0.000	0.000	f	8.500	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	335	\N	2026-10-10 17:37:57.009777+00	\N	072f150c-9274-483d-9c06-dacf9d35e8c6	{}	{}	USD	0.0000	0.000	0.000	f	30.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	336	\N	2026-10-10 17:37:57.186335+00	\N	23e7d5ce-7986-499c-a264-85eb6ad3e531	{}	{}	USD	0.0000	0.000	0.000	f	30.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	337	\N	2026-10-10 17:37:57.372429+00	\N	09bb4e69-a163-454d-8737-19f5adc8e4be	{}	{}	USD	0.0000	0.000	0.000	f	30.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	338	\N	2026-10-10 17:37:57.554262+00	\N	9163bb38-87e2-46bc-83d8-b3bca625d8b9	{}	{}	USD	0.0000	0.000	0.000	f	30.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	339	\N	2026-10-10 17:37:57.732741+00	\N	c50b825d-5851-4d1e-82c5-c09f2b36b6d3	{}	{}	USD	0.0000	0.000	0.000	f	30.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	371	\N	2026-10-10 17:37:57.910631+00	\N	5d977291-1070-4a62-ab31-fec19a220564	{}	{}	USD	0.0000	0.000	0.000	f	7.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	375	\N	2026-10-10 17:37:58.126076+00	\N	0fa9cd2b-a181-4b82-85db-97d312a1dbab	{}	{}	USD	0.0000	0.000	0.000	f	6.200	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	376	\N	2026-10-10 17:37:58.323646+00	\N	bd1cd4b1-f354-4f1c-b9ec-0911a96bcdef	{}	{}	USD	0.0000	0.000	0.000	f	6.200	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	377	\N	2026-10-10 17:37:58.543168+00	\N	d260099e-7fc8-47b3-b7dd-f14072fb52f1	{}	{}	USD	0.0000	0.000	0.000	f	6.200	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	378	\N	2026-10-10 17:37:58.731759+00	\N	e0ee4533-4cbc-40c0-888a-1dc795a5570a	{}	{}	USD	0.0000	0.000	0.000	f	6.200	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	393	\N	2026-10-10 17:37:58.919527+00	\N	31c8e3c6-9f02-4d0f-8b2b-974276506395	{}	{}	USD	0.0000	0.000	0.000	f	40.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	401	\N	2026-10-10 17:37:59.10933+00	\N	8952587a-8ebf-4ad5-a946-5fc54f6d50f1	{}	{}	USD	0.0000	0.000	0.000	f	20.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	400	\N	2026-10-10 17:37:59.390758+00	\N	4b253461-6d9b-42cb-a0af-e54208c207c0	{}	{}	USD	0.0000	0.000	0.000	f	200.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	345	\N	2026-10-10 17:37:59.598717+00	\N	b8ed90db-9cb7-4dff-8a08-e570856632d6	{}	{}	USD	0.0000	0.000	0.000	f	17.500	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	411	\N	2026-10-10 17:37:59.915327+00	\N	3a0fbf19-7a17-47e3-ace7-23f0623813ca	{}	{}	USD	0.0000	0.000	0.000	f	17.500	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	412	\N	2026-10-10 17:38:00.120565+00	\N	468530b1-b6c8-4de7-9f98-0fd4863e193e	{}	{}	USD	0.0000	0.000	0.000	f	17.500	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	413	\N	2026-10-10 17:38:00.352652+00	\N	f809ecac-f355-4402-a07b-93ba49203078	{}	{}	USD	0.0000	0.000	0.000	f	17.500	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	414	\N	2026-10-10 17:38:00.557147+00	\N	bcb7f935-a0a1-4a95-b650-165ba898edf0	{}	{}	USD	0.0000	0.000	0.000	f	17.500	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	419	\N	2026-10-10 17:38:00.764996+00	\N	9eaf0e1f-f754-47b3-9144-e7dece4e71b1	{}	{}	USD	0.0000	0.000	0.000	f	17.500	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	418	\N	2026-10-10 17:38:01.014097+00	\N	adff431d-3d62-432f-8b68-de4439a3511f	{}	{}	USD	0.0000	0.000	0.000	f	17.500	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	417	\N	2026-10-10 17:38:01.222798+00	\N	3336676e-38c5-4d72-ad45-469e65451d16	{}	{}	USD	0.0000	0.000	0.000	f	17.500	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	420	\N	2026-10-10 17:38:01.477331+00	\N	9a278848-64c5-4e82-b778-28c456a58edd	{}	{}	USD	0.0000	0.000	0.000	f	17.500	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	415	\N	2026-10-10 17:38:01.699936+00	\N	40a64944-9440-431f-8074-f022be7e3112	{}	{}	USD	0.0000	0.000	0.000	f	17.500	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	416	\N	2026-10-10 17:38:01.91907+00	\N	f39e6218-6c90-4476-86dc-0000c93221ee	{}	{}	USD	0.0000	0.000	0.000	f	17.500	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	324	\N	2026-10-10 17:38:02.161709+00	\N	2bc18290-db08-4331-91fa-c5787c7d6a0a	{}	{}	USD	0.0000	0.000	0.000	f	3.800	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	382	\N	2026-10-10 17:38:02.406321+00	\N	2eb2aae8-4ed0-4e5f-8b8f-eb197a4dab22	{}	{}	USD	0.0000	0.000	0.000	f	4.500	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	388	\N	2026-10-10 17:38:02.628204+00	\N	ec4f28d3-f7e3-4a97-9249-603b22ace791	{}	{}	USD	0.0000	0.000	0.000	f	7.500	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	379	\N	2026-10-10 17:38:02.888407+00	\N	9da9ba43-c391-4281-95be-80283e6cb8e2	{}	{}	USD	0.0000	0.000	0.000	f	4.200	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	380	\N	2026-10-10 17:38:03.118904+00	\N	bcbfcb1e-7a3d-4016-adf1-732e608261c3	{}	{}	USD	0.0000	0.000	0.000	f	4.200	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	368	\N	2026-10-10 17:38:03.352071+00	\N	e9e0434d-8d5b-4522-9612-8b824f44d435	{}	{}	USD	0.0000	0.000	0.000	f	5.200	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	389	\N	2026-10-10 17:38:03.642497+00	\N	7d8be5c6-9aeb-4f1a-8b52-b876511553c0	{}	{}	USD	0.0000	0.000	0.000	f	8.600	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	390	\N	2026-10-10 17:38:03.86674+00	\N	e4ebf4df-55eb-4f26-9d20-c77e43cc7619	{}	{}	USD	0.0000	0.000	0.000	f	8.600	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	370	\N	2026-10-10 17:38:04.11551+00	\N	555a4721-4c4f-43a5-98ff-d15487eb786f	{}	{}	USD	0.0000	0.000	0.000	f	4.000	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	353	\N	2026-10-10 17:38:04.343623+00	\N	9c0b138b-2b38-47e0-a31e-ff4c4f6a9c1d	{}	{}	USD	0.0000	0.000	0.000	f	7.800	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	354	\N	2026-10-10 17:38:04.574665+00	\N	cc51da36-9488-4815-9ca8-419cf19ff38b	{}	{}	USD	0.0000	0.000	0.000	f	7.800	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	355	\N	2026-10-10 17:38:04.898684+00	\N	cdfa9f65-12b6-4242-b8e8-907346f24e27	{}	{}	USD	0.0000	0.000	0.000	f	7.800	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	356	\N	2026-10-10 17:38:05.231882+00	\N	ae646ff9-dfc7-41a1-840c-87be3c1410f1	{}	{}	USD	0.0000	0.000	0.000	f	7.800	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	357	\N	2026-10-10 17:38:05.484001+00	\N	33ac4bcb-cc2c-4f70-bb29-6464445e5f81	{}	{}	USD	0.0000	0.000	0.000	f	7.800	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	383	\N	2026-10-10 17:38:05.713989+00	\N	e85fe310-91d6-4b27-844b-b17fda051659	{}	{}	USD	0.0000	0.000	0.000	f	7.200	\N	\N
-1	e07898d3-57a6-4a37-90e9-616789e3f6f8	399	\N	2026-10-10 17:38:05.958075+00	\N	001c2391-ee15-49a3-80c6-185e6586f227	{}	{}	USD	0.0000	0.000	0.000	f	7.600	\N	\N
 \.
 
 
@@ -8947,6 +8661,14 @@ COPY public.drm_readingprogress (id, user_email, product_id, current_page, total
 1	basduy05@gmail.com	146	45	180	25	2026-10-08 13:58:52.84326+00
 2	basduygame@gmail.com	147	45	180	25	2026-10-08 13:58:52.887869+00
 3	customer@example.com	145	45	180	25	2026-10-08 13:58:52.917717+00
+7	basduy05@gmail.com	bon-thoa-uoc	1	158	0.6	2026-10-18 13:33:54.331956+00
+5	basduy05@gmail.com	sample-book	1	2	50	2026-10-15 09:02:35.394978+00
+4	basduy05@gmail.com	enterprise-cloud-on-premises-tales	4	8	50	2026-10-14 09:21:31.009915+00
+6	basduy05@gmail.com	dac-nhan-tam	1	4	25	2026-10-18 16:02:58.907654+00
+9	usertest@gmail.com	dac-nhan-tam	12	352	3.4	2026-10-17 18:04:24.066419+00
+11	usertest@gmail.com	sapiens-luoc-su-loai-nguoi	1	9	11.1	2026-10-19 16:29:02.871636+00
+8	basduy05@gmail.com	tri-tue-do-thai	15	16	93.8	2026-10-15 09:56:49.173237+00
+10	basduy05@gmail.com	sapiens-luoc-su-loai-nguoi	40	938	4.3	2026-10-19 14:23:37.550602+00
 \.
 
 
@@ -9013,28 +8735,25 @@ COPY public.menu_menu (id, name, slug, metadata, private_metadata) FROM stdin;
 --
 
 COPY public.menu_menuitem (id, name, sort_order, url, lft, rght, tree_id, level, category_id, collection_id, menu_id, page_id, parent_id, metadata, private_metadata) FROM stdin;
-226	Sneakers	3	\N	2	3	57	1	28	\N	1	\N	225	{}	{}
-227	Sweatshirts	4	\N	4	5	57	1	29	\N	1	\N	225	{}	{}
-232	Headware	2	\N	14	21	57	1	33	\N	1	\N	225	{}	{}
-233	Beanies	1	\N	19	20	57	2	35	\N	1	\N	232	{}	{}
-234	Scarfs	2	\N	17	18	57	2	36	\N	1	\N	232	{}	{}
-235	Sunglasses	3	\N	15	16	57	2	37	\N	1	\N	232	{}	{}
-236	T-shirts	1	\N	25	26	57	2	39	\N	1	\N	238	{}	{}
-237	Polo shirts	2	\N	23	24	57	2	40	\N	1	\N	238	{}	{}
-238	Shirts	1	\N	22	27	57	1	38	\N	1	\N	225	{}	{}
-240	Homewares	1	\N	4	5	56	1	41	\N	1	\N	223	{}	{}
-242	Juices	\N	\N	2	3	58	1	43	\N	1	\N	241	{}	{}
-246	Gift cards	3	\N	6	7	56	1	44	\N	1	\N	223	{}	{}
-247	Audiobooks	1	\N	2	3	60	1	26	\N	1	\N	224	{}	{}
-223	Accessories	2	\N	1	6	56	0	25	\N	1	\N	\N	{}	{}
-224	Books	0	\N	1	4	60	0	45	\N	1	\N	\N	{}	{}
-225	Apparel	1	\N	1	28	57	0	27	\N	1	\N	\N	{}	{}
-241	Groceries	3	\N	1	4	58	0	42	\N	1	\N	\N	{}	{}
+31	Phát triển bản thân	0	\N	2	7	66	1	32	\N	1	\N	30	{}	{}
+32	Giao tiếp & Ứng xử	0	\N	3	4	66	2	33	\N	1	\N	31	{}	{}
+33	Tâm lý & Thói quen	1	\N	5	6	66	2	34	\N	1	\N	31	{}	{}
+34	Triết lý & Tư duy	1	\N	8	13	66	1	35	\N	1	\N	30	{}	{}
+35	Minh triết sống	0	\N	9	10	66	2	36	\N	1	\N	34	{}	{}
+36	Trí tuệ nhân loại	1	\N	11	12	66	2	37	\N	1	\N	34	{}	{}
+37	Lịch sử & Khoa học	2	\N	14	19	66	1	38	\N	1	\N	30	{}	{}
+38	Lược sử văn minh	0	\N	15	16	66	2	39	\N	1	\N	37	{}	{}
+39	Khoa học & Vũ trụ	1	\N	17	18	66	2	40	\N	1	\N	37	{}	{}
+40	Kinh doanh & Đầu tư	3	\N	20	25	66	1	41	\N	1	\N	30	{}	{}
+41	Quản trị & Lãnh đạo	0	\N	21	22	66	2	42	\N	1	\N	40	{}	{}
+42	Tài chính cá nhân	1	\N	23	24	66	2	43	\N	1	\N	40	{}	{}
+43	Văn học & Tiểu thuyết	4	\N	26	31	66	1	44	\N	1	\N	30	{}	{}
+44	Văn học kinh điển	0	\N	27	28	66	2	45	\N	1	\N	43	{}	{}
+45	Truyện ngắn & Tản văn	1	\N	29	30	66	2	46	\N	1	\N	43	{}	{}
 2	Chính sách bảo mật	0	/privacy	2	3	61	1	\N	\N	2	\N	1	{}	{}
 3	Điều khoản dịch vụ	1	/terms	4	5	61	1	\N	\N	2	\N	1	{}	{}
 4	Chính sách vận chuyển	2	/shipping	6	7	61	1	\N	\N	2	\N	1	{}	{}
 1	Hỗ trợ khách hàng	0	\N	1	10	61	0	\N	\N	2	\N	\N	{}	{}
-5	Chính sách đổi trả	3	/returns	8	9	61	1	\N	\N	2	\N	1	{}	{}
 7	Giới thiệu	0	/about	2	3	62	1	\N	\N	2	\N	6	{}	{}
 8	Liên hệ	1	/contact	4	5	62	1	\N	\N	2	\N	6	{}	{}
 6	Về Aurabook	1	\N	1	8	62	0	\N	\N	2	\N	\N	{}	{}
@@ -9042,6 +8761,9 @@ COPY public.menu_menuitem (id, name, sort_order, url, lft, rght, tree_id, level,
 11	Sách bán chạy	0	/bestsellers	2	3	63	1	\N	\N	2	\N	10	{}	{}
 10	Khám phá kho sách	2	\N	1	6	63	0	\N	\N	2	\N	\N	{}	{}
 12	Sách mới phát hành	1	/new-releases	4	5	63	1	\N	\N	2	\N	10	{}	{}
+28	Sách bán chạy	0	\N	1	2	64	0	\N	1	1	\N	\N	{}	{}
+29	Sách mới phát hành	1	\N	1	2	65	0	\N	2	1	\N	\N	{}	{}
+30	Thể loại	2	/products	1	32	66	0	\N	\N	1	\N	\N	{}	{}
 \.
 
 
@@ -9050,13 +8772,6 @@ COPY public.menu_menuitem (id, name, sort_order, url, lft, rght, tree_id, level,
 --
 
 COPY public.menu_menuitemtranslation (id, language_code, name, menu_item_id) FROM stdin;
-1	vi	Quản lý sách	224
-2	vi	Cửa hàng tạp hóa	241
-3	vi	Phụ kiện	223
-4	vi	Quần áo	225
-5	vi	Sách nói	247
-6	vi	Đồ gia dụng	240
-7	vi	Thẻ quà tặng	246
 \.
 
 
@@ -9073,6 +8788,7 @@ COPY public.order_fulfillment (id, tracking_number, created_at, fulfillment_orde
 6	GHN83921006VN	2026-10-09 17:19:38.157929+00	1	fulfilled	{"origin": "Kho Tổng Aurabook Hà Nội", "status": "delivered", "carrier": "Giao Hàng Nhanh (GHN)", "tracking_code": "GHN83921006VN", "status_display": "Giao hàng thành công (Completed)"}	{}	\N	\N	a1b10dd0-cd8c-467f-abdf-b2b40a22721a		\N
 7		2026-10-09 17:19:45.90128+00	2	fulfilled	{}	{}	\N	\N	a1b10dd0-cd8c-467f-abdf-b2b40a22721a		\N
 8	GHN83921007VN	2026-10-10 16:11:24.163947+00	1	fulfilled	{"origin": "Kho Tổng Aurabook Hà Nội", "status": "ready_to_pick", "carrier": "Giao Hàng Nhanh (GHN)", "tracking_code": "GHN83921007VN", "status_display": "Đang giao hàng"}	{}	\N	\N	0a7b5191-5bec-490c-9fd8-aa550e6c80bf		\N
+9	GHN83921009VN	2026-10-12 11:38:17.311297+00	1	fulfilled	{"origin": "Kho Tổng Aurabook Hà Nội", "status": "storing", "carrier": "Giao Hàng Nhanh (GHN)", "tracking_code": "GHN83921009VN", "status_display": "Đang giao hàng"}	{}	\N	\N	88bda358-3d7a-47d3-8b0e-4cf935f8ab2a		\N
 \.
 
 
@@ -9081,13 +8797,14 @@ COPY public.order_fulfillment (id, tracking_number, created_at, fulfillment_orde
 --
 
 COPY public.order_fulfillmentline (id, quantity, fulfillment_id, stock_id, order_line_id, reason, reason_reference_id) FROM stdin;
-1	1	2	393	fcd328f5-e4c5-4f5c-a971-1f4458409c67		\N
-2	1	3	425	09089efd-8913-4db1-a4a9-5185172e79b4		\N
-3	1	4	369	084b829d-efdb-4899-89f2-ce6b91b82a46		\N
-4	3	5	214	c55376bd-6f9a-42d5-ad44-841d39c7968b		\N
-5	1	6	161	1e0845bc-3a57-4f9a-b84f-39d99d53c83f		\N
-6	1	7	166	1e0845bc-3a57-4f9a-b84f-39d99d53c83f		\N
-7	1	8	193	d6c9e6b8-2b7b-4faa-8545-a7049efdf4bb		\N
+1	1	2	\N	fcd328f5-e4c5-4f5c-a971-1f4458409c67		\N
+2	1	3	\N	09089efd-8913-4db1-a4a9-5185172e79b4		\N
+3	1	4	\N	084b829d-efdb-4899-89f2-ce6b91b82a46		\N
+4	3	5	\N	c55376bd-6f9a-42d5-ad44-841d39c7968b		\N
+5	1	6	\N	1e0845bc-3a57-4f9a-b84f-39d99d53c83f		\N
+6	1	7	\N	1e0845bc-3a57-4f9a-b84f-39d99d53c83f		\N
+7	1	8	\N	d6c9e6b8-2b7b-4faa-8545-a7049efdf4bb		\N
+8	1	9	\N	f665a9a2-b105-4b84-93bb-e026083aa408		\N
 \.
 
 
@@ -9104,7 +8821,9 @@ COPY public.order_order (created_at, tracking_client_id, user_email, id, billing
 2026-10-09 17:18:51.383407+00		basduy05@gmail.com	a1b10dd0-cd8c-467f-abdf-b2b40a22721a	19	18	6	885000.000	\N	vi	35000.000	885000.000	35000.000	fulfilled	Giao Hàng Nhanh (GHN) - Hỏa Tốc (Nội thành HN)	41	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1791562851352, Thẻ: 4242)	1000	a43c9037-36fe-4a64-a158-0bd8dba8cf94	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "ghn_status": "delivered", "ghn_carrier": "Giao Hàng Nhanh (GHN)", "ghn_service": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)", "delivered_at": "2026-10-09T17:19:38.140647+00:00", "ghn_updated_at": "2026-10-09T17:19:38.140647+00:00", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1791562851352", "delivery_status": "completed", "payment_gateway": "test-card", "ghn_tracking_code": "GHN83921006VN", "ghn_origin_address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu, Cầu Giấy, Hà Nội", "ghn_status_display": "Giao hàng thành công (Completed)", "payment_recorded_at": "2026-10-09T16:20:51.587Z", "ghn_origin_warehouse": "Kho Tổng Aurabook Hà Nội", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-09T16:19:48.567Z\\",\\"consent\\":\\"unknown\\"}", "delivery_status_display": "Đã hoàn tất (Completed)", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	885000.000	885000.000	885000.000	checkout	\N	\N		2026-10-09 17:19:38.141072+00	f	6	\N	0.000	full	full	'100000':36B,48B '118223583':49C '1791562851352':22B '41':54C '420':53C,58C '4242':24B '6':1A 'ba':26B,38B 'balance':52C,57C 'basduy05@gmail.com':3A 'card':16B,21B 'credit':14B 'debit':15B 'duy':25B,37B 'gd':19B 'gmail.com':4B 'ha':32B,34B,44B,46B 'la':28B,40B 'ma':18B 'nghiem':13B 'noi':33B,35B,45B,47B 'paul':50C,55C 'phuong':5B 's':51C,56C 't3jkzxi6ytfimtbkzdaty2q4yy00njdmlwfizgytyjjindbhmji3mjfh':2A 'test':17B,20B 'thanh':7B,10B,29B,41B 'the':9B,23B 'thu':12B 'thuc':6B 'toan':8B,11B 'vhjhbnnhy3rpb25jdgvtoju0ngmymmziltaxyzqtndy1oc05ndnjlwjhnti4ngrkywu1nw':59 'vietnam':30B,42B 'vn':31B,43B 'đuong':27B,39B	f	f	35000.000	\N	{}		{}	\N	\N	\N	850000.000	850000.000	\N	35000.000	\N	\N	1	{}	{}
 2026-10-09 17:40:10.684393+00		basduy05@gmail.com	0a7b5191-5bec-490c-9fd8-aa550e6c80bf	24	23	6	217000.000	\N	vi	22000.000	217000.000	22000.000	fulfilled	Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)	40	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1791567608757, Thẻ: 4242)	1000	f602bbc7-5c2a-4c78-a9cc-8cec78703c8e	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "ghn_status": "ready_to_pick", "ghn_carrier": "Giao Hàng Nhanh (GHN)", "ghn_service": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)", "delivered_at": "2026-10-10T16:11:28.372904+00:00", "ghn_updated_at": "2026-10-10T16:11:37.822881+00:00", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1791567608757", "delivery_status": "delivering", "payment_gateway": "test-card", "ghn_tracking_code": "GHN83921007VN", "ghn_origin_address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu, Cầu Giấy, Hà Nội", "ghn_status_display": "Đang giao hàng", "payment_recorded_at": "2026-10-09T17:40:09.063Z", "ghn_origin_warehouse": "Kho Tổng Aurabook Hà Nội", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-09T17:36:37.616Z\\",\\"consent\\":\\"unknown\\"}", "delivery_status_display": "Đang giao hàng", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	217000.000	217000.000	217000.000	checkout	\N	\N		2026-10-10 16:11:37.823073+00	f	7	\N	0.000	full	full	'+84912345678':34B,44B '123':27B,37B '1791567608757':22B,54 '328223580':45C '4242':24B '7':1A 'basduy05@gmail.com':3A 'card':16B,21B,53 'credit':14B 'debit':15B 'duy':25B,35B 'gd':19B 'gmail.com':4B 'ha':32B,42B 'le':28B,38B 'loi':29B,39B 'ma':18B 'monospace':46C,49C 'nghiem':13B 'nguyen':26B,36B 'noi':33B,43B 'phuong':5B 's':48C 't3jkzxi6mge3yjuxotetnwjlyy00otbjltlmzdgtywe1ntblnmm4mgjm':2A 'tee':47C,50C 'test':17B,20B,52 'thanh':7B,10B 'the':9B,23B 'thu':12B 'thuc':6B 'toan':8B,11B 'vhjhbnnhy3rpb25jdgvtojnmmjdlmwu5lwuwmgutndm0ni1inmrmlty1zdlhyjq1zgy3oa':51 'vietnam':30B,40B 'vn':31B,41B	f	f	22000.000	\N	{}		{}	\N	\N	\N	195000.000	195000.000	\N	22000.000	\N	\N	1	{}	{}
 2026-10-10 17:32:41.358659+00		basduy05@gmail.com	b6582232-9eba-49a2-afcc-807bc51d5710	26	25	6	89000.000	\N	vi	22000.000	89000.000	22000.000	unfulfilled	Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)	48	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1791653560147, Thẻ: 4242)	200	5d0d4284-7dd0-478f-bcdf-5e4ad276eb35	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1791653560147", "payment_gateway": "test-card", "payment_recorded_at": "2026-10-10T17:32:40.417Z", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-10T16:47:54.647Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	89000.000	89000.000	89000.000	checkout	\N	\N		2026-10-10 17:32:41.448774+00	f	8	\N	0.000	full	full	'+84362632175':40B,56B '12':29B,45B '1791653560147':22B,70 '4242':24B '8':1A 'apple':57C,60C 'ba':38B,54B 'basduy05@gmail.com':3A 'bean':62C,65C 'cam':31B,47B 'card':16B,21B,69 'credit':14B 'debit':15B 'duy':25B,41B 'gd':19B 'gmail.com':4B 'ha':35B,51B 'huyen':37B,53B 'juice':58C,61C,63C,66C 'ma':18B 'nghiem':13B 'nguyen':26B,42B 'nha':28B,44B 'noi':36B,52B 'phuong':5B 'so':27B,43B 't3jkzxi6yjy1odiymzitowviys00oweylwfmy2mtoda3ymm1mwq1nzew':2A 'test':17B,20B,68 'thanh':7B,10B 'the':9B,23B 'thu':12B 'thuc':6B 'thuong':32B,48B 'toan':8B,11B 'uhjvzhvjdfzhcmlhbnq6mzg0':59C 'uhjvzhvjdfzhcmlhbnq6mzg1':64C 'vhjhbnnhy3rpb25jdgvtojhiotbhzwjklwixywmtndu2zs05mzfmltq3mjbmmdrmymzhyq':67 'vi':39B,55B 'vietnam':33B,49B 'vn':34B,50B 'đuong':30B,46B	f	f	22000.000	\N	{}		{}	\N	\N	\N	67000.000	67000.000	\N	22000.000	\N	\N	2	{}	{}
-2026-10-10 18:05:05.144987+00		basduy05@gmail.com	88bda358-3d7a-47d3-8b0e-4cf935f8ab2a	28	27	6	242000.000	\N	vi	22000.000	242000.000	22000.000	unfulfilled	Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)	48	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1791655504140, Thẻ: 4242)	1000	1799fe63-77ff-4aaa-9463-ffa87dde23ef	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1791655504140", "payment_gateway": "test-card", "payment_recorded_at": "2026-10-10T18:05:04.332Z", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-10T17:51:42.644Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	242000.000	242000.000	242000.000	checkout	\N	\N		2026-10-10 18:05:05.229132+00	f	9	\N	0.000	full	full	'+84912345678':39B,54B '100000':38B,53B '1791655504140':22B,66 '218223580':55C '4242':24B '9':1A 'ba':34B,49B 'bas':26B,41B 'basduy05@gmail.com':3A 'blue':56C,60C 'cam':36B,51B 'card':16B,21B,65 'coc':27B,42B 'credit':14B 'debit':15B 'duy':25B,40B 'gd':19B 'gmail.com':4B 'ha':31B,46B 'huyen':33B,48B 'm':59C 'ma':18B 'nghiem':13B 'noi':32B,47B 'phuong':5B 'polygon':57C,61C 'shirt':58C,62C 't3jkzxi6odhizgezntgtm2q3ys00n2qzlthimgutngnmotm1zjhhyjjh':2A 'test':17B,20B,64 'thanh':7B,10B 'the':9B,23B 'thon':28B,43B 'thu':12B 'thuc':6B 'thuong':37B,52B 'toan':8B,11B 'vhjhbnnhy3rpb25jdgvtojqynjhjntk2lta0y2etngnhzi1hotbiltc0yte2mjm0ymq3na':63 'vi':35B,50B 'vietnam':29B,44B 'vn':30B,45B	f	f	22000.000	\N	{}		{}	\N	\N	\N	220000.000	220000.000	\N	22000.000	\N	\N	1	{}	{}
+2026-10-10 18:05:05.144987+00		basduy05@gmail.com	88bda358-3d7a-47d3-8b0e-4cf935f8ab2a	28	27	6	242000.000	\N	vi	22000.000	242000.000	22000.000	unfulfilled	Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)	48	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1791655504140, Thẻ: 4242)	1000	1799fe63-77ff-4aaa-9463-ffa87dde23ef	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "ghn_status": "storing", "ghn_carrier": "Giao Hàng Nhanh (GHN)", "ghn_service": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)", "ghn_updated_at": "2026-10-12T11:42:33.246175+00:00", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1791655504140", "delivery_status": "delivering", "payment_gateway": "test-card", "ghn_tracking_code": "GHN83921009VN", "ghn_origin_address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu, Cầu Giấy, Hà Nội", "ghn_status_display": "Đang giao hàng", "payment_recorded_at": "2026-10-10T18:05:04.332Z", "ghn_origin_warehouse": "Kho Tổng Aurabook Hà Nội", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-10T17:51:42.644Z\\",\\"consent\\":\\"unknown\\"}", "delivery_status_display": "Đang giao hàng", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	242000.000	242000.000	242000.000	checkout	\N	\N		2026-10-12 11:42:33.24638+00	f	9	\N	0.000	full	full	'+84912345678':39B,54B '100000':38B,53B '1791655504140':22B,66 '218223580':55C '4242':24B '9':1A 'ba':34B,49B 'bas':26B,41B 'basduy05@gmail.com':3A 'blue':56C,60C 'cam':36B,51B 'card':16B,21B,65 'coc':27B,42B 'credit':14B 'debit':15B 'duy':25B,40B 'gd':19B 'gmail.com':4B 'ha':31B,46B 'huyen':33B,48B 'm':59C 'ma':18B 'nghiem':13B 'noi':32B,47B 'phuong':5B 'polygon':57C,61C 'shirt':58C,62C 't3jkzxi6odhizgezntgtm2q3ys00n2qzlthimgutngnmotm1zjhhyjjh':2A 'test':17B,20B,64 'thanh':7B,10B 'the':9B,23B 'thon':28B,43B 'thu':12B 'thuc':6B 'thuong':37B,52B 'toan':8B,11B 'vhjhbnnhy3rpb25jdgvtojqynjhjntk2lta0y2etngnhzi1hotbiltc0yte2mjm0ymq3na':63 'vi':35B,50B 'vietnam':29B,44B 'vn':30B,45B	f	f	22000.000	\N	{}		{}	\N	\N	\N	220000.000	220000.000	\N	22000.000	\N	\N	1	{}	{}
+2026-10-19 03:46:55.467203+00		basduy05@gmail.com	ae9dfdec-db0e-4b7b-b315-6807c6b451f3	63	\N	6	89000.000	\N	vi	0.000	89000.000	0.000	unfulfilled	\N	\N	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1792381614187, Thẻ: 4242)	0.5	aa9ba21c-c530-4cfb-995e-1dea0c906dcf	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1792381614187", "payment_gateway": "test-card", "payment_recorded_at": "2026-10-19T03:46:54.316Z", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-19T03:46:43.290Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	89000.000	89000.000	89000.000	checkout	\N	\N		2026-10-19 03:46:55.574917+00	f	43	\N	0.000	full	full	'+84362632175':42B '100000':41B '1792381614187':22B,74 '4242':24B '43':1A 'a':51C,66C 'ba':27B,39B 'ban':56C 'basduy05@gmail.com':3A 'brief':52C,67C 'cam':30B 'card':16B,21B,73 'coc':28B 'credit':14B 'debit':15B 'duy':25B 'eb':44C 'eb-sapiens':43C 'ebook':57C 'gd':19B 'gmail.com':4B 'ha':34B 'history':53C,68C 'humankind':55C,70C 'loai':49C,64C 'luoc':47C,62C 'ma':18B 'nghiem':13B 'nguoi':50C,65C 'nguyen':26B 'noi':35B 'of':54C,69C 'phuong':5B 'quan':36B 'sach':58C 'sapiens':45C,46C,61C 'su':48C,63C 't3jkzxi6ywu5zgzkzwmtzgiwzs00yjdilwizmtutnjgwn2m2yjq1mwyz':2A 'test':17B,20B,72 'thanh':7B,10B,37B 'the':9B,23B 'thon':29B 'thu':12B 'thuc':6B 'thuong':31B 'toan':8B,11B 'tu':60C 'vhjhbnnhy3rpb25jdgvtojq4mdkyndk5ltkxztctndawzc05yjc0lwrhmwuzm2e1zmzhmq':71 'vi':40B 'vietnam':32B 'vn':33B 'xuan':38B 'đien':59C	f	f	0.000	\N	{}	\N	{}	\N	\N	\N	89000.000	89000.000	\N	0.000	\N	\N	1	{}	{}
+2026-10-15 10:15:14.704484+00		basduy05@gmail.com	acad3bf8-42f4-41f4-be29-2a0ac1c5701b	61	\N	6	59000.000	\N	vi	0.000	59000.000	0.000	unfulfilled	\N	\N	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1792059312167, Thẻ: 4242)	0.5	48bf9719-a71b-49d4-a03f-8e2e8beff35b	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1792059312167", "payment_gateway": "test-card", "payment_recorded_at": "2026-10-15T10:15:12.582Z", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-15T09:11:07.791Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	59000.000	59000.000	59000.000	checkout	\N	\N		2026-10-15 10:15:14.884768+00	f	42	\N	0.000	full	full	'+84362632175':42B '100000':41B '1792059312167':22B,76 '42':1A '4242':24B 'and':55C,70C 'ba':27B,39B 'ban':58C 'basduy05@gmail.com':3A 'cam':30B 'card':16B,21B,75 'coc':28B 'credit':14B 'dac':45C 'debit':15B 'duy':25B 'eb':44C 'eb-dac-nhan-tam':43C 'ebook':59C 'friends':54C,69C 'gd':19B 'gmail.com':4B 'ha':34B 'how':51C,66C 'influence':56C,71C 'ma':18B 'nghiem':13B 'nguyen':26B 'nhan':46C,49C,64C 'noi':35B 'people':57C,72C 'phuong':5B 'quan':36B 'sach':60C 't3jkzxi6ywnhzdnizjgtndjmnc00mwy0lwjlmjktmmewywmxyzu3mdfi':2A 'tam':47C,50C,65C 'test':17B,20B,74 'thanh':7B,10B,37B 'the':9B,23B 'thon':29B 'thu':12B 'thuc':6B 'thuong':31B 'to':52C,67C 'toan':8B,11B 'tu':62C 'vhjhbnnhy3rpb25jdgvtojuwzmi4m2fhlteymgmtndjioc04zgi3ltjkyjfkzje0yzk0za':73 'vi':40B 'vietnam':32B 'vn':33B 'win':53C,68C 'xuan':38B 'đac':48C,63C 'đien':61C	f	f	0.000	\N	{}	\N	{}	\N	\N	\N	59000.000	59000.000	\N	0.000	\N	\N	1	{}	{}
 \.
 
 
@@ -9167,6 +8886,22 @@ COPY public.order_orderevent (id, date, type, user_id, parameters, app_id, order
 44	2026-10-10 18:05:05.459204+00	confirmed	6	{}	\N	88bda358-3d7a-47d3-8b0e-4cf935f8ab2a	\N
 45	2026-10-10 18:05:05.560327+00	email_sent	\N	{"email": "basduy05@gmail.com", "email_type": "payment_confirmation"}	\N	88bda358-3d7a-47d3-8b0e-4cf935f8ab2a	\N
 46	2026-10-10 18:05:08.144978+00	email_sent	\N	{"email": "basduy05@gmail.com", "email_type": "order_confirmation"}	\N	88bda358-3d7a-47d3-8b0e-4cf935f8ab2a	\N
+75	2026-10-12 11:38:17.29393+00	tracking_updated	\N	{"carrier": "Giao Hàng Nhanh (GHN)", "tracking_number": "GHN83921009VN"}	\N	88bda358-3d7a-47d3-8b0e-4cf935f8ab2a	\N
+76	2026-10-12 11:42:19.823736+00	tracking_updated	\N	{"carrier": "Giao Hàng Nhanh (GHN)", "tracking_number": "GHN83921009VN"}	\N	88bda358-3d7a-47d3-8b0e-4cf935f8ab2a	\N
+77	2026-10-12 11:42:29.427944+00	tracking_updated	\N	{"carrier": "Giao Hàng Nhanh (GHN)", "tracking_number": "GHN83921009VN"}	\N	88bda358-3d7a-47d3-8b0e-4cf935f8ab2a	\N
+78	2026-10-12 11:42:30.933551+00	tracking_updated	\N	{"carrier": "Giao Hàng Nhanh (GHN)", "tracking_number": "GHN83921009VN"}	\N	88bda358-3d7a-47d3-8b0e-4cf935f8ab2a	\N
+79	2026-10-12 11:42:32.206201+00	tracking_updated	\N	{"carrier": "Giao Hàng Nhanh (GHN)", "tracking_number": "GHN83921009VN"}	\N	88bda358-3d7a-47d3-8b0e-4cf935f8ab2a	\N
+80	2026-10-12 11:42:33.246175+00	tracking_updated	\N	{"carrier": "Giao Hàng Nhanh (GHN)", "tracking_number": "GHN83921009VN"}	\N	88bda358-3d7a-47d3-8b0e-4cf935f8ab2a	\N
+81	2026-10-15 10:15:14.987456+00	placed	6	{}	\N	acad3bf8-42f4-41f4-be29-2a0ac1c5701b	\N
+82	2026-10-15 10:15:15.009155+00	order_fully_paid	6	{}	\N	acad3bf8-42f4-41f4-be29-2a0ac1c5701b	\N
+83	2026-10-15 10:15:15.330066+00	confirmed	6	{}	\N	acad3bf8-42f4-41f4-be29-2a0ac1c5701b	\N
+84	2026-10-15 10:15:17.688757+00	email_sent	\N	{"email": "basduy05@gmail.com", "email_type": "payment_confirmation"}	\N	acad3bf8-42f4-41f4-be29-2a0ac1c5701b	\N
+85	2026-10-15 10:15:19.538513+00	email_sent	\N	{"email": "basduy05@gmail.com", "email_type": "order_confirmation"}	\N	acad3bf8-42f4-41f4-be29-2a0ac1c5701b	\N
+86	2026-10-19 03:46:55.617451+00	placed	6	{}	\N	ae9dfdec-db0e-4b7b-b315-6807c6b451f3	\N
+87	2026-10-19 03:46:55.624597+00	order_fully_paid	6	{}	\N	ae9dfdec-db0e-4b7b-b315-6807c6b451f3	\N
+88	2026-10-19 03:46:55.747553+00	confirmed	6	{}	\N	ae9dfdec-db0e-4b7b-b315-6807c6b451f3	\N
+89	2026-10-19 03:46:55.837614+00	email_sent	\N	{"email": "basduy05@gmail.com", "email_type": "payment_confirmation"}	\N	ae9dfdec-db0e-4b7b-b315-6807c6b451f3	\N
+90	2026-10-19 03:46:56.18831+00	email_sent	\N	{"email": "basduy05@gmail.com", "email_type": "order_confirmation"}	\N	ae9dfdec-db0e-4b7b-b315-6807c6b451f3	\N
 \.
 
 
@@ -9191,15 +8926,17 @@ COPY public.order_ordergrantedrefundline (id, quantity, granted_refund_id, order
 --
 
 COPY public.order_orderline (product_name, product_sku, quantity, unit_price_net_amount, unit_price_gross_amount, is_shipping_required, quantity_fulfilled, variant_id, tax_rate, translated_product_name, currency, translated_variant_name, variant_name, total_price_gross_amount, total_price_net_amount, unit_discount_amount, unit_discount_value, unit_discount_reason, unit_discount_type, undiscounted_total_price_gross_amount, undiscounted_total_price_net_amount, undiscounted_unit_price_gross_amount, undiscounted_unit_price_net_amount, is_gift_card, product_variant_id, sale_id, voucher_code, order_id, id, old_id, created_at, base_unit_price_amount, undiscounted_base_unit_price_amount, metadata, private_metadata, tax_class_id, tax_class_metadata, tax_class_name, tax_class_private_metadata, is_gift, is_price_overridden, draft_base_price_expire_at, product_type_id, price_override_reason) FROM stdin;
-Enterprise Cloud + On-premises	113223582	1	150000.000	150000.000	f	1	375	\N		VND		Vinyl	150000.000	150000.000	0.000	0.000	\N	\N	150000.000	150000.000	150000.000	150000.000	f	\N	\N	\N	6c88e6e4-7190-488f-8665-a68b70dc386c	fcd328f5-e4c5-4f5c-a971-1f4458409c67	\N	2026-10-08 13:58:08.303668+00	150000.000	150000.000	{}	{}	\N	{}	\N	{}	f	\N	\N	\N	\N
-Own your stack and data	124223581	1	150000.000	150000.000	f	1	379	\N		VND		iTunes	150000.000	150000.000	0.000	0.000	\N	\N	150000.000	150000.000	150000.000	150000.000	f	\N	\N	\N	b730f982-eddf-4276-817c-1ca135a8a240	09089efd-8913-4db1-a4a9-5185172e79b4	\N	2026-10-08 13:58:52.87493+00	150000.000	150000.000	{}	{}	\N	{}	\N	{}	f	\N	\N	\N	\N
-Battle-tested at brands like Lush	9018223582	1	150000.000	150000.000	f	1	372	\N		VND		DVD	150000.000	150000.000	0.000	0.000	\N	\N	150000.000	150000.000	150000.000	150000.000	f	\N	\N	\N	af2a495b-46c4-40fd-9a39-e18751f12dbe	084b829d-efdb-4899-89f2-ce6b91b82a46	\N	2026-10-08 13:58:52.907068+00	150000.000	150000.000	{}	{}	\N	{}	\N	{}	f	\N	\N	\N	\N
-Monospace Tee	328223582	3	195000.000	195000.000	t	3	350	0.0000	Monospace Tee	VND		L	585000.000	585000.000	0.000	0.000	\N	fixed	585000.000	585000.000	195000.000	195000.000	f	UHJvZHVjdFZhcmlhbnQ6MzUw	\N	\N	9c3af7bb-cbcf-48ad-bffb-2694a0058b4b	c55376bd-6f9a-42d5-ad44-841d39c7968b	\N	2026-10-09 17:10:23.93737+00	195000.000	195000.000	{}	{}	\N	{}	\N	{}	f	f	\N	20	\N
-Paul's Balance 420	118223583	1	850000.000	850000.000	t	1	342	0.0000	Paul's Balance 420	VND		41	850000.000	850000.000	0.000	0.000	\N	fixed	850000.000	850000.000	850000.000	850000.000	f	UHJvZHVjdFZhcmlhbnQ6MzQy	\N	\N	a1b10dd0-cd8c-467f-abdf-b2b40a22721a	1e0845bc-3a57-4f9a-b84f-39d99d53c83f	\N	2026-10-09 17:18:51.411927+00	850000.000	850000.000	{}	{}	\N	{}	\N	{}	f	f	\N	18	\N
-Monospace Tee	328223580	1	195000.000	195000.000	t	0	348	0.0000	Monospace Tee	VND		S	195000.000	195000.000	0.000	0.000	\N	fixed	195000.000	195000.000	195000.000	195000.000	f	UHJvZHVjdFZhcmlhbnQ6MzQ4	\N	\N	0a7b5191-5bec-490c-9fd8-aa550e6c80bf	d6c9e6b8-2b7b-4faa-8545-a7049efdf4bb	\N	2026-10-09 17:40:10.732289+00	195000.000	195000.000	{}	{}	\N	{}	\N	{}	f	f	\N	20	\N
-Apple Juice	\N	1	35000.000	35000.000	t	0	384	0.0000	Apple Juice	VND		UHJvZHVjdFZhcmlhbnQ6Mzg0	35000.000	35000.000	0.000	0.000	\N	fixed	35000.000	35000.000	35000.000	35000.000	f	UHJvZHVjdFZhcmlhbnQ6Mzg0	\N	\N	b6582232-9eba-49a2-afcc-807bc51d5710	626245bd-13b1-4219-b3d5-a1da8f5efdd2	\N	2026-10-10 17:32:41.385559+00	35000.000	35000.000	{}	{}	\N	{}	\N	{}	f	f	\N	23	\N
-Bean Juice	\N	1	32000.000	32000.000	t	0	385	0.0000	Bean Juice	VND		UHJvZHVjdFZhcmlhbnQ6Mzg1	32000.000	32000.000	0.000	0.000	\N	fixed	32000.000	32000.000	32000.000	32000.000	f	UHJvZHVjdFZhcmlhbnQ6Mzg1	\N	\N	b6582232-9eba-49a2-afcc-807bc51d5710	8154a968-ead7-4a32-9b97-08c6f829780f	\N	2026-10-10 17:32:41.385644+00	32000.000	32000.000	{}	{}	\N	{}	\N	{}	f	f	\N	23	\N
-Blue Polygon Shirt	218223580	1	220000.000	220000.000	t	0	361	0.0000	Blue Polygon Shirt	VND		M	220000.000	220000.000	0.000	0.000	\N	fixed	220000.000	220000.000	220000.000	220000.000	f	UHJvZHVjdFZhcmlhbnQ6MzYx	\N	\N	88bda358-3d7a-47d3-8b0e-4cf935f8ab2a	f665a9a2-b105-4b84-93bb-e026083aa408	\N	2026-10-10 18:05:05.172945+00	220000.000	220000.000	{}	{}	\N	{}	\N	{}	f	f	\N	20	\N
+Enterprise Cloud + On-premises	113223582	1	150000.000	150000.000	f	1	\N	\N		VND		Vinyl	150000.000	150000.000	0.000	0.000	\N	\N	150000.000	150000.000	150000.000	150000.000	f	\N	\N	\N	6c88e6e4-7190-488f-8665-a68b70dc386c	fcd328f5-e4c5-4f5c-a971-1f4458409c67	\N	2026-10-08 13:58:08.303668+00	150000.000	150000.000	{}	{}	\N	{}	\N	{}	f	\N	\N	\N	\N
+Own your stack and data	124223581	1	150000.000	150000.000	f	1	\N	\N		VND		iTunes	150000.000	150000.000	0.000	0.000	\N	\N	150000.000	150000.000	150000.000	150000.000	f	\N	\N	\N	b730f982-eddf-4276-817c-1ca135a8a240	09089efd-8913-4db1-a4a9-5185172e79b4	\N	2026-10-08 13:58:52.87493+00	150000.000	150000.000	{}	{}	\N	{}	\N	{}	f	\N	\N	\N	\N
+Battle-tested at brands like Lush	9018223582	1	150000.000	150000.000	f	1	\N	\N		VND		DVD	150000.000	150000.000	0.000	0.000	\N	\N	150000.000	150000.000	150000.000	150000.000	f	\N	\N	\N	af2a495b-46c4-40fd-9a39-e18751f12dbe	084b829d-efdb-4899-89f2-ce6b91b82a46	\N	2026-10-08 13:58:52.907068+00	150000.000	150000.000	{}	{}	\N	{}	\N	{}	f	\N	\N	\N	\N
+Monospace Tee	328223582	3	195000.000	195000.000	t	3	\N	0.0000	Monospace Tee	VND		L	585000.000	585000.000	0.000	0.000	\N	fixed	585000.000	585000.000	195000.000	195000.000	f	UHJvZHVjdFZhcmlhbnQ6MzUw	\N	\N	9c3af7bb-cbcf-48ad-bffb-2694a0058b4b	c55376bd-6f9a-42d5-ad44-841d39c7968b	\N	2026-10-09 17:10:23.93737+00	195000.000	195000.000	{}	{}	\N	{}	\N	{}	f	f	\N	20	\N
+Paul's Balance 420	118223583	1	850000.000	850000.000	t	1	\N	0.0000	Paul's Balance 420	VND		41	850000.000	850000.000	0.000	0.000	\N	fixed	850000.000	850000.000	850000.000	850000.000	f	UHJvZHVjdFZhcmlhbnQ6MzQy	\N	\N	a1b10dd0-cd8c-467f-abdf-b2b40a22721a	1e0845bc-3a57-4f9a-b84f-39d99d53c83f	\N	2026-10-09 17:18:51.411927+00	850000.000	850000.000	{}	{}	\N	{}	\N	{}	f	f	\N	18	\N
+Monospace Tee	328223580	1	195000.000	195000.000	t	0	\N	0.0000	Monospace Tee	VND		S	195000.000	195000.000	0.000	0.000	\N	fixed	195000.000	195000.000	195000.000	195000.000	f	UHJvZHVjdFZhcmlhbnQ6MzQ4	\N	\N	0a7b5191-5bec-490c-9fd8-aa550e6c80bf	d6c9e6b8-2b7b-4faa-8545-a7049efdf4bb	\N	2026-10-09 17:40:10.732289+00	195000.000	195000.000	{}	{}	\N	{}	\N	{}	f	f	\N	20	\N
+Apple Juice	\N	1	35000.000	35000.000	t	0	\N	0.0000	Apple Juice	VND		UHJvZHVjdFZhcmlhbnQ6Mzg0	35000.000	35000.000	0.000	0.000	\N	fixed	35000.000	35000.000	35000.000	35000.000	f	UHJvZHVjdFZhcmlhbnQ6Mzg0	\N	\N	b6582232-9eba-49a2-afcc-807bc51d5710	626245bd-13b1-4219-b3d5-a1da8f5efdd2	\N	2026-10-10 17:32:41.385559+00	35000.000	35000.000	{}	{}	\N	{}	\N	{}	f	f	\N	23	\N
+Bean Juice	\N	1	32000.000	32000.000	t	0	\N	0.0000	Bean Juice	VND		UHJvZHVjdFZhcmlhbnQ6Mzg1	32000.000	32000.000	0.000	0.000	\N	fixed	32000.000	32000.000	32000.000	32000.000	f	UHJvZHVjdFZhcmlhbnQ6Mzg1	\N	\N	b6582232-9eba-49a2-afcc-807bc51d5710	8154a968-ead7-4a32-9b97-08c6f829780f	\N	2026-10-10 17:32:41.385644+00	32000.000	32000.000	{}	{}	\N	{}	\N	{}	f	f	\N	23	\N
+Blue Polygon Shirt	218223580	1	220000.000	220000.000	t	0	\N	0.0000	Blue Polygon Shirt	VND		M	220000.000	220000.000	0.000	0.000	\N	fixed	220000.000	220000.000	220000.000	220000.000	f	UHJvZHVjdFZhcmlhbnQ6MzYx	\N	\N	88bda358-3d7a-47d3-8b0e-4cf935f8ab2a	f665a9a2-b105-4b84-93bb-e026083aa408	\N	2026-10-10 18:05:05.172945+00	220000.000	220000.000	{}	{}	\N	{}	\N	{}	f	f	\N	20	\N
+Đắc Nhân Tâm (How to Win Friends and Influence People)	EB-DAC-NHAN-TAM	1	59000.000	59000.000	f	0	2	0.0000	Đắc Nhân Tâm (How to Win Friends and Influence People)	VND		Bản Ebook (Sách Điện Tử)	59000.000	59000.000	0.000	0.000	\N	fixed	59000.000	59000.000	59000.000	59000.000	f	UHJvZHVjdFZhcmlhbnQ6Mg==	\N	\N	acad3bf8-42f4-41f4-be29-2a0ac1c5701b	f54abbb5-4b74-4882-9a80-d2ece79d22a5	\N	2026-10-15 10:15:14.774596+00	59000.000	59000.000	{}	{}	\N	{}	\N	{}	f	f	\N	2	\N
+Sapiens: Lược Sử Loài Người (A Brief History of Humankind)	EB-SAPIENS	1	89000.000	89000.000	f	0	6	0.0000	Sapiens: Lược Sử Loài Người (A Brief History of Humankind)	VND		Bản Ebook (Sách Điện Tử)	89000.000	89000.000	0.000	0.000	\N	fixed	89000.000	89000.000	89000.000	89000.000	f	UHJvZHVjdFZhcmlhbnQ6Ng==	\N	\N	ae9dfdec-db0e-4b7b-b315-6807c6b451f3	77f74351-84a2-409a-bdca-f87176a15157	\N	2026-10-19 03:46:55.513007+00	89000.000	89000.000	{}	{}	\N	{}	\N	{}	f	f	\N	2	\N
 \.
 
 
@@ -9293,11 +9030,13 @@ COPY public.payment_transaction (id, created_at, token, kind, is_success, error,
 --
 
 COPY public.payment_transactionevent (id, created_at, status, transaction_id, amount_value, app_id, app_identifier, currency, external_url, include_in_calculations, message, psp_reference, type, user_id, idempotency_key, related_granted_refund_id, reason_reference_id) FROM stdin;
-1	2026-10-09 17:10:23.515216+00	\N	1	607000.000	1	aurabook.community.admin	VND	\N	t	Manual adjustment of the transaction.	\N	charge_success	\N	\N	\N	\N
-2	2026-10-09 17:18:50.975875+00	\N	2	885000.000	1	aurabook.community.admin	VND	\N	t	Manual adjustment of the transaction.	\N	charge_success	\N	\N	\N	\N
-3	2026-10-09 17:40:09.912281+00	\N	3	217000.000	1	aurabook.community.admin	VND	\N	t	Manual adjustment of the transaction.	\N	charge_success	\N	\N	\N	\N
-4	2026-10-10 17:32:40.881241+00	\N	4	89000.000	1	aurabook.community.admin	VND	\N	t	Manual adjustment of the transaction.	\N	charge_success	\N	\N	\N	\N
-5	2026-10-10 18:05:04.805585+00	\N	5	242000.000	1	aurabook.community.admin	VND	\N	t	Manual adjustment of the transaction.	\N	charge_success	\N	\N	\N	\N
+1	2026-10-09 17:10:23.515216+00	\N	1	607000.000	\N	aurabook.community.admin	VND	\N	t	Manual adjustment of the transaction.	\N	charge_success	\N	\N	\N	\N
+2	2026-10-09 17:18:50.975875+00	\N	2	885000.000	\N	aurabook.community.admin	VND	\N	t	Manual adjustment of the transaction.	\N	charge_success	\N	\N	\N	\N
+3	2026-10-09 17:40:09.912281+00	\N	3	217000.000	\N	aurabook.community.admin	VND	\N	t	Manual adjustment of the transaction.	\N	charge_success	\N	\N	\N	\N
+4	2026-10-10 17:32:40.881241+00	\N	4	89000.000	\N	aurabook.community.admin	VND	\N	t	Manual adjustment of the transaction.	\N	charge_success	\N	\N	\N	\N
+5	2026-10-10 18:05:04.805585+00	\N	5	242000.000	\N	aurabook.community.admin	VND	\N	t	Manual adjustment of the transaction.	\N	charge_success	\N	\N	\N	\N
+38	2026-10-15 10:15:14.024812+00	\N	38	59000.000	\N	aurabook.community.admin	VND	\N	t	Manual adjustment of the transaction.	\N	charge_success	\N	\N	\N	\N
+39	2026-10-19 03:46:54.961636+00	\N	39	89000.000	\N	aurabook.community.admin	VND	\N	t	Manual adjustment of the transaction.	\N	charge_success	\N	\N	\N	\N
 \.
 
 
@@ -9306,11 +9045,13 @@ COPY public.payment_transactionevent (id, created_at, status, transaction_id, am
 --
 
 COPY public.payment_transactionitem (id, private_metadata, metadata, created_at, modified_at, status, available_actions, currency, charged_value, authorized_value, refunded_value, checkout_id, order_id, app_id, app_identifier, authorize_pending_value, cancel_pending_value, canceled_value, charge_pending_value, external_url, message, name, psp_reference, refund_pending_value, user_id, token, use_old_id, last_refund_success, idempotency_key, cc_brand, cc_exp_month, cc_exp_year, cc_first_digits, cc_last_digits, payment_method_name, payment_method_type, gift_card_id, gift_card_brand, gift_card_last_chars) FROM stdin;
-1	{}	{}	2026-10-09 17:10:23.507546+00	2026-10-09 17:10:23.525956+00	\N	{}	VND	607000.000	0.000	0.000	\N	9c3af7bb-cbcf-48ad-bffb-2694a0058b4b	1	aurabook.community.admin	0.000	0.000	0.000	0.000	\N	Thanh toán thành công qua thẻ thử nghiệm	Thẻ thanh toán thử nghiệm	TEST_CARD_1791565822882	0.000	\N	625d0ace-8e95-4bae-bee6-e5379c969d89	t	t	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
-2	{}	{}	2026-10-09 17:18:50.964641+00	2026-10-09 17:18:50.98646+00	\N	{}	VND	885000.000	0.000	0.000	\N	a1b10dd0-cd8c-467f-abdf-b2b40a22721a	1	aurabook.community.admin	0.000	0.000	0.000	0.000	\N		Dummy Payment	\N	0.000	\N	544c22fb-01c4-4658-943c-ba5284ddae57	t	t	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
-3	{}	{}	2026-10-09 17:40:09.900945+00	2026-10-09 17:40:09.922621+00	\N	{}	VND	217000.000	0.000	0.000	\N	0a7b5191-5bec-490c-9fd8-aa550e6c80bf	1	aurabook.community.admin	0.000	0.000	0.000	0.000	\N	Thanh toán thành công qua thẻ thử nghiệm	Thẻ thanh toán thử nghiệm	TEST_CARD_1791567608757	0.000	\N	3f27e1e9-e00e-4346-b6df-65d9ab45df78	t	t	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
-4	{}	{}	2026-10-10 17:32:40.861399+00	2026-10-10 17:32:40.893601+00	\N	{}	VND	89000.000	0.000	0.000	\N	b6582232-9eba-49a2-afcc-807bc51d5710	1	aurabook.community.admin	0.000	0.000	0.000	0.000	\N	Thanh toán thành công qua thẻ thử nghiệm	Thẻ thanh toán thử nghiệm	TEST_CARD_1791653560147	0.000	\N	8b90aebd-b1ac-456e-931f-4720f04fbfaa	t	t	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
-5	{}	{}	2026-10-10 18:05:04.795037+00	2026-10-10 18:05:04.814072+00	\N	{}	VND	242000.000	0.000	0.000	\N	88bda358-3d7a-47d3-8b0e-4cf935f8ab2a	1	aurabook.community.admin	0.000	0.000	0.000	0.000	\N	Thanh toán thành công qua thẻ thử nghiệm	Thẻ thanh toán thử nghiệm	TEST_CARD_1791655504140	0.000	\N	4268c596-04ca-4caf-a90b-74a16234bd74	t	t	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
+1	{}	{}	2026-10-09 17:10:23.507546+00	2026-10-09 17:10:23.525956+00	\N	{}	VND	607000.000	0.000	0.000	\N	9c3af7bb-cbcf-48ad-bffb-2694a0058b4b	\N	aurabook.community.admin	0.000	0.000	0.000	0.000	\N	Thanh toán thành công qua thẻ thử nghiệm	Thẻ thanh toán thử nghiệm	TEST_CARD_1791565822882	0.000	\N	625d0ace-8e95-4bae-bee6-e5379c969d89	t	t	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
+2	{}	{}	2026-10-09 17:18:50.964641+00	2026-10-09 17:18:50.98646+00	\N	{}	VND	885000.000	0.000	0.000	\N	a1b10dd0-cd8c-467f-abdf-b2b40a22721a	\N	aurabook.community.admin	0.000	0.000	0.000	0.000	\N		Dummy Payment	\N	0.000	\N	544c22fb-01c4-4658-943c-ba5284ddae57	t	t	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
+3	{}	{}	2026-10-09 17:40:09.900945+00	2026-10-09 17:40:09.922621+00	\N	{}	VND	217000.000	0.000	0.000	\N	0a7b5191-5bec-490c-9fd8-aa550e6c80bf	\N	aurabook.community.admin	0.000	0.000	0.000	0.000	\N	Thanh toán thành công qua thẻ thử nghiệm	Thẻ thanh toán thử nghiệm	TEST_CARD_1791567608757	0.000	\N	3f27e1e9-e00e-4346-b6df-65d9ab45df78	t	t	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
+4	{}	{}	2026-10-10 17:32:40.861399+00	2026-10-10 17:32:40.893601+00	\N	{}	VND	89000.000	0.000	0.000	\N	b6582232-9eba-49a2-afcc-807bc51d5710	\N	aurabook.community.admin	0.000	0.000	0.000	0.000	\N	Thanh toán thành công qua thẻ thử nghiệm	Thẻ thanh toán thử nghiệm	TEST_CARD_1791653560147	0.000	\N	8b90aebd-b1ac-456e-931f-4720f04fbfaa	t	t	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
+5	{}	{}	2026-10-10 18:05:04.795037+00	2026-10-10 18:05:04.814072+00	\N	{}	VND	242000.000	0.000	0.000	\N	88bda358-3d7a-47d3-8b0e-4cf935f8ab2a	\N	aurabook.community.admin	0.000	0.000	0.000	0.000	\N	Thanh toán thành công qua thẻ thử nghiệm	Thẻ thanh toán thử nghiệm	TEST_CARD_1791655504140	0.000	\N	4268c596-04ca-4caf-a90b-74a16234bd74	t	t	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
+38	{}	{}	2026-10-15 10:15:14.00782+00	2026-10-15 10:15:14.042075+00	\N	{}	VND	59000.000	0.000	0.000	\N	acad3bf8-42f4-41f4-be29-2a0ac1c5701b	\N	aurabook.community.admin	0.000	0.000	0.000	0.000	\N	Thanh toán thành công qua thẻ thử nghiệm	Thẻ thanh toán thử nghiệm	TEST_CARD_1792059312167	0.000	\N	50fb83aa-120c-42b8-8db7-2db1df14c94d	t	t	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
+39	{}	{}	2026-10-19 03:46:54.952557+00	2026-10-19 03:46:54.97558+00	\N	{}	VND	89000.000	0.000	0.000	\N	ae9dfdec-db0e-4b7b-b315-6807c6b451f3	\N	aurabook.community.admin	0.000	0.000	0.000	0.000	\N	Thanh toán thành công qua thẻ thử nghiệm	Thẻ thanh toán thử nghiệm	TEST_CARD_1792381614187	0.000	\N	48092499-91e7-400d-9b74-da1e33a5ffa1	t	t	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 \.
 
 
@@ -9887,24 +9628,21 @@ COPY public.plugins_pluginconfiguration (id, name, description, active, configur
 --
 
 COPY public.product_category (id, name, slug, description, lft, rght, tree_id, level, parent_id, background_image, seo_description, seo_title, background_image_alt, metadata, private_metadata, description_plaintext, updated_at) FROM stdin;
-1	Default Category	default-category	null	1	2	1	0	\N		\N	\N		{}	{}		2026-10-08 04:25:58.817487+00
-25	Accessories	accessories	null	1	6	1	0	\N					{}	{}		2026-10-08 06:04:24.486586+00
-27	Apparel	apparel	null	1	28	2	0	\N					{}	{}		2026-10-08 06:04:24.507518+00
-42	Groceries	groceries	null	1	4	3	0	\N					{}	{}		2026-10-08 06:04:24.528872+00
-45	Books	books	null	1	4	4	0	\N					{}	{}		2026-10-08 06:04:24.546227+00
-26	Audiobooks	audiobooks	null	2	3	4	1	45					{}	{}		2026-10-08 06:04:24.573023+00
-28	Sneakers	sneakers	null	2	3	2	1	27					{}	{}		2026-10-08 06:04:24.59605+00
-29	Sweatshirts	sweatshirts	null	4	5	2	1	27					{}	{}		2026-10-08 06:04:24.611054+00
-33	Headware	headware	null	14	21	2	1	27					{}	{}		2026-10-08 06:04:24.624926+00
-38	Shirts	shirts	null	22	27	2	1	27					{}	{}		2026-10-08 06:04:24.637027+00
-41	Homewares	homewares	{"time": 1652606793760, "blocks": [{"id": "ckre1-oB3I", "data": {"text": "Everything a programmer's comfort requires&nbsp;"}, "type": "paragraph"}], "version": "2.22.2"}	4	5	1	1	25					{}	{}	Everything a programmer's comfort requires&nbsp;	2026-10-08 06:04:24.650783+00
-43	Juices	juices	null	2	3	3	1	42					{}	{}		2026-10-08 06:04:24.663157+00
-44	Gift cards	gift-cards	null	6	7	1	1	25					{}	{}		2026-10-08 06:04:24.673618+00
-35	Beanies	beanies	null	15	16	2	2	33					{}	{}		2026-10-08 06:04:24.684582+00
-36	Scarfs	scarfs	null	17	18	2	2	33					{}	{}		2026-10-08 06:04:24.698642+00
-37	Sunglasses	sunglasses	null	19	20	2	2	33					{}	{}		2026-10-08 06:04:24.710329+00
-39	T-shirts	t-shirts	null	23	24	2	2	38					{}	{}		2026-10-08 06:04:24.721142+00
-40	Polo shirts	polo-shirts-2	null	25	26	2	2	38					{}	{}		2026-10-08 06:04:24.732349+00
+46	Truyện ngắn & Tản văn	truyen-ngan-tan-van-cam-xuc	{"time": 1792043678673, "blocks": [{"id": "block_0", "data": {"text": "Những trang viết sâu lắng, nhẹ nhàng về tình yêu, cuộc sống và con người."}, "type": "paragraph"}], "version": "2.30.7"}	4	5	5	1	44		Những trang viết sâu lắng, nhẹ nhàng về tình yêu, cuộc sống và con người.	Truyện Ngắn & Tản Văn Cảm Xúc | AuraBook		{}	{}	Những trang viết sâu lắng, nhẹ nhàng về tình yêu, cuộc sống và con người.	2026-10-15 05:54:38.691207+00
+32	Phát triển bản thân	sach-ky-nang-phat-trien-ban-than	{"time": 1792043677586, "blocks": [{"id": "block_0", "data": {"text": "Cẩm nang nâng cao năng lực giao tiếp, lãnh đạo, quản trị cảm xúc và hoàn thiện bản thân mỗi ngày."}, "type": "paragraph"}], "version": "2.30.7"}	1	6	1	0	\N		Cẩm nang nâng cao năng lực giao tiếp, lãnh đạo, quản trị cảm xúc và hoàn thiện bản thân mỗi ngày.	Sách Kỹ Năng & Phát Triển Bản Thân Tuyển Chọn | AuraBook		{}	{}	Cẩm nang nâng cao năng lực giao tiếp, lãnh đạo, quản trị cảm xúc và hoàn thiện bản thân mỗi ngày.	2026-10-15 05:54:37.596479+00
+33	Giao tiếp & Ứng xử	nghe-thuat-giao-tiep-ung-xu	{"time": 1792043677687, "blocks": [{"id": "block_0", "data": {"text": "Nghệ thuật thấu hiểu tâm lý, thu phục lòng người và xây dựng mối quan hệ chân thành, bền vững."}, "type": "paragraph"}], "version": "2.30.7"}	2	3	1	1	32		Nghệ thuật thấu hiểu tâm lý, thu phục lòng người và xây dựng mối quan hệ chân thành, bền vững.	Nghệ Thuật Giao Tiếp & Ứng Xử | AuraBook		{}	{}	Nghệ thuật thấu hiểu tâm lý, thu phục lòng người và xây dựng mối quan hệ chân thành, bền vững.	2026-10-15 05:54:37.702549+00
+34	Tâm lý & Thói quen	quan-tri-tam-tri-thoi-quen	{"time": 1792043677771, "blocks": [{"id": "block_0", "data": {"text": "Xây dựng kỷ luật tự giác, rèn luyện tư duy tích cực và giải phóng năng lực tiềm ẩn."}, "type": "paragraph"}], "version": "2.30.7"}	4	5	1	1	32		Xây dựng kỷ luật tự giác, rèn luyện tư duy tích cực và giải phóng năng lực tiềm ẩn.	Quản Trị Tâm Trí & Thói Quen | AuraBook		{}	{}	Xây dựng kỷ luật tự giác, rèn luyện tư duy tích cực và giải phóng năng lực tiềm ẩn.	2026-10-15 05:54:37.783972+00
+35	Triết lý & Tư duy	tu-duy-tri-tue-triet-ly-song	{"time": 1792043677835, "blocks": [{"id": "block_0", "data": {"text": "Những tác phẩm khai sáng tư duy, triết lý minh triết sống cổ xưa và phương pháp tư duy phi thường của các bậc danh nhân."}, "type": "paragraph"}], "version": "2.30.7"}	1	6	2	0	\N		Những tác phẩm khai sáng tư duy, triết lý minh triết sống cổ xưa và phương pháp tư duy phi thường của các bậc danh nhân.	Tư Duy, Trí Tuệ & Triết Lý Sống Đỉnh Cao | AuraBook		{}	{}	Những tác phẩm khai sáng tư duy, triết lý minh triết sống cổ xưa và phương pháp tư duy phi thường của các bậc danh nhân.	2026-10-15 05:54:37.84208+00
+36	Minh triết sống	minh-triet-song-khai-phong	{"time": 1792043677891, "blocks": [{"id": "block_0", "data": {"text": "Nguyên tắc sống thông thái giúp giải phóng tâm trí, sống an nhiên và tự do tự tại."}, "type": "paragraph"}], "version": "2.30.7"}	2	3	2	1	35		Nguyên tắc sống thông thái giúp giải phóng tâm trí, sống an nhiên và tự do tự tại.	Minh Triết Sống & Khai Phóng | AuraBook		{}	{}	Nguyên tắc sống thông thái giúp giải phóng tâm trí, sống an nhiên và tự do tự tại.	2026-10-15 05:54:37.904128+00
+39	Lược sử văn minh	luoc-su-nhan-loai-van-minh	{"time": 1792043678111, "blocks": [{"id": "block_0", "data": {"text": "Hành trình hàng vạn năm của loài người từ thuở hồng hoang tới kỷ nguyên hiện đại."}, "type": "paragraph"}], "version": "2.30.7"}	2	3	3	1	38		Hành trình hàng vạn năm của loài người từ thuở hồng hoang tới kỷ nguyên hiện đại.	Lược Sử Nhân Loại & Nền Văn Minh | AuraBook		{}	{}	Hành trình hàng vạn năm của loài người từ thuở hồng hoang tới kỷ nguyên hiện đại.	2026-10-15 05:54:38.124459+00
+37	Trí tuệ nhân loại	tri-tue-do-thai-danh-nhan	{"time": 1792043677957, "blocks": [{"id": "block_0", "data": {"text": "Bí quyết phát triển trí tuệ, ghi nhớ thần tốc và nghệ thuật thành công của dân tộc Do Thái."}, "type": "paragraph"}], "version": "2.30.7"}	4	5	2	1	35		Bí quyết phát triển trí tuệ, ghi nhớ thần tốc và nghệ thuật thành công của dân tộc Do Thái.	Trí Tuệ Do Thái & Danh Nhân | AuraBook		{}	{}	Bí quyết phát triển trí tuệ, ghi nhớ thần tốc và nghệ thuật thành công của dân tộc Do Thái.	2026-10-15 05:54:37.97881+00
+43	Tài chính cá nhân	tai-chinh-ca-nhan-dau-tu	{"time": 1792043678441, "blocks": [{"id": "block_0", "data": {"text": "Xây dựng tư duy thịnh vượng, tự do tài chính và đầu tư bền vững."}, "type": "paragraph"}], "version": "2.30.7"}	4	5	4	1	41		Xây dựng tư duy thịnh vượng, tự do tài chính và đầu tư bền vững.	Tài Chính Cá Nhân & Đầu Tư | AuraBook		{}	{}	Xây dựng tư duy thịnh vượng, tự do tài chính và đầu tư bền vững.	2026-10-15 05:54:38.459608+00
+45	Văn học kinh điển	van-hoc-kinh-dien-the-gioi	{"time": 1792043678602, "blocks": [{"id": "block_0", "data": {"text": "Tác phẩm văn chương bất hủ vượt thời gian của các đại văn hào."}, "type": "paragraph"}], "version": "2.30.7"}	2	3	5	1	44		Tác phẩm văn chương bất hủ vượt thời gian của các đại văn hào.	Văn Học Kinh Điển Thế Giới | AuraBook		{}	{}	Tác phẩm văn chương bất hủ vượt thời gian của các đại văn hào.	2026-10-15 05:54:38.613734+00
+38	Lịch sử & Khoa học	lich-su-khoa-hoc-xa-hoi	{"time": 1792043678036, "blocks": [{"id": "block_0", "data": {"text": "Khám phá tiến trình vĩ đại của nền văn minh nhân loại, nguồn gốc giống loài và bức tranh tương lai."}, "type": "paragraph"}], "version": "2.30.7"}	1	6	3	0	\N		Khám phá tiến trình vĩ đại của nền văn minh nhân loại, nguồn gốc giống loài và bức tranh tương lai.	Lịch Sử, Khoa Học & Tri Thức Xã Hội | AuraBook		{}	{}	Khám phá tiến trình vĩ đại của nền văn minh nhân loại, nguồn gốc giống loài và bức tranh tương lai.	2026-10-15 05:54:38.043155+00
+40	Khoa học & Vũ trụ	khoa-hoc-vu-tru-tuong-lai	{"time": 1792043678182, "blocks": [{"id": "block_0", "data": {"text": "Bí ẩn thế giới tự nhiên, bước nhảy vọt công nghệ và dự báo tương lai loài người."}, "type": "paragraph"}], "version": "2.30.7"}	4	5	3	1	38		Bí ẩn thế giới tự nhiên, bước nhảy vọt công nghệ và dự báo tương lai loài người.	Khoa Học, Vũ Trụ & Tương Lai | AuraBook		{}	{}	Bí ẩn thế giới tự nhiên, bước nhảy vọt công nghệ và dự báo tương lai loài người.	2026-10-15 05:54:38.19733+00
+41	Kinh doanh & Đầu tư	kinh-doanh-khoi-nghiep-dau-tu	{"time": 1792043678284, "blocks": [{"id": "block_0", "data": {"text": "Kiến thức quản trị doanh nghiệp thực chiến, chiến lược đột phá và phương pháp đầu tư tài chính thông minh."}, "type": "paragraph"}], "version": "2.30.7"}	1	6	4	0	\N		Kiến thức quản trị doanh nghiệp thực chiến, chiến lược đột phá và phương pháp đầu tư tài chính thông minh.	Sách Kinh Doanh, Khởi Nghiệp & Tài Chính Thông Minh | AuraBook		{}	{}	Kiến thức quản trị doanh nghiệp thực chiến, chiến lược đột phá và phương pháp đầu tư tài chính thông minh.	2026-10-15 05:54:38.29119+00
+42	Quản trị & Lãnh đạo	quan-tri-doanh-nghiep-lanh-dao	{"time": 1792043678358, "blocks": [{"id": "block_0", "data": {"text": "Nghệ thuật xây dựng đội ngũ, vận hành tinh gọn và truyền cảm hứng."}, "type": "paragraph"}], "version": "2.30.7"}	2	3	4	1	41		Nghệ thuật xây dựng đội ngũ, vận hành tinh gọn và truyền cảm hứng.	Quản Trị Doanh Nghiệp & Lãnh Đạo | AuraBook		{}	{}	Nghệ thuật xây dựng đội ngũ, vận hành tinh gọn và truyền cảm hứng.	2026-10-15 05:54:38.371167+00
+44	Văn học & Tiểu thuyết	van-hoc-tieu-thuyet-tuyen-chon	{"time": 1792043678525, "blocks": [{"id": "block_0", "data": {"text": "Những tuyệt tác văn học kinh điển trong nước và thế giới lay động trái tim triệu độc giả."}, "type": "paragraph"}], "version": "2.30.7"}	1	6	5	0	\N		Những tuyệt tác văn học kinh điển trong nước và thế giới lay động trái tim triệu độc giả.	Văn Học & Tiểu Thuyết Kinh Điển Nuôi Dưỡng Tâm Hồn | AuraBook		{}	{}	Những tuyệt tác văn học kinh điển trong nước và thế giới lay động trái tim triệu độc giả.	2026-10-15 05:54:38.53375+00
 \.
 
 
@@ -9913,42 +9651,36 @@ COPY public.product_category (id, name, slug, description, lft, rght, tree_id, l
 --
 
 COPY public.product_categorytranslation (id, seo_title, seo_description, language_code, name, description, category_id, slug) FROM stdin;
-2			en	Accessories	null	25	\N
-4			en	Apparel	null	27	\N
-6			en	Groceries	null	42	\N
-8			en	Books	null	45	\N
-10			en	Audiobooks	null	26	\N
-11	\N	\N	vi	Sneakers	null	28	\N
-12			en	Sneakers	null	28	\N
-13	\N	\N	vi	Sweatshirts	null	29	\N
-14			en	Sweatshirts	null	29	\N
-15	\N	\N	vi	Headware	null	33	\N
-16			en	Headware	null	33	\N
-17	\N	\N	vi	Shirts	null	38	\N
-18			en	Shirts	null	38	\N
-20			en	Homewares	{"time": 1652606793760, "blocks": [{"id": "ckre1-oB3I", "data": {"text": "Everything a programmer's comfort requires&nbsp;"}, "type": "paragraph"}], "version": "2.22.2"}	41	\N
-21	\N	\N	vi	Juices	null	43	\N
-22			en	Juices	null	43	\N
-24			en	Gift cards	null	44	\N
-25	\N	\N	vi	Beanies	null	35	\N
-26			en	Beanies	null	35	\N
-27	\N	\N	vi	Scarfs	null	36	\N
-28			en	Scarfs	null	36	\N
-29	\N	\N	vi	Sunglasses	null	37	\N
-30			en	Sunglasses	null	37	\N
-31	\N	\N	vi	T-shirts	null	39	\N
-32			en	T-shirts	null	39	\N
-33	\N	\N	vi	Polo shirts	null	40	\N
-34			en	Polo shirts	null	40	\N
-7	\N	\N	vi	Quản lý sách	null	45	\N
-5	\N	\N	vi	Cửa hàng tạp hóa	null	42	\N
-1	\N	\N	vi	Phụ kiện	null	25	\N
-3	\N	\N	vi	Quần áo	null	27	\N
-9	\N	\N	vi	Sách nói	null	26	\N
-19	\N	\N	vi	Đồ gia dụng	{"time": 1652606793760, "blocks": [{"id": "ckre1-oB3I", "data": {"text": "Everything a programmer's comfort requires&nbsp;"}, "type": "paragraph"}], "version": "2.22.2"}	41	\N
-23	\N	\N	vi	Thẻ quà tặng	null	44	\N
-35	\N	\N	vi	Default Category	null	1	\N
-36	\N	\N	en	Default Category	null	1	\N
+97	Sách Kỹ Năng & Phát Triển Bản Thân Tuyển Chọn | AuraBook	Cẩm nang nâng cao năng lực giao tiếp, lãnh đạo, quản trị cảm xúc và hoàn thiện bản thân mỗi ngày.	en	Sách Kỹ Năng - Phát Triển Bản Thân	{"time": 1792043677586, "blocks": [{"id": "block_0", "data": {"text": "Cẩm nang nâng cao năng lực giao tiếp, lãnh đạo, quản trị cảm xúc và hoàn thiện bản thân mỗi ngày."}, "type": "paragraph"}], "version": "2.30.7"}	32	\N
+98	Sách Kỹ Năng & Phát Triển Bản Thân Tuyển Chọn | AuraBook	Cẩm nang nâng cao năng lực giao tiếp, lãnh đạo, quản trị cảm xúc và hoàn thiện bản thân mỗi ngày.	vi	Sách Kỹ Năng - Phát Triển Bản Thân	{"time": 1792043677586, "blocks": [{"id": "block_0", "data": {"text": "Cẩm nang nâng cao năng lực giao tiếp, lãnh đạo, quản trị cảm xúc và hoàn thiện bản thân mỗi ngày."}, "type": "paragraph"}], "version": "2.30.7"}	32	\N
+99	Nghệ Thuật Giao Tiếp & Ứng Xử | AuraBook	Nghệ thuật thấu hiểu tâm lý, thu phục lòng người và xây dựng mối quan hệ chân thành, bền vững.	en	Nghệ Thuật Giao Tiếp & Ứng Xử	{"time": 1792043677687, "blocks": [{"id": "block_0", "data": {"text": "Nghệ thuật thấu hiểu tâm lý, thu phục lòng người và xây dựng mối quan hệ chân thành, bền vững."}, "type": "paragraph"}], "version": "2.30.7"}	33	\N
+100	Nghệ Thuật Giao Tiếp & Ứng Xử | AuraBook	Nghệ thuật thấu hiểu tâm lý, thu phục lòng người và xây dựng mối quan hệ chân thành, bền vững.	vi	Nghệ Thuật Giao Tiếp & Ứng Xử	{"time": 1792043677687, "blocks": [{"id": "block_0", "data": {"text": "Nghệ thuật thấu hiểu tâm lý, thu phục lòng người và xây dựng mối quan hệ chân thành, bền vững."}, "type": "paragraph"}], "version": "2.30.7"}	33	\N
+101	Quản Trị Tâm Trí & Thói Quen | AuraBook	Xây dựng kỷ luật tự giác, rèn luyện tư duy tích cực và giải phóng năng lực tiềm ẩn.	en	Quản Trị Tâm Trí & Thói Quen	{"time": 1792043677771, "blocks": [{"id": "block_0", "data": {"text": "Xây dựng kỷ luật tự giác, rèn luyện tư duy tích cực và giải phóng năng lực tiềm ẩn."}, "type": "paragraph"}], "version": "2.30.7"}	34	\N
+102	Quản Trị Tâm Trí & Thói Quen | AuraBook	Xây dựng kỷ luật tự giác, rèn luyện tư duy tích cực và giải phóng năng lực tiềm ẩn.	vi	Quản Trị Tâm Trí & Thói Quen	{"time": 1792043677771, "blocks": [{"id": "block_0", "data": {"text": "Xây dựng kỷ luật tự giác, rèn luyện tư duy tích cực và giải phóng năng lực tiềm ẩn."}, "type": "paragraph"}], "version": "2.30.7"}	34	\N
+103	Tư Duy, Trí Tuệ & Triết Lý Sống Đỉnh Cao | AuraBook	Những tác phẩm khai sáng tư duy, triết lý minh triết sống cổ xưa và phương pháp tư duy phi thường của các bậc danh nhân.	en	Tư Duy - Trí Tuệ & Triết Lý Sống	{"time": 1792043677835, "blocks": [{"id": "block_0", "data": {"text": "Những tác phẩm khai sáng tư duy, triết lý minh triết sống cổ xưa và phương pháp tư duy phi thường của các bậc danh nhân."}, "type": "paragraph"}], "version": "2.30.7"}	35	\N
+104	Tư Duy, Trí Tuệ & Triết Lý Sống Đỉnh Cao | AuraBook	Những tác phẩm khai sáng tư duy, triết lý minh triết sống cổ xưa và phương pháp tư duy phi thường của các bậc danh nhân.	vi	Tư Duy - Trí Tuệ & Triết Lý Sống	{"time": 1792043677835, "blocks": [{"id": "block_0", "data": {"text": "Những tác phẩm khai sáng tư duy, triết lý minh triết sống cổ xưa và phương pháp tư duy phi thường của các bậc danh nhân."}, "type": "paragraph"}], "version": "2.30.7"}	35	\N
+105	Minh Triết Sống & Khai Phóng | AuraBook	Nguyên tắc sống thông thái giúp giải phóng tâm trí, sống an nhiên và tự do tự tại.	en	Minh Triết Sống & Khai Phóng	{"time": 1792043677891, "blocks": [{"id": "block_0", "data": {"text": "Nguyên tắc sống thông thái giúp giải phóng tâm trí, sống an nhiên và tự do tự tại."}, "type": "paragraph"}], "version": "2.30.7"}	36	\N
+106	Minh Triết Sống & Khai Phóng | AuraBook	Nguyên tắc sống thông thái giúp giải phóng tâm trí, sống an nhiên và tự do tự tại.	vi	Minh Triết Sống & Khai Phóng	{"time": 1792043677891, "blocks": [{"id": "block_0", "data": {"text": "Nguyên tắc sống thông thái giúp giải phóng tâm trí, sống an nhiên và tự do tự tại."}, "type": "paragraph"}], "version": "2.30.7"}	36	\N
+107	Trí Tuệ Do Thái & Danh Nhân | AuraBook	Bí quyết phát triển trí tuệ, ghi nhớ thần tốc và nghệ thuật thành công của dân tộc Do Thái.	en	Trí Tuệ Do Thái & Danh Nhân	{"time": 1792043677957, "blocks": [{"id": "block_0", "data": {"text": "Bí quyết phát triển trí tuệ, ghi nhớ thần tốc và nghệ thuật thành công của dân tộc Do Thái."}, "type": "paragraph"}], "version": "2.30.7"}	37	\N
+108	Trí Tuệ Do Thái & Danh Nhân | AuraBook	Bí quyết phát triển trí tuệ, ghi nhớ thần tốc và nghệ thuật thành công của dân tộc Do Thái.	vi	Trí Tuệ Do Thái & Danh Nhân	{"time": 1792043677957, "blocks": [{"id": "block_0", "data": {"text": "Bí quyết phát triển trí tuệ, ghi nhớ thần tốc và nghệ thuật thành công của dân tộc Do Thái."}, "type": "paragraph"}], "version": "2.30.7"}	37	\N
+109	Lịch Sử, Khoa Học & Tri Thức Xã Hội | AuraBook	Khám phá tiến trình vĩ đại của nền văn minh nhân loại, nguồn gốc giống loài và bức tranh tương lai.	en	Lịch Sử - Khoa Học & Xã Hội	{"time": 1792043678036, "blocks": [{"id": "block_0", "data": {"text": "Khám phá tiến trình vĩ đại của nền văn minh nhân loại, nguồn gốc giống loài và bức tranh tương lai."}, "type": "paragraph"}], "version": "2.30.7"}	38	\N
+110	Lịch Sử, Khoa Học & Tri Thức Xã Hội | AuraBook	Khám phá tiến trình vĩ đại của nền văn minh nhân loại, nguồn gốc giống loài và bức tranh tương lai.	vi	Lịch Sử - Khoa Học & Xã Hội	{"time": 1792043678036, "blocks": [{"id": "block_0", "data": {"text": "Khám phá tiến trình vĩ đại của nền văn minh nhân loại, nguồn gốc giống loài và bức tranh tương lai."}, "type": "paragraph"}], "version": "2.30.7"}	38	\N
+111	Lược Sử Nhân Loại & Nền Văn Minh | AuraBook	Hành trình hàng vạn năm của loài người từ thuở hồng hoang tới kỷ nguyên hiện đại.	en	Lược Sử Nhân Loại & Nền Văn Minh	{"time": 1792043678111, "blocks": [{"id": "block_0", "data": {"text": "Hành trình hàng vạn năm của loài người từ thuở hồng hoang tới kỷ nguyên hiện đại."}, "type": "paragraph"}], "version": "2.30.7"}	39	\N
+112	Lược Sử Nhân Loại & Nền Văn Minh | AuraBook	Hành trình hàng vạn năm của loài người từ thuở hồng hoang tới kỷ nguyên hiện đại.	vi	Lược Sử Nhân Loại & Nền Văn Minh	{"time": 1792043678111, "blocks": [{"id": "block_0", "data": {"text": "Hành trình hàng vạn năm của loài người từ thuở hồng hoang tới kỷ nguyên hiện đại."}, "type": "paragraph"}], "version": "2.30.7"}	39	\N
+113	Khoa Học, Vũ Trụ & Tương Lai | AuraBook	Bí ẩn thế giới tự nhiên, bước nhảy vọt công nghệ và dự báo tương lai loài người.	en	Khoa Học, Vũ Trụ & Tương Lai	{"time": 1792043678182, "blocks": [{"id": "block_0", "data": {"text": "Bí ẩn thế giới tự nhiên, bước nhảy vọt công nghệ và dự báo tương lai loài người."}, "type": "paragraph"}], "version": "2.30.7"}	40	\N
+114	Khoa Học, Vũ Trụ & Tương Lai | AuraBook	Bí ẩn thế giới tự nhiên, bước nhảy vọt công nghệ và dự báo tương lai loài người.	vi	Khoa Học, Vũ Trụ & Tương Lai	{"time": 1792043678182, "blocks": [{"id": "block_0", "data": {"text": "Bí ẩn thế giới tự nhiên, bước nhảy vọt công nghệ và dự báo tương lai loài người."}, "type": "paragraph"}], "version": "2.30.7"}	40	\N
+115	Sách Kinh Doanh, Khởi Nghiệp & Tài Chính Thông Minh | AuraBook	Kiến thức quản trị doanh nghiệp thực chiến, chiến lược đột phá và phương pháp đầu tư tài chính thông minh.	en	Kinh Doanh - Khởi Nghiệp & Đầu Tư	{"time": 1792043678284, "blocks": [{"id": "block_0", "data": {"text": "Kiến thức quản trị doanh nghiệp thực chiến, chiến lược đột phá và phương pháp đầu tư tài chính thông minh."}, "type": "paragraph"}], "version": "2.30.7"}	41	\N
+116	Sách Kinh Doanh, Khởi Nghiệp & Tài Chính Thông Minh | AuraBook	Kiến thức quản trị doanh nghiệp thực chiến, chiến lược đột phá và phương pháp đầu tư tài chính thông minh.	vi	Kinh Doanh - Khởi Nghiệp & Đầu Tư	{"time": 1792043678284, "blocks": [{"id": "block_0", "data": {"text": "Kiến thức quản trị doanh nghiệp thực chiến, chiến lược đột phá và phương pháp đầu tư tài chính thông minh."}, "type": "paragraph"}], "version": "2.30.7"}	41	\N
+117	Quản Trị Doanh Nghiệp & Lãnh Đạo | AuraBook	Nghệ thuật xây dựng đội ngũ, vận hành tinh gọn và truyền cảm hứng.	en	Quản Trị Doanh Nghiệp & Lãnh Đạo	{"time": 1792043678358, "blocks": [{"id": "block_0", "data": {"text": "Nghệ thuật xây dựng đội ngũ, vận hành tinh gọn và truyền cảm hứng."}, "type": "paragraph"}], "version": "2.30.7"}	42	\N
+118	Quản Trị Doanh Nghiệp & Lãnh Đạo | AuraBook	Nghệ thuật xây dựng đội ngũ, vận hành tinh gọn và truyền cảm hứng.	vi	Quản Trị Doanh Nghiệp & Lãnh Đạo	{"time": 1792043678358, "blocks": [{"id": "block_0", "data": {"text": "Nghệ thuật xây dựng đội ngũ, vận hành tinh gọn và truyền cảm hứng."}, "type": "paragraph"}], "version": "2.30.7"}	42	\N
+119	Tài Chính Cá Nhân & Đầu Tư | AuraBook	Xây dựng tư duy thịnh vượng, tự do tài chính và đầu tư bền vững.	en	Tài Chính Cá Nhân & Đầu Tư	{"time": 1792043678441, "blocks": [{"id": "block_0", "data": {"text": "Xây dựng tư duy thịnh vượng, tự do tài chính và đầu tư bền vững."}, "type": "paragraph"}], "version": "2.30.7"}	43	\N
+120	Tài Chính Cá Nhân & Đầu Tư | AuraBook	Xây dựng tư duy thịnh vượng, tự do tài chính và đầu tư bền vững.	vi	Tài Chính Cá Nhân & Đầu Tư	{"time": 1792043678441, "blocks": [{"id": "block_0", "data": {"text": "Xây dựng tư duy thịnh vượng, tự do tài chính và đầu tư bền vững."}, "type": "paragraph"}], "version": "2.30.7"}	43	\N
+121	Văn Học & Tiểu Thuyết Kinh Điển Nuôi Dưỡng Tâm Hồn | AuraBook	Những tuyệt tác văn học kinh điển trong nước và thế giới lay động trái tim triệu độc giả.	en	Văn Học & Tiểu Thuyết Tuyển Chọn	{"time": 1792043678525, "blocks": [{"id": "block_0", "data": {"text": "Những tuyệt tác văn học kinh điển trong nước và thế giới lay động trái tim triệu độc giả."}, "type": "paragraph"}], "version": "2.30.7"}	44	\N
+122	Văn Học & Tiểu Thuyết Kinh Điển Nuôi Dưỡng Tâm Hồn | AuraBook	Những tuyệt tác văn học kinh điển trong nước và thế giới lay động trái tim triệu độc giả.	vi	Văn Học & Tiểu Thuyết Tuyển Chọn	{"time": 1792043678525, "blocks": [{"id": "block_0", "data": {"text": "Những tuyệt tác văn học kinh điển trong nước và thế giới lay động trái tim triệu độc giả."}, "type": "paragraph"}], "version": "2.30.7"}	44	\N
+123	Văn Học Kinh Điển Thế Giới | AuraBook	Tác phẩm văn chương bất hủ vượt thời gian của các đại văn hào.	en	Văn Học Kinh Điển Thế Giới	{"time": 1792043678602, "blocks": [{"id": "block_0", "data": {"text": "Tác phẩm văn chương bất hủ vượt thời gian của các đại văn hào."}, "type": "paragraph"}], "version": "2.30.7"}	45	\N
+124	Văn Học Kinh Điển Thế Giới | AuraBook	Tác phẩm văn chương bất hủ vượt thời gian của các đại văn hào.	vi	Văn Học Kinh Điển Thế Giới	{"time": 1792043678602, "blocks": [{"id": "block_0", "data": {"text": "Tác phẩm văn chương bất hủ vượt thời gian của các đại văn hào."}, "type": "paragraph"}], "version": "2.30.7"}	45	\N
+125	Truyện Ngắn & Tản Văn Cảm Xúc | AuraBook	Những trang viết sâu lắng, nhẹ nhàng về tình yêu, cuộc sống và con người.	en	Truyện Ngắn & Tản Văn Cảm Xúc	{"time": 1792043678673, "blocks": [{"id": "block_0", "data": {"text": "Những trang viết sâu lắng, nhẹ nhàng về tình yêu, cuộc sống và con người."}, "type": "paragraph"}], "version": "2.30.7"}	46	\N
+126	Truyện Ngắn & Tản Văn Cảm Xúc | AuraBook	Những trang viết sâu lắng, nhẹ nhàng về tình yêu, cuộc sống và con người.	vi	Truyện Ngắn & Tản Văn Cảm Xúc	{"time": 1792043678673, "blocks": [{"id": "block_0", "data": {"text": "Những trang viết sâu lắng, nhẹ nhàng về tình yêu, cuộc sống và con người."}, "type": "paragraph"}], "version": "2.30.7"}	46	\N
 \.
 
 
@@ -9959,6 +9691,8 @@ COPY public.product_categorytranslation (id, seo_title, seo_description, languag
 COPY public.product_collection (id, name, slug, background_image, seo_description, seo_title, description, background_image_alt, metadata, private_metadata) FROM stdin;
 4	Featured Products	featured-products				{"time": 1652704228241, "blocks": [{"id": "vSuHF7x1Ph", "data": {"text": "Team's favourites"}, "type": "paragraph"}], "version": "2.24.3"}		{}	{}
 5	Summer Picks	summer-picks				{"time": 1652704367895, "blocks": [{"id": "U2Pv1bCoAr", "data": {"text": "Get ready for the summer"}, "type": "paragraph"}], "version": "2.24.3"}		{}	{}
+1	Sách bán chạy	sach-ban-chay		Những đầu sách bán chạy nhất và được độc giả yêu thích nhất tại AuraBook.	Sách Bán Chạy Nhất AuraBook	null		{}	{}
+2	Sách mới phát hành	sach-moi-phat-hanh		Những tựa sách mới nhất vừa được phát hành trên hệ thống AuraBook.	Sách Mới Phát Hành AuraBook	null		{}	{}
 \.
 
 
@@ -9970,6 +9704,12 @@ COPY public.product_collectionchannellisting (id, published_at, is_published, ch
 1	2026-10-08 06:09:50.562486+00	t	3	4
 2	2026-10-08 06:09:50.562486+00	t	2	4
 3	2026-10-08 06:09:50.562486+00	t	1	4
+4	2026-10-15 07:56:43.881165+00	t	3	1
+5	2026-10-15 07:56:43.909607+00	t	2	1
+6	2026-10-15 07:56:43.930136+00	t	1	1
+7	2026-10-15 07:56:44.021146+00	t	3	2
+8	2026-10-15 07:56:44.033217+00	t	2	2
+9	2026-10-15 07:56:44.04526+00	t	1	2
 \.
 
 
@@ -9978,35 +9718,18 @@ COPY public.product_collectionchannellisting (id, published_at, is_published, ch
 --
 
 COPY public.product_collectionproduct (id, collection_id, product_id, sort_order) FROM stdin;
-1	4	152	0
-2	4	134	0
-3	4	130	0
-4	4	154	0
-5	4	145	0
-6	4	153	0
-7	4	128	0
-8	4	137	0
-9	4	155	0
-10	4	161	0
-11	4	136	0
-12	4	138	0
-13	4	129	0
-14	4	144	0
-15	4	146	0
-16	4	160	0
-17	4	164	0
-18	4	163	0
-19	4	131	0
-20	4	126	0
-21	4	150	0
-22	4	156	0
-23	4	147	0
-24	4	141	0
-25	4	157	0
-26	4	143	0
-27	4	135	0
-28	4	151	0
-29	4	162	0
+30	4	1	0
+31	4	2	0
+32	4	3	0
+33	4	4	0
+34	1	1	\N
+35	1	2	\N
+36	1	3	\N
+37	1	4	\N
+38	2	1	\N
+39	2	2	\N
+40	2	3	\N
+41	2	4	\N
 \.
 
 
@@ -10023,35 +9746,10 @@ COPY public.product_collectiontranslation (id, seo_title, seo_description, langu
 --
 
 COPY public.product_product (id, name, description, updated_at, product_type_id, category_id, seo_description, seo_title, weight, metadata, private_metadata, slug, default_variant_id, description_plaintext, rating, search_document, created_at, search_vector, search_index_dirty, tax_class_id, external_reference) FROM stdin;
-128	Plimsolls	{"time": 1653426057314, "blocks": [{"id": "b8HYevCTpU", "data": {"text": "<b>Step into summer with Saleor.</b> Every time your head goes down, you see these beauties, and your mood bounces right back up."}, "type": "paragraph"}], "version": "2.22.2"}	2026-10-08 06:04:28.396453+00	18	28			0	{}	{}	blue-plimsolls	332	Step into summer with Saleor. Every time your head goes down, you see these beauties, and your mood bounces right back up.	0		2022-05-13 20:14:01.299+00	'40':25A,30B '41':27A,31B '42':29A,32B '818223582':24A '818223583':26A '818223584':28A 'back':23C 'beauti':17C 'blue':1A 'bounc':21C 'everi':8C 'goe':12C 'head':11C 'mood':20C 'plimsol':2A 'right':22C 'saleor':7C 'see':15C 'step':3C 'summer':5C 'time':9C	f	\N	\N
-130	Paul's Balance 420	{"time": 1653426379418, "blocks": [{"id": "N0VISDl8_2", "data": {"text": "<b>Step into summer with the right balance.</b>&nbsp;Every time your head goes down, you see these beauties, and your mood bounces right back up."}, "type": "paragraph"}], "version": "2.22.2"}	2026-10-08 06:04:28.696093+00	18	28			0	{}	{}	balance-trail-720	340	Step into summer with the right balance.&nbsp;Every time your head goes down, you see these beauties, and your mood bounces right back up.	0		2022-05-13 20:50:54.123+00	'118223581':28A '118223582':30A '118223583':32A '118223584':34A '118223585':36A '39':29A,38B '40':31A,39B '41':33A,40B '42':35A,41B '420':4A '45':37A,42B 'back':27C 'balanc':3A,11C 'beauti':21C 'bounc':25C 'everi':12C 'goe':16C 'head':15C 'mood':24C 'paul':1A 'right':10C,26C 'see':19C 'step':5C 'summer':7C 'time':13C	f	\N	\N
-134	Monospace Tee	{"time": 1653425587889, "blocks": [{"id": "HVJ8gMNIXY", "data": {"text": "<b>Your t-shirt is your second skin.</b> It’s the version of you that you show to the world. Wear the Monospace one that flows with your command line kung-fu moves!&nbsp;"}, "type": "paragraph"}], "version": "2.22.2"}	2026-10-08 06:04:28.931723+00	20	39			0	{}	{}	ascii-tee	348	Your t-shirt is your second skin. It’s the version of you that you show to the world. Wear the Monospace one that flows with your command line kung-fu moves!&nbsp;	0		2022-05-13 21:20:59.727+00	'328223580':38A '328223581':39A '328223582':41A '328223583':43A '328223584':45A 'command':31C 'cotton':37B 'flow':28C 'fu':35C 'kung':34C 'kung-fu':33C 'l':42A,48B 'line':32C 'm':40A,47B 'monospac':1A,25C 'move':36C 'one':26C 'second':9C 'shirt':6C 'show':19C 'skin':10C 't-shirt':4C 'tee':2A 'version':14C 'wear':23C 'world':22C 'xl':44A,49B 'xxl':46A,50B	f	\N	\N
-135	Team Shirt	{"time": 1653425391562, "blocks": [{"id": "fMdfe0Bfpe", "data": {"text": "<b>One style fits all.</b> Get a look that works even when you are taking it easy. Relaxed wear for the fans."}, "type": "paragraph"}], "version": "2.22.2"}	2026-10-08 06:04:29.137079+00	20	39			0	{}	{}	team-shirt	353	One style fits all. Get a look that works even when you are taking it easy. Relaxed wear for the fans.	0		2022-05-13 21:29:38.009+00	'128223580':25A '128223581':26A '128223582':28A '128223583':30A '128223584':32A 'easi':18C 'elastan':24B 'even':12C 'fan':23C 'fit':5C 'get':7C 'l':29A,35B 'look':9C 'm':27A,34B 'one':3C 'relax':19C 'shirt':2A 'style':4C 'take':16C 'team':1A 'wear':20C 'work':11C 'xl':31A,36B 'xxl':33A,37B	f	\N	\N
-137	Blue Polygon Shirt	{"time": 1653425319677, "blocks": [{"id": "sMEIn2NR8s", "data": {"text": "<b>Ever have those days where you feel a bit geometric?</b> Can't quite shape yourself up right? Show your different sides with a Saleor styles."}, "type": "paragraph"}], "version": "2.22.2"}	2026-10-08 06:04:29.45124+00	20	39			0	{}	{}	blue-polygon-shirt	361	Ever have those days where you feel a bit geometric? Can't quite shape yourself up right? Show your different sides with a Saleor styles.	0		2022-05-13 21:41:46.295+00	'218223580':30A '218223581':32A '218223582':34A 'bit':12C 'blue':1A 'cotton':29B 'day':7C 'differ':23C 'ever':4C 'feel':10C 'geometr':13C 'l':33A,37B 'm':31A,36B 'polygon':2A 'quit':16C 'right':20C 'saleor':27C 'shape':17C 'shirt':3A 'show':21C 'side':24C 'style':28C 'xl':35A,38B	f	\N	\N
-138	Dark Polygon Tee	{"time": 1653425300293, "blocks": [{"id": "DBlOMRDzk_", "data": {"text": "<b>Ever have those days where you feel a bit geometric?</b> Can't quite shape yourself up right? Show your different sides with a Saleor styles."}, "type": "paragraph"}], "version": "2.22.2"}	2026-10-08 06:04:29.606744+00	20	39			0	{}	{}	dark-polygon-tee	364	Ever have those days where you feel a bit geometric? Can't quite shape yourself up right? Show your different sides with a Saleor styles.	0		2022-05-13 21:44:02.972+00	'112223580':30A '112223581':31A '112223582':33A 'bit':12C 'cotton':29B 'dark':1A 'day':7C 'differ':23C 'ever':4C 'feel':10C 'geometr':13C 'l':34A,36B 'm':32A,35B 'polygon':2A 'quit':16C 'right':20C 'saleor':27C 'shape':17C 'show':21C 'side':24C 'style':28C 'tee':3A	f	\N	\N
-141	Pirate's Beanie	{"time": 1765807774356, "blocks": [{"id": "dYKDNaIj9k", "data": {"text": "A lightweight, comfortable cotton beanie for year-round style."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-08 06:04:29.756605+00	21	35			0	{}	{}	pirates-beanie	368	A lightweight, comfortable cotton beanie for year-round style.	0		2022-05-13 23:50:16.297+00	'beani':3A 'cotton':4B 'pirat':1A 'uhjvzhvjdfzhcmlhbnq6mzy4':5A	f	\N	\N
-143	Neck Warmer	{"time": 1765808565297, "blocks": [{"id": "ScKtdrMWUs", "data": {"text": "Ultimate warmth and protection with soft, insulating wool."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-08 06:04:29.800733+00	21	36			0	{}	{}	tactical-neck-warmer	370	Ultimate warmth and protection with soft, insulating wool.	0		2022-05-14 21:10:01.383+00	'neck':1A 'uhjvzhvjdfzhcmlhbnq6mzcw':4A 'warmer':2A 'wool':3B	f	\N	\N
-145	Battle-tested at brands like Lush	{"time": 1765807072757, "blocks": [{"id": "g2sLxZcLZa", "data": {"text": "Scale <b>effortlessly</b>"}, "type": "paragraph"}, {"id": "ten_tNf1g8", "data": {"text": "Battle-Tested at Brands Like Lush shows how companies can:"}, "type": "paragraph"}, {"id": "8dRwQnCReE", "data": {"items": ["Scale digital commerce effortlessly", "Maintain resilience under growth pressure", "Optimize performance without breaking workflows"], "style": "unordered"}, "type": "list"}, {"id": "u8odXUKbUW", "data": {"text": "Learn from examples inspired by innovative retailers like Lush, including:"}, "type": "paragraph"}, {"id": "P1LKZBdnIh", "data": {"items": ["System architecture strategies", "Customer experience optimization", "Flexibility for experimentation"], "style": "unordered"}, "type": "list"}], "version": "2.30.7"}	2026-10-08 06:04:29.899737+00	17	26			0	{}	{}	battle-tested-at-brands-like-lush	372	Scale effortlessly Battle-Tested at Brands Like Lush shows how companies can: Scale digital commerce effortlessly Maintain resilience under growth pressure Optimize performance without breaking workflows Learn from examples inspired by innovative retailers like Lush, including: System architecture strategies Customer experience optimization Flexibility for experimentation	0		2022-05-14 21:53:34.556+00	'9018223582':10A '9018223583':12A '9018223584':14A 'battl':2A 'battle-test':1A 'brand':5A 'dvd':11A,16B 'effortless':9C 'itun':13A,17B 'like':6A 'lush':7A 'mp3':15A,18B 'scale':8C 'test':3A	f	\N	\N
-155	Carrot Juice	{"time": 1652790989820, "blocks": [{"id": "VWVrSI_Cza", "data": {"text": "Improve your eyesight the natural way with <b>100% pure, squeezed carrot juice</b>. The sweet, orange nectar of <i>Mother Earth</i>."}, "type": "paragraph"}], "version": "2.22.2"}	2026-10-08 06:04:30.747777+00	23	43			0	{}	{}	carrot-juice	387	Improve your eyesight the natural way with 100% pure, squeezed carrot juice. The sweet, orange nectar of Mother Earth.	0		2022-05-16 16:28:14.885+00	'100':10C 'carrot':1A,13C,22B 'earth':21C 'eyesight':5C 'improv':3C 'juic':2A,14C 'mother':20C 'natur':7C 'nectar':18C 'orang':17C 'pure':11C 'squeez':12C 'sweet':16C 'uhjvzhvjdfzhcmlhbnq6mzg3':23A 'way':8C	f	\N	\N
-147	Own your stack and data	{"time": 1765807007215, "blocks": [{"id": "uc9EpwoXTs", "data": {"text": "Take full control of your digital infrastructure."}, "type": "paragraph"}, {"id": "esCwDQfDYR", "data": {"text": "Own Your Stack and Data explores how modern organizations can:"}, "type": "paragraph"}, {"id": "DcIGkHVxUz", "data": {"items": ["Break free from vendor lock-in", "Reduce operational risk", "Build scalable, future-proof systems"], "style": "unordered"}, "type": "list"}, {"id": "d6aPFHmDjX", "data": {"text": "This audiobook also covers practical strategies for:"}, "type": "paragraph"}, {"id": "ydxmyVaq49", "data": {"items": ["Data ownership", "Open standards adoption", "Agility in evolving tech landscapes"], "style": "unordered"}, "type": "list"}], "version": "2.30.7"}	2026-10-08 06:04:30.192428+00	17	26			0	{}	{}	own-your-stack-and-data	379	Take full control of your digital infrastructure. Own Your Stack and Data explores how modern organizations can: Break free from vendor lock-in Reduce operational risk Build scalable, future-proof systems This audiobook also covers practical strategies for: Data ownership Open standards adoption Agility in evolving tech landscapes	0		2022-05-15 09:10:17.077+00	'124223581':15A '124223582':17A 'data':5A 'ditch':9C 'invest':8C 'itun':16A,19B 'lock':12C 'lock-in':11C 'mp3':18A,20B 'publish':14B 'saleor':13B 'stack':3A 'vendor':10C	f	\N	\N
-150	Mighty Mug	{"time": 1653425905079, "blocks": [{"id": "2sjPP8KzGf", "data": {"text": "<b>Tonight, my love, let us take fat brushes</b> and paint the skies with the shades of nebula tides. Best for the darkest, moody shades of the coffee you can brew."}, "type": "paragraph"}], "version": "2.22.2"}	2026-10-08 06:04:30.339409+00	22	41			0	{}	{}	mighty-mug	382	Tonight, my love, let us take fat brushes and paint the skies with the shades of nebula tides. Best for the darkest, moody shades of the coffee you can brew.	0		2022-05-15 09:28:13.067+00	'best':21C 'brew':32C 'brush':10C 'coffe':29C 'darkest':24C 'fat':9C 'let':6C 'love':5C 'mighti':1A 'moodi':25C 'mug':2A 'nebula':19C 'paint':12C 'shade':17C,26C 'sky':14C 'take':8C 'tide':20C 'tonight':3C 'uhjvzhvjdfzhcmlhbnq6mzgy':33A 'us':7C	f	\N	\N
-151	The Dash Cushion	{"time": 1653425717989, "blocks": [{"id": "KL2jdkdLiu", "data": {"text": "Minimalist interiors need simple, sleek soft furnishings. Set your own trends with Saleor designs."}, "type": "paragraph"}], "version": "2.22.2"}	2026-10-08 06:04:30.450884+00	22	41			0	{}	{}	the-dash-cushion	383	Minimalist interiors need simple, sleek soft furnishings. Set your own trends with Saleor designs.	0		2022-05-15 09:32:27.163+00	'cushion':3A 'dash':2A 'design':17C 'furnish':10C 'interior':5C 'minimalist':4C 'need':6C 'saleor':16C 'set':11C 'simpl':7C 'sleek':8C 'soft':9C 'trend':14C 'uhjvzhvjdfzhcmlhbnq6mzgz':18A	f	\N	\N
-152	Apple Juice	{"time": 1653425438149, "blocks": [{"id": "rGR983yNVl", "data": {"text": "<b>Fell straight from the tree</b>, on to Newton’s head, then into the bottle. The autumn taste of English apples. Brought to you by gravity."}, "type": "paragraph"}], "version": "2.22.2"}	2026-10-08 06:04:30.531031+00	23	43			0	{}	{}	apple-juice	384	Fell straight from the tree, on to Newton’s head, then into the bottle. The autumn taste of English apples. Brought to you by gravity.	0		2022-05-16 16:19:50.88+00	'appl':1A,22C,28B 'autumn':18C 'bottl':16C 'brought':23C 'english':21C 'fell':3C 'graviti':27C 'head':12C 'juic':2A 'newton':10C 'straight':4C 'tast':19C 'tree':7C 'uhjvzhvjdfzhcmlhbnq6mzg0':29A	f	\N	\N
-153	Bean Juice	{"time": 1653425488999, "blocks": [{"id": "QHFEWEGvaq", "data": {"text": "<b>Bean there, drunk that!</b> The energy drink for the health-conscious. Brand new bean juice; from allotment to bottle in under 8 hours."}, "type": "paragraph"}], "version": "2.22.2"}	2026-10-08 06:04:30.588384+00	23	43			0	{}	{}	bean-juice	385	Bean there, drunk that! The energy drink for the health-conscious. Brand new bean juice; from allotment to bottle in under 8 hours.	0		2022-05-16 16:25:11.442+00	'8':25C 'allot':20C 'bean':1A,3C,17C,27B 'bottl':22C 'brand':15C 'conscious':14C 'drink':9C 'drunk':5C 'energi':8C 'health':13C 'health-consci':12C 'hour':26C 'juic':2A,18C 'new':16C 'uhjvzhvjdfzhcmlhbnq6mzg1':28A	f	\N	\N
-154	Banana Juice	{"time": 1653425465674, "blocks": [{"id": "94R0GvrOck", "data": {"text": "<b>Build your protein the natural way</b>, with exotic banana juice made from ripe fruit and packed with all the goodness of the tropical sun."}, "type": "paragraph"}], "version": "2.22.2"}	2026-10-08 06:04:30.676133+00	23	43			0	{}	{}	banana-juice	386	Build your protein the natural way, with exotic banana juice made from ripe fruit and packed with all the goodness of the tropical sun.	0		2022-05-16 16:27:16.648+00	'banana':1A,11C,27B 'build':3C 'exot':10C 'fruit':16C 'good':22C 'juic':2A,12C 'made':13C 'natur':7C 'pack':18C 'protein':5C 'ripe':15C 'sun':26C 'tropic':25C 'uhjvzhvjdfzhcmlhbnq6mzg2':28A 'way':8C	f	\N	\N
-160	Gift card 100	{"time": 1652788779629, "blocks": [{"id": "x5bGwCbYOX", "data": {"text": "Gift card to use in the shop."}, "type": "paragraph"}], "version": "2.24.3"}	2026-10-08 06:04:27.989947+00	24	44			0	{}	{}	gift-card	393	Gift card to use in the shop.	0		2022-05-17 11:57:19.204+00	'100':3A 'card':2A,5C 'gift':1A,4C 'shop':10C 'uhjvzhvjdfzhcmlhbnq6mzkz':11A 'use':7C	f	\N	\N
-162	White Parrot Cushion	{"time": 1652875592737, "blocks": [{"id": "46o78ZqlJ8", "data": {"text": "Minimalist interiors need simple, sleek soft furnishings. Don’t parrot what others do, set your own monochrome trends with Saleor designs."}, "type": "paragraph"}], "version": "2.22.2"}	2026-10-08 06:04:28.229964+00	22	41			0	{}	{}	white-parrot-cusion	399	Minimalist interiors need simple, sleek soft furnishings. Don’t parrot what others do, set your own monochrome trends with Saleor designs.	0		2022-05-18 12:06:53.986+00	'cushion':3A 'design':24C 'furnish':10C 'interior':5C 'minimalist':4C 'monochrom':20C 'need':6C 'other':15C 'parrot':2A,13C 'saleor':23C 'set':17C 'simpl':7C 'sleek':8C 'soft':9C 'trend':21C 'uhjvzhvjdfzhcmlhbnq6mzk5':25A 'white':1A	f	\N	\N
-163	Gift card 500	null	2026-10-08 06:04:28.266873+00	24	44			0	{}	{}	gift-card-500	400		0		2022-05-18 19:29:35.052+00	'500':3A 'card':2A 'gift':1A 'uhjvzhvjdfzhcmlhbnq6ndaw':4A	f	\N	\N
-164	Gift card 50	null	2026-10-08 06:04:28.304761+00	24	44			0	{}	{}	gift-card-50	401		0		2022-05-18 19:31:14.463+00	'50':3A 'card':2A 'gift':1A 'uhjvzhvjdfzhcmlhbnq6ndax':4A	f	\N	\N
-129	Dash Force	{"time": 1653426379418, "blocks": [{"id": "N0VISDl8_2", "data": {"text": "<b>Step into summer with the right balance.</b>&nbsp;Every time your head goes down, you see these beauties, and your mood bounces right back up."}, "type": "paragraph"}], "version": "2.22.2"}	2026-10-08 06:04:28.5095+00	18	28			0	{}	{}	dash-force	335	Step into summer with the right balance.&nbsp;Every time your head goes down, you see these beauties, and your mood bounces right back up.	0		2022-05-13 20:44:05.403+00	'118223581':28A '118223582':30A '118223583':32A '118223584':34A '118223585':36A '39':29A,38B '40':31A,39B '41':33A,40B '42':35A,41B '420':4A '45':37A,42B 'back':27C 'balanc':3A,11C 'beauti':21C 'bounc':25C 'everi':12C 'goe':16C 'head':15C 'mood':24C 'paul':1A 'right':10C,26C 'see':19C 'step':5C 'summer':7C 'time':13C	f	\N	\N
-157	Reversed Monotype Tee	{"time": 1653425264795, "blocks": [{"id": "CMRIgvbpUG", "data": {"text": "Wondering if this will look as good on you as it does on the screen? The answer is yes. A quality Monospace Tee variant art with smart styling."}, "type": "paragraph"}], "version": "2.22.2"}	2026-10-08 06:04:30.858344+00	20	39			0	{}	{}	reversed-monotype-tee	389	Wondering if this will look as good on you as it does on the screen? The answer is yes. A quality Monospace Tee variant art with smart styling.	0		2022-05-17 11:48:18.537+00	'9182235820':32A '9182235821':34A 'answer':20C 'art':28C 'good':10C 'look':8C 'monospac':25C 'monotyp':2A 'qualiti':24C 'revers':1A 'screen':18C 'smart':30C 'style':31C 'tee':3A,26C 'variant':27C 'wonder':4C 'xl':33A,36B 'xxl':35A,37B 'yes':22C	f	\N	\N
-161	Cubes Fountain Tee	{"time": 1653424009054, "blocks": [{"id": "0n5N0DE7BU", "data": {"text": "<b>There is life in outer space.</b> This vibrant light speed cubes brings life to any surface. Goes on easy and dries at light speed."}, "type": "paragraph"}], "version": "2.22.2"}	2026-10-08 06:04:28.039507+00	20	39			0	{}	{}	cubes-fountain-tee	394	There is life in outer space. This vibrant light speed cubes brings life to any surface. Goes on easy and dries at light speed.	0		2022-05-17 12:02:44.85+00	'49182235820':29A '49182235821':30A '49182235822':32A '49182235823':34A '49182235824':36A 'bring':15C 'cotton':28B 'cube':1A,14C 'dri':24C 'easi':22C 'fountain':2A 'goe':20C 'l':33A,39B 'life':6C,16C 'light':12C,26C 'm':31A,38B 'outer':8C 'space':9C 'speed':13C,27C 'surfac':19C 'tee':3A 'vibrant':11C 'xl':35A,40B 'xxl':37A,41B	f	\N	\N
-136	Darko Polo	{"time": 1653425959030, "blocks": [{"id": "Bw6qwwACo6", "data": {"text": "<b>Ever have those days where you feel a bit geometric?</b>&nbsp;Can't quite shape yourself up right? Show your different sides with a Saleor styles."}, "type": "paragraph"}], "version": "2.22.2"}	2026-10-08 06:04:29.30882+00	20	40			0	{}	{}	darko-polo	358	Ever have those days where you feel a bit geometric?&nbsp;Can't quite shape yourself up right? Show your different sides with a Saleor styles.	0		2022-05-13 21:37:35.753+00	'111223580':29A '111223581':30A '111223582':32A 'bit':11C 'cotton':28B 'darko':1A 'day':6C 'differ':22C 'ever':3C 'feel':9C 'geometr':12C 'm':31A,34B 'polo':2A 'quit':15C 'right':19C 'saleor':26C 'shape':16C 'show':20C 'side':23C 'style':27C 'xxl':33A,35B	f	\N	\N
-146	Enterprise Cloud + On-premises	{"time": 1765807045328, "blocks": [{"id": "w3x66nix3o", "data": {"text": "Open Source <b>without the DevOps</b>"}, "type": "paragraph"}, {"id": "tZdRSMOoGo", "data": {"text": "Discover the hybrid future of enterprise computing."}, "type": "paragraph"}, {"id": "c-y7CBc3EZ", "data": {"text": "Enterprise Cloud + On-Premises teaches you how to:"}, "type": "paragraph"}, {"id": "z-X0_3EkM7", "data": {"items": ["Combine cloud flexibility with on-premises control", "Eliminate heavy DevOps overhead", "Unlock speed, transparency, and interoperability"], "style": "unordered"}, "type": "list"}, {"id": "kfQoKtqEF4", "data": {"text": "It’s perfect for teams looking to:"}, "type": "paragraph"}, {"id": "wuUoX4de9B", "data": {"items": ["Leverage open-source ecosystems", "Optimize hybrid workflows"], "style": "unordered"}, "type": "list"}], "version": "2.30.7"}	2026-10-08 06:04:30.017909+00	17	26			0	{}	{}	enterprise-cloud-on-premises-tales	375	Open Source without the DevOps Discover the hybrid future of enterprise computing. Enterprise Cloud + On-Premises teaches you how to: Combine cloud flexibility with on-premises control Eliminate heavy DevOps overhead Unlock speed, transparency, and interoperability It’s perfect for teams looking to: Leverage open-source ecosystems Optimize hybrid workflows	0		2022-05-15 09:03:06.009+00	'113223582':13A '113223583':15A '113223584':17A '113223585':19A 'cd':20A,24B 'cloud':2A 'devop':10C 'dvd':16A,22B 'enterpris':1A 'itun':18A,23B 'on-premis':3A 'open':6C 'premis':5A 'publish':12B 'saleor':11B 'sourc':7C 'vinyl':14A,21B 'without':8C	f	\N	\N
-126	Headless + Omnichannel in a pill	{"time": 1765807735517, "blocks": [{"id": "32SKrcyWwb", "data": {"text": "Launch <b>new markets fast</b>"}, "type": "paragraph"}, {"id": "poAIG9lLmG", "data": {"text": "Compact, actionable insights for modern retail."}, "type": "paragraph"}, {"id": "ja7aBu8Pjq", "data": {"text": "Headless + Omnichannel in a Pill explains how businesses can:"}, "type": "paragraph"}, {"id": "Vnhz0YtsCK", "data": {"items": ["Rapidly launch new markets", "Localize content efficiently", "Deliver seamless omnichannel experiences"], "style": "unordered"}, "type": "list"}, {"id": "UBMzTFIIGD", "data": {"text": "It also covers:"}, "type": "paragraph"}, {"id": "IgVjunH3Sc", "data": {"items": ["Mobile, web, and in-store integration", "Emerging channels and technologies", "Headless architecture benefits"], "style": "unordered"}, "type": "list"}], "version": "2.30.7"}	2026-10-08 06:04:28.34319+00	17	26	Launch new markets fast	Headless + Omnichannel	0	{}	{}	headless-omnichannel-commerce	324	Launch new markets fast Compact, actionable insights for modern retail. Headless + Omnichannel in a Pill explains how businesses can: Rapidly launch new markets Localize content efficiently Deliver seamless omnichannel experiences It also covers: Mobile, web, and in-store integration Emerging channels and technologies Headless architecture benefits	0		2022-05-12 22:07:58.327+00	'audio':11B 'digit':10B 'fast':9C 'headless':1A,13A 'headless-omnichannel-mp3':12A 'launch':6C 'market':8C 'mp3':15A,16A,17B 'new':7C 'omnichannel':2A,14A 'pill':5A	f	\N	\N
-131	Hoodie	{"time": 1768297792407, "blocks": [{"id": "tSmCpk0ROL", "data": {"text": "Classic comfort with a modern edge."}, "type": "paragraph"}, {"id": "yjYaYWAvdh", "data": {"text": "The Hoodie is a wardrobe essential designed for effortless everyday wear. Made from soft, breathable fabric, it delivers lasting comfort while maintaining a clean, versatile look. The neutral grey tone pairs easily with any outfit, making it perfect for layering or wearing on its own."}, "type": "paragraph"}, {"id": "P_2ivyyk5W", "data": {"text": "Features:"}, "type": "paragraph"}, {"id": "Gd2DdXR5QD", "data": {"items": ["Cozy, relaxed fit\\\\n", "Smooth, comfortable fabric\\\\n", "Adjustable hood and front pocket\\\\n", "Ideal for daily wear and casual outings\\\\n"], "style": "unordered"}, "type": "list"}, {"id": "lnBopUbUzr", "data": {"text": "A timeless piece that blends comfort, style, and versatility."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-08 06:04:28.889815+00	19	29			0	{}	{}	grey-hoodie	345	Classic comfort with a modern edge. The Hoodie is a wardrobe essential designed for effortless everyday wear. Made from soft, breathable fabric, it delivers lasting comfort while maintaining a clean, versatile look. The neutral grey tone pairs easily with any outfit, making it perfect for layering or wearing on its own. Features: Cozy, relaxed fit\\n Smooth, comfortable fabric\\n Adjustable hood and front pocket\\n Ideal for daily wear and casual outings\\n A timeless piece that blends comfort, style, and versatility.	0		2022-05-13 21:07:45.009+00	'cotton':3B 'grey':1A 'hoodi':2A 'uhjvzhvjdfzhcmlhbnq6mzq1':4A	f	\N	\N
-144	DRY Sunglasses	{"time": 1765809075113, "blocks": [{"id": "8LO6BpXOUM", "data": {"text": "Minimal design. Maximum impact."}, "type": "paragraph"}, {"id": "3O_P7V8Df-", "data": {"text": "The <b>DRY Sunglasses </b>are made for those who appreciate clean lines and understated style. Crafted with a durable frame and high-clarity lenses, these sunglasses provide dependable sun protection while maintaining a sharp, modern aesthetic."}, "type": "paragraph"}, {"id": "cJfdIg46-0", "data": {"text": "Ideal for:"}, "type": "paragraph"}, {"id": "GnjEe2OOXw", "data": {"items": ["🚶 On-the-go lifestyles\\n", "🌞 Outdoor relaxation\\n", "👔 Everyday sophistication\\n"], "style": "unordered"}, "type": "list"}, {"id": "wsW714Hwfi", "data": {"text": "A timeless essential that keeps your vision clear and your look effortlessly refined."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-08 06:04:29.845943+00	22	37			0	{}	{}	dry-sunglasses	371	Minimal design. Maximum impact. The DRY Sunglasses are made for those who appreciate clean lines and understated style. Crafted with a durable frame and high-clarity lenses, these sunglasses provide dependable sun protection while maintaining a sharp, modern aesthetic. Ideal for: 🚶 On-the-go lifestyles\n 🌞 Outdoor relaxation\n 👔 Everyday sophistication\n A timeless essential that keeps your vision clear and your look effortlessly refined.	0		2022-05-14 21:24:57.725+00	'dri':1A 'sunglass':2A 'uhjvzhvjdfzhcmlhbnq6mzcx':3A	f	\N	\N
-156	Monokai Dimmed Sunnies	{"time": 1765809038976, "blocks": [{"id": "f5gGPIy0Z", "data": {"text": "Elevate your everyday look with effortless sophistication."}, "type": "paragraph"}, {"id": "-bwfMYJYfV", "data": {"text": "The <b>Monokai Dimmed Sunnies</b> feature a sleek, modern silhouette paired with subtly dimmed lenses for a refined, contemporary vibe. Designed for both style and comfort, the lightweight frame allows for all-day wear, while the tinted lenses help reduce glare and offer reliable UV protection."}, "type": "paragraph"}, {"id": "ZrY5dluC8k", "data": {"text": "Perfect for:"}, "type": "paragraph"}, {"id": "5BEAQOxPCu", "data": {"items": ["☀️ City strolls\\n", "🌴 Beach days\\n", "🕶️ Casual everyday wear\\n"], "style": "unordered"}, "type": "list"}, {"id": "V9jK7hm27p", "data": {"text": "A versatile accessory that adds a cool, confident edge to any outfit."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-08 06:04:30.807005+00	22	37			0	{}	{}	monokai-dimmed-sunnies	388	Elevate your everyday look with effortless sophistication. The Monokai Dimmed Sunnies feature a sleek, modern silhouette paired with subtly dimmed lenses for a refined, contemporary vibe. Designed for both style and comfort, the lightweight frame allows for all-day wear, while the tinted lenses help reduce glare and offer reliable UV protection. Perfect for: ☀️ City strolls\n 🌴 Beach days\n 🕶️ Casual everyday wear\n A versatile accessory that adds a cool, confident edge to any outfit.	0		2022-05-17 11:44:16.884+00	'dim':2A 'monokai':1A 'sunni':3A 'uhjvzhvjdfzhcmlhbnq6mzg4':4A	f	\N	\N
+4	Trí Tuệ Do Thái (Jerome Becomes a Genius)	{"time": 1792043680340, "blocks": [{"id": "block_0", "data": {"text": "Trí Tuệ Do Thái của kỷ lục gia trí nhớ Eran Katz hé mở những bí quyết tư duy độc đáo, phương pháp ghi nhớ phi thường và tinh thần học hỏi trọn đời của dân tộc thông minh nhất thế giới."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Thông qua hành trình biến chàng trai bình thường Jerome thành một thiên tài, cuốn sách cung cấp các nguyên tắc thực tế để tối ưu hóa não bộ, rèn luyện tư duy logic, sáng tạo và mở khóa tiềm năng vượt trội."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Tác phẩm truyền cảm hứng mãnh liệt về ý chí vươn lên, lòng hiếu học và nghệ thuật làm chủ tri thức."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-15 09:01:34.258405+00	2	37	Trí Tuệ Do Thái của kỷ lục gia trí nhớ Eran Katz hé mở những bí quyết tư duy độc đáo, phương pháp ghi nhớ phi thường và tinh thần học hỏi trọn đời của dân tộc thông minh nhất thế giới.	Trí Tuệ Do Thái (Jerome Becomes a Genius) | AuraBook	\N	{"author": "Eran Katz", "epub_file": "ebooks/tri-tue-do-thai.epub", "book_format": "Both Ebook and Physical Available"}	{}	tri-tue-do-thai	9	Trí Tuệ Do Thái của kỷ lục gia trí nhớ Eran Katz hé mở những bí quyết tư duy độc đáo, phương pháp ghi nhớ phi thường và tinh thần học hỏi trọn đời của dân tộc thông minh nhất thế giới. Thông qua hành trình biến chàng trai bình thường Jerome thành một thiên tài, cuốn sách cung cấp các nguyên tắc thực tế để tối ưu hóa não bộ, rèn luyện tư duy logic, sáng tạo và mở khóa tiềm năng vượt trội. Tác phẩm truyền cảm hứng mãnh liệt về ý chí vươn lên, lòng hiếu học và nghệ thuật làm chủ tri thức.	\N		2026-10-15 05:54:40.347339+00	\N	t	\N	\N
+2	Bốn Thỏa Ước (The Four Agreements)	{"time": 1792043679512, "blocks": [{"id": "block_0", "data": {"text": "Bốn Thỏa Ước (The Four Agreements) của Don Miguel Ruiz tiết lộ những minh triết cổ xưa của người Toltec nhằm giúp chúng ta tự giải thoát khỏi những niềm tin giới hạn, nỗi sợ hãi và những đau khổ không đáng có."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Bốn nguyên tắc thông thái bao gồm: 1. Không phạm tội với lời nói; 2. Không biến mọi chuyện thành vấn đề cá nhân; 3. Không giả định; 4. Luôn làm hết khả năng của mình."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Một cuốn sách ngắn gọn nhưng có sức mạnh chuyển hóa nội tâm sâu sắc, đem lại sự thanh thản, tự do và niềm vui sống đích thực."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-15 09:09:34.288339+00	2	36	Bốn Thỏa Ước (The Four Agreements) của Don Miguel Ruiz tiết lộ những minh triết cổ xưa của người Toltec nhằm giúp chúng ta tự giải thoát khỏi những niềm tin giới hạn, nỗi sợ hãi và những đau khổ không đáng có.	Bốn Thỏa Ước (The Four Agreements) | AuraBook	\N	{"author": "Don Miguel Ruiz", "epub_file": "ebooks/bon-thoa-uoc.epub", "book_format": "Both Ebook and Physical Available"}	{}	bon-thoa-uoc	5	Bốn Thỏa Ước (The Four Agreements) của Don Miguel Ruiz tiết lộ những minh triết cổ xưa của người Toltec nhằm giúp chúng ta tự giải thoát khỏi những niềm tin giới hạn, nỗi sợ hãi và những đau khổ không đáng có. Bốn nguyên tắc thông thái bao gồm: 1. Không phạm tội với lời nói; 2. Không biến mọi chuyện thành vấn đề cá nhân; 3. Không giả định; 4. Luôn làm hết khả năng của mình. Một cuốn sách ngắn gọn nhưng có sức mạnh chuyển hóa nội tâm sâu sắc, đem lại sự thanh thản, tự do và niềm vui sống đích thực.	\N		2026-10-15 05:54:39.517816+00	\N	t	\N	\N
+3	Sapiens: Lược Sử Loài Người (A Brief History of Humankind)	{"time": 1792043679887, "blocks": [{"id": "block_0", "data": {"text": "Sapiens: Lược Sử Loài Người của giáo sư lịch sử Yuval Noah Harari là hiện tượng xuất bản toàn cầu, giải mã lịch sử vĩ đại của loài người từ thời kỳ đồ đá cho đến hiện đại."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Cuốn sách phân tích sâu sắc ba cuộc cách mạng định hình vận mệnh: Cách mạng Nhận thức (khởi đầu lịch sử), Cách mạng Nông nghiệp (mở rộng xã hội) và Cách mạng Khoa học (kiến tạo sức mạnh chưa từng có)."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Một tác phẩm kinh điển mở rộng tầm nhìn, kích thích tư duy phản biện và giúp chúng ta hiểu rõ loài người là ai, từ đâu đến và đang đi về đâu."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-15 09:10:02.569159+00	2	39	Sapiens: Lược Sử Loài Người của giáo sư lịch sử Yuval Noah Harari là hiện tượng xuất bản toàn cầu, giải mã lịch sử vĩ đại của loài người từ thời kỳ đồ đá cho đến hiện đại.	Sapiens: Lược Sử Loài Người (A Brief History of Humankind) | AuraBook	\N	{"author": "Yuval Noah Harari", "epub_file": "ebooks/sapiens-luoc-su-loai-nguoi.epub", "book_format": "Both Ebook and Physical Available"}	{}	sapiens-luoc-su-loai-nguoi	7	Sapiens: Lược Sử Loài Người của giáo sư lịch sử Yuval Noah Harari là hiện tượng xuất bản toàn cầu, giải mã lịch sử vĩ đại của loài người từ thời kỳ đồ đá cho đến hiện đại. Cuốn sách phân tích sâu sắc ba cuộc cách mạng định hình vận mệnh: Cách mạng Nhận thức (khởi đầu lịch sử), Cách mạng Nông nghiệp (mở rộng xã hội) và Cách mạng Khoa học (kiến tạo sức mạnh chưa từng có). Một tác phẩm kinh điển mở rộng tầm nhìn, kích thích tư duy phản biện và giúp chúng ta hiểu rõ loài người là ai, từ đâu đến và đang đi về đâu.	\N		2026-10-15 05:54:39.891549+00	\N	t	\N	\N
+1	Đắc Nhân Tâm (How to Win Friends and Influence People)	{"time": 1792043678888, "blocks": [{"id": "block_0", "data": {"text": "Đắc Nhân Tâm (How to Win Friends and Influence People) của Dale Carnegie là cuốn sách nổi tiếng nhất, có tầm ảnh hưởng lớn nhất mọi thời đại về nghệ thuật đối nhân xử thế và giao tiếp."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Tác phẩm đem lại những nguyên tắc vàng đã được thử thách qua thời gian, giúp bạn thấu hiểu tâm lý con người, xây dựng sự tin cậy, cảm hóa người khác bằng sự chân thành và giải quyết các mâu thuẫn một cách khéo léo."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Dù trong công việc hay đời sống thường ngày, đây là cẩm nang gối đầu giường không thể thiếu cho bất kỳ ai muốn vươn tới thành công và hạnh phúc trọn vẹn."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-15 10:22:32.099514+00	2	33	Đắc Nhân Tâm (How to Win Friends and Influence People) của Dale Carnegie là cuốn sách nổi tiếng nhất, có tầm ảnh hưởng lớn nhất mọi thời đại về nghệ thuật đối nhân xử thế và giao tiếp.	Đắc Nhân Tâm (How to Win Friends and Influence People) | AuraBook	\N	{"author": "Dale Carnegie", "epub_file": "ebooks/dac-nhan-tam.epub", "book_format": "Both Ebook and Physical Available"}	{}	dac-nhan-tam	3	Đắc Nhân Tâm (How to Win Friends and Influence People) của Dale Carnegie là cuốn sách nổi tiếng nhất, có tầm ảnh hưởng lớn nhất mọi thời đại về nghệ thuật đối nhân xử thế và giao tiếp. Tác phẩm đem lại những nguyên tắc vàng đã được thử thách qua thời gian, giúp bạn thấu hiểu tâm lý con người, xây dựng sự tin cậy, cảm hóa người khác bằng sự chân thành và giải quyết các mâu thuẫn một cách khéo léo. Dù trong công việc hay đời sống thường ngày, đây là cẩm nang gối đầu giường không thể thiếu cho bất kỳ ai muốn vươn tới thành công và hạnh phúc trọn vẹn.	\N		2026-10-15 05:52:50.576094+00	\N	t	\N	\N
 \.
 
 
@@ -10060,93 +9758,17 @@ COPY public.product_product (id, name, description, updated_at, product_type_id,
 --
 
 COPY public.product_productchannellisting (id, published_at, is_published, channel_id, product_id, discounted_price_amount, currency, visible_in_listings, available_for_purchase_at, discounted_price_dirty) FROM stdin;
-55	2022-05-16 00:00:00+00	t	3	152	6.000	PLN	t	2022-05-18 12:21:41.061+00	f
-16	2022-05-13 00:00:00+00	t	3	134	32.000	PLN	t	2022-05-13 21:22:42.287+00	f
-10	2022-05-13 00:00:00+00	t	3	130	140.000	PLN	t	2022-05-13 20:58:06.889+00	f
-61	2022-05-16 00:00:00+00	t	3	154	6.500	PLN	t	2022-05-16 16:27:16.884+00	f
-40	2022-05-14 00:00:00+00	t	3	145	19.500	PLN	f	2022-05-14 21:56:09.039+00	f
-58	2022-05-16 00:00:00+00	t	3	153	5.500	PLN	t	2022-05-16 16:25:11.675+00	f
-4	2022-05-13 00:00:00+00	t	3	128	80.000	PLN	t	2022-05-13 20:39:54.804+00	f
-25	2022-05-13 00:00:00+00	t	3	137	36.000	PLN	t	2022-05-13 21:42:58.688+00	f
-64	2022-05-16 00:00:00+00	t	3	155	6.000	PLN	t	2022-05-17 12:36:31.769+00	f
-76	2022-05-17 00:00:00+00	t	3	161	38.000	PLN	t	2022-05-17 12:04:24.093+00	f
-22	2022-05-13 00:00:00+00	t	3	136	48.000	PLN	t	2022-05-13 21:39:11.647+00	f
-28	2022-05-13 00:00:00+00	t	3	138	34.000	PLN	t	2022-05-13 21:45:11.183+00	f
-7	2022-05-13 00:00:00+00	t	3	129	120.000	PLN	t	2022-05-13 20:47:19.212+00	f
-37	2022-05-14 00:00:00+00	t	3	144	28.000	PLN	t	2022-05-14 21:25:09.403+00	f
-43	2022-05-15 00:00:00+00	t	3	146	24.500	PLN	t	2022-05-15 09:07:27.049+00	f
-73	2022-05-17 00:00:00+00	t	3	160	160.000	PLN	t	2022-05-18 19:30:32.863+00	f
-85	2022-05-18 00:00:00+00	t	3	164	80.000	PLN	t	2022-05-18 19:31:14.637+00	f
-82	2022-05-18 00:00:00+00	t	3	163	800.000	PLN	t	2022-05-18 19:29:47.375+00	f
-13	2022-05-13 00:00:00+00	t	3	131	70.000	PLN	t	2022-05-13 21:10:34.318+00	f
-1	2022-05-13 00:00:00+00	t	3	126	15.000	PLN	f	2022-05-12 22:28:54.347+00	f
-49	2022-05-15 00:00:00+00	t	3	150	18.000	PLN	t	2022-05-15 09:28:13.277+00	f
-67	2022-05-17 00:00:00+00	t	3	156	30.000	PLN	t	2022-05-17 11:44:17.092+00	f
-46	2022-05-15 00:00:00+00	t	3	147	16.500	PLN	t	2022-05-15 09:21:45.107+00	f
-31	2022-05-14 00:00:00+00	t	3	141	21.000	PLN	t	2022-05-14 21:33:36.864+00	f
-70	2022-05-17 00:00:00+00	t	3	157	34.500	PLN	t	2022-05-17 11:50:42.404+00	f
-34	2022-05-14 00:00:00+00	t	3	143	16.000	PLN	t	2022-05-14 21:33:04.609+00	f
-19	2022-05-13 00:00:00+00	t	3	135	31.000	PLN	t	2022-05-13 21:31:26.409+00	f
-52	2022-05-15 00:00:00+00	t	3	151	29.000	PLN	t	2022-05-16 16:38:36.08+00	f
-79	2022-05-18 00:00:00+00	t	3	162	30.500	PLN	t	2022-05-18 12:07:50.177+00	f
-56	2022-05-16 00:00:00+00	t	2	152	35000.000	USD	t	2022-05-18 12:21:41.066+00	f
-17	2022-05-13 00:00:00+00	t	2	134	195000.000	USD	t	2022-05-13 21:22:42.298+00	f
-11	2022-05-13 00:00:00+00	t	2	130	850000.000	USD	t	2022-05-13 20:58:06.895+00	f
-62	2022-05-16 00:00:00+00	t	2	154	39000.000	USD	t	2022-05-16 16:27:16.897+00	f
-41	2022-05-14 00:00:00+00	t	2	145	119000.000	USD	t	2022-05-14 21:56:09.046+00	f
-59	2022-05-16 00:00:00+00	t	2	153	32000.000	USD	t	2022-05-16 16:25:11.691+00	f
-5	2022-05-13 00:00:00+00	t	2	128	490000.000	USD	t	2022-05-13 20:39:54.813+00	f
-26	2022-05-13 00:00:00+00	t	2	137	220000.000	USD	t	2022-05-13 21:42:58.694+00	f
-65	2022-05-16 00:00:00+00	t	2	155	35000.000	USD	t	2022-05-17 12:36:31.775+00	f
-77	2022-05-17 00:00:00+00	t	2	161	230000.000	USD	t	2022-05-17 12:04:24.101+00	f
-23	2022-05-13 00:00:00+00	t	2	136	290000.000	USD	t	2022-05-13 21:39:11.656+00	f
-29	2022-05-13 00:00:00+00	t	2	138	210000.000	USD	t	2022-05-13 21:45:11.191+00	f
-8	2022-05-13 00:00:00+00	t	2	129	720000.000	USD	t	2022-05-13 20:47:19.242+00	f
-38	2022-05-14 00:00:00+00	t	2	144	165000.000	USD	t	2022-05-14 21:25:09.408+00	f
-44	2022-05-15 00:00:00+00	t	2	146	149000.000	USD	t	2022-05-18 12:09:56.745+00	f
-74	2022-05-17 00:00:00+00	t	2	160	1000000.000	USD	t	2022-05-18 19:30:32.87+00	f
-86	2022-05-18 00:00:00+00	t	2	164	500000.000	USD	t	2022-05-18 19:31:14.662+00	f
-83	2022-05-18 00:00:00+00	t	2	163	5000000.000	USD	t	2022-05-18 19:29:47.387+00	f
-14	2022-05-13 00:00:00+00	t	2	131	420000.000	USD	t	2022-05-13 21:10:34.327+00	f
-2	2022-05-13 00:00:00+00	t	2	126	89000.000	USD	t	2022-05-12 00:00:00+00	f
-50	2022-05-15 00:00:00+00	t	2	150	110000.000	USD	t	2022-05-15 09:28:13.293+00	f
-68	2022-05-17 00:00:00+00	t	2	156	180000.000	USD	t	2022-05-17 11:44:17.105+00	f
-47	2022-05-15 00:00:00+00	t	2	147	99000.000	USD	t	2022-05-15 09:21:45.111+00	f
-32	2022-05-14 00:00:00+00	t	2	141	125000.000	USD	t	2022-05-14 21:33:36.876+00	f
-71	2022-05-17 00:00:00+00	t	2	157	205000.000	USD	t	2022-05-17 11:50:42.416+00	f
-35	2022-05-14 00:00:00+00	t	2	143	95000.000	USD	t	2022-05-14 21:33:04.615+00	f
-20	2022-05-13 00:00:00+00	t	2	135	185000.000	USD	t	2022-05-13 21:31:26.426+00	f
-53	2022-05-15 00:00:00+00	t	2	151	175000.000	USD	t	2022-05-16 16:38:36.086+00	f
-80	2022-05-18 00:00:00+00	t	2	162	185000.000	USD	t	2022-05-18 12:07:50.182+00	f
-57	2022-05-16 00:00:00+00	t	1	152	1.500	USD	t	2022-05-18 12:21:41.066+00	f
-18	2022-05-13 00:00:00+00	t	1	134	8.000	USD	t	2022-05-13 21:22:42.298+00	f
-12	2022-05-13 00:00:00+00	t	1	130	35.000	USD	t	2022-05-13 20:58:06.895+00	f
-63	2022-05-16 00:00:00+00	t	1	154	1.650	USD	t	2022-05-16 16:27:16.897+00	f
-42	2022-05-14 00:00:00+00	t	1	145	4.900	USD	t	2022-05-14 21:56:09.046+00	f
-60	2022-05-16 00:00:00+00	t	1	153	1.350	USD	t	2022-05-16 16:25:11.691+00	f
-6	2022-05-13 00:00:00+00	t	1	128	20.000	USD	t	2022-05-13 20:39:54.813+00	f
-27	2022-05-13 00:00:00+00	t	1	137	9.000	USD	t	2022-05-13 21:42:58.694+00	f
-66	2022-05-16 00:00:00+00	t	1	155	1.500	USD	t	2022-05-17 12:36:31.775+00	f
-78	2022-05-17 00:00:00+00	t	1	161	9.500	USD	t	2022-05-17 12:04:24.101+00	f
-24	2022-05-13 00:00:00+00	t	1	136	12.000	USD	t	2022-05-13 21:39:11.656+00	f
-30	2022-05-13 00:00:00+00	t	1	138	8.500	USD	t	2022-05-13 21:45:11.191+00	f
-9	2022-05-13 00:00:00+00	t	1	129	30.000	USD	t	2022-05-13 20:47:19.242+00	f
-39	2022-05-14 00:00:00+00	t	1	144	7.000	USD	t	2022-05-14 21:25:09.408+00	f
-45	2022-05-15 00:00:00+00	t	1	146	6.200	USD	t	2022-05-18 12:09:56.745+00	f
-75	2022-05-17 00:00:00+00	t	1	160	40.000	USD	t	2022-05-18 19:30:32.87+00	f
-87	2022-05-18 00:00:00+00	t	1	164	20.000	USD	t	2022-05-18 19:31:14.662+00	f
-84	2022-05-18 00:00:00+00	t	1	163	200.000	USD	t	2022-05-18 19:29:47.387+00	f
-15	2022-05-13 00:00:00+00	t	1	131	17.500	USD	t	2022-05-13 21:10:34.327+00	f
-3	2022-05-13 00:00:00+00	t	1	126	3.800	USD	t	2022-05-12 00:00:00+00	f
-51	2022-05-15 00:00:00+00	t	1	150	4.500	USD	t	2022-05-15 09:28:13.293+00	f
-69	2022-05-17 00:00:00+00	t	1	156	7.500	USD	t	2022-05-17 11:44:17.105+00	f
-48	2022-05-15 00:00:00+00	t	1	147	4.200	USD	t	2022-05-15 09:21:45.111+00	f
-33	2022-05-14 00:00:00+00	t	1	141	5.200	USD	t	2022-05-14 21:33:36.876+00	f
-72	2022-05-17 00:00:00+00	t	1	157	8.600	USD	t	2022-05-17 11:50:42.416+00	f
-36	2022-05-14 00:00:00+00	t	1	143	4.000	USD	t	2022-05-14 21:33:04.615+00	f
-21	2022-05-13 00:00:00+00	t	1	135	7.800	USD	t	2022-05-13 21:31:26.426+00	f
-54	2022-05-15 00:00:00+00	t	1	151	7.200	USD	t	2022-05-16 16:38:36.086+00	f
-81	2022-05-18 00:00:00+00	t	1	162	7.600	USD	t	2022-05-18 12:07:50.182+00	f
+89	\N	t	2	1	118000.000	VND	t	2026-10-15 05:54:38.888189+00	f
+90	\N	t	1	1	5.990	USD	t	2026-10-15 05:54:38.888189+00	f
+92	\N	t	2	2	98000.000	VND	t	2026-10-15 05:54:38.888189+00	f
+93	\N	t	1	2	4.990	USD	t	2026-10-15 05:54:38.888189+00	f
+95	\N	t	2	3	189000.000	VND	t	2026-10-15 05:54:38.888189+00	f
+96	\N	t	1	3	9.490	USD	t	2026-10-15 05:54:38.888189+00	f
+98	\N	t	2	4	135000.000	VND	t	2026-10-15 05:54:38.888189+00	f
+99	\N	t	1	4	6.790	USD	t	2026-10-15 05:54:38.888189+00	f
+91	\N	f	3	2	\N	PLN	f	\N	t
+94	\N	f	3	3	\N	PLN	f	\N	t
+97	\N	f	3	4	\N	PLN	f	\N	t
 \.
 
 
@@ -10155,54 +9777,41 @@ COPY public.product_productchannellisting (id, published_at, is_published, chann
 --
 
 COPY public.product_productmedia (id, sort_order, image, alt, type, external_url, oembed_data, product_id, to_remove, metadata, private_metadata) FROM stdin;
-1	0	products/saleor-headless-omnichannel-book.png		IMAGE	\N	{}	126	f	{}	{}
-2	0	products/saleor-blue-plimsolls-1.png		IMAGE	\N	{}	128	f	{}	{}
-3	1	products/saleor-blue-plimsolls-2.png		IMAGE	\N	{}	128	f	{}	{}
-4	2	products/saleor-blue-plimsolls-3.png		IMAGE	\N	{}	128	f	{}	{}
-5	3	products/saleor-blue-plimsolls-4.png		IMAGE	\N	{}	128	f	{}	{}
-6	4	products/saleor-white-plimsolls-1.png		IMAGE	\N	{}	128	f	{}	{}
-7	5	products/saleor-white-plimsolls-2.png		IMAGE	\N	{}	128	f	{}	{}
-8	6	products/saleor-white-plimsolls-3.png		IMAGE	\N	{}	128	f	{}	{}
-9	7	products/saleor-white-plimsolls-4.png		IMAGE	\N	{}	128	f	{}	{}
-10	0	products/saleor-dash-force-1.png		IMAGE	\N	{}	129	f	{}	{}
-11	1	products/saleor-dash-force-2.png		IMAGE	\N	{}	129	f	{}	{}
-12	0	products/saleor-pauls-blanace-420-1.png		IMAGE	\N	{}	130	f	{}	{}
-13	1	products/saleor-pauls-blanace-420-2.png		IMAGE	\N	{}	130	f	{}	{}
-14	0	products/saleor-grey-hoodie.png		IMAGE	\N	{}	131	f	{}	{}
-15	1	products/saleor-blue-hoodie.png		IMAGE	\N	{}	131	f	{}	{}
-16	2	products/saleor-white-hoodie.png		IMAGE	\N	{}	131	f	{}	{}
-17	0	products/saleor-ascii-shirt-front.png		IMAGE	\N	{}	134	f	{}	{}
-18	1	products/saleor-ascii-shirt-back.png		IMAGE	\N	{}	134	f	{}	{}
-19	0	products/saleor-team-tee-front.png		IMAGE	\N	{}	135	f	{}	{}
-20	1	products/saleor-team-tee-front_aZhmyxj.png		IMAGE	\N	{}	135	f	{}	{}
-21	0	products/saleor-polo-shirt-front.png		IMAGE	\N	{}	136	f	{}	{}
-22	1	products/saleor-polo-shirt-back.png		IMAGE	\N	{}	136	f	{}	{}
-23	0	products/saleor-blue-polygon-tee-front.png		IMAGE	\N	{}	137	f	{}	{}
-24	1	products/saleor-blue-polygon-tee-back.png		IMAGE	\N	{}	137	f	{}	{}
-25	0	products/saleor-dark-polygon-tee-front.png		IMAGE	\N	{}	138	f	{}	{}
-26	1	products/saleor-dark-polygon-tee-back.png		IMAGE	\N	{}	138	f	{}	{}
-27	0	products/saleor-beanie-1.png		IMAGE	\N	{}	141	f	{}	{}
-28	1	products/saleor-beanie-2.png		IMAGE	\N	{}	141	f	{}	{}
-29	0	products/saleor-neck-warmer.png		IMAGE	\N	{}	143	f	{}	{}
-30	0	products/saleor-sunnies.png		IMAGE	\N	{}	144	f	{}	{}
-31	0	products/saleor-battle-tested-book.png		IMAGE	\N	{}	145	f	{}	{}
-32	0	products/saleor-enterprise-cloud-book.png		IMAGE	\N	{}	146	f	{}	{}
-33	0	products/saleor-own-your-stack-and-data-book.png		IMAGE	\N	{}	147	f	{}	{}
-34	0	products/saleor-mighty-mug.png		IMAGE	\N	{}	150	f	{}	{}
-35	0	products/saleor-cushion-blue.png		IMAGE	\N	{}	151	f	{}	{}
-36	0	products/saleor-apple-drink.png		IMAGE	\N	{}	152	f	{}	{}
-37	0	products/saleor-bean-drink.png		IMAGE	\N	{}	153	f	{}	{}
-38	0	products/saleor-banana-drink.png		IMAGE	\N	{}	154	f	{}	{}
-39	0	products/saleor-carrot-drink.png		IMAGE	\N	{}	155	f	{}	{}
-40	0	products/saleor-sunnies-dark.png		IMAGE	\N	{}	156	f	{}	{}
-41	0	products/saleor-monospace-white-tee-front.png		IMAGE	\N	{}	157	f	{}	{}
-42	1	products/saleor-monospace-white-tee-back.png		IMAGE	\N	{}	157	f	{}	{}
-43	0	products/saleor-gift-100.png		IMAGE	\N	{}	160	f	{}	{}
-44	0	products/saleor-white-cubes-tee-front.png		IMAGE	\N	{}	161	f	{}	{}
-45	1	products/saleor-white-cubes-tee-back.png		IMAGE	\N	{}	161	f	{}	{}
-46	0	products/saleor-white-parrot-cushion.png		IMAGE	\N	{}	162	f	{}	{}
-47	0	products/saleor-gift-500.png		IMAGE	\N	{}	163	f	{}	{}
-48	0	products/saleor-gift-50.png		IMAGE	\N	{}	164	f	{}	{}
+80	0	products/3be221cdd7210e10180502e55238a751.jpg_784f9d0c.webp		IMAGE	\N	{}	2	f	{}	{}
+87	0	products/105d0465def3d6bd1d1cd366a2a62866.jpg_4254698c.webp		IMAGE	\N	{}	4	f	{}	{}
+88	1	products/ba86524ef8ecb2480e10efd4a449d5c8.jpg_fa3795ff.webp		IMAGE	\N	{}	4	f	{}	{}
+82	0	products/2e0daae3f9383a3e1c5d85b1e0156953.jpg_8b2f960f.webp		IMAGE	\N	{}	3	f	{}	{}
+85	1	products/fb3cbce3d9acc09adfaf8ea3311e197d.png_cd54a137.webp		IMAGE	\N	{}	3	f	{}	{}
+84	2	products/c0c4225cbc443c182bd27fc23c143d62.png_dbc19d82.webp		IMAGE	\N	{}	3	f	{}	{}
+81	3	products/a7a94b1778ee336051ebfaa8dcdc19c0.png_a3bd5b84.webp		IMAGE	\N	{}	3	f	{}	{}
+83	4	products/388629f80448264a556f8cac5493f9fd.png_049eeaca.webp		IMAGE	\N	{}	3	f	{}	{}
+86	2	products/2e047442259c182aeea90fabb9a572e1.png_f443dacd.webp		IMAGE	\N	{}	4	f	{}	{}
+72	8	products/a0fc98b52cd5d888c6153310c918bfc9.jpg_23fb3cda.webp		IMAGE	\N	{}	2	f	{}	{}
+73	9	products/6df8c376b6d4fc9825ce2a8cec8079e2.jpg_87ec1598.webp		IMAGE	\N	{}	2	f	{}	{}
+75	10	products/1b4b4afa92ce67e948931a769c99cbc6.jpg_b020dd17.webp		IMAGE	\N	{}	2	f	{}	{}
+59	0	products/185d27fe442a1668cf0196c1b82c87eb.jpg_88331813.webp		IMAGE	\N	{}	1	f	{}	{}
+54	1	products/a7598562258bd86f3b05432efdf0cbc0.jpg_c93c5b42.webp		IMAGE	\N	{}	1	f	{}	{}
+55	2	products/bed9d3d46ff35a6d8c9ca7294896b7f3.jpg_3465acaf.webp		IMAGE	\N	{}	1	f	{}	{}
+56	3	products/409018d87687c46a0a12cecf3f982283.jpg_1e65cc25.webp		IMAGE	\N	{}	1	f	{}	{}
+57	4	products/031bc9781c34ddb6a588cd875862460d.jpg_0c8bad27.webp		IMAGE	\N	{}	1	f	{}	{}
+58	5	products/b577852aa77a3d9ed41dfc62de83aeab.jpg_d6ee255c.webp		IMAGE	\N	{}	1	f	{}	{}
+64	6	products/5fd464a18d6701bc4a54f276178108e2.jpg_cfa220c3.webp		IMAGE	\N	{}	1	f	{}	{}
+63	7	products/b7dd476560d2a2c09095516f94be51f7.jpg_392db3cc.webp		IMAGE	\N	{}	1	f	{}	{}
+62	8	products/41f2139e7511de8b97a2a500032c46c9.jpg_1de58382.webp		IMAGE	\N	{}	1	f	{}	{}
+61	9	products/392ad5b5f0166b04645d675fadab1f3e.jpg_fcbdca78.webp		IMAGE	\N	{}	1	f	{}	{}
+60	10	products/0ad59d3f8246ff56495e95e767ce99f7.jpg_212cf733.webp		IMAGE	\N	{}	1	f	{}	{}
+79	1	products/2197a9f2aefd4dbbc8b125726bbd3429.jpg_385fac5e.webp		IMAGE	\N	{}	2	f	{}	{}
+78	2	products/ab4a086761b07c8bfd7c2cd735f49931.jpg_2922ca75.webp		IMAGE	\N	{}	2	f	{}	{}
+66	3	products/0e35dcd41f3073264f41b11274bbbe14.jpg_6631ec19.webp		IMAGE	\N	{}	2	f	{}	{}
+67	4	products/bc4bccc35374232fbd50a18013c47493.jpg_dfbc347b.webp		IMAGE	\N	{}	2	f	{}	{}
+68	5	products/55faa82f3e1386b8ad1d23565588bce2.jpg_0e5d8ac4.webp		IMAGE	\N	{}	2	f	{}	{}
+69	6	products/2500a1c5b1f5d8df6c1a46280ef76be2.jpg_2c88a425.webp		IMAGE	\N	{}	2	f	{}	{}
+70	7	products/cb447ee89f108a9b4b85da64bef1cd5c.jpg_e1a0b4ad.webp		IMAGE	\N	{}	2	f	{}	{}
+76	11	products/8e92b168c40655e1c53f2bab25d629e1.jpg_78bb84e3.webp		IMAGE	\N	{}	2	f	{}	{}
+77	12	products/150ec31a90fd8bdfecb4489ec700e907.jpg_823336ea.webp		IMAGE	\N	{}	2	f	{}	{}
+71	13	products/ca27310bee7c23b4a538294b373debbf.jpg_e228dcca.webp		IMAGE	\N	{}	2	f	{}	{}
+65	14	products/9c69d35b91d35c46a46bc06bf1f10fbc.jpg_04696499.webp		IMAGE	\N	{}	2	f	{}	{}
+74	15	products/69d7da2a49157404151637f514332377.jpg_04c552fd.webp		IMAGE	\N	{}	2	f	{}	{}
 \.
 
 
@@ -10211,93 +9820,14 @@ COPY public.product_productmedia (id, sort_order, image, alt, type, external_url
 --
 
 COPY public.product_producttranslation (id, seo_title, seo_description, language_code, name, description, product_id, slug) FROM stdin;
-1	Headless + Omnichannel	Launch new markets fast	vi	Headless + Omnichannel in a pill	{"time": 1765807735517, "blocks": [{"id": "32SKrcyWwb", "data": {"text": "Launch <b>new markets fast</b>"}, "type": "paragraph"}, {"id": "poAIG9lLmG", "data": {"text": "Compact, actionable insights for modern retail."}, "type": "paragraph"}, {"id": "ja7aBu8Pjq", "data": {"text": "Headless + Omnichannel in a Pill explains how businesses can:"}, "type": "paragraph"}, {"id": "Vnhz0YtsCK", "data": {"items": ["Rapidly launch new markets", "Localize content efficiently", "Deliver seamless omnichannel experiences"], "style": "unordered"}, "type": "list"}, {"id": "UBMzTFIIGD", "data": {"text": "It also covers:"}, "type": "paragraph"}, {"id": "IgVjunH3Sc", "data": {"items": ["Mobile, web, and in-store integration", "Emerging channels and technologies", "Headless architecture benefits"], "style": "unordered"}, "type": "list"}], "version": "2.30.7"}	126	\N
-2	Headless + Omnichannel	Launch new markets fast	en	Headless + Omnichannel in a pill	{"time": 1765807735517, "blocks": [{"id": "32SKrcyWwb", "data": {"text": "Launch <b>new markets fast</b>"}, "type": "paragraph"}, {"id": "poAIG9lLmG", "data": {"text": "Compact, actionable insights for modern retail."}, "type": "paragraph"}, {"id": "ja7aBu8Pjq", "data": {"text": "Headless + Omnichannel in a Pill explains how businesses can:"}, "type": "paragraph"}, {"id": "Vnhz0YtsCK", "data": {"items": ["Rapidly launch new markets", "Localize content efficiently", "Deliver seamless omnichannel experiences"], "style": "unordered"}, "type": "list"}, {"id": "UBMzTFIIGD", "data": {"text": "It also covers:"}, "type": "paragraph"}, {"id": "IgVjunH3Sc", "data": {"items": ["Mobile, web, and in-store integration", "Emerging channels and technologies", "Headless architecture benefits"], "style": "unordered"}, "type": "list"}], "version": "2.30.7"}	126	\N
-3	\N	\N	vi	Plimsolls	{"time": 1653426057314, "blocks": [{"id": "b8HYevCTpU", "data": {"text": "<b>Step into summer with Saleor.</b> Every time your head goes down, you see these beauties, and your mood bounces right back up."}, "type": "paragraph"}], "version": "2.22.2"}	128	\N
-4			en	Plimsolls	{"time": 1653426057314, "blocks": [{"id": "b8HYevCTpU", "data": {"text": "<b>Step into summer with Saleor.</b> Every time your head goes down, you see these beauties, and your mood bounces right back up."}, "type": "paragraph"}], "version": "2.22.2"}	128	\N
-5	\N	\N	vi	Dash Force	{"time": 1653426379418, "blocks": [{"id": "N0VISDl8_2", "data": {"text": "<b>Step into summer with the right balance.</b>&nbsp;Every time your head goes down, you see these beauties, and your mood bounces right back up."}, "type": "paragraph"}], "version": "2.22.2"}	129	\N
-6			en	Dash Force	{"time": 1653426379418, "blocks": [{"id": "N0VISDl8_2", "data": {"text": "<b>Step into summer with the right balance.</b>&nbsp;Every time your head goes down, you see these beauties, and your mood bounces right back up."}, "type": "paragraph"}], "version": "2.22.2"}	129	\N
-7	\N	\N	vi	Paul's Balance 420	{"time": 1653426379418, "blocks": [{"id": "N0VISDl8_2", "data": {"text": "<b>Step into summer with the right balance.</b>&nbsp;Every time your head goes down, you see these beauties, and your mood bounces right back up."}, "type": "paragraph"}], "version": "2.22.2"}	130	\N
-8			en	Paul's Balance 420	{"time": 1653426379418, "blocks": [{"id": "N0VISDl8_2", "data": {"text": "<b>Step into summer with the right balance.</b>&nbsp;Every time your head goes down, you see these beauties, and your mood bounces right back up."}, "type": "paragraph"}], "version": "2.22.2"}	130	\N
-9	\N	\N	vi	Hoodie	{"time": 1768297792407, "blocks": [{"id": "tSmCpk0ROL", "data": {"text": "Classic comfort with a modern edge."}, "type": "paragraph"}, {"id": "yjYaYWAvdh", "data": {"text": "The Hoodie is a wardrobe essential designed for effortless everyday wear. Made from soft, breathable fabric, it delivers lasting comfort while maintaining a clean, versatile look. The neutral grey tone pairs easily with any outfit, making it perfect for layering or wearing on its own."}, "type": "paragraph"}, {"id": "P_2ivyyk5W", "data": {"text": "Features:"}, "type": "paragraph"}, {"id": "Gd2DdXR5QD", "data": {"items": ["Cozy, relaxed fit\\\\n", "Smooth, comfortable fabric\\\\n", "Adjustable hood and front pocket\\\\n", "Ideal for daily wear and casual outings\\\\n"], "style": "unordered"}, "type": "list"}, {"id": "lnBopUbUzr", "data": {"text": "A timeless piece that blends comfort, style, and versatility."}, "type": "paragraph"}], "version": "2.30.7"}	131	\N
-10			en	Hoodie	{"time": 1768297792407, "blocks": [{"id": "tSmCpk0ROL", "data": {"text": "Classic comfort with a modern edge."}, "type": "paragraph"}, {"id": "yjYaYWAvdh", "data": {"text": "The Hoodie is a wardrobe essential designed for effortless everyday wear. Made from soft, breathable fabric, it delivers lasting comfort while maintaining a clean, versatile look. The neutral grey tone pairs easily with any outfit, making it perfect for layering or wearing on its own."}, "type": "paragraph"}, {"id": "P_2ivyyk5W", "data": {"text": "Features:"}, "type": "paragraph"}, {"id": "Gd2DdXR5QD", "data": {"items": ["Cozy, relaxed fit\\\\n", "Smooth, comfortable fabric\\\\n", "Adjustable hood and front pocket\\\\n", "Ideal for daily wear and casual outings\\\\n"], "style": "unordered"}, "type": "list"}, {"id": "lnBopUbUzr", "data": {"text": "A timeless piece that blends comfort, style, and versatility."}, "type": "paragraph"}], "version": "2.30.7"}	131	\N
-11	\N	\N	vi	Monospace Tee	{"time": 1653425587889, "blocks": [{"id": "HVJ8gMNIXY", "data": {"text": "<b>Your t-shirt is your second skin.</b> It’s the version of you that you show to the world. Wear the Monospace one that flows with your command line kung-fu moves!&nbsp;"}, "type": "paragraph"}], "version": "2.22.2"}	134	\N
-12			en	Monospace Tee	{"time": 1653425587889, "blocks": [{"id": "HVJ8gMNIXY", "data": {"text": "<b>Your t-shirt is your second skin.</b> It’s the version of you that you show to the world. Wear the Monospace one that flows with your command line kung-fu moves!&nbsp;"}, "type": "paragraph"}], "version": "2.22.2"}	134	\N
-13	\N	\N	vi	Team Shirt	{"time": 1653425391562, "blocks": [{"id": "fMdfe0Bfpe", "data": {"text": "<b>One style fits all.</b> Get a look that works even when you are taking it easy. Relaxed wear for the fans."}, "type": "paragraph"}], "version": "2.22.2"}	135	\N
-14			en	Team Shirt	{"time": 1653425391562, "blocks": [{"id": "fMdfe0Bfpe", "data": {"text": "<b>One style fits all.</b> Get a look that works even when you are taking it easy. Relaxed wear for the fans."}, "type": "paragraph"}], "version": "2.22.2"}	135	\N
-15	\N	\N	vi	Darko Polo	{"time": 1653425959030, "blocks": [{"id": "Bw6qwwACo6", "data": {"text": "<b>Ever have those days where you feel a bit geometric?</b>&nbsp;Can't quite shape yourself up right? Show your different sides with a Saleor styles."}, "type": "paragraph"}], "version": "2.22.2"}	136	\N
-16			en	Darko Polo	{"time": 1653425959030, "blocks": [{"id": "Bw6qwwACo6", "data": {"text": "<b>Ever have those days where you feel a bit geometric?</b>&nbsp;Can't quite shape yourself up right? Show your different sides with a Saleor styles."}, "type": "paragraph"}], "version": "2.22.2"}	136	\N
-17	\N	\N	vi	Blue Polygon Shirt	{"time": 1653425319677, "blocks": [{"id": "sMEIn2NR8s", "data": {"text": "<b>Ever have those days where you feel a bit geometric?</b> Can't quite shape yourself up right? Show your different sides with a Saleor styles."}, "type": "paragraph"}], "version": "2.22.2"}	137	\N
-18			en	Blue Polygon Shirt	{"time": 1653425319677, "blocks": [{"id": "sMEIn2NR8s", "data": {"text": "<b>Ever have those days where you feel a bit geometric?</b> Can't quite shape yourself up right? Show your different sides with a Saleor styles."}, "type": "paragraph"}], "version": "2.22.2"}	137	\N
-19	\N	\N	vi	Dark Polygon Tee	{"time": 1653425300293, "blocks": [{"id": "DBlOMRDzk_", "data": {"text": "<b>Ever have those days where you feel a bit geometric?</b> Can't quite shape yourself up right? Show your different sides with a Saleor styles."}, "type": "paragraph"}], "version": "2.22.2"}	138	\N
-20			en	Dark Polygon Tee	{"time": 1653425300293, "blocks": [{"id": "DBlOMRDzk_", "data": {"text": "<b>Ever have those days where you feel a bit geometric?</b> Can't quite shape yourself up right? Show your different sides with a Saleor styles."}, "type": "paragraph"}], "version": "2.22.2"}	138	\N
-21	\N	\N	vi	Pirate's Beanie	{"time": 1765807774356, "blocks": [{"id": "dYKDNaIj9k", "data": {"text": "A lightweight, comfortable cotton beanie for year-round style."}, "type": "paragraph"}], "version": "2.30.7"}	141	\N
-22			en	Pirate's Beanie	{"time": 1765807774356, "blocks": [{"id": "dYKDNaIj9k", "data": {"text": "A lightweight, comfortable cotton beanie for year-round style."}, "type": "paragraph"}], "version": "2.30.7"}	141	\N
-23	\N	\N	vi	Neck Warmer	{"time": 1765808565297, "blocks": [{"id": "ScKtdrMWUs", "data": {"text": "Ultimate warmth and protection with soft, insulating wool."}, "type": "paragraph"}], "version": "2.30.7"}	143	\N
-24			en	Neck Warmer	{"time": 1765808565297, "blocks": [{"id": "ScKtdrMWUs", "data": {"text": "Ultimate warmth and protection with soft, insulating wool."}, "type": "paragraph"}], "version": "2.30.7"}	143	\N
-25	\N	\N	vi	DRY Sunglasses	{"time": 1765809075113, "blocks": [{"id": "8LO6BpXOUM", "data": {"text": "Minimal design. Maximum impact."}, "type": "paragraph"}, {"id": "3O_P7V8Df-", "data": {"text": "The <b>DRY Sunglasses </b>are made for those who appreciate clean lines and understated style. Crafted with a durable frame and high-clarity lenses, these sunglasses provide dependable sun protection while maintaining a sharp, modern aesthetic."}, "type": "paragraph"}, {"id": "cJfdIg46-0", "data": {"text": "Ideal for:"}, "type": "paragraph"}, {"id": "GnjEe2OOXw", "data": {"items": ["🚶 On-the-go lifestyles\\n", "🌞 Outdoor relaxation\\n", "👔 Everyday sophistication\\n"], "style": "unordered"}, "type": "list"}, {"id": "wsW714Hwfi", "data": {"text": "A timeless essential that keeps your vision clear and your look effortlessly refined."}, "type": "paragraph"}], "version": "2.30.7"}	144	\N
-26			en	DRY Sunglasses	{"time": 1765809075113, "blocks": [{"id": "8LO6BpXOUM", "data": {"text": "Minimal design. Maximum impact."}, "type": "paragraph"}, {"id": "3O_P7V8Df-", "data": {"text": "The <b>DRY Sunglasses </b>are made for those who appreciate clean lines and understated style. Crafted with a durable frame and high-clarity lenses, these sunglasses provide dependable sun protection while maintaining a sharp, modern aesthetic."}, "type": "paragraph"}, {"id": "cJfdIg46-0", "data": {"text": "Ideal for:"}, "type": "paragraph"}, {"id": "GnjEe2OOXw", "data": {"items": ["🚶 On-the-go lifestyles\\n", "🌞 Outdoor relaxation\\n", "👔 Everyday sophistication\\n"], "style": "unordered"}, "type": "list"}, {"id": "wsW714Hwfi", "data": {"text": "A timeless essential that keeps your vision clear and your look effortlessly refined."}, "type": "paragraph"}], "version": "2.30.7"}	144	\N
-27	\N	\N	vi	Battle-tested at brands like Lush	{"time": 1765807072757, "blocks": [{"id": "g2sLxZcLZa", "data": {"text": "Scale <b>effortlessly</b>"}, "type": "paragraph"}, {"id": "ten_tNf1g8", "data": {"text": "Battle-Tested at Brands Like Lush shows how companies can:"}, "type": "paragraph"}, {"id": "8dRwQnCReE", "data": {"items": ["Scale digital commerce effortlessly", "Maintain resilience under growth pressure", "Optimize performance without breaking workflows"], "style": "unordered"}, "type": "list"}, {"id": "u8odXUKbUW", "data": {"text": "Learn from examples inspired by innovative retailers like Lush, including:"}, "type": "paragraph"}, {"id": "P1LKZBdnIh", "data": {"items": ["System architecture strategies", "Customer experience optimization", "Flexibility for experimentation"], "style": "unordered"}, "type": "list"}], "version": "2.30.7"}	145	\N
-28			en	Battle-tested at brands like Lush	{"time": 1765807072757, "blocks": [{"id": "g2sLxZcLZa", "data": {"text": "Scale <b>effortlessly</b>"}, "type": "paragraph"}, {"id": "ten_tNf1g8", "data": {"text": "Battle-Tested at Brands Like Lush shows how companies can:"}, "type": "paragraph"}, {"id": "8dRwQnCReE", "data": {"items": ["Scale digital commerce effortlessly", "Maintain resilience under growth pressure", "Optimize performance without breaking workflows"], "style": "unordered"}, "type": "list"}, {"id": "u8odXUKbUW", "data": {"text": "Learn from examples inspired by innovative retailers like Lush, including:"}, "type": "paragraph"}, {"id": "P1LKZBdnIh", "data": {"items": ["System architecture strategies", "Customer experience optimization", "Flexibility for experimentation"], "style": "unordered"}, "type": "list"}], "version": "2.30.7"}	145	\N
-44			en	Carrot Juice	{"time": 1652790989820, "blocks": [{"id": "VWVrSI_Cza", "data": {"text": "Improve your eyesight the natural way with <b>100% pure, squeezed carrot juice</b>. The sweet, orange nectar of <i>Mother Earth</i>."}, "type": "paragraph"}], "version": "2.22.2"}	155	\N
-29	\N	\N	vi	Enterprise Cloud + On-premises	{"time": 1765807045328, "blocks": [{"id": "w3x66nix3o", "data": {"text": "Open Source <b>without the DevOps</b>"}, "type": "paragraph"}, {"id": "tZdRSMOoGo", "data": {"text": "Discover the hybrid future of enterprise computing."}, "type": "paragraph"}, {"id": "c-y7CBc3EZ", "data": {"text": "Enterprise Cloud + On-Premises teaches you how to:"}, "type": "paragraph"}, {"id": "z-X0_3EkM7", "data": {"items": ["Combine cloud flexibility with on-premises control", "Eliminate heavy DevOps overhead", "Unlock speed, transparency, and interoperability"], "style": "unordered"}, "type": "list"}, {"id": "kfQoKtqEF4", "data": {"text": "It’s perfect for teams looking to:"}, "type": "paragraph"}, {"id": "wuUoX4de9B", "data": {"items": ["Leverage open-source ecosystems", "Optimize hybrid workflows"], "style": "unordered"}, "type": "list"}], "version": "2.30.7"}	146	\N
-30			en	Enterprise Cloud + On-premises	{"time": 1765807045328, "blocks": [{"id": "w3x66nix3o", "data": {"text": "Open Source <b>without the DevOps</b>"}, "type": "paragraph"}, {"id": "tZdRSMOoGo", "data": {"text": "Discover the hybrid future of enterprise computing."}, "type": "paragraph"}, {"id": "c-y7CBc3EZ", "data": {"text": "Enterprise Cloud + On-Premises teaches you how to:"}, "type": "paragraph"}, {"id": "z-X0_3EkM7", "data": {"items": ["Combine cloud flexibility with on-premises control", "Eliminate heavy DevOps overhead", "Unlock speed, transparency, and interoperability"], "style": "unordered"}, "type": "list"}, {"id": "kfQoKtqEF4", "data": {"text": "It’s perfect for teams looking to:"}, "type": "paragraph"}, {"id": "wuUoX4de9B", "data": {"items": ["Leverage open-source ecosystems", "Optimize hybrid workflows"], "style": "unordered"}, "type": "list"}], "version": "2.30.7"}	146	\N
-31	\N	\N	vi	Own your stack and data	{"time": 1765807007215, "blocks": [{"id": "uc9EpwoXTs", "data": {"text": "Take full control of your digital infrastructure."}, "type": "paragraph"}, {"id": "esCwDQfDYR", "data": {"text": "Own Your Stack and Data explores how modern organizations can:"}, "type": "paragraph"}, {"id": "DcIGkHVxUz", "data": {"items": ["Break free from vendor lock-in", "Reduce operational risk", "Build scalable, future-proof systems"], "style": "unordered"}, "type": "list"}, {"id": "d6aPFHmDjX", "data": {"text": "This audiobook also covers practical strategies for:"}, "type": "paragraph"}, {"id": "ydxmyVaq49", "data": {"items": ["Data ownership", "Open standards adoption", "Agility in evolving tech landscapes"], "style": "unordered"}, "type": "list"}], "version": "2.30.7"}	147	\N
-32			en	Own your stack and data	{"time": 1765807007215, "blocks": [{"id": "uc9EpwoXTs", "data": {"text": "Take full control of your digital infrastructure."}, "type": "paragraph"}, {"id": "esCwDQfDYR", "data": {"text": "Own Your Stack and Data explores how modern organizations can:"}, "type": "paragraph"}, {"id": "DcIGkHVxUz", "data": {"items": ["Break free from vendor lock-in", "Reduce operational risk", "Build scalable, future-proof systems"], "style": "unordered"}, "type": "list"}, {"id": "d6aPFHmDjX", "data": {"text": "This audiobook also covers practical strategies for:"}, "type": "paragraph"}, {"id": "ydxmyVaq49", "data": {"items": ["Data ownership", "Open standards adoption", "Agility in evolving tech landscapes"], "style": "unordered"}, "type": "list"}], "version": "2.30.7"}	147	\N
-33	\N	\N	vi	Mighty Mug	{"time": 1653425905079, "blocks": [{"id": "2sjPP8KzGf", "data": {"text": "<b>Tonight, my love, let us take fat brushes</b> and paint the skies with the shades of nebula tides. Best for the darkest, moody shades of the coffee you can brew."}, "type": "paragraph"}], "version": "2.22.2"}	150	\N
-34			en	Mighty Mug	{"time": 1653425905079, "blocks": [{"id": "2sjPP8KzGf", "data": {"text": "<b>Tonight, my love, let us take fat brushes</b> and paint the skies with the shades of nebula tides. Best for the darkest, moody shades of the coffee you can brew."}, "type": "paragraph"}], "version": "2.22.2"}	150	\N
-35	\N	\N	vi	The Dash Cushion	{"time": 1653425717989, "blocks": [{"id": "KL2jdkdLiu", "data": {"text": "Minimalist interiors need simple, sleek soft furnishings. Set your own trends with Saleor designs."}, "type": "paragraph"}], "version": "2.22.2"}	151	\N
-36			en	The Dash Cushion	{"time": 1653425717989, "blocks": [{"id": "KL2jdkdLiu", "data": {"text": "Minimalist interiors need simple, sleek soft furnishings. Set your own trends with Saleor designs."}, "type": "paragraph"}], "version": "2.22.2"}	151	\N
-37	\N	\N	vi	Apple Juice	{"time": 1653425438149, "blocks": [{"id": "rGR983yNVl", "data": {"text": "<b>Fell straight from the tree</b>, on to Newton’s head, then into the bottle. The autumn taste of English apples. Brought to you by gravity."}, "type": "paragraph"}], "version": "2.22.2"}	152	\N
-38			en	Apple Juice	{"time": 1653425438149, "blocks": [{"id": "rGR983yNVl", "data": {"text": "<b>Fell straight from the tree</b>, on to Newton’s head, then into the bottle. The autumn taste of English apples. Brought to you by gravity."}, "type": "paragraph"}], "version": "2.22.2"}	152	\N
-39	\N	\N	vi	Bean Juice	{"time": 1653425488999, "blocks": [{"id": "QHFEWEGvaq", "data": {"text": "<b>Bean there, drunk that!</b> The energy drink for the health-conscious. Brand new bean juice; from allotment to bottle in under 8 hours."}, "type": "paragraph"}], "version": "2.22.2"}	153	\N
-40			en	Bean Juice	{"time": 1653425488999, "blocks": [{"id": "QHFEWEGvaq", "data": {"text": "<b>Bean there, drunk that!</b> The energy drink for the health-conscious. Brand new bean juice; from allotment to bottle in under 8 hours."}, "type": "paragraph"}], "version": "2.22.2"}	153	\N
-41	\N	\N	vi	Banana Juice	{"time": 1653425465674, "blocks": [{"id": "94R0GvrOck", "data": {"text": "<b>Build your protein the natural way</b>, with exotic banana juice made from ripe fruit and packed with all the goodness of the tropical sun."}, "type": "paragraph"}], "version": "2.22.2"}	154	\N
-42			en	Banana Juice	{"time": 1653425465674, "blocks": [{"id": "94R0GvrOck", "data": {"text": "<b>Build your protein the natural way</b>, with exotic banana juice made from ripe fruit and packed with all the goodness of the tropical sun."}, "type": "paragraph"}], "version": "2.22.2"}	154	\N
-43	\N	\N	vi	Carrot Juice	{"time": 1652790989820, "blocks": [{"id": "VWVrSI_Cza", "data": {"text": "Improve your eyesight the natural way with <b>100% pure, squeezed carrot juice</b>. The sweet, orange nectar of <i>Mother Earth</i>."}, "type": "paragraph"}], "version": "2.22.2"}	155	\N
-45	\N	\N	vi	Monokai Dimmed Sunnies	{"time": 1765809038976, "blocks": [{"id": "f5gGPIy0Z", "data": {"text": "Elevate your everyday look with effortless sophistication."}, "type": "paragraph"}, {"id": "-bwfMYJYfV", "data": {"text": "The <b>Monokai Dimmed Sunnies</b> feature a sleek, modern silhouette paired with subtly dimmed lenses for a refined, contemporary vibe. Designed for both style and comfort, the lightweight frame allows for all-day wear, while the tinted lenses help reduce glare and offer reliable UV protection."}, "type": "paragraph"}, {"id": "ZrY5dluC8k", "data": {"text": "Perfect for:"}, "type": "paragraph"}, {"id": "5BEAQOxPCu", "data": {"items": ["☀️ City strolls\\n", "🌴 Beach days\\n", "🕶️ Casual everyday wear\\n"], "style": "unordered"}, "type": "list"}, {"id": "V9jK7hm27p", "data": {"text": "A versatile accessory that adds a cool, confident edge to any outfit."}, "type": "paragraph"}], "version": "2.30.7"}	156	\N
-46			en	Monokai Dimmed Sunnies	{"time": 1765809038976, "blocks": [{"id": "f5gGPIy0Z", "data": {"text": "Elevate your everyday look with effortless sophistication."}, "type": "paragraph"}, {"id": "-bwfMYJYfV", "data": {"text": "The <b>Monokai Dimmed Sunnies</b> feature a sleek, modern silhouette paired with subtly dimmed lenses for a refined, contemporary vibe. Designed for both style and comfort, the lightweight frame allows for all-day wear, while the tinted lenses help reduce glare and offer reliable UV protection."}, "type": "paragraph"}, {"id": "ZrY5dluC8k", "data": {"text": "Perfect for:"}, "type": "paragraph"}, {"id": "5BEAQOxPCu", "data": {"items": ["☀️ City strolls\\n", "🌴 Beach days\\n", "🕶️ Casual everyday wear\\n"], "style": "unordered"}, "type": "list"}, {"id": "V9jK7hm27p", "data": {"text": "A versatile accessory that adds a cool, confident edge to any outfit."}, "type": "paragraph"}], "version": "2.30.7"}	156	\N
-47	\N	\N	vi	Reversed Monotype Tee	{"time": 1653425264795, "blocks": [{"id": "CMRIgvbpUG", "data": {"text": "Wondering if this will look as good on you as it does on the screen? The answer is yes. A quality Monospace Tee variant art with smart styling."}, "type": "paragraph"}], "version": "2.22.2"}	157	\N
-48			en	Reversed Monotype Tee	{"time": 1653425264795, "blocks": [{"id": "CMRIgvbpUG", "data": {"text": "Wondering if this will look as good on you as it does on the screen? The answer is yes. A quality Monospace Tee variant art with smart styling."}, "type": "paragraph"}], "version": "2.22.2"}	157	\N
-49	\N	\N	vi	Gift card 100	{"time": 1652788779629, "blocks": [{"id": "x5bGwCbYOX", "data": {"text": "Gift card to use in the shop."}, "type": "paragraph"}], "version": "2.24.3"}	160	\N
-50			en	Gift card 100	{"time": 1652788779629, "blocks": [{"id": "x5bGwCbYOX", "data": {"text": "Gift card to use in the shop."}, "type": "paragraph"}], "version": "2.24.3"}	160	\N
-51	\N	\N	vi	Cubes Fountain Tee	{"time": 1653424009054, "blocks": [{"id": "0n5N0DE7BU", "data": {"text": "<b>There is life in outer space.</b> This vibrant light speed cubes brings life to any surface. Goes on easy and dries at light speed."}, "type": "paragraph"}], "version": "2.22.2"}	161	\N
-52			en	Cubes Fountain Tee	{"time": 1653424009054, "blocks": [{"id": "0n5N0DE7BU", "data": {"text": "<b>There is life in outer space.</b> This vibrant light speed cubes brings life to any surface. Goes on easy and dries at light speed."}, "type": "paragraph"}], "version": "2.22.2"}	161	\N
-53	\N	\N	vi	White Parrot Cushion	{"time": 1652875592737, "blocks": [{"id": "46o78ZqlJ8", "data": {"text": "Minimalist interiors need simple, sleek soft furnishings. Don’t parrot what others do, set your own monochrome trends with Saleor designs."}, "type": "paragraph"}], "version": "2.22.2"}	162	\N
-54			en	White Parrot Cushion	{"time": 1652875592737, "blocks": [{"id": "46o78ZqlJ8", "data": {"text": "Minimalist interiors need simple, sleek soft furnishings. Don’t parrot what others do, set your own monochrome trends with Saleor designs."}, "type": "paragraph"}], "version": "2.22.2"}	162	\N
-55	\N	\N	vi	Gift card 500	null	163	\N
-56			en	Gift card 500	null	163	\N
-57	\N	\N	vi	Gift card 50	null	164	\N
-58			en	Gift card 50	null	164	\N
-60	\N	\N	pl	Koszulka Monospace	{"time": 1653425587889, "blocks": [{"id": "HVJ8gMNIXY", "data": {"text": "<b>Twoja koszulka to Twoja druga skóra.</b> To wersja Ciebie, którą pokazujesz światu. Noś Monospace, która współgra z Twoimi ruchami kung-fu w linii komend!&nbsp;"}, "type": "paragraph"}], "version": "2.22.2"}	134	\N
-61	\N	\N	pl	Paul's Balance 420	{"time": 1653426379418, "blocks": [{"id": "N0VISDl8_2", "data": {"text": "<b>Wejdź w lato z odpowiednią równowagą.</b>&nbsp;Za każdym razem, gdy spoglądasz w dół, widzisz te piękności, a Twój nastrój od razu idzie w górę."}, "type": "paragraph"}], "version": "2.22.2"}	130	\N
-62	\N	\N	pl	Sok bananowy	{"time": 1653425465674, "blocks": [{"id": "94R0GvrOck", "data": {"text": "<b>Buduj swoje białko w naturalny sposób</b>, dzięki egzotycznemu sokowi bananowemu z dojrzałych owoców, pełnemu dobroci tropikalnego słońca."}, "type": "paragraph"}], "version": "2.22.2"}	154	\N
-64	\N	\N	pl	Sok z fasoli	{"time": 1653425488999, "blocks": [{"id": "QHFEWEGvaq", "data": {"text": "<b>Bean there, drunk that!</b> Napój energetyczny dla dbających o zdrowie. Zupełnie nowy sok z fasoli; z działki do butelki w niecałe 8 godzin."}, "type": "paragraph"}], "version": "2.22.2"}	153	\N
-66	\N	\N	pl	Niebieska koszula Polygon	{"time": 1653425319677, "blocks": [{"id": "sMEIn2NR8s", "data": {"text": "<b>Masz czasem dni, kiedy czujesz się nieco geometrycznie?</b> Nie możesz się do końca uformować? Pokaż swoje różne strony dzięki stylom Saleor."}, "type": "paragraph"}], "version": "2.22.2"}	137	\N
-67	\N	\N	pl	Sok marchwiowy	{"time": 1652790989820, "blocks": [{"id": "VWVrSI_Cza", "data": {"text": "Popraw swój wzrok w naturalny sposób dzięki <b>100% czystemu, wyciskanemu sokowi z marchwi</b>. Słodki, pomarańczowy nektar od <i>Matki Ziemi</i>."}, "type": "paragraph"}], "version": "2.22.2"}	155	\N
-69	\N	\N	pl	Ciemna koszulka Polygon	{"time": 1653425300293, "blocks": [{"id": "DBlOMRDzk_", "data": {"text": "<b>Masz czasem dni, kiedy czujesz się nieco geometrycznie?</b> Nie możesz się do końca uformować? Pokaż swoje różne strony dzięki stylom Saleor."}, "type": "paragraph"}], "version": "2.22.2"}	138	\N
-70	\N	\N	pl	Darko Polo	{"time": 1653425959030, "blocks": [{"id": "Bw6qwwACo6", "data": {"text": "<b>Masz czasem dni, kiedy czujesz się nieco geometrycznie?</b>&nbsp;Nie możesz się do końca uformować? Pokaż swoje różne strony dzięki stylom Saleor."}, "type": "paragraph"}], "version": "2.22.2"}	136	\N
-71	\N	\N	pl	Dash Force	{"time": 1653426379418, "blocks": [{"id": "N0VISDl8_2", "data": {"text": "<b>Wejdź w lato z odpowiednią równowagą.</b>&nbsp;Za każdym razem, gdy spoglądasz w dół, widzisz te piękności, a Twój nastrój od razu idzie w górę."}, "type": "paragraph"}], "version": "2.22.2"}	129	\N
-73	\N	\N	pl	Enterprise Cloud + On-premises	{"time": 1765807045328, "blocks": [{"id": "0yyw85Afdr", "data": {"text": "Open Source <b>bez DevOps</b>"}, "type": "paragraph"}, {"id": "tZdRSMOoGo", "data": {"text": "Odkryj hybrydową przyszłość informatyki korporacyjnej."}, "type": "paragraph"}, {"id": "c-y7CBc3EZ", "data": {"text": "Enterprise Cloud + On-Premises uczy, jak:"}, "type": "paragraph"}, {"id": "z-X0_3EkM7", "data": {"items": ["Łączyć elastyczność chmury z kontrolą lokalną (on-premises)\\n", "Wyeliminować ciężkie koszty operacyjne DevOps\\n", "Odblokować szybkość, przejrzystość i interoperacyjność\\n"], "style": "unordered"}, "type": "list"}, {"id": "kfQoKtqEF4", "data": {"text": "Idealne dla zespołów, które chcą:"}, "type": "paragraph"}, {"id": "wuUoX4de9B", "data": {"items": ["Korzystać z ekosystemów open-source\\n", "Optymalizować hybrydowe przepływy pracy"], "style": "unordered"}, "type": "list"}], "version": "2.30.7"}	146	\N
-74	\N	\N	pl	Karta podarunkowa 100	{"time": 1652788779629, "blocks": [{"id": "x5bGwCbYOX", "data": {"text": "Karta podarunkowa do wykorzystania w sklepie."}, "type": "paragraph"}], "version": "2.24.3"}	160	\N
-75	\N	\N	pl	Karta podarunkowa 50	null	164	\N
-76	\N	\N	pl	Karta podarunkowa 500	null	163	\N
-77	\N	\N	pl	Bluza z kapturem	{"time": 1768297792407, "blocks": [{"id": "tSmCpk0ROL", "data": {"text": "Klasyczny komfort w nowoczesnym wydaniu."}, "type": "paragraph"}, {"id": "yjYaYWAvdh", "data": {"text": "Bluza z kapturem to niezbędny element garderoby, zaprojektowany do swobodnego noszenia na co dzień. Wykonana z miękkiego, oddychającego materiału, zapewnia trwały komfort, zachowując jednocześnie czysty, wszechstronny wygląd. Neutralny szary odcień łatwo łączy się z każdym strojem, co czyni ją idealną do warstwowych stylizacji lub noszenia samodzielnie."}, "type": "paragraph"}, {"id": "P_2ivyyk5W", "data": {"text": "Cechy:"}, "type": "paragraph"}, {"id": "Gd2DdXR5QD", "data": {"items": ["Przytulny, luźny krój\\n", "Gładki, wygodny materiał\\n", "Regulowany kaptur i przednia kieszeń\\n", "Idealna na co dzień i na nieformalne wyjścia\\n"], "style": "unordered"}, "type": "list"}, {"id": "lnBopUbUzr", "data": {"text": "Ponadczasowy model, który łączy w sobie wygodę, styl i wszechstronność."}, "type": "paragraph"}], "version": "2.30.7"}	131	\N
-78	Headless + Omnichannel	Szybko uruchamiaj nowe rynki	pl	Headless + Omnichannel w pigułce	{"time": 1765807735517, "blocks": [{"id": "32SKrcyWwb", "data": {"text": "Uruchamiaj <b>nowe rynki szybko</b>"}, "type": "paragraph"}, {"id": "poAIG9lLmG", "data": {"text": "Zwięzłe, praktyczne spostrzeżenia dla nowoczesnego handlu detalicznego."}, "type": "paragraph"}, {"id": "ja7aBu8Pjq", "data": {"text": "'Headless + Omnichannel w pigułce' wyjaśnia, jak firmy mogą:"}, "type": "paragraph"}, {"id": "Vnhz0YtsCK", "data": {"items": ["Szybko wprowadzać produkty na nowe rynki\\n", "Efektywnie lokalizować treści\\n", "Dostarczać spójne doświadczenia omnichannel\\n"], "style": "unordered"}, "type": "list"}, {"id": "UBMzTFIIGD", "data": {"text": "Obejmuje również:"}, "type": "paragraph"}, {"id": "IgVjunH3Sc", "data": {"items": ["Integrację kanałów mobilnych, internetowych i stacjonarnych\\n", "Wschodzące kanały i technologie\\n", "Zalety architektury headless"], "style": "unordered"}, "type": "list"}], "version": "2.30.7"}	126	\N
-79	\N	\N	pl	Mighty Mug	{"time": 1653425905079, "blocks": [{"id": "2sjPP8KzGf", "data": {"text": "<b>Dziś wieczorem, kochanie, weźmy grube pędzle</b> i pomalujmy niebo odcieniami mgławic. Najlepszy do najciemniejszych, nastrojowych odcieni kawy, jaką potrafisz zaparzyć."}, "type": "paragraph"}], "version": "2.22.2"}	150	\N
-59	\N	\N	pl	Sok jabłkowy	{"time": 1653425438149, "blocks": [{"id": "rGR983yNVl", "data": {"text": "<b>Spadło prosto z drzewa</b>, na głowę Newtona, a potem do butelki. Jesienny smak angielskich jabłek. Dostarczony dzięki grawitacji."}, "type": "paragraph"}], "version": "2.22.2"}	152	\N
-63	\N	\N	pl	Sprawdzone w boju przez marki takie jak Lush	{"time": 1765807072757, "blocks": [{"id": "g2sLxZcLZa", "data": {"text": "Skaluj się <b>bez wysiłku</b>"}, "type": "paragraph"}, {"id": "ten_tNf1g8", "data": {"text": "'Sprawdzone w boju przez marki takie jak Lush' pokazuje, jak firmy mogą:"}, "type": "paragraph"}, {"id": "8dRwQnCReE", "data": {"items": ["Bez wysiłku skalować handel cyfrowy\\n", "Zachować odporność pod presją wzrostu\\n", "Optymalizować wydajność bez przerywania przepływów pracy\\n"], "style": "unordered"}, "type": "list"}, {"id": "u8odXUKbUW", "data": {"text": "Ucz się na przykładach inspirowanych innowacyjnymi sprzedawcami, takimi jak Lush, w tym:"}, "type": "paragraph"}, {"id": "P1LKZBdnIh", "data": {"items": ["Strategie architektury systemu\\n", "Optymalizacja doświadczenia klienta\\n", "Elastyczność w eksperymentowaniu"], "style": "unordered"}, "type": "list"}], "version": "2.30.7"}	145	\N
-65	\N	\N	pl	Tenisówki	{"time": 1653426057314, "blocks": [{"id": "b8HYevCTpU", "data": {"text": "<b>Wejdź w lato z Saleor.</b> Za każdym razem, gdy spoglądasz w dół, widzisz te piękności, a Twój nastrój od razu idzie w górę."}, "type": "paragraph"}], "version": "2.22.2"}	128	\N
-68	\N	\N	pl	Koszulka Cubes Fountain	{"time": 1653424009054, "blocks": [{"id": "0n5N0DE7BU", "data": {"text": "<b>Istnieje życie w przestrzeni kosmicznej.</b> Te tętniące życiem kostki o prędkości światła ożywią każdą powierzchnię. Łatwo się nakładają i schną z prędkością światła."}, "type": "paragraph"}], "version": "2.22.2"}	161	\N
-72	\N	\N	pl	Okulary przeciwsłoneczne DRY	{"time": 1765809075113, "blocks": [{"id": "8LO6BpXOUM", "data": {"text": "Minimalistyczny design. Maksymalny efekt."}, "type": "paragraph"}, {"id": "3O_P7V8Df-", "data": {"text": "<b>Okulary przeciwsłoneczne DRY</b> są stworzone dla tych, którzy cenią czyste linie i powściągliwy styl. Wykonane z wytrzymałej oprawki i soczewek o wysokiej ostrości, zapewniają niezawodną ochronę przed słońcem, zachowując przy tym ostry, nowoczesny wygląd."}, "type": "paragraph"}, {"id": "cJfdIg46-0", "data": {"text": "Idealne do:"}, "type": "paragraph"}, {"id": "GnjEe2OOXw", "data": {"items": ["🚶 Stylu życia w ruchu\\n", "🌞 Relaksu na świeżym powietrzu\\n", "👔 Codziennej elegancji\\n"], "style": "unordered"}, "type": "list"}, {"id": "wsW714Hwfi", "data": {"text": "Ponadczasowy niezbędnik, który zapewnia wyraźne widzenie i nienaganny wygląd."}, "type": "paragraph"}], "version": "2.30.7"}	144	\N
-81	\N	\N	pl	Własny stos technologiczny i dane	{"time": 1765807007215, "blocks": [{"id": "uc9EpwoXTs", "data": {"text": "Przejmij pełną kontrolę nad swoją infrastrukturą cyfrową."}, "type": "paragraph"}, {"id": "esCwDQfDYR", "data": {"text": "'Własny stos technologiczny i dane' bada, jak nowoczesne organizacje mogą:"}, "type": "paragraph"}, {"id": "DcIGkHVxUz", "data": {"items": ["Uwolnić się od uzależnienia od dostawcy (vendor lock-in)\\n", "Zredukować ryzyko operacyjne\\n", "Budować skalowalne, przyszłościowe systemy\\n"], "style": "unordered"}, "type": "list"}, {"id": "d6aPFHmDjX", "data": {"text": "Ten audiobook obejmuje również praktyczne strategie dotyczące:"}, "type": "paragraph"}, {"id": "ydxmyVaq49", "data": {"items": ["Własności danych\\n", "Adopcji otwartych standardów\\n", "Zwinności w ewoluującym krajobrazie technologicznym\\n"], "style": "unordered"}, "type": "list"}], "version": "2.30.7"}	147	\N
-82	\N	\N	pl	Czapka piracka Beanie	{"time": 1765807774356, "blocks": [{"id": "dYKDNaIj9k", "data": {"text": "Lekka, wygodna bawełniana czapka beanie, zapewniająca styl przez cały rok."}, "type": "paragraph"}], "version": "2.30.7"}	141	\N
-83	\N	\N	pl	Koszulka Reversed Monotype	{"time": 1653425264795, "blocks": [{"id": "CMRIgvbpUG", "data": {"text": "Zastanawiasz się, czy będzie to wyglądać na Tobie tak dobrze, jak na ekranie? Odpowiedź brzmi: tak. Wysokiej jakości wariant koszulki Monospace z elegancką stylizacją."}, "type": "paragraph"}], "version": "2.22.2"}	157	\N
-84	\N	\N	pl	Ocieplacz na szyję	{"time": 1765808565297, "blocks": [{"id": "ScKtdrMWUs", "data": {"text": "Najwyższe ciepło i ochrona dzięki miękkiej, izolującej wełnie."}, "type": "paragraph"}], "version": "2.30.7"}	143	\N
-85	\N	\N	pl	Koszula zespołowa	{"time": 1653425391562, "blocks": [{"id": "fMdfe0Bfpe", "data": {"text": "<b>Jeden styl dla wszystkich.</b> Zyskaj wygląd, który sprawdza się nawet wtedy, gdy odpoczywasz. Luźny strój dla fanów."}, "type": "paragraph"}], "version": "2.22.2"}	135	\N
-86	\N	\N	pl	Poduszka Dash	{"time": 1653425717989, "blocks": [{"id": "KL2jdkdLiu", "data": {"text": "Minimalistyczne wnętrza potrzebują prostych, eleganckich i miękkich dodatków. Wyznaczaj własne trendy z projektami Saleor."}, "type": "paragraph"}], "version": "2.22.2"}	151	\N
-87	\N	\N	pl	Poduszka Biała Papuga	{"time": 1652875592737, "blocks": [{"id": "46o78ZqlJ8", "data": {"text": "Minimalistyczne wnętrza potrzebują prostych, eleganckich i miękkich dodatków. Nie powtarzaj tego, co robią inni, wyznaczaj własne monochromatyczne trendy z projektami Saleor."}, "type": "paragraph"}], "version": "2.22.2"}	162	\N
-80	\N	\N	pl	Okulary Monokai Dimmed	{"time": 1765809038976, "blocks": [{"id": "f5gGPIy0oZ", "data": {"text": "Podkreśl swój codzienny wygląd dzięki niewymuszonej wyrafinowaniu."}, "type": "paragraph"}, {"id": "-bwfMYJYfV", "data": {"text": "Okulary <b>Monokai Dimmed Sunnies</b> charakteryzują się smukłą, nowoczesną sylwetką połączoną z subtelnie przyciemnionymi soczewkami, co nadaje im wyrafinowany, współczesny charakter. Zaprojektowane z myślą o stylu i komforcie, lekka oprawka pozwala na noszenie ich przez cały dzień, a barwione soczewki pomagają redukować odblaski i oferują niezawodną ochronę UV."}, "type": "paragraph"}, {"id": "ZrY5dluC8k", "data": {"text": "Idealne na:"}, "type": "paragraph"}, {"id": "5BEAQOxPCu", "data": {"items": ["☀️ Spacery po mieście\\n", "🌴 Dni na plaży\\n", "🕶️ Codzienne, nieformalne wyjścia\\n"], "style": "unordered"}, "type": "list"}, {"id": "V9jK7hm27p", "data": {"text": "Wszechstronny dodatek, który dodaje pewności siebie i stylu każdej stylizacji."}, "type": "paragraph"}], "version": "2.30.7"}	156	\N
+88	Đắc Nhân Tâm (How to Win Friends and Influence People) | AuraBook	Đắc Nhân Tâm (How to Win Friends and Influence People) của Dale Carnegie là cuốn sách nổi tiếng nhất, có tầm ảnh hưởng lớn nhất mọi thời đại về nghệ thuật đối nhân xử thế và giao tiếp.	en	Đắc Nhân Tâm (How to Win Friends and Influence People)	{"time": 1792043570543, "blocks": [{"id": "block_0", "data": {"text": "Đắc Nhân Tâm (How to Win Friends and Influence People) của Dale Carnegie là cuốn sách nổi tiếng nhất, có tầm ảnh hưởng lớn nhất mọi thời đại về nghệ thuật đối nhân xử thế và giao tiếp."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Tác phẩm đem lại những nguyên tắc vàng đã được thử thách qua thời gian, giúp bạn thấu hiểu tâm lý con người, xây dựng sự tin cậy, cảm hóa người khác bằng sự chân thành và giải quyết các mâu thuẫn một cách khéo léo."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Dù trong công việc hay đời sống thường ngày, đây là cẩm nang gối đầu giường không thể thiếu cho bất kỳ ai muốn vươn tới thành công và hạnh phúc trọn vẹn."}, "type": "paragraph"}], "version": "2.30.7"}	1	\N
+89	Đắc Nhân Tâm (How to Win Friends and Influence People) | AuraBook	Đắc Nhân Tâm (How to Win Friends and Influence People) của Dale Carnegie là cuốn sách nổi tiếng nhất, có tầm ảnh hưởng lớn nhất mọi thời đại về nghệ thuật đối nhân xử thế và giao tiếp.	vi	Đắc Nhân Tâm (How to Win Friends and Influence People)	{"time": 1792043570543, "blocks": [{"id": "block_0", "data": {"text": "Đắc Nhân Tâm (How to Win Friends and Influence People) của Dale Carnegie là cuốn sách nổi tiếng nhất, có tầm ảnh hưởng lớn nhất mọi thời đại về nghệ thuật đối nhân xử thế và giao tiếp."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Tác phẩm đem lại những nguyên tắc vàng đã được thử thách qua thời gian, giúp bạn thấu hiểu tâm lý con người, xây dựng sự tin cậy, cảm hóa người khác bằng sự chân thành và giải quyết các mâu thuẫn một cách khéo léo."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Dù trong công việc hay đời sống thường ngày, đây là cẩm nang gối đầu giường không thể thiếu cho bất kỳ ai muốn vươn tới thành công và hạnh phúc trọn vẹn."}, "type": "paragraph"}], "version": "2.30.7"}	1	\N
+90	Bốn Thỏa Ước (The Four Agreements) | AuraBook	Bốn Thỏa Ước (The Four Agreements) của Don Miguel Ruiz tiết lộ những minh triết cổ xưa của người Toltec nhằm giúp chúng ta tự giải thoát khỏi những niềm tin giới hạn, nỗi sợ hãi và những đau khổ không đáng có.	en	Bốn Thỏa Ước (The Four Agreements)	{"time": 1792043679512, "blocks": [{"id": "block_0", "data": {"text": "Bốn Thỏa Ước (The Four Agreements) của Don Miguel Ruiz tiết lộ những minh triết cổ xưa của người Toltec nhằm giúp chúng ta tự giải thoát khỏi những niềm tin giới hạn, nỗi sợ hãi và những đau khổ không đáng có."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Bốn nguyên tắc thông thái bao gồm: 1. Không phạm tội với lời nói; 2. Không biến mọi chuyện thành vấn đề cá nhân; 3. Không giả định; 4. Luôn làm hết khả năng của mình."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Một cuốn sách ngắn gọn nhưng có sức mạnh chuyển hóa nội tâm sâu sắc, đem lại sự thanh thản, tự do và niềm vui sống đích thực."}, "type": "paragraph"}], "version": "2.30.7"}	2	\N
+91	Bốn Thỏa Ước (The Four Agreements) | AuraBook	Bốn Thỏa Ước (The Four Agreements) của Don Miguel Ruiz tiết lộ những minh triết cổ xưa của người Toltec nhằm giúp chúng ta tự giải thoát khỏi những niềm tin giới hạn, nỗi sợ hãi và những đau khổ không đáng có.	vi	Bốn Thỏa Ước (The Four Agreements)	{"time": 1792043679512, "blocks": [{"id": "block_0", "data": {"text": "Bốn Thỏa Ước (The Four Agreements) của Don Miguel Ruiz tiết lộ những minh triết cổ xưa của người Toltec nhằm giúp chúng ta tự giải thoát khỏi những niềm tin giới hạn, nỗi sợ hãi và những đau khổ không đáng có."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Bốn nguyên tắc thông thái bao gồm: 1. Không phạm tội với lời nói; 2. Không biến mọi chuyện thành vấn đề cá nhân; 3. Không giả định; 4. Luôn làm hết khả năng của mình."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Một cuốn sách ngắn gọn nhưng có sức mạnh chuyển hóa nội tâm sâu sắc, đem lại sự thanh thản, tự do và niềm vui sống đích thực."}, "type": "paragraph"}], "version": "2.30.7"}	2	\N
+92	Sapiens: Lược Sử Loài Người (A Brief History of Humankind) | AuraBook	Sapiens: Lược Sử Loài Người của giáo sư lịch sử Yuval Noah Harari là hiện tượng xuất bản toàn cầu, giải mã lịch sử vĩ đại của loài người từ thời kỳ đồ đá cho đến hiện đại.	en	Sapiens: Lược Sử Loài Người (A Brief History of Humankind)	{"time": 1792043679887, "blocks": [{"id": "block_0", "data": {"text": "Sapiens: Lược Sử Loài Người của giáo sư lịch sử Yuval Noah Harari là hiện tượng xuất bản toàn cầu, giải mã lịch sử vĩ đại của loài người từ thời kỳ đồ đá cho đến hiện đại."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Cuốn sách phân tích sâu sắc ba cuộc cách mạng định hình vận mệnh: Cách mạng Nhận thức (khởi đầu lịch sử), Cách mạng Nông nghiệp (mở rộng xã hội) và Cách mạng Khoa học (kiến tạo sức mạnh chưa từng có)."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Một tác phẩm kinh điển mở rộng tầm nhìn, kích thích tư duy phản biện và giúp chúng ta hiểu rõ loài người là ai, từ đâu đến và đang đi về đâu."}, "type": "paragraph"}], "version": "2.30.7"}	3	\N
+93	Sapiens: Lược Sử Loài Người (A Brief History of Humankind) | AuraBook	Sapiens: Lược Sử Loài Người của giáo sư lịch sử Yuval Noah Harari là hiện tượng xuất bản toàn cầu, giải mã lịch sử vĩ đại của loài người từ thời kỳ đồ đá cho đến hiện đại.	vi	Sapiens: Lược Sử Loài Người (A Brief History of Humankind)	{"time": 1792043679887, "blocks": [{"id": "block_0", "data": {"text": "Sapiens: Lược Sử Loài Người của giáo sư lịch sử Yuval Noah Harari là hiện tượng xuất bản toàn cầu, giải mã lịch sử vĩ đại của loài người từ thời kỳ đồ đá cho đến hiện đại."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Cuốn sách phân tích sâu sắc ba cuộc cách mạng định hình vận mệnh: Cách mạng Nhận thức (khởi đầu lịch sử), Cách mạng Nông nghiệp (mở rộng xã hội) và Cách mạng Khoa học (kiến tạo sức mạnh chưa từng có)."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Một tác phẩm kinh điển mở rộng tầm nhìn, kích thích tư duy phản biện và giúp chúng ta hiểu rõ loài người là ai, từ đâu đến và đang đi về đâu."}, "type": "paragraph"}], "version": "2.30.7"}	3	\N
+94	Trí Tuệ Do Thái (Jerome Becomes a Genius) | AuraBook	Trí Tuệ Do Thái của kỷ lục gia trí nhớ Eran Katz hé mở những bí quyết tư duy độc đáo, phương pháp ghi nhớ phi thường và tinh thần học hỏi trọn đời của dân tộc thông minh nhất thế giới.	en	Trí Tuệ Do Thái (Jerome Becomes a Genius)	{"time": 1792043680340, "blocks": [{"id": "block_0", "data": {"text": "Trí Tuệ Do Thái của kỷ lục gia trí nhớ Eran Katz hé mở những bí quyết tư duy độc đáo, phương pháp ghi nhớ phi thường và tinh thần học hỏi trọn đời của dân tộc thông minh nhất thế giới."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Thông qua hành trình biến chàng trai bình thường Jerome thành một thiên tài, cuốn sách cung cấp các nguyên tắc thực tế để tối ưu hóa não bộ, rèn luyện tư duy logic, sáng tạo và mở khóa tiềm năng vượt trội."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Tác phẩm truyền cảm hứng mãnh liệt về ý chí vươn lên, lòng hiếu học và nghệ thuật làm chủ tri thức."}, "type": "paragraph"}], "version": "2.30.7"}	4	\N
+95	Trí Tuệ Do Thái (Jerome Becomes a Genius) | AuraBook	Trí Tuệ Do Thái của kỷ lục gia trí nhớ Eran Katz hé mở những bí quyết tư duy độc đáo, phương pháp ghi nhớ phi thường và tinh thần học hỏi trọn đời của dân tộc thông minh nhất thế giới.	vi	Trí Tuệ Do Thái (Jerome Becomes a Genius)	{"time": 1792043680340, "blocks": [{"id": "block_0", "data": {"text": "Trí Tuệ Do Thái của kỷ lục gia trí nhớ Eran Katz hé mở những bí quyết tư duy độc đáo, phương pháp ghi nhớ phi thường và tinh thần học hỏi trọn đời của dân tộc thông minh nhất thế giới."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Thông qua hành trình biến chàng trai bình thường Jerome thành một thiên tài, cuốn sách cung cấp các nguyên tắc thực tế để tối ưu hóa não bộ, rèn luyện tư duy logic, sáng tạo và mở khóa tiềm năng vượt trội."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Tác phẩm truyền cảm hứng mãnh liệt về ý chí vươn lên, lòng hiếu học và nghệ thuật làm chủ tri thức."}, "type": "paragraph"}], "version": "2.30.7"}	4	\N
 \.
 
 
@@ -10315,6 +9845,7 @@ COPY public.product_producttype (id, name, has_variants, is_shipping_required, w
 22	Simple	f	f	0	f	{}	{}	simple	normal	\N
 23	Juice	f	t	100	f	{}	{}	juice	normal	\N
 24	Simple Gift Card	f	f	0	f	{}	{}	gift-card	gift_card	\N
+2	Sách Tuyển Chọn (Books)	t	t	0.5	f	{}	{}	books		\N
 \.
 
 
@@ -10323,87 +9854,14 @@ COPY public.product_producttype (id, name, has_variants, is_shipping_required, w
 --
 
 COPY public.product_productvariant (id, sku, name, product_id, track_inventory, weight, metadata, private_metadata, sort_order, is_preorder, preorder_end_date, preorder_global_threshold, quantity_limit_per_customer, created_at, updated_at, external_reference) FROM stdin;
-393	\N	UHJvZHVjdFZhcmlhbnQ6Mzkz	160	f	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:27.983604+00	2026-10-08 06:04:27.983617+00	\N
-394	49182235820	S	161	t	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:28.036468+00	2026-10-08 06:04:28.036479+00	\N
-395	49182235821	M	161	t	0	{}	{}	1	f	\N	\N	\N	2026-10-08 06:04:28.073664+00	2026-10-08 06:04:28.073674+00	\N
-396	49182235822	L	161	t	0	{}	{}	2	f	\N	\N	\N	2026-10-08 06:04:28.118038+00	2026-10-08 06:04:28.11806+00	\N
-397	49182235823	XL	161	t	0	{}	{}	3	f	\N	\N	\N	2026-10-08 06:04:28.166832+00	2026-10-08 06:04:28.166844+00	\N
-398	49182235824	XXL	161	t	0	{}	{}	4	f	\N	\N	\N	2026-10-08 06:04:28.195564+00	2026-10-08 06:04:28.195574+00	\N
-399	\N	UHJvZHVjdFZhcmlhbnQ6Mzk5	162	f	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:28.226739+00	2026-10-08 06:04:28.226749+00	\N
-400	\N	UHJvZHVjdFZhcmlhbnQ6NDAw	163	f	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:28.263882+00	2026-10-08 06:04:28.263892+00	\N
-401	\N	UHJvZHVjdFZhcmlhbnQ6NDAx	164	f	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:28.301334+00	2026-10-08 06:04:28.301343+00	\N
-324	headless-omnichannel-mp3	MP3	126	t	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:28.340133+00	2026-10-08 06:04:28.340143+00	\N
-332	818223583	41 Pure blue	128	t	0	{}	{}	1	f	\N	\N	\N	2026-10-08 06:04:28.392364+00	2026-10-08 06:04:28.392374+00	\N
-333	818223582	40 Pure blue	128	t	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:28.443083+00	2026-10-08 06:04:28.443093+00	\N
-334	818223584	42 Pure blue	128	t	0	{}	{}	2	f	\N	\N	\N	2026-10-08 06:04:28.477554+00	2026-10-08 06:04:28.477572+00	\N
-335	618223581	39	129	t	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:28.506753+00	2026-10-08 06:04:28.506763+00	\N
-336	618223582	40	129	t	0	{}	{}	1	f	\N	\N	\N	2026-10-08 06:04:28.543163+00	2026-10-08 06:04:28.543173+00	\N
-337	618223583	41	129	t	0	{}	{}	2	f	\N	\N	\N	2026-10-08 06:04:28.572518+00	2026-10-08 06:04:28.572529+00	\N
-338	618223584	42	129	t	0	{}	{}	3	f	\N	\N	\N	2026-10-08 06:04:28.609562+00	2026-10-08 06:04:28.609573+00	\N
-339	618223585	43	129	t	0	{}	{}	4	f	\N	\N	\N	2026-10-08 06:04:28.644969+00	2026-10-08 06:04:28.64498+00	\N
-340	118223581	39	130	t	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:28.689767+00	2026-10-08 06:04:28.689782+00	\N
-341	118223582	40	130	t	0	{}	{}	1	f	\N	\N	\N	2026-10-08 06:04:28.749463+00	2026-10-08 06:04:28.749473+00	\N
-342	118223583	41	130	t	0	{}	{}	2	f	\N	\N	\N	2026-10-08 06:04:28.781827+00	2026-10-08 06:04:28.781836+00	\N
-343	118223584	42	130	t	0	{}	{}	3	f	\N	\N	\N	2026-10-08 06:04:28.814029+00	2026-10-08 06:04:28.814038+00	\N
-344	118223585	45	130	t	0	{}	{}	4	f	\N	\N	\N	2026-10-08 06:04:28.845398+00	2026-10-08 06:04:28.845408+00	\N
-345	HD-GR-S	HD-GR-S	131	f	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:28.885916+00	2026-10-08 06:04:28.885933+00	\N
-348	328223580	S	134	t	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:28.92853+00	2026-10-08 06:04:28.928539+00	\N
-349	328223581	M	134	t	0	{}	{}	1	f	\N	\N	\N	2026-10-08 06:04:28.968455+00	2026-10-08 06:04:28.968465+00	\N
-350	328223582	L	134	t	0	{}	{}	2	f	\N	\N	\N	2026-10-08 06:04:29.001757+00	2026-10-08 06:04:29.001769+00	\N
-351	328223583	XL	134	t	0	{}	{}	3	f	\N	\N	\N	2026-10-08 06:04:29.033056+00	2026-10-08 06:04:29.033066+00	\N
-352	328223584	XXL	134	t	0	{}	{}	4	f	\N	\N	\N	2026-10-08 06:04:29.078896+00	2026-10-08 06:04:29.078923+00	\N
-353	128223580	S	135	t	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:29.132721+00	2026-10-08 06:04:29.132732+00	\N
-354	128223581	M	135	t	0	{}	{}	1	f	\N	\N	\N	2026-10-08 06:04:29.177639+00	2026-10-08 06:04:29.177655+00	\N
-355	128223582	L	135	t	0	{}	{}	2	f	\N	\N	\N	2026-10-08 06:04:29.209005+00	2026-10-08 06:04:29.209014+00	\N
-356	128223583	XL	135	t	0	{}	{}	3	f	\N	\N	\N	2026-10-08 06:04:29.24033+00	2026-10-08 06:04:29.240339+00	\N
-357	128223584	XXL	135	t	0	{}	{}	4	f	\N	\N	\N	2026-10-08 06:04:29.271773+00	2026-10-08 06:04:29.271783+00	\N
-358	111223580	S	136	t	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:29.305336+00	2026-10-08 06:04:29.305346+00	\N
-359	111223581	M	136	t	0	{}	{}	1	f	\N	\N	\N	2026-10-08 06:04:29.352748+00	2026-10-08 06:04:29.352759+00	\N
-360	111223582	XXL	136	t	0	{}	{}	2	f	\N	\N	\N	2026-10-08 06:04:29.403521+00	2026-10-08 06:04:29.403532+00	\N
-361	218223580	M	137	t	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:29.447509+00	2026-10-08 06:04:29.447521+00	\N
-362	218223581	L	137	t	0	{}	{}	1	f	\N	\N	\N	2026-10-08 06:04:29.501148+00	2026-10-08 06:04:29.501157+00	\N
-363	218223582	XL	137	t	0	{}	{}	2	f	\N	\N	\N	2026-10-08 06:04:29.543899+00	2026-10-08 06:04:29.543911+00	\N
-364	112223580	S	138	t	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:29.601466+00	2026-10-08 06:04:29.601477+00	\N
-365	112223581	M	138	t	0	{}	{}	1	f	\N	\N	\N	2026-10-08 06:04:29.682696+00	2026-10-08 06:04:29.682707+00	\N
-366	112223582	L	138	t	0	{}	{}	2	f	\N	\N	\N	2026-10-08 06:04:29.717507+00	2026-10-08 06:04:29.717516+00	\N
-368	\N	UHJvZHVjdFZhcmlhbnQ6MzY4	141	f	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:29.752618+00	2026-10-08 06:04:29.752629+00	\N
-370	\N	UHJvZHVjdFZhcmlhbnQ6Mzcw	143	f	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:29.797514+00	2026-10-08 06:04:29.797523+00	\N
-371	\N	UHJvZHVjdFZhcmlhbnQ6Mzcx	144	f	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:29.841928+00	2026-10-08 06:04:29.841938+00	\N
-372	9018223582	DVD	145	t	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:29.896431+00	2026-10-08 06:04:29.896441+00	\N
-373	9018223583	iTunes	145	t	0	{}	{}	1	f	\N	\N	\N	2026-10-08 06:04:29.943859+00	2026-10-08 06:04:29.943869+00	\N
-374	9018223584	MP3	145	t	0	{}	{}	2	f	\N	\N	\N	2026-10-08 06:04:29.98098+00	2026-10-08 06:04:29.980991+00	\N
-375	113223582	Vinyl	146	t	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:30.014373+00	2026-10-08 06:04:30.014383+00	\N
-376	113223583	DVD	146	t	0	{}	{}	1	f	\N	\N	\N	2026-10-08 06:04:30.066627+00	2026-10-08 06:04:30.066637+00	\N
-377	113223584	iTunes	146	t	0	{}	{}	2	f	\N	\N	\N	2026-10-08 06:04:30.104402+00	2026-10-08 06:04:30.104413+00	\N
-378	113223585	CD	146	t	0	{}	{}	3	f	\N	\N	\N	2026-10-08 06:04:30.151338+00	2026-10-08 06:04:30.151349+00	\N
-379	124223581	iTunes	147	t	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:30.189337+00	2026-10-08 06:04:30.189346+00	\N
-380	124223582	MP3	147	t	0	{}	{}	1	f	\N	\N	\N	2026-10-08 06:04:30.238364+00	2026-10-08 06:04:30.238387+00	\N
-382	\N	UHJvZHVjdFZhcmlhbnQ6Mzgy	150	f	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:30.327162+00	2026-10-08 06:04:30.327193+00	\N
-383	\N	UHJvZHVjdFZhcmlhbnQ6Mzgz	151	f	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:30.446515+00	2026-10-08 06:04:30.446532+00	\N
-384	\N	UHJvZHVjdFZhcmlhbnQ6Mzg0	152	f	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:30.522792+00	2026-10-08 06:04:30.522832+00	\N
-385	\N	UHJvZHVjdFZhcmlhbnQ6Mzg1	153	f	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:30.583987+00	2026-10-08 06:04:30.583998+00	\N
-386	\N	UHJvZHVjdFZhcmlhbnQ6Mzg2	154	f	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:30.669867+00	2026-10-08 06:04:30.669891+00	\N
-387	\N	UHJvZHVjdFZhcmlhbnQ6Mzg3	155	f	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:30.742708+00	2026-10-08 06:04:30.742721+00	\N
-388	\N	UHJvZHVjdFZhcmlhbnQ6Mzg4	156	f	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:30.802555+00	2026-10-08 06:04:30.802569+00	\N
-389	9182235820	XL	157	t	0	{}	{}	0	f	\N	\N	\N	2026-10-08 06:04:30.854571+00	2026-10-08 06:04:30.854587+00	\N
-390	9182235821	XXL	157	t	0	{}	{}	1	f	\N	\N	\N	2026-10-08 06:04:30.91377+00	2026-10-08 06:04:30.913781+00	\N
-404	918223582	39 Ghost White	128	t	0	{}	{}	\N	f	\N	\N	\N	2026-10-08 06:04:30.955969+00	2026-10-08 06:04:30.95598+00	\N
-405	918223583	40 Ghost White	128	t	0	{}	{}	\N	f	\N	\N	\N	2026-10-08 06:04:30.99783+00	2026-10-08 06:04:30.997841+00	\N
-406	918223584	41 Ghost White	128	t	0	{}	{}	\N	f	\N	\N	\N	2026-10-08 06:04:31.039016+00	2026-10-08 06:04:31.039027+00	\N
-407	918223585	42 Ghost White	128	t	0	{}	{}	\N	f	\N	\N	\N	2026-10-08 06:04:31.084093+00	2026-10-08 06:04:31.084106+00	\N
-408	918223586	43 Ghost White	128	t	0	{}	{}	\N	f	\N	\N	\N	2026-10-08 06:04:31.132117+00	2026-10-08 06:04:31.13215+00	\N
-409	918223587	44 Ghost White	128	t	0	{}	{}	\N	f	\N	\N	\N	2026-10-08 06:04:31.176156+00	2026-10-08 06:04:31.176167+00	\N
-410	918223588	45 Ghost White	128	t	0	{}	{}	\N	f	\N	\N	\N	2026-10-08 06:04:31.216275+00	2026-10-08 06:04:31.216287+00	\N
-411	HD-GR-M	HD-GR-M	131	t	0	{}	{}	1	f	\N	\N	\N	2026-10-08 06:04:31.258365+00	2026-10-08 06:04:31.258379+00	\N
-414	HD-WH-M	HD-WH-M	131	t	0	{}	{}	4	f	\N	\N	\N	2026-10-08 06:04:31.318387+00	2026-10-08 06:04:31.31841+00	\N
-413	HD-GR-XL	HD-GR-XL	131	t	0	{}	{}	3	f	\N	\N	\N	2026-10-08 06:04:31.368972+00	2026-10-08 06:04:31.368991+00	\N
-412	HD-GR-L	HD-GR-L	131	t	0	{}	{}	2	f	\N	\N	\N	2026-10-08 06:04:31.414391+00	2026-10-08 06:04:31.414404+00	\N
-415	HD-WH-L	HD-WH-L	131	t	0	{}	{}	\N	f	\N	\N	\N	2026-10-08 06:04:31.454497+00	2026-10-08 06:04:31.454534+00	\N
-416	HD-WH-XL	HD-WH-XL	131	t	0	{}	{}	\N	f	\N	\N	\N	2026-10-08 06:04:31.492434+00	2026-10-08 06:04:31.492446+00	\N
-417	HD-BL-S	HD-BL-S	131	t	0	{}	{}	\N	f	\N	\N	\N	2026-10-08 06:04:31.529244+00	2026-10-08 06:04:31.529255+00	\N
-418	HD-BL-M	HD-BL-M	131	t	0	{}	{}	\N	f	\N	\N	\N	2026-10-08 06:04:31.568537+00	2026-10-08 06:04:31.568548+00	\N
-419	HD-BL-L	HD-BL-L	131	t	0	{}	{}	\N	f	\N	\N	\N	2026-10-08 06:04:31.60913+00	2026-10-08 06:04:31.609141+00	\N
-420	HD-BL-XL	HD-BL-XL	131	t	0	{}	{}	\N	f	\N	\N	\N	2026-10-08 06:04:31.664648+00	2026-10-08 06:04:31.664659+00	\N
+2	EB-DAC-NHAN-TAM	Bản Ebook (Sách Điện Tử)	1	f	0	{"format": "ebook", "epub_path": "/books/dac-nhan-tam.epub", "is_digital": true, "drm_protected": true, "format_display": "Bản Ebook (Sách Điện Tử)", "instant_delivery": true}	{}	0	f	\N	\N	\N	2026-10-15 05:54:39.270762+00	2026-10-15 05:54:39.270789+00	\N
+4	EB-BON-THOA-UOC	Bản Ebook (Sách Điện Tử)	2	f	0	{"format": "ebook", "epub_path": "/books/bon-thoa-uoc.epub", "is_digital": true, "drm_protected": true, "format_display": "Bản Ebook (Sách Điện Tử)", "instant_delivery": true}	{}	0	f	\N	\N	\N	2026-10-15 05:54:39.6687+00	2026-10-15 05:54:39.668728+00	\N
+5	VT-BON-THOA-UOC	Bản Sách Giấy (Bìa Mềm Tuyển Chọn)	2	t	0.35	{"format": "physical", "cover_type": "Paperback", "is_digital": false, "format_display": "Bản Sách Giấy (Bìa Mềm Tuyển Chọn)", "shipping_required": true}	{}	1	f	\N	\N	\N	2026-10-15 05:54:39.762774+00	2026-10-15 05:54:39.762811+00	\N
+6	EB-SAPIENS	Bản Ebook (Sách Điện Tử)	3	f	0	{"format": "ebook", "epub_path": "/books/sapiens-luoc-su-loai-nguoi.epub", "is_digital": true, "drm_protected": true, "format_display": "Bản Ebook (Sách Điện Tử)", "instant_delivery": true}	{}	0	f	\N	\N	\N	2026-10-15 05:54:40.022242+00	2026-10-15 05:54:40.022275+00	\N
+7	VT-SAPIENS	Bản Sách Giấy (Bìa Cứng Tuyển Chọn)	3	t	0.75	{"format": "physical", "cover_type": "Paperback", "is_digital": false, "format_display": "Bản Sách Giấy (Bìa Cứng Tuyển Chọn)", "shipping_required": true}	{}	1	f	\N	\N	\N	2026-10-15 05:54:40.13328+00	2026-10-15 05:54:40.133313+00	\N
+8	EB-TRI-TUE-DO-THAI	Bản Ebook (Sách Điện Tử)	4	f	0	{"format": "ebook", "epub_path": "/books/tri-tue-do-thai.epub", "is_digital": true, "drm_protected": true, "format_display": "Bản Ebook (Sách Điện Tử)", "instant_delivery": true}	{}	0	f	\N	\N	\N	2026-10-15 05:54:40.531356+00	2026-10-15 05:54:40.531394+00	\N
+9	VT-TRI-TUE-DO-THAI	Bản Sách Giấy (Bìa Mềm Tuyển Chọn)	4	t	0.5	{"format": "physical", "cover_type": "Paperback", "is_digital": false, "format_display": "Bản Sách Giấy (Bìa Mềm Tuyển Chọn)", "shipping_required": true}	{}	1	f	\N	\N	\N	2026-10-15 05:54:40.819382+00	2026-10-15 05:54:40.819434+00	\N
+3	VT-DAC-NHAN-TAM	Bản Sách Giấy (Bìa Mềm Tuyển Chọn)	1	t	0	{"format": "physical", "cover_type": "Paperback", "is_digital": false, "format_display": "Bản Sách Giấy (Bìa Mềm Tuyển Chọn)", "shipping_required": true}	{}	1	f	\N	\N	\N	2026-10-15 05:54:39.383068+00	2026-10-15 10:23:18.443339+00	\N
 \.
 
 
@@ -10412,249 +9870,28 @@ COPY public.product_productvariant (id, sku, name, product_id, track_inventory, 
 --
 
 COPY public.product_productvariantchannellisting (id, currency, price_amount, channel_id, variant_id, cost_price_amount, preorder_quantity_threshold, discounted_price_amount, prior_price_amount) FROM stdin;
-75	VND	35000.000	2	384	24500.000	\N	35000.000	\N
-76	USD	1.500	1	384	1.050	\N	1.500	\N
-23	PLN	32.000	3	348	22.400	\N	32.000	\N
-24	VND	195000.000	2	348	136500.000	\N	195000.000	\N
-25	USD	8.000	1	348	5.600	\N	8.000	\N
-110	PLN	32.000	3	349	22.400	\N	32.000	\N
-111	VND	195000.000	2	349	136500.000	\N	195000.000	\N
-11	PLN	140.000	3	340	98.000	\N	140.000	\N
-12	VND	850000.000	2	340	595000.000	\N	850000.000	\N
-13	USD	35.000	1	340	24.500	\N	35.000	\N
-98	PLN	140.000	3	341	98.000	\N	140.000	\N
-99	VND	850000.000	2	341	595000.000	\N	850000.000	\N
-100	USD	35.000	1	341	24.500	\N	35.000	\N
-68	PLN	6.500	3	386	4.550	\N	6.500	\N
-69	VND	39000.000	2	386	27300.000	\N	39000.000	\N
-70	USD	1.650	1	386	1.155	\N	1.650	\N
-35	PLN	19.500	3	372	13.650	\N	19.500	\N
-36	VND	119000.000	2	372	83300.000	\N	119000.000	\N
-37	USD	4.900	1	372	3.430	\N	4.900	\N
-71	PLN	5.500	3	385	3.850	\N	5.500	\N
-72	VND	32000.000	2	385	22400.000	\N	32000.000	\N
-73	USD	1.350	1	385	0.945	\N	1.350	\N
-32	PLN	80.000	3	333	56.000	\N	80.000	\N
-34	USD	20.000	1	333	14.000	\N	20.000	\N
-20	PLN	36.000	3	361	25.200	\N	36.000	\N
-21	VND	220000.000	2	361	154000.000	\N	220000.000	\N
-22	USD	9.000	1	361	6.300	\N	9.000	\N
-107	PLN	36.000	3	362	25.200	\N	36.000	\N
-108	VND	220000.000	2	362	154000.000	\N	220000.000	\N
-109	USD	9.000	1	362	6.300	\N	9.000	\N
-53	PLN	6.000	3	387	4.200	\N	6.000	\N
-54	VND	35000.000	2	387	24500.000	\N	35000.000	\N
-55	USD	1.500	1	387	1.050	\N	1.500	\N
-26	PLN	38.000	3	394	26.600	\N	38.000	\N
-27	VND	230000.000	2	394	161000.000	\N	230000.000	\N
-28	USD	9.500	1	394	6.650	\N	9.500	\N
-2	PLN	48.000	3	358	33.600	\N	48.000	\N
-3	VND	290000.000	2	358	203000.000	\N	290000.000	\N
-4	USD	12.000	1	358	8.400	\N	12.000	\N
-89	PLN	48.000	3	359	33.600	\N	48.000	\N
-90	VND	290000.000	2	359	203000.000	\N	290000.000	\N
-5	PLN	34.000	3	364	23.800	\N	34.000	\N
-6	VND	210000.000	2	364	147000.000	\N	210000.000	\N
-7	USD	8.500	1	364	5.950	\N	8.500	\N
-92	PLN	34.000	3	365	23.800	\N	34.000	\N
-93	VND	210000.000	2	365	147000.000	\N	210000.000	\N
-94	USD	8.500	1	365	5.950	\N	8.500	\N
-29	PLN	120.000	3	335	84.000	\N	120.000	\N
-30	VND	720000.000	2	335	504000.000	\N	720000.000	\N
-31	USD	30.000	1	335	21.000	\N	30.000	\N
-47	PLN	28.000	3	371	19.600	\N	28.000	\N
-48	VND	165000.000	2	371	115500.000	\N	165000.000	\N
-49	USD	7.000	1	371	4.900	\N	7.000	\N
-8	PLN	24.500	3	375	17.150	\N	24.500	\N
-9	VND	149000.000	2	375	104300.000	\N	149000.000	\N
-10	USD	6.200	1	375	4.340	\N	6.200	\N
-95	PLN	24.500	3	376	17.150	\N	24.500	\N
-96	VND	149000.000	2	376	104300.000	\N	149000.000	\N
-97	USD	6.200	1	376	4.340	\N	6.200	\N
-65	PLN	160.000	3	393	112.000	\N	160.000	\N
-67	USD	40.000	1	393	28.000	\N	40.000	\N
-62	PLN	80.000	3	401	56.000	\N	80.000	\N
-63	VND	500000.000	2	401	350000.000	\N	500000.000	\N
-64	USD	20.000	1	401	14.000	\N	20.000	\N
-59	PLN	800.000	3	400	560.000	\N	800.000	\N
-60	VND	5000000.000	2	400	3500000.000	\N	5000000.000	\N
-61	USD	200.000	1	400	140.000	\N	200.000	\N
-41	PLN	70.000	3	345	49.000	\N	70.000	\N
-42	VND	420000.000	2	345	294000.000	\N	420000.000	\N
-43	USD	17.500	1	345	12.250	\N	17.500	\N
-44	PLN	15.000	3	324	10.500	\N	15.000	\N
-45	VND	89000.000	2	324	62300.000	\N	89000.000	\N
-46	USD	3.800	1	324	2.660	\N	3.800	\N
-80	PLN	18.000	3	382	12.600	\N	18.000	\N
-81	VND	110000.000	2	382	77000.000	\N	110000.000	\N
-82	USD	4.500	1	382	3.150	\N	4.500	\N
-50	PLN	30.000	3	388	21.000	\N	30.000	\N
-52	USD	7.500	1	388	5.250	\N	7.500	\N
-14	PLN	16.500	3	379	11.550	\N	16.500	\N
-15	VND	99000.000	2	379	69300.000	\N	99000.000	\N
-16	USD	4.200	1	379	2.940	\N	4.200	\N
-101	PLN	16.500	3	380	11.550	\N	16.500	\N
-102	VND	99000.000	2	380	69300.000	\N	99000.000	\N
-103	USD	4.200	1	380	2.940	\N	4.200	\N
-83	PLN	21.000	3	368	14.700	\N	21.000	\N
-84	VND	125000.000	2	368	87500.000	\N	125000.000	\N
-85	USD	5.200	1	368	3.640	\N	5.200	\N
-38	PLN	34.500	3	389	24.150	\N	34.500	\N
-39	VND	205000.000	2	389	143500.000	\N	205000.000	\N
-40	USD	8.600	1	389	6.020	\N	8.600	\N
-86	PLN	16.000	3	370	11.200	\N	16.000	\N
-87	VND	95000.000	2	370	66500.000	\N	95000.000	\N
-88	USD	4.000	1	370	2.800	\N	4.000	\N
-17	PLN	31.000	3	353	21.700	\N	31.000	\N
-18	VND	185000.000	2	353	129500.000	\N	185000.000	\N
-104	PLN	31.000	3	354	21.700	\N	31.000	\N
-105	VND	185000.000	2	354	129500.000	\N	185000.000	\N
-106	USD	7.800	1	354	5.460	\N	7.800	\N
-77	PLN	29.000	3	383	20.300	\N	29.000	\N
-78	VND	175000.000	2	383	122500.000	\N	175000.000	\N
-79	USD	7.200	1	383	5.040	\N	7.200	\N
-56	PLN	30.500	3	399	21.350	\N	30.500	\N
-57	VND	185000.000	2	399	129500.000	\N	185000.000	\N
-58	USD	7.600	1	399	5.320	\N	7.600	\N
-149	PLN	32.000	3	350	22.400	\N	32.000	\N
-150	VND	195000.000	2	350	136500.000	\N	195000.000	\N
-151	USD	8.000	1	350	5.600	\N	8.000	\N
-176	PLN	32.000	3	351	22.400	\N	32.000	\N
-177	VND	195000.000	2	351	136500.000	\N	195000.000	\N
-178	USD	8.000	1	351	5.600	\N	8.000	\N
-194	PLN	32.000	3	352	22.400	\N	32.000	\N
-196	USD	8.000	1	352	5.600	\N	8.000	\N
-140	PLN	140.000	3	342	98.000	\N	140.000	\N
-141	VND	850000.000	2	342	595000.000	\N	850000.000	\N
-142	USD	35.000	1	342	24.500	\N	35.000	\N
-170	PLN	140.000	3	343	98.000	\N	140.000	\N
-171	VND	850000.000	2	343	595000.000	\N	850000.000	\N
-172	USD	35.000	1	343	24.500	\N	35.000	\N
-188	PLN	140.000	3	344	98.000	\N	140.000	\N
-189	VND	850000.000	2	344	595000.000	\N	850000.000	\N
-190	USD	35.000	1	344	24.500	\N	35.000	\N
-122	PLN	19.500	3	373	13.650	\N	19.500	\N
-123	VND	119000.000	2	373	83300.000	\N	119000.000	\N
-124	USD	4.900	1	373	3.430	\N	4.900	\N
-161	PLN	19.500	3	374	13.650	\N	19.500	\N
-162	VND	119000.000	2	374	83300.000	\N	119000.000	\N
-163	USD	4.900	1	374	3.430	\N	4.900	\N
-119	PLN	80.000	3	332	56.000	\N	80.000	\N
-120	VND	490000.000	2	332	343000.000	\N	490000.000	\N
-158	PLN	80.000	3	334	56.000	\N	80.000	\N
-159	VND	490000.000	2	334	343000.000	\N	490000.000	\N
-160	USD	20.000	1	334	14.000	\N	20.000	\N
-206	PLN	80.000	3	404	56.000	\N	80.000	\N
-207	VND	490000.000	2	404	343000.000	\N	490000.000	\N
-208	USD	20.000	1	404	14.000	\N	20.000	\N
-209	PLN	80.000	3	405	56.000	\N	80.000	\N
-210	VND	490000.000	2	405	343000.000	\N	490000.000	\N
-211	USD	20.000	1	405	14.000	\N	20.000	\N
-212	PLN	80.000	3	406	56.000	\N	80.000	\N
-213	VND	490000.000	2	406	343000.000	\N	490000.000	\N
-214	USD	20.000	1	406	14.000	\N	20.000	\N
-215	PLN	80.000	3	407	56.000	\N	80.000	\N
-216	VND	490000.000	2	407	343000.000	\N	490000.000	\N
-217	USD	20.000	1	407	14.000	\N	20.000	\N
-218	PLN	80.000	3	408	56.000	\N	80.000	\N
-219	VND	490000.000	2	408	343000.000	\N	490000.000	\N
-220	USD	20.000	1	408	14.000	\N	20.000	\N
-221	PLN	80.000	3	409	56.000	\N	80.000	\N
-146	PLN	36.000	3	363	25.200	\N	36.000	\N
-147	VND	220000.000	2	363	154000.000	\N	220000.000	\N
-148	USD	9.000	1	363	6.300	\N	9.000	\N
-113	PLN	38.000	3	395	26.600	\N	38.000	\N
-114	VND	230000.000	2	395	161000.000	\N	230000.000	\N
-115	USD	9.500	1	395	6.650	\N	9.500	\N
-152	PLN	38.000	3	396	26.600	\N	38.000	\N
-153	VND	230000.000	2	396	161000.000	\N	230000.000	\N
-154	USD	9.500	1	396	6.650	\N	9.500	\N
-179	PLN	38.000	3	397	26.600	\N	38.000	\N
-180	VND	230000.000	2	397	161000.000	\N	230000.000	\N
-181	USD	9.500	1	397	6.650	\N	9.500	\N
-197	PLN	38.000	3	398	26.600	\N	38.000	\N
-198	VND	230000.000	2	398	161000.000	\N	230000.000	\N
-199	USD	9.500	1	398	6.650	\N	9.500	\N
-131	PLN	48.000	3	360	33.600	\N	48.000	\N
-132	VND	290000.000	2	360	203000.000	\N	290000.000	\N
-134	PLN	34.000	3	366	23.800	\N	34.000	\N
-135	VND	210000.000	2	366	147000.000	\N	210000.000	\N
-136	USD	8.500	1	366	5.950	\N	8.500	\N
-116	PLN	120.000	3	336	84.000	\N	120.000	\N
-117	VND	720000.000	2	336	504000.000	\N	720000.000	\N
-118	USD	30.000	1	336	21.000	\N	30.000	\N
-155	PLN	120.000	3	337	84.000	\N	120.000	\N
-156	VND	720000.000	2	337	504000.000	\N	720000.000	\N
-157	USD	30.000	1	337	21.000	\N	30.000	\N
-182	PLN	120.000	3	338	84.000	\N	120.000	\N
-183	VND	720000.000	2	338	504000.000	\N	720000.000	\N
-184	USD	30.000	1	338	21.000	\N	30.000	\N
-200	PLN	120.000	3	339	84.000	\N	120.000	\N
-201	VND	720000.000	2	339	504000.000	\N	720000.000	\N
-202	USD	30.000	1	339	21.000	\N	30.000	\N
-137	PLN	24.500	3	377	17.150	\N	24.500	\N
-138	VND	149000.000	2	377	104300.000	\N	149000.000	\N
-139	USD	6.200	1	377	4.340	\N	6.200	\N
-167	PLN	24.500	3	378	17.150	\N	24.500	\N
-169	USD	6.200	1	378	4.340	\N	6.200	\N
-128	PLN	70.000	3	411	49.000	\N	70.000	\N
-129	VND	420000.000	2	411	294000.000	\N	420000.000	\N
-130	USD	17.500	1	411	12.250	\N	17.500	\N
-164	PLN	70.000	3	412	49.000	\N	70.000	\N
-165	VND	420000.000	2	412	294000.000	\N	420000.000	\N
-166	USD	17.500	1	412	12.250	\N	17.500	\N
-185	PLN	70.000	3	413	49.000	\N	70.000	\N
-186	VND	420000.000	2	413	294000.000	\N	420000.000	\N
-187	USD	17.500	1	413	12.250	\N	17.500	\N
-203	PLN	70.000	3	414	49.000	\N	70.000	\N
-204	VND	420000.000	2	414	294000.000	\N	420000.000	\N
-205	USD	17.500	1	414	12.250	\N	17.500	\N
-125	PLN	34.500	3	390	24.150	\N	34.500	\N
-126	VND	205000.000	2	390	143500.000	\N	205000.000	\N
-127	USD	8.600	1	390	6.020	\N	8.600	\N
-143	PLN	31.000	3	355	21.700	\N	31.000	\N
-145	USD	7.800	1	355	5.460	\N	7.800	\N
-173	PLN	31.000	3	356	21.700	\N	31.000	\N
-174	VND	185000.000	2	356	129500.000	\N	185000.000	\N
-175	USD	7.800	1	356	5.460	\N	7.800	\N
-191	PLN	31.000	3	357	21.700	\N	31.000	\N
-192	VND	185000.000	2	357	129500.000	\N	185000.000	\N
-193	USD	7.800	1	357	5.460	\N	7.800	\N
-74	PLN	6.000	3	384	4.200	\N	6.000	\N
-112	USD	8.000	1	349	5.600	\N	8.000	\N
-195	VND	195000.000	2	352	136500.000	\N	195000.000	\N
-33	VND	490000.000	2	333	343000.000	\N	490000.000	\N
-121	USD	20.000	1	332	14.000	\N	20.000	\N
-222	VND	490000.000	2	409	343000.000	\N	490000.000	\N
-223	USD	20.000	1	409	14.000	\N	20.000	\N
-224	PLN	80.000	3	410	56.000	\N	80.000	\N
-225	VND	490000.000	2	410	343000.000	\N	490000.000	\N
-226	USD	20.000	1	410	14.000	\N	20.000	\N
-91	USD	12.000	1	359	8.400	\N	12.000	\N
-133	USD	12.000	1	360	8.400	\N	12.000	\N
-168	VND	149000.000	2	378	104300.000	\N	149000.000	\N
-66	VND	1000000.000	2	393	700000.000	\N	1000000.000	\N
-227	PLN	70.000	3	419	49.000	\N	70.000	\N
-228	VND	420000.000	2	419	294000.000	\N	420000.000	\N
-229	USD	17.500	1	419	12.250	\N	17.500	\N
-230	PLN	70.000	3	418	49.000	\N	70.000	\N
-231	VND	420000.000	2	418	294000.000	\N	420000.000	\N
-232	USD	17.500	1	418	12.250	\N	17.500	\N
-233	PLN	70.000	3	417	49.000	\N	70.000	\N
-234	VND	420000.000	2	417	294000.000	\N	420000.000	\N
-235	USD	17.500	1	417	12.250	\N	17.500	\N
-236	PLN	70.000	3	420	49.000	\N	70.000	\N
-237	VND	420000.000	2	420	294000.000	\N	420000.000	\N
-238	USD	17.500	1	420	12.250	\N	17.500	\N
-239	PLN	70.000	3	415	49.000	\N	70.000	\N
-240	VND	420000.000	2	415	294000.000	\N	420000.000	\N
-241	USD	17.500	1	415	12.250	\N	17.500	\N
-242	PLN	70.000	3	416	49.000	\N	70.000	\N
-243	VND	420000.000	2	416	294000.000	\N	420000.000	\N
-244	USD	17.500	1	416	12.250	\N	17.500	\N
-51	VND	180000.000	2	388	126000.000	\N	180000.000	\N
-19	USD	7.800	1	353	5.460	\N	7.800	\N
-144	VND	185000.000	2	355	129500.000	\N	185000.000	\N
+251	USD	2.990	1	2	0.897	\N	2.320	\N
+254	USD	5.990	1	3	3.594	\N	4.650	\N
+256	PLN	7.640	3	4	2.290	\N	7.640	\N
+257	USD	2.490	1	4	0.747	\N	1.930	\N
+259	PLN	15.280	3	5	9.170	\N	15.280	\N
+260	USD	4.990	1	5	2.994	\N	3.860	\N
+262	PLN	13.880	3	6	4.160	\N	13.880	\N
+263	USD	4.490	1	6	1.347	\N	3.500	\N
+265	PLN	29.470	3	7	17.680	\N	29.470	\N
+266	USD	9.490	1	7	5.694	\N	7.440	\N
+268	PLN	10.760	3	8	3.230	\N	10.760	\N
+269	USD	3.490	1	8	1.047	\N	2.720	\N
+271	PLN	21.050	3	9	12.630	\N	21.050	\N
+272	USD	6.790	1	9	4.074	\N	5.310	\N
+249	VND	59000.000	2	2	17700.000	\N	59000.000	\N
+252	VND	118000.000	2	3	70800.000	\N	118000.000	\N
+255	VND	49000.000	2	4	14700.000	\N	49000.000	\N
+258	VND	98000.000	2	5	58800.000	\N	98000.000	\N
+261	VND	89000.000	2	6	26700.000	\N	89000.000	\N
+264	VND	189000.000	2	7	113400.000	\N	189000.000	\N
+267	VND	69000.000	2	8	20700.000	\N	69000.000	\N
+270	VND	135000.000	2	9	81000.000	\N	135000.000	\N
 \.
 
 
@@ -10679,117 +9916,6 @@ COPY public.product_variantchannellistingpromotionrule (id, discount_amount, cur
 --
 
 COPY public.product_variantmedia (id, media_id, variant_id) FROM stdin;
-1	31	373
-2	44	397
-3	9	409
-4	39	387
-5	3	334
-6	7	408
-7	29	370
-8	25	364
-9	8	405
-10	44	394
-11	9	406
-12	5	332
-13	21	360
-14	1	324
-15	17	352
-16	33	380
-17	46	399
-18	9	404
-19	19	357
-20	12	340
-21	10	339
-22	15	417
-23	44	396
-24	9	408
-25	5	334
-26	40	388
-27	6	410
-28	14	345
-29	12	344
-30	7	405
-31	36	384
-32	32	378
-33	16	416
-34	31	372
-35	47	400
-36	25	365
-37	19	356
-38	37	385
-39	8	410
-40	23	362
-41	48	401
-42	10	336
-43	9	405
-44	6	407
-45	2	333
-46	21	359
-47	32	377
-48	16	415
-49	12	341
-50	15	418
-51	34	382
-52	14	412
-53	10	338
-54	6	409
-55	17	348
-56	12	343
-57	41	390
-58	23	361
-59	7	410
-60	19	353
-61	10	335
-62	25	366
-63	8	407
-64	43	393
-65	2	332
-66	21	358
-67	6	406
-68	17	350
-69	4	333
-70	23	363
-71	6	404
-72	19	355
-73	35	383
-74	14	411
-75	10	337
-76	8	409
-77	6	408
-78	2	334
-79	15	419
-80	30	371
-81	12	342
-82	44	398
-83	9	410
-84	32	376
-85	16	414
-86	14	413
-87	8	406
-88	4	332
-89	7	407
-90	3	333
-91	17	349
-92	8	404
-93	41	389
-94	19	354
-95	31	374
-96	27	368
-97	8	408
-98	4	334
-99	7	409
-100	17	351
-101	33	379
-102	6	405
-103	32	375
-104	44	395
-105	9	407
-106	5	333
-107	7	406
-108	3	332
-109	38	386
-110	15	420
-111	7	404
 \.
 
 
@@ -11041,7 +10167,7 @@ COPY public.shipping_shippingzone_channels (id, shippingzone_id, channel_id) FRO
 --
 
 COPY public.site_sitesettings (id, header_text, description, site_id, bottom_menu_id, top_menu_id, display_gross_prices, include_taxes_in_prices, charge_taxes_on_shipping, track_inventory_by_default, default_weight_unit, company_address_id, default_mail_sender_address, default_mail_sender_name, customer_set_password_url, fulfillment_allow_unpaid, fulfillment_auto_approve, gift_card_expiry_period, gift_card_expiry_period_type, gift_card_expiry_type, reserve_stock_duration_anonymous_user, reserve_stock_duration_authenticated_user, limit_quantity_per_checkout, enable_account_confirmation_by_email, metadata, private_metadata, allow_login_without_confirmation, refund_reason_reference_type_id, use_legacy_update_webhook_emission, preserve_all_address_fields, instance_id, usage_telemetry_reported_at, password_login_mode, use_legacy_shipping_zone_stock_availability, return_reason_reference_type_id, account_confirm_merge_mode, allow_storefront_traffic) FROM stdin;
-1	Test Saleor - a sample shop!		1	2	1	t	t	t	t	kg	\N	\N		\N	t	t	\N	\N	never_expire	\N	\N	50	t	{}	{}	f	\N	t	f	2c4a3eb0-d568-4b90-a6de-8e3be69d4f29	2026-10-10 10:25:21.416531+00	enabled	t	\N	merge_disabled	t
+1	Test Saleor - a sample shop!		1	2	1	t	t	t	t	kg	\N	\N		\N	t	t	\N	\N	never_expire	\N	\N	50	t	{}	{}	f	\N	t	f	2c4a3eb0-d568-4b90-a6de-8e3be69d4f29	2026-10-18 13:17:31.40967+00	enabled	t	\N	merge_disabled	t
 \.
 
 
@@ -11093,146 +10219,123 @@ COPY public.tax_taxconfigurationpercountry (id, country, charge_taxes, tax_calcu
 --
 
 COPY public.thumbnail_thumbnail (id, image, size, format, category_id, collection_id, product_media_id, user_id, app_id, app_installation_id) FROM stdin;
-1	thumbnails/products/saleor-ascii-shirt-front_thumbnail_512.webp	512	webp	\N	\N	17	\N	\N	\N
-2	thumbnails/products/saleor-blue-plimsolls-1_thumbnail_512.webp	512	webp	\N	\N	2	\N	\N	\N
-3	thumbnails/products/saleor-pauls-blanace-420-1_thumbnail_512.webp	512	webp	\N	\N	12	\N	\N	\N
-4	thumbnails/products/saleor-white-cubes-tee-front_thumbnail_512.webp	512	webp	\N	\N	44	\N	\N	\N
-5	thumbnails/products/saleor-polo-shirt-front_thumbnail_512.webp	512	webp	\N	\N	21	\N	\N	\N
-6	thumbnails/products/saleor-blue-polygon-tee-front_thumbnail_512.webp	512	webp	\N	\N	23	\N	\N	\N
-7	thumbnails/products/saleor-sunnies_thumbnail_512.webp	512	webp	\N	\N	30	\N	\N	\N
-8	thumbnails/products/saleor-dark-polygon-tee-front_thumbnail_512.webp	512	webp	\N	\N	25	\N	\N	\N
-9	thumbnails/products/saleor-dash-force-1_thumbnail_512.webp	512	webp	\N	\N	10	\N	\N	\N
-10	thumbnails/products/saleor-sunnies-dark_thumbnail_512.webp	512	webp	\N	\N	40	\N	\N	\N
-12	thumbnails/products/saleor-grey-hoodie_thumbnail_512.webp	512	webp	\N	\N	14	\N	\N	\N
-11	thumbnails/products/saleor-beanie-1_thumbnail_512.webp	512	webp	\N	\N	27	\N	\N	\N
-13	thumbnails/products/saleor-apple-drink_thumbnail_512.webp	512	webp	\N	\N	36	\N	\N	\N
-14	thumbnails/products/saleor-carrot-drink_thumbnail_512.webp	512	webp	\N	\N	39	\N	\N	\N
-15	thumbnails/products/saleor-banana-drink_thumbnail_512.webp	512	webp	\N	\N	38	\N	\N	\N
-16	thumbnails/products/saleor-bean-drink_thumbnail_512.webp	512	webp	\N	\N	37	\N	\N	\N
-17	thumbnails/products/saleor-battle-tested-book_thumbnail_512.webp	512	webp	\N	\N	31	\N	\N	\N
-18	thumbnails/products/saleor-headless-omnichannel-book_thumbnail_512.webp	512	webp	\N	\N	1	\N	\N	\N
-19	thumbnails/products/saleor-headless-omnichannel-book_thumbnail_1024.webp	1024	webp	\N	\N	1	\N	\N	\N
-20	thumbnails/products/saleor-team-tee-front_thumbnail_512.webp	512	webp	\N	\N	19	\N	\N	\N
-21	thumbnails/products/saleor-blue-plimsolls-1_thumbnail_1024.webp	1024	webp	\N	\N	2	\N	\N	\N
-22	thumbnails/products/saleor-gift-100_thumbnail_512.webp	512	webp	\N	\N	43	\N	\N	\N
-23	thumbnails/products/saleor-white-parrot-cushion_thumbnail_512.webp	512	webp	\N	\N	46	\N	\N	\N
-24	thumbnails/products/saleor-gift-50_thumbnail_512.webp	512	webp	\N	\N	48	\N	\N	\N
-25	thumbnails/products/saleor-mighty-mug_thumbnail_512.webp	512	webp	\N	\N	34	\N	\N	\N
-26	thumbnails/products/saleor-gift-500_thumbnail_512.webp	512	webp	\N	\N	47	\N	\N	\N
-27	thumbnails/products/saleor-cushion-blue_thumbnail_512.webp	512	webp	\N	\N	35	\N	\N	\N
-28	thumbnails/products/saleor-own-your-stack-and-data-book_thumbnail_512.webp	512	webp	\N	\N	33	\N	\N	\N
-29	thumbnails/products/saleor-enterprise-cloud-book_thumbnail_512.webp	512	webp	\N	\N	32	\N	\N	\N
-30	thumbnails/products/saleor-sunnies-dark_thumbnail_1024.png	1024	\N	\N	\N	40	\N	\N	\N
-31	thumbnails/products/saleor-apple-drink_thumbnail_1024.png	1024	\N	\N	\N	36	\N	\N	\N
-32	thumbnails/products/saleor-banana-drink_thumbnail_1024.png	1024	\N	\N	\N	38	\N	\N	\N
-33	thumbnails/products/saleor-bean-drink_thumbnail_1024.png	1024	\N	\N	\N	37	\N	\N	\N
-34	thumbnails/products/saleor-carrot-drink_thumbnail_1024.png	1024	\N	\N	\N	39	\N	\N	\N
-35	thumbnails/products/saleor-monospace-white-tee-front_thumbnail_1024.png	1024	\N	\N	\N	41	\N	\N	\N
-36	thumbnails/products/saleor-sunnies_thumbnail_1024.png	1024	\N	\N	\N	30	\N	\N	\N
-37	thumbnails/products/saleor-cushion-blue_thumbnail_1024.png	1024	\N	\N	\N	35	\N	\N	\N
-38	thumbnails/products/saleor-beanie-1_thumbnail_1024.png	1024	\N	\N	\N	27	\N	\N	\N
-39	thumbnails/products/saleor-dark-polygon-tee-front_thumbnail_1024.png	1024	\N	\N	\N	25	\N	\N	\N
-40	thumbnails/products/saleor-team-tee-front_thumbnail_1024.png	1024	\N	\N	\N	19	\N	\N	\N
-41	thumbnails/products/saleor-blue-polygon-tee-front_thumbnail_1024.png	1024	\N	\N	\N	23	\N	\N	\N
-42	thumbnails/products/saleor-mighty-mug_thumbnail_1024.png	1024	\N	\N	\N	34	\N	\N	\N
-43	thumbnails/products/saleor-neck-warmer_thumbnail_1024.png	1024	\N	\N	\N	29	\N	\N	\N
-44	thumbnails/products/saleor-own-your-stack-and-data-book_thumbnail_1024.png	1024	\N	\N	\N	33	\N	\N	\N
-45	thumbnails/products/saleor-battle-tested-book_thumbnail_1024.png	1024	\N	\N	\N	31	\N	\N	\N
-46	thumbnails/products/saleor-enterprise-cloud-book_thumbnail_1024.png	1024	\N	\N	\N	32	\N	\N	\N
-47	thumbnails/products/saleor-polo-shirt-front_thumbnail_1024.png	1024	\N	\N	\N	21	\N	\N	\N
-48	thumbnails/products/saleor-pauls-blanace-420-1_thumbnail_1024.png	1024	\N	\N	\N	12	\N	\N	\N
-49	thumbnails/products/saleor-ascii-shirt-front_thumbnail_1024.png	1024	\N	\N	\N	17	\N	\N	\N
-50	thumbnails/products/saleor-dash-force-1_thumbnail_1024.png	1024	\N	\N	\N	10	\N	\N	\N
-51	thumbnails/products/saleor-grey-hoodie_thumbnail_1024.png	1024	\N	\N	\N	14	\N	\N	\N
-52	thumbnails/products/saleor-blue-plimsolls-1_thumbnail_1024.png	1024	\N	\N	\N	2	\N	\N	\N
-53	thumbnails/products/saleor-white-parrot-cushion_thumbnail_1024.png	1024	\N	\N	\N	46	\N	\N	\N
-54	thumbnails/products/saleor-headless-omnichannel-book_thumbnail_1024.png	1024	\N	\N	\N	1	\N	\N	\N
-55	thumbnails/products/saleor-gift-50_thumbnail_1024.png	1024	\N	\N	\N	48	\N	\N	\N
-56	thumbnails/products/saleor-white-cubes-tee-front_thumbnail_1024.png	1024	\N	\N	\N	44	\N	\N	\N
-57	thumbnails/products/saleor-gift-100_thumbnail_1024.png	1024	\N	\N	\N	43	\N	\N	\N
-58	thumbnails/products/saleor-gift-500_thumbnail_1024.png	1024	\N	\N	\N	47	\N	\N	\N
-59	thumbnails/products/saleor-monospace-white-tee-front_thumbnail_512.webp	512	webp	\N	\N	41	\N	\N	\N
-60	thumbnails/products/saleor-neck-warmer_thumbnail_512.webp	512	webp	\N	\N	29	\N	\N	\N
-61	thumbnails/products/saleor-headless-omnichannel-book_thumbnail_256.webp	256	webp	\N	\N	1	\N	\N	\N
-62	thumbnails/products/saleor-neck-warmer_thumbnail_1024.webp	1024	webp	\N	\N	29	\N	\N	\N
-63	thumbnails/products/saleor-neck-warmer_thumbnail_256.webp	256	webp	\N	\N	29	\N	\N	\N
-64	thumbnails/products/saleor-neck-warmer_thumbnail_64.png	64	\N	\N	\N	29	\N	\N	\N
-65	thumbnails/products/saleor-pauls-blanace-420-2_thumbnail_1024.png	1024	\N	\N	\N	13	\N	\N	\N
-66	thumbnails/products/saleor-dash-force-2_thumbnail_1024.png	1024	\N	\N	\N	11	\N	\N	\N
-67	thumbnails/products/saleor-pauls-blanace-420-1_thumbnail_256.png	256	\N	\N	\N	12	\N	\N	\N
-68	thumbnails/products/saleor-apple-drink_thumbnail_256.png	256	\N	\N	\N	36	\N	\N	\N
-69	thumbnails/products/saleor-bean-drink_thumbnail_256.png	256	\N	\N	\N	37	\N	\N	\N
-70	thumbnails/products/saleor-banana-drink_thumbnail_256.png	256	\N	\N	\N	38	\N	\N	\N
-71	thumbnails/products/saleor-ascii-shirt-front_thumbnail_256.png	256	\N	\N	\N	17	\N	\N	\N
-72	thumbnails/products/saleor-battle-tested-book_thumbnail_256.png	256	\N	\N	\N	31	\N	\N	\N
-73	thumbnails/products/saleor-blue-plimsolls-1_thumbnail_256.png	256	\N	\N	\N	2	\N	\N	\N
-74	thumbnails/products/saleor-blue-polygon-tee-front_thumbnail_256.png	256	\N	\N	\N	23	\N	\N	\N
-75	thumbnails/products/saleor-carrot-drink_thumbnail_256.png	256	\N	\N	\N	39	\N	\N	\N
-76	thumbnails/products/saleor-white-cubes-tee-front_thumbnail_256.png	256	\N	\N	\N	44	\N	\N	\N
-77	thumbnails/products/saleor-polo-shirt-front_thumbnail_256.png	256	\N	\N	\N	21	\N	\N	\N
-78	thumbnails/products/saleor-dark-polygon-tee-front_thumbnail_256.png	256	\N	\N	\N	25	\N	\N	\N
-79	thumbnails/products/saleor-dash-force-1_thumbnail_256.png	256	\N	\N	\N	10	\N	\N	\N
-80	thumbnails/products/saleor-sunnies_thumbnail_256.png	256	\N	\N	\N	30	\N	\N	\N
-81	thumbnails/products/saleor-enterprise-cloud-book_thumbnail_256.png	256	\N	\N	\N	32	\N	\N	\N
-82	thumbnails/products/saleor-gift-50_thumbnail_256.png	256	\N	\N	\N	48	\N	\N	\N
-83	thumbnails/products/saleor-gift-100_thumbnail_256.png	256	\N	\N	\N	43	\N	\N	\N
-84	thumbnails/products/saleor-gift-500_thumbnail_256.png	256	\N	\N	\N	47	\N	\N	\N
-85	thumbnails/products/saleor-headless-omnichannel-book_thumbnail_256.png	256	\N	\N	\N	1	\N	\N	\N
-86	thumbnails/products/saleor-grey-hoodie_thumbnail_256.png	256	\N	\N	\N	14	\N	\N	\N
-87	thumbnails/products/saleor-enterprise-cloud-book_thumbnail_256.webp	256	webp	\N	\N	32	\N	\N	\N
-88	thumbnails/products/saleor-banana-drink_thumbnail_1024.webp	1024	webp	\N	\N	38	\N	\N	\N
-89	thumbnails/products/saleor-ascii-shirt-front_thumbnail_64.png	64	\N	\N	\N	17	\N	\N	\N
-90	thumbnails/products/saleor-polo-shirt-front_thumbnail_64.png	64	\N	\N	\N	21	\N	\N	\N
-91	thumbnails/products/saleor-apple-drink_thumbnail_64.png	64	\N	\N	\N	36	\N	\N	\N
-92	thumbnails/products/saleor-dark-polygon-tee-front_thumbnail_64.png	64	\N	\N	\N	25	\N	\N	\N
-93	thumbnails/products/saleor-own-your-stack-and-data-book_thumbnail_256.webp	256	webp	\N	\N	33	\N	\N	\N
-94	thumbnails/products/saleor-own-your-stack-and-data-book_thumbnail_1024.webp	1024	webp	\N	\N	33	\N	\N	\N
-95	thumbnails/products/saleor-enterprise-cloud-book_thumbnail_1024.webp	1024	webp	\N	\N	32	\N	\N	\N
-96	thumbnails/products/saleor-team-tee-front_thumbnail_256.webp	256	webp	\N	\N	19	\N	\N	\N
-97	thumbnails/products/saleor-polo-shirt-front_thumbnail_256.webp	256	webp	\N	\N	21	\N	\N	\N
-98	thumbnails/products/saleor-grey-hoodie_thumbnail_256.webp	256	webp	\N	\N	14	\N	\N	\N
-99	thumbnails/products/saleor-ascii-shirt-front_thumbnail_256.webp	256	webp	\N	\N	17	\N	\N	\N
-100	thumbnails/products/saleor-pauls-blanace-420-1_thumbnail_1024.webp	1024	webp	\N	\N	12	\N	\N	\N
-101	thumbnails/products/saleor-dash-force-1_thumbnail_1024.webp	1024	webp	\N	\N	10	\N	\N	\N
-102	thumbnails/products/saleor-pauls-blanace-420-2_thumbnail_1024.webp	1024	webp	\N	\N	13	\N	\N	\N
-103	thumbnails/products/saleor-pauls-blanace-420-1_thumbnail_2048.webp	2048	webp	\N	\N	12	\N	\N	\N
-104	thumbnails/products/saleor-pauls-blanace-420-2_thumbnail_2048.webp	2048	webp	\N	\N	13	\N	\N	\N
-105	thumbnails/products/saleor-apple-drink_thumbnail_1024.webp	1024	webp	\N	\N	36	\N	\N	\N
-106	thumbnails/products/saleor-apple-drink_thumbnail_256.webp	256	webp	\N	\N	36	\N	\N	\N
-107	thumbnails/products/saleor-apple-drink_thumbnail_2048.webp	2048	webp	\N	\N	36	\N	\N	\N
-108	thumbnails/products/saleor-battle-tested-book_thumbnail_1024.webp	1024	webp	\N	\N	31	\N	\N	\N
-109	thumbnails/products/saleor-own-your-stack-and-data-book_thumbnail_256.png	256	\N	\N	\N	33	\N	\N	\N
-110	thumbnails/products/saleor-pauls-blanace-420-1_thumbnail_256.webp	256	webp	\N	\N	12	\N	\N	\N
-111	thumbnails/products/saleor-pauls-blanace-420-1_thumbnail_64.png	64	\N	\N	\N	12	\N	\N	\N
-112	thumbnails/products/saleor-ascii-shirt-front_thumbnail_2048.webp	2048	webp	\N	\N	17	\N	\N	\N
-113	thumbnails/products/saleor-ascii-shirt-back_thumbnail_2048.webp	2048	webp	\N	\N	18	\N	\N	\N
-114	thumbnails/products/saleor-ascii-shirt-front_thumbnail_128.webp	128	webp	\N	\N	17	\N	\N	\N
-115	thumbnails/products/saleor-pauls-blanace-420-1_thumbnail_128.webp	128	webp	\N	\N	12	\N	\N	\N
-116	thumbnails/products/saleor-banana-drink_thumbnail_256.webp	256	webp	\N	\N	38	\N	\N	\N
-117	thumbnails/products/saleor-banana-drink_thumbnail_64.png	64	\N	\N	\N	38	\N	\N	\N
-118	thumbnails/products/saleor-ascii-shirt-front_thumbnail_1024.webp	1024	webp	\N	\N	17	\N	\N	\N
-119	thumbnails/products/saleor-ascii-shirt-back_thumbnail_1024.webp	1024	webp	\N	\N	18	\N	\N	\N
-120	thumbnails/products/saleor-blue-plimsolls-3_thumbnail_1024.webp	1024	webp	\N	\N	4	\N	\N	\N
-121	thumbnails/products/saleor-blue-plimsolls-2_thumbnail_1024.webp	1024	webp	\N	\N	3	\N	\N	\N
-122	thumbnails/products/saleor-white-plimsolls-3_thumbnail_1024.webp	1024	webp	\N	\N	8	\N	\N	\N
-123	thumbnails/products/saleor-white-plimsolls-2_thumbnail_1024.webp	1024	webp	\N	\N	7	\N	\N	\N
-124	thumbnails/products/saleor-white-plimsolls-4_thumbnail_1024.webp	1024	webp	\N	\N	9	\N	\N	\N
-125	thumbnails/products/saleor-blue-plimsolls-1_thumbnail_256.webp	256	webp	\N	\N	2	\N	\N	\N
-126	thumbnails/products/saleor-white-plimsolls-3_thumbnail_64.png	64	\N	\N	\N	8	\N	\N	\N
-127	thumbnails/products/saleor-grey-hoodie_thumbnail_1024.webp	1024	webp	\N	\N	14	\N	\N	\N
-128	thumbnails/products/saleor-white-hoodie_thumbnail_1024.webp	1024	webp	\N	\N	16	\N	\N	\N
-129	thumbnails/products/saleor-blue-hoodie_thumbnail_1024.webp	1024	webp	\N	\N	15	\N	\N	\N
-130	thumbnails/products/saleor-polo-shirt-front_thumbnail_1024.webp	1024	webp	\N	\N	21	\N	\N	\N
-131	thumbnails/products/saleor-polo-shirt-back_thumbnail_1024.webp	1024	webp	\N	\N	22	\N	\N	\N
-132	thumbnails/products/saleor-bean-drink_thumbnail_1024.webp	1024	webp	\N	\N	37	\N	\N	\N
-133	thumbnails/products/saleor-bean-drink_thumbnail_256.webp	256	webp	\N	\N	37	\N	\N	\N
-134	thumbnails/products/saleor-bean-drink_thumbnail_64.png	64	\N	\N	\N	37	\N	\N	\N
-135	thumbnails/products/saleor-apple-drink_thumbnail_128.webp	128	webp	\N	\N	36	\N	\N	\N
-136	thumbnails/products/saleor-bean-drink_thumbnail_128.webp	128	webp	\N	\N	37	\N	\N	\N
-137	thumbnails/products/saleor-blue-polygon-tee-front_thumbnail_1024.webp	1024	webp	\N	\N	23	\N	\N	\N
-138	thumbnails/products/saleor-blue-polygon-tee-front_thumbnail_256.webp	256	webp	\N	\N	23	\N	\N	\N
-139	thumbnails/products/saleor-blue-polygon-tee-front_thumbnail_64.png	64	\N	\N	\N	23	\N	\N	\N
-140	thumbnails/products/saleor-blue-polygon-tee-front_thumbnail_128.webp	128	webp	\N	\N	23	\N	\N	\N
+212	thumbnails/products/ca27310bee7c23b4a538294b373debbf.jpg_e228dcca_thumbnail_1024.webp	1024	\N	\N	\N	71	\N	\N	\N
+213	thumbnails/products/69d7da2a49157404151637f514332377.jpg_04c552fd_thumbnail_1024.webp	1024	\N	\N	\N	74	\N	\N	\N
+183	thumbnails/products/a7598562258bd86f3b05432efdf0cbc0.jpg_c93c5b42_thumbnail_1024.webp	1024	\N	\N	\N	54	\N	\N	\N
+184	thumbnails/products/bed9d3d46ff35a6d8c9ca7294896b7f3.jpg_3465acaf_thumbnail_1024.webp	1024	\N	\N	\N	55	\N	\N	\N
+185	thumbnails/products/409018d87687c46a0a12cecf3f982283.jpg_1e65cc25_thumbnail_1024.webp	1024	\N	\N	\N	56	\N	\N	\N
+186	thumbnails/products/031bc9781c34ddb6a588cd875862460d.jpg_0c8bad27_thumbnail_1024.webp	1024	\N	\N	\N	57	\N	\N	\N
+187	thumbnails/products/185d27fe442a1668cf0196c1b82c87eb.jpg_88331813_thumbnail_1024.webp	1024	\N	\N	\N	59	\N	\N	\N
+188	thumbnails/products/b577852aa77a3d9ed41dfc62de83aeab.jpg_d6ee255c_thumbnail_1024.webp	1024	\N	\N	\N	58	\N	\N	\N
+189	thumbnails/products/0ad59d3f8246ff56495e95e767ce99f7.jpg_212cf733_thumbnail_1024.webp	1024	\N	\N	\N	60	\N	\N	\N
+190	thumbnails/products/392ad5b5f0166b04645d675fadab1f3e.jpg_fcbdca78_thumbnail_1024.webp	1024	\N	\N	\N	61	\N	\N	\N
+191	thumbnails/products/41f2139e7511de8b97a2a500032c46c9.jpg_1de58382_thumbnail_1024.webp	1024	\N	\N	\N	62	\N	\N	\N
+192	thumbnails/products/5fd464a18d6701bc4a54f276178108e2.jpg_cfa220c3_thumbnail_1024.webp	1024	\N	\N	\N	64	\N	\N	\N
+193	thumbnails/products/b7dd476560d2a2c09095516f94be51f7.jpg_392db3cc_thumbnail_1024.webp	1024	\N	\N	\N	63	\N	\N	\N
+194	thumbnails/products/185d27fe442a1668cf0196c1b82c87eb_efpnMFS.jpg_88331813_thumbnail_1024.webp	1024	webp	\N	\N	59	\N	\N	\N
+195	thumbnails/products/bed9d3d46ff35a6d8c9ca7294896b7f3_dw8Xrim.jpg_3465acaf_thumbnail_1024.webp	1024	webp	\N	\N	55	\N	\N	\N
+196	thumbnails/products/a7598562258bd86f3b05432efdf0cbc0_gGAAL3t.jpg_c93c5b42_thumbnail_1024.webp	1024	webp	\N	\N	54	\N	\N	\N
+197	thumbnails/products/409018d87687c46a0a12cecf3f982283_50B6TEm.jpg_1e65cc25_thumbnail_1024.webp	1024	webp	\N	\N	56	\N	\N	\N
+198	thumbnails/products/031bc9781c34ddb6a588cd875862460d_BiM5Auc.jpg_0c8bad27_thumbnail_1024.webp	1024	webp	\N	\N	57	\N	\N	\N
+199	thumbnails/products/b577852aa77a3d9ed41dfc62de83aeab_WzLpRwK.jpg_d6ee255c_thumbnail_1024.webp	1024	webp	\N	\N	58	\N	\N	\N
+200	thumbnails/products/5fd464a18d6701bc4a54f276178108e2_VLgofYo.jpg_cfa220c3_thumbnail_1024.webp	1024	webp	\N	\N	64	\N	\N	\N
+201	thumbnails/products/b7dd476560d2a2c09095516f94be51f7_vBoCdg6.jpg_392db3cc_thumbnail_1024.webp	1024	webp	\N	\N	63	\N	\N	\N
+202	thumbnails/products/41f2139e7511de8b97a2a500032c46c9_62LKNLv.jpg_1de58382_thumbnail_1024.webp	1024	webp	\N	\N	62	\N	\N	\N
+203	thumbnails/products/392ad5b5f0166b04645d675fadab1f3e_b6fUKQ2.jpg_fcbdca78_thumbnail_1024.webp	1024	webp	\N	\N	61	\N	\N	\N
+204	thumbnails/products/0ad59d3f8246ff56495e95e767ce99f7_ahvQq9Y.jpg_212cf733_thumbnail_1024.webp	1024	webp	\N	\N	60	\N	\N	\N
+205	thumbnails/products/bc4bccc35374232fbd50a18013c47493.jpg_dfbc347b_thumbnail_1024.webp	1024	\N	\N	\N	67	\N	\N	\N
+207	thumbnails/products/0e35dcd41f3073264f41b11274bbbe14.jpg_6631ec19_thumbnail_1024.webp	1024	\N	\N	\N	66	\N	\N	\N
+206	thumbnails/products/9c69d35b91d35c46a46bc06bf1f10fbc.jpg_04696499_thumbnail_1024.webp	1024	\N	\N	\N	65	\N	\N	\N
+208	thumbnails/products/55faa82f3e1386b8ad1d23565588bce2.jpg_0e5d8ac4_thumbnail_1024.webp	1024	\N	\N	\N	68	\N	\N	\N
+209	thumbnails/products/2500a1c5b1f5d8df6c1a46280ef76be2.jpg_2c88a425_thumbnail_1024.webp	1024	\N	\N	\N	69	\N	\N	\N
+210	thumbnails/products/cb447ee89f108a9b4b85da64bef1cd5c.jpg_e1a0b4ad_thumbnail_1024.webp	1024	\N	\N	\N	70	\N	\N	\N
+211	thumbnails/products/a0fc98b52cd5d888c6153310c918bfc9.jpg_23fb3cda_thumbnail_1024.webp	1024	\N	\N	\N	72	\N	\N	\N
+214	thumbnails/products/6df8c376b6d4fc9825ce2a8cec8079e2.jpg_87ec1598_thumbnail_1024.webp	1024	\N	\N	\N	73	\N	\N	\N
+215	thumbnails/products/1b4b4afa92ce67e948931a769c99cbc6.jpg_b020dd17_thumbnail_1024.webp	1024	\N	\N	\N	75	\N	\N	\N
+216	thumbnails/products/8e92b168c40655e1c53f2bab25d629e1.jpg_78bb84e3_thumbnail_1024.webp	1024	\N	\N	\N	76	\N	\N	\N
+217	thumbnails/products/ab4a086761b07c8bfd7c2cd735f49931.jpg_2922ca75_thumbnail_1024.webp	1024	\N	\N	\N	78	\N	\N	\N
+218	thumbnails/products/150ec31a90fd8bdfecb4489ec700e907.jpg_823336ea_thumbnail_1024.webp	1024	\N	\N	\N	77	\N	\N	\N
+219	thumbnails/products/2197a9f2aefd4dbbc8b125726bbd3429.jpg_385fac5e_thumbnail_1024.webp	1024	\N	\N	\N	79	\N	\N	\N
+220	thumbnails/products/3be221cdd7210e10180502e55238a751.jpg_784f9d0c_thumbnail_1024.webp	1024	\N	\N	\N	80	\N	\N	\N
+221	thumbnails/products/3be221cdd7210e10180502e55238a751.jpg_784f9d0c_thumbnail_128.webp	128	webp	\N	\N	80	\N	\N	\N
+223	thumbnails/products/0e35dcd41f3073264f41b11274bbbe14.jpg_6631ec19_thumbnail_128.webp	128	webp	\N	\N	66	\N	\N	\N
+222	thumbnails/products/bc4bccc35374232fbd50a18013c47493.jpg_dfbc347b_thumbnail_128.webp	128	webp	\N	\N	67	\N	\N	\N
+226	thumbnails/products/2197a9f2aefd4dbbc8b125726bbd3429.jpg_385fac5e_thumbnail_128.webp	128	webp	\N	\N	79	\N	\N	\N
+224	thumbnails/products/55faa82f3e1386b8ad1d23565588bce2.jpg_0e5d8ac4_thumbnail_128.webp	128	webp	\N	\N	68	\N	\N	\N
+225	thumbnails/products/ab4a086761b07c8bfd7c2cd735f49931.jpg_2922ca75_thumbnail_128.webp	128	webp	\N	\N	78	\N	\N	\N
+227	thumbnails/products/2500a1c5b1f5d8df6c1a46280ef76be2.jpg_2c88a425_thumbnail_128.webp	128	webp	\N	\N	69	\N	\N	\N
+228	thumbnails/products/cb447ee89f108a9b4b85da64bef1cd5c.jpg_e1a0b4ad_thumbnail_128.webp	128	webp	\N	\N	70	\N	\N	\N
+231	thumbnails/products/6df8c376b6d4fc9825ce2a8cec8079e2.jpg_87ec1598_thumbnail_128.webp	128	webp	\N	\N	73	\N	\N	\N
+230	thumbnails/products/a0fc98b52cd5d888c6153310c918bfc9.jpg_23fb3cda_thumbnail_128.webp	128	webp	\N	\N	72	\N	\N	\N
+232	thumbnails/products/8e92b168c40655e1c53f2bab25d629e1.jpg_78bb84e3_thumbnail_128.webp	128	webp	\N	\N	76	\N	\N	\N
+234	thumbnails/products/ca27310bee7c23b4a538294b373debbf.jpg_e228dcca_thumbnail_128.webp	128	webp	\N	\N	71	\N	\N	\N
+236	thumbnails/products/69d7da2a49157404151637f514332377.jpg_04c552fd_thumbnail_128.webp	128	webp	\N	\N	74	\N	\N	\N
+238	thumbnails/products/185d27fe442a1668cf0196c1b82c87eb.jpg_88331813_thumbnail_2048.webp	2048	webp	\N	\N	59	\N	\N	\N
+240	thumbnails/products/a7598562258bd86f3b05432efdf0cbc0.jpg_c93c5b42_thumbnail_2048.webp	2048	webp	\N	\N	54	\N	\N	\N
+283	thumbnails/products/3be221cdd7210e10180502e55238a751.jpg_784f9d0c_thumbnail_256.webp	256	webp	\N	\N	80	\N	\N	\N
+244	thumbnails/products/388629f80448264a556f8cac5493f9fd.png_049eeaca_thumbnail_1024.webp	1024	\N	\N	\N	83	\N	\N	\N
+246	thumbnails/products/2e0daae3f9383a3e1c5d85b1e0156953.jpg_8b2f960f_thumbnail_1024.webp	1024	\N	\N	\N	82	\N	\N	\N
+248	thumbnails/products/fb3cbce3d9acc09adfaf8ea3311e197d.png_cd54a137_thumbnail_1024.webp	1024	\N	\N	\N	85	\N	\N	\N
+250	thumbnails/products/c0c4225cbc443c182bd27fc23c143d62_aOzYsxI.png_dbc19d82_thumbnail_1024.webp	1024	webp	\N	\N	84	\N	\N	\N
+252	thumbnails/products/a7a94b1778ee336051ebfaa8dcdc19c0_sje9Gg3.png_a3bd5b84_thumbnail_1024.webp	1024	webp	\N	\N	81	\N	\N	\N
+254	thumbnails/products/a7a94b1778ee336051ebfaa8dcdc19c0.png_a3bd5b84_thumbnail_2048.webp	2048	webp	\N	\N	81	\N	\N	\N
+256	thumbnails/products/fb3cbce3d9acc09adfaf8ea3311e197d.png_cd54a137_thumbnail_2048.webp	2048	webp	\N	\N	85	\N	\N	\N
+258	thumbnails/products/388629f80448264a556f8cac5493f9fd.png_049eeaca_thumbnail_2048.webp	2048	webp	\N	\N	83	\N	\N	\N
+260	thumbnails/products/ba86524ef8ecb2480e10efd4a449d5c8.jpg_fa3795ff_thumbnail_1024.webp	1024	\N	\N	\N	88	\N	\N	\N
+262	thumbnails/products/105d0465def3d6bd1d1cd366a2a62866_1dRUsjF.jpg_4254698c_thumbnail_1024.webp	1024	webp	\N	\N	87	\N	\N	\N
+264	thumbnails/products/2e047442259c182aeea90fabb9a572e1_r4pgtAE.png_f443dacd_thumbnail_1024.webp	1024	webp	\N	\N	86	\N	\N	\N
+266	thumbnails/products/2e0daae3f9383a3e1c5d85b1e0156953.jpg_8b2f960f_thumbnail_512.webp	512	webp	\N	\N	82	\N	\N	\N
+268	thumbnails/products/105d0465def3d6bd1d1cd366a2a62866.jpg_4254698c_thumbnail_512.webp	512	webp	\N	\N	87	\N	\N	\N
+270	thumbnails/products/2197a9f2aefd4dbbc8b125726bbd3429_Y7xm9AW.jpg_385fac5e_thumbnail_1024.webp	1024	webp	\N	\N	79	\N	\N	\N
+272	thumbnails/products/0e35dcd41f3073264f41b11274bbbe14_1VUcvaj.jpg_6631ec19_thumbnail_1024.webp	1024	webp	\N	\N	66	\N	\N	\N
+274	thumbnails/products/185d27fe442a1668cf0196c1b82c87eb.jpg_88331813_thumbnail_64.webp	64	\N	\N	\N	59	\N	\N	\N
+276	thumbnails/products/ab4a086761b07c8bfd7c2cd735f49931.jpg_2922ca75_thumbnail_2048.webp	2048	webp	\N	\N	78	\N	\N	\N
+278	thumbnails/products/185d27fe442a1668cf0196c1b82c87eb.jpg_88331813_thumbnail_128.webp	128	webp	\N	\N	59	\N	\N	\N
+280	thumbnails/products/3be221cdd7210e10180502e55238a751.jpg_784f9d0c_thumbnail_64.webp	64	\N	\N	\N	80	\N	\N	\N
+281	thumbnails/products/2e0daae3f9383a3e1c5d85b1e0156953.jpg_8b2f960f_thumbnail_256.webp	256	webp	\N	\N	82	\N	\N	\N
+285	thumbnails/products/2e0daae3f9383a3e1c5d85b1e0156953.jpg_8b2f960f_thumbnail_128.webp	128	webp	\N	\N	82	\N	\N	\N
+286	thumbnails/products/bc4bccc35374232fbd50a18013c47493_JlbyF5J.jpg_dfbc347b_thumbnail_1024.webp	1024	webp	\N	\N	67	\N	\N	\N
+288	thumbnails/products/2500a1c5b1f5d8df6c1a46280ef76be2_UJHLaam.jpg_2c88a425_thumbnail_1024.webp	1024	webp	\N	\N	69	\N	\N	\N
+290	thumbnails/products/a0fc98b52cd5d888c6153310c918bfc9_Sqng2W6.jpg_23fb3cda_thumbnail_1024.webp	1024	webp	\N	\N	72	\N	\N	\N
+292	thumbnails/products/1b4b4afa92ce67e948931a769c99cbc6_YLjggjk.jpg_b020dd17_thumbnail_1024.webp	1024	webp	\N	\N	75	\N	\N	\N
+294	thumbnails/products/150ec31a90fd8bdfecb4489ec700e907_dXUQKYE.jpg_823336ea_thumbnail_1024.webp	1024	webp	\N	\N	77	\N	\N	\N
+296	thumbnails/products/9c69d35b91d35c46a46bc06bf1f10fbc_z0YgmjM.jpg_04696499_thumbnail_1024.webp	1024	webp	\N	\N	65	\N	\N	\N
+298	thumbnails/products/105d0465def3d6bd1d1cd366a2a62866.jpg_4254698c_thumbnail_2048.webp	2048	webp	\N	\N	87	\N	\N	\N
+300	thumbnails/products/2e047442259c182aeea90fabb9a572e1.png_f443dacd_thumbnail_2048.webp	2048	webp	\N	\N	86	\N	\N	\N
+229	thumbnails/products/1b4b4afa92ce67e948931a769c99cbc6.jpg_b020dd17_thumbnail_128.webp	128	webp	\N	\N	75	\N	\N	\N
+233	thumbnails/products/150ec31a90fd8bdfecb4489ec700e907.jpg_823336ea_thumbnail_128.webp	128	webp	\N	\N	77	\N	\N	\N
+235	thumbnails/products/9c69d35b91d35c46a46bc06bf1f10fbc.jpg_04696499_thumbnail_128.webp	128	webp	\N	\N	65	\N	\N	\N
+237	thumbnails/products/3be221cdd7210e10180502e55238a751.jpg_784f9d0c_thumbnail_4096.webp	4096	\N	\N	\N	80	\N	\N	\N
+239	thumbnails/products/bed9d3d46ff35a6d8c9ca7294896b7f3.jpg_3465acaf_thumbnail_2048.webp	2048	webp	\N	\N	55	\N	\N	\N
+241	thumbnails/products/031bc9781c34ddb6a588cd875862460d.jpg_0c8bad27_thumbnail_2048.webp	2048	webp	\N	\N	57	\N	\N	\N
+243	thumbnails/products/409018d87687c46a0a12cecf3f982283.jpg_1e65cc25_thumbnail_2048.webp	2048	webp	\N	\N	56	\N	\N	\N
+245	thumbnails/products/a7a94b1778ee336051ebfaa8dcdc19c0.png_a3bd5b84_thumbnail_1024.webp	1024	\N	\N	\N	81	\N	\N	\N
+247	thumbnails/products/c0c4225cbc443c182bd27fc23c143d62.png_dbc19d82_thumbnail_1024.webp	1024	\N	\N	\N	84	\N	\N	\N
+249	thumbnails/products/2e0daae3f9383a3e1c5d85b1e0156953_X9x7Wvz.jpg_8b2f960f_thumbnail_1024.webp	1024	webp	\N	\N	82	\N	\N	\N
+251	thumbnails/products/fb3cbce3d9acc09adfaf8ea3311e197d_fMZ5Ybm.png_cd54a137_thumbnail_1024.webp	1024	webp	\N	\N	85	\N	\N	\N
+253	thumbnails/products/388629f80448264a556f8cac5493f9fd_Njwmmrt.png_049eeaca_thumbnail_1024.webp	1024	webp	\N	\N	83	\N	\N	\N
+255	thumbnails/products/c0c4225cbc443c182bd27fc23c143d62.png_dbc19d82_thumbnail_2048.webp	2048	webp	\N	\N	84	\N	\N	\N
+257	thumbnails/products/2e0daae3f9383a3e1c5d85b1e0156953.jpg_8b2f960f_thumbnail_2048.webp	2048	webp	\N	\N	82	\N	\N	\N
+259	thumbnails/products/105d0465def3d6bd1d1cd366a2a62866.jpg_4254698c_thumbnail_1024.webp	1024	\N	\N	\N	87	\N	\N	\N
+261	thumbnails/products/2e047442259c182aeea90fabb9a572e1.png_f443dacd_thumbnail_1024.webp	1024	\N	\N	\N	86	\N	\N	\N
+263	thumbnails/products/ba86524ef8ecb2480e10efd4a449d5c8_MDh0mJu.jpg_fa3795ff_thumbnail_1024.webp	1024	webp	\N	\N	88	\N	\N	\N
+265	thumbnails/products/185d27fe442a1668cf0196c1b82c87eb.jpg_88331813_thumbnail_512.webp	512	webp	\N	\N	59	\N	\N	\N
+267	thumbnails/products/3be221cdd7210e10180502e55238a751.jpg_784f9d0c_thumbnail_512.webp	512	webp	\N	\N	80	\N	\N	\N
+269	thumbnails/products/3be221cdd7210e10180502e55238a751_jfgW267.jpg_784f9d0c_thumbnail_1024.webp	1024	webp	\N	\N	80	\N	\N	\N
+271	thumbnails/products/ab4a086761b07c8bfd7c2cd735f49931_59ecQxt.jpg_2922ca75_thumbnail_1024.webp	1024	webp	\N	\N	78	\N	\N	\N
+273	thumbnails/products/185d27fe442a1668cf0196c1b82c87eb.jpg_88331813_thumbnail_256.webp	256	webp	\N	\N	59	\N	\N	\N
+275	thumbnails/products/3be221cdd7210e10180502e55238a751.jpg_784f9d0c_thumbnail_2048.webp	2048	webp	\N	\N	80	\N	\N	\N
+277	thumbnails/products/2197a9f2aefd4dbbc8b125726bbd3429.jpg_385fac5e_thumbnail_2048.webp	2048	webp	\N	\N	79	\N	\N	\N
+279	thumbnails/products/185d27fe442a1668cf0196c1b82c87eb_9xWluq3.jpg_88331813_thumbnail_256.webp	256	\N	\N	\N	59	\N	\N	\N
+282	thumbnails/products/105d0465def3d6bd1d1cd366a2a62866.jpg_4254698c_thumbnail_256.webp	256	webp	\N	\N	87	\N	\N	\N
+284	thumbnails/products/2e0daae3f9383a3e1c5d85b1e0156953.jpg_8b2f960f_thumbnail_64.webp	64	\N	\N	\N	82	\N	\N	\N
+287	thumbnails/products/55faa82f3e1386b8ad1d23565588bce2_2cnYfBO.jpg_0e5d8ac4_thumbnail_1024.webp	1024	webp	\N	\N	68	\N	\N	\N
+289	thumbnails/products/cb447ee89f108a9b4b85da64bef1cd5c_VlumkWD.jpg_e1a0b4ad_thumbnail_1024.webp	1024	webp	\N	\N	70	\N	\N	\N
+291	thumbnails/products/6df8c376b6d4fc9825ce2a8cec8079e2_7a7usZc.jpg_87ec1598_thumbnail_1024.webp	1024	webp	\N	\N	73	\N	\N	\N
+293	thumbnails/products/8e92b168c40655e1c53f2bab25d629e1_5cj4ccD.jpg_78bb84e3_thumbnail_1024.webp	1024	webp	\N	\N	76	\N	\N	\N
+295	thumbnails/products/ca27310bee7c23b4a538294b373debbf_3m09FwH.jpg_e228dcca_thumbnail_1024.webp	1024	webp	\N	\N	71	\N	\N	\N
+297	thumbnails/products/69d7da2a49157404151637f514332377_8UIMqJc.jpg_04c552fd_thumbnail_1024.webp	1024	webp	\N	\N	74	\N	\N	\N
+299	thumbnails/products/ba86524ef8ecb2480e10efd4a449d5c8.jpg_fa3795ff_thumbnail_2048.webp	2048	webp	\N	\N	88	\N	\N	\N
 \.
 
 
@@ -11241,10 +10344,6 @@ COPY public.thumbnail_thumbnail (id, image, size, format, category_id, collectio
 --
 
 COPY public.warehouse_allocation (id, quantity_allocated, stock_id, order_line_id) FROM stdin;
-1	0	214	c55376bd-6f9a-42d5-ad44-841d39c7968b
-2	0	166	1e0845bc-3a57-4f9a-b84f-39d99d53c83f
-3	1	198	d6c9e6b8-2b7b-4faa-8545-a7049efdf4bb
-4	1	655	f665a9a2-b105-4b84-93bb-e026083aa408
 \.
 
 
@@ -11307,735 +10406,11 @@ COPY public.warehouse_reservation (id, quantity_reserved, reserved_until, stock_
 --
 
 COPY public.warehouse_stock (id, quantity, product_variant_id, warehouse_id, quantity_allocated) FROM stdin;
-1	379	393	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-2	379	393	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-3	379	393	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-4	379	393	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-5	379	393	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-6	379	393	fc09b896-0148-4530-8822-ade702eed620	0
-7	379	393	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-8	379	393	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-9	484	394	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-10	484	394	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-11	484	394	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-12	484	394	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-13	484	394	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-14	484	394	fc09b896-0148-4530-8822-ade702eed620	0
-15	484	394	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-16	484	394	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-17	380	395	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-18	380	395	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-19	380	395	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-20	380	395	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-21	380	395	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-22	380	395	fc09b896-0148-4530-8822-ade702eed620	0
-23	380	395	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-24	380	395	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-25	198	396	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-26	198	396	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-27	198	396	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-28	198	396	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-29	198	396	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-30	198	396	fc09b896-0148-4530-8822-ade702eed620	0
-31	198	396	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-32	198	396	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-33	428	397	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-34	428	397	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-35	428	397	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-36	428	397	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-37	428	397	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-38	428	397	fc09b896-0148-4530-8822-ade702eed620	0
-39	428	397	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-40	428	397	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-41	202	398	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-42	202	398	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-43	202	398	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-44	202	398	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-45	202	398	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-46	202	398	fc09b896-0148-4530-8822-ade702eed620	0
-47	202	398	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-48	202	398	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-49	111	399	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-50	111	399	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-51	111	399	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-52	111	399	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-53	111	399	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-54	111	399	fc09b896-0148-4530-8822-ade702eed620	0
-55	111	399	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-56	111	399	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-57	146	400	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-58	146	400	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-59	146	400	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-60	146	400	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-61	146	400	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-62	146	400	fc09b896-0148-4530-8822-ade702eed620	0
-63	146	400	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-64	146	400	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-65	377	401	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-66	377	401	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-67	377	401	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-68	377	401	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-69	377	401	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-70	377	401	fc09b896-0148-4530-8822-ade702eed620	0
-71	377	401	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-72	377	401	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-73	331	324	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-74	331	324	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-75	331	324	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-76	331	324	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-77	331	324	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-78	331	324	fc09b896-0148-4530-8822-ade702eed620	0
-79	331	324	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-80	331	324	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-81	416	332	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-82	416	332	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-83	416	332	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-84	416	332	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-85	416	332	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-86	416	332	fc09b896-0148-4530-8822-ade702eed620	0
-87	416	332	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-88	416	332	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-89	456	333	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-90	456	333	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-91	456	333	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-92	456	333	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-93	456	333	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-94	456	333	fc09b896-0148-4530-8822-ade702eed620	0
-95	456	333	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-96	456	333	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-97	227	334	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-98	227	334	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-99	227	334	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-100	227	334	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-101	227	334	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-102	227	334	fc09b896-0148-4530-8822-ade702eed620	0
-103	227	334	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-104	227	334	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-105	149	335	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-106	149	335	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-107	149	335	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-108	149	335	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-109	149	335	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-110	149	335	fc09b896-0148-4530-8822-ade702eed620	0
-111	149	335	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-112	149	335	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-113	414	336	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-114	414	336	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-115	414	336	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-116	414	336	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-117	414	336	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-118	414	336	fc09b896-0148-4530-8822-ade702eed620	0
-119	414	336	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-120	414	336	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-121	208	337	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-122	208	337	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-123	208	337	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-124	208	337	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-125	208	337	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-126	208	337	fc09b896-0148-4530-8822-ade702eed620	0
-127	208	337	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-128	208	337	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-129	423	338	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-130	423	338	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-131	423	338	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-132	423	338	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-133	423	338	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-134	423	338	fc09b896-0148-4530-8822-ade702eed620	0
-135	423	338	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-136	423	338	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-137	454	339	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-138	454	339	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-139	454	339	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-140	454	339	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-141	454	339	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-142	454	339	fc09b896-0148-4530-8822-ade702eed620	0
-143	454	339	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-144	454	339	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-145	195	340	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-146	195	340	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-147	195	340	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-148	195	340	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-149	195	340	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-150	195	340	fc09b896-0148-4530-8822-ade702eed620	0
-151	195	340	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-152	195	340	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-153	230	341	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-154	230	341	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-155	230	341	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-156	230	341	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-157	230	341	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-158	230	341	fc09b896-0148-4530-8822-ade702eed620	0
-159	230	341	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-160	230	341	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-161	401	342	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-162	401	342	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-163	401	342	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-164	401	342	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-165	401	342	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-167	401	342	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-168	401	342	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-169	185	343	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-170	185	343	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-171	185	343	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-172	185	343	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-173	185	343	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-174	185	343	fc09b896-0148-4530-8822-ade702eed620	0
-175	185	343	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-176	185	343	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-177	119	344	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-178	119	344	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-179	119	344	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-180	119	344	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-181	119	344	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-182	119	344	fc09b896-0148-4530-8822-ade702eed620	0
-183	119	344	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-184	119	344	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-185	119	345	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-186	119	345	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-187	119	345	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-188	119	345	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-189	119	345	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-190	119	345	fc09b896-0148-4530-8822-ade702eed620	0
-191	119	345	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-192	119	345	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-193	384	348	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-194	384	348	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-195	384	348	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-196	384	348	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-197	384	348	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-199	384	348	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-200	384	348	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-201	420	349	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-202	420	349	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-203	420	349	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-204	420	349	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-205	420	349	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-206	420	349	fc09b896-0148-4530-8822-ade702eed620	0
-207	420	349	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-208	420	349	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-209	419	350	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-210	419	350	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-211	419	350	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-212	419	350	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-213	419	350	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-215	419	350	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-216	419	350	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-217	323	351	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-218	323	351	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-219	323	351	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-220	323	351	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-221	323	351	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-222	323	351	fc09b896-0148-4530-8822-ade702eed620	0
-223	323	351	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-224	323	351	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-225	438	352	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-226	438	352	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-227	438	352	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-228	438	352	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-229	438	352	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-230	438	352	fc09b896-0148-4530-8822-ade702eed620	0
-231	438	352	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-232	438	352	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-233	316	353	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-234	316	353	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-235	316	353	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-236	316	353	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-237	316	353	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-238	316	353	fc09b896-0148-4530-8822-ade702eed620	0
-239	316	353	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-240	316	353	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-241	141	354	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-242	141	354	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-243	141	354	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-244	141	354	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-245	141	354	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-246	141	354	fc09b896-0148-4530-8822-ade702eed620	0
-247	141	354	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-248	141	354	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-249	372	355	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-250	372	355	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-251	372	355	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-252	372	355	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-253	372	355	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-254	372	355	fc09b896-0148-4530-8822-ade702eed620	0
-255	372	355	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-256	372	355	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-257	478	356	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-258	478	356	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-259	478	356	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-260	478	356	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-261	478	356	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-262	478	356	fc09b896-0148-4530-8822-ade702eed620	0
-263	478	356	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-264	478	356	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-265	421	357	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-266	421	357	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-267	421	357	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-268	421	357	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-269	421	357	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-270	421	357	fc09b896-0148-4530-8822-ade702eed620	0
-271	421	357	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-272	421	357	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-198	384	348	fc09b896-0148-4530-8822-ade702eed620	1
-273	223	358	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-274	223	358	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-275	223	358	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-276	223	358	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-277	223	358	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-278	223	358	fc09b896-0148-4530-8822-ade702eed620	0
-279	223	358	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-280	223	358	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-281	356	359	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-282	356	359	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-283	356	359	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-284	356	359	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-285	356	359	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-286	356	359	fc09b896-0148-4530-8822-ade702eed620	0
-287	356	359	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-288	356	359	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-289	462	360	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-290	462	360	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-291	462	360	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-292	462	360	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-293	462	360	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-294	462	360	fc09b896-0148-4530-8822-ade702eed620	0
-295	462	360	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-296	462	360	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-297	167	361	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-298	167	361	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-299	167	361	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-300	167	361	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-301	167	361	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-302	167	361	fc09b896-0148-4530-8822-ade702eed620	0
-303	167	361	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-304	167	361	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-305	281	362	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-306	281	362	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-307	281	362	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-308	281	362	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-309	281	362	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-310	281	362	fc09b896-0148-4530-8822-ade702eed620	0
-311	281	362	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-312	281	362	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-313	394	363	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-314	394	363	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-315	394	363	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-316	394	363	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-317	394	363	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-318	394	363	fc09b896-0148-4530-8822-ade702eed620	0
-319	394	363	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-320	394	363	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-321	293	364	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-322	293	364	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-323	293	364	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-324	293	364	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-325	293	364	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-326	293	364	fc09b896-0148-4530-8822-ade702eed620	0
-327	293	364	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-328	293	364	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-329	284	365	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-330	284	365	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-331	284	365	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-332	284	365	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-333	284	365	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-334	284	365	fc09b896-0148-4530-8822-ade702eed620	0
-335	284	365	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-336	284	365	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-337	351	366	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-338	351	366	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-339	351	366	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-340	351	366	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-341	351	366	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-342	351	366	fc09b896-0148-4530-8822-ade702eed620	0
-343	351	366	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-344	351	366	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-345	128	368	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-346	128	368	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-347	128	368	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-348	128	368	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-349	128	368	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-350	128	368	fc09b896-0148-4530-8822-ade702eed620	0
-351	128	368	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-352	128	368	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-353	437	370	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-354	437	370	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-355	437	370	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-356	437	370	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-357	437	370	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-358	437	370	fc09b896-0148-4530-8822-ade702eed620	0
-359	437	370	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-360	437	370	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-361	222	371	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-362	222	371	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-363	222	371	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-364	222	371	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-365	222	371	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-366	222	371	fc09b896-0148-4530-8822-ade702eed620	0
-367	222	371	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-368	222	371	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-369	182	372	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-370	182	372	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-371	182	372	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-372	182	372	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-373	182	372	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-374	182	372	fc09b896-0148-4530-8822-ade702eed620	0
-375	182	372	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-376	182	372	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-377	260	373	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-378	260	373	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-379	260	373	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-380	260	373	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-381	260	373	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-382	260	373	fc09b896-0148-4530-8822-ade702eed620	0
-383	260	373	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-384	260	373	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-385	224	374	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-386	224	374	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-387	224	374	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-388	224	374	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-389	224	374	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-390	224	374	fc09b896-0148-4530-8822-ade702eed620	0
-391	224	374	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-392	224	374	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-393	286	375	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-394	286	375	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-395	286	375	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-396	286	375	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-397	286	375	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-398	286	375	fc09b896-0148-4530-8822-ade702eed620	0
-399	286	375	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-400	286	375	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-401	389	376	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-402	389	376	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-403	389	376	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-404	389	376	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-405	389	376	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-406	389	376	fc09b896-0148-4530-8822-ade702eed620	0
-407	389	376	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-408	389	376	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-409	411	377	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-410	411	377	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-411	411	377	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-412	411	377	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-413	411	377	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-414	411	377	fc09b896-0148-4530-8822-ade702eed620	0
-415	411	377	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-416	411	377	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-417	106	378	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-418	106	378	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-419	106	378	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-420	106	378	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-421	106	378	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-422	106	378	fc09b896-0148-4530-8822-ade702eed620	0
-423	106	378	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-424	106	378	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-425	120	379	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-426	120	379	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-427	120	379	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-428	120	379	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-429	120	379	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-430	120	379	fc09b896-0148-4530-8822-ade702eed620	0
-431	120	379	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-432	120	379	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-433	233	380	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-434	233	380	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-435	233	380	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-436	233	380	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-437	233	380	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-438	233	380	fc09b896-0148-4530-8822-ade702eed620	0
-439	233	380	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-440	233	380	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-441	129	382	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-442	129	382	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-443	129	382	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-444	129	382	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-445	129	382	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-446	129	382	fc09b896-0148-4530-8822-ade702eed620	0
-447	129	382	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-448	129	382	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-449	398	383	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-450	398	383	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-451	398	383	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-452	398	383	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-453	398	383	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-454	398	383	fc09b896-0148-4530-8822-ade702eed620	0
-455	398	383	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-456	398	383	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-457	388	384	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-458	388	384	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-459	388	384	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-460	388	384	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-461	388	384	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-462	388	384	fc09b896-0148-4530-8822-ade702eed620	0
-463	388	384	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-464	388	384	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-465	430	385	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-466	430	385	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-467	430	385	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-468	430	385	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-469	430	385	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-470	430	385	fc09b896-0148-4530-8822-ade702eed620	0
-471	430	385	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-472	430	385	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-473	280	386	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-474	280	386	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-475	280	386	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-476	280	386	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-477	280	386	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-478	280	386	fc09b896-0148-4530-8822-ade702eed620	0
-479	280	386	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-480	280	386	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-481	483	387	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-482	483	387	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-483	483	387	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-484	483	387	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-485	483	387	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-486	483	387	fc09b896-0148-4530-8822-ade702eed620	0
-487	483	387	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-488	483	387	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-489	331	388	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-490	331	388	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-491	331	388	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-492	331	388	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-493	331	388	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-494	331	388	fc09b896-0148-4530-8822-ade702eed620	0
-495	331	388	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-496	331	388	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-497	449	389	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-498	449	389	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-499	449	389	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-500	449	389	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-501	449	389	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-502	449	389	fc09b896-0148-4530-8822-ade702eed620	0
-503	449	389	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-504	449	389	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-505	190	390	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-506	190	390	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-507	190	390	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-508	190	390	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-509	190	390	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-510	190	390	fc09b896-0148-4530-8822-ade702eed620	0
-511	190	390	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-512	190	390	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-513	105	404	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-514	105	404	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-515	105	404	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-516	105	404	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-517	105	404	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-518	105	404	fc09b896-0148-4530-8822-ade702eed620	0
-519	105	404	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-520	105	404	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-521	380	405	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-522	380	405	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-523	380	405	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-524	380	405	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-525	380	405	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-526	380	405	fc09b896-0148-4530-8822-ade702eed620	0
-527	380	405	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-528	380	405	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-529	285	406	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-530	285	406	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-531	285	406	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-532	285	406	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-533	285	406	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-534	285	406	fc09b896-0148-4530-8822-ade702eed620	0
-535	285	406	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-536	285	406	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-537	372	407	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-538	372	407	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-539	372	407	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-540	372	407	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-541	372	407	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-542	372	407	fc09b896-0148-4530-8822-ade702eed620	0
-543	372	407	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-544	372	407	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-545	441	408	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-546	441	408	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-547	441	408	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-548	441	408	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-549	441	408	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-550	441	408	fc09b896-0148-4530-8822-ade702eed620	0
-551	441	408	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-552	441	408	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-553	496	409	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-554	496	409	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-555	496	409	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-556	496	409	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-557	496	409	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-558	496	409	fc09b896-0148-4530-8822-ade702eed620	0
-559	496	409	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-560	496	409	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-561	204	410	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-562	204	410	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-563	204	410	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-564	204	410	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-565	204	410	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-566	204	410	fc09b896-0148-4530-8822-ade702eed620	0
-567	204	410	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-568	204	410	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-569	315	411	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-570	315	411	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-571	315	411	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-572	315	411	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-573	315	411	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-574	315	411	fc09b896-0148-4530-8822-ade702eed620	0
-575	315	411	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-576	315	411	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-577	228	414	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-578	228	414	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-579	228	414	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-580	228	414	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-581	228	414	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-582	228	414	fc09b896-0148-4530-8822-ade702eed620	0
-583	228	414	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-584	228	414	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-585	387	413	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-586	387	413	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-587	387	413	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-588	387	413	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-589	387	413	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-590	387	413	fc09b896-0148-4530-8822-ade702eed620	0
-591	387	413	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-592	387	413	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-593	359	412	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-594	359	412	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-595	359	412	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-596	359	412	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-597	359	412	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-598	359	412	fc09b896-0148-4530-8822-ade702eed620	0
-599	359	412	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-600	359	412	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-601	161	415	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-602	161	415	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-603	161	415	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-604	161	415	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-605	161	415	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-606	161	415	fc09b896-0148-4530-8822-ade702eed620	0
-607	161	415	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-608	161	415	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-609	361	416	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-610	361	416	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-611	361	416	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-612	361	416	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-613	361	416	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-614	361	416	fc09b896-0148-4530-8822-ade702eed620	0
-615	361	416	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-616	361	416	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-617	270	417	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-618	270	417	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-619	270	417	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-620	270	417	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-621	270	417	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-622	270	417	fc09b896-0148-4530-8822-ade702eed620	0
-623	270	417	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-624	270	417	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-625	487	418	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-626	487	418	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-627	487	418	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-628	487	418	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-629	487	418	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-630	487	418	fc09b896-0148-4530-8822-ade702eed620	0
-631	487	418	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-632	487	418	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-633	482	419	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-634	482	419	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-635	482	419	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-636	482	419	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-637	482	419	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-638	482	419	fc09b896-0148-4530-8822-ade702eed620	0
-639	482	419	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-640	482	419	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-641	211	420	c85ff97e-922c-4652-b1b7-21ff602973a0	0
-642	211	420	e0687290-42e3-4096-a2d4-2a5a1a9fad14	0
-643	211	420	118f6aa9-5295-4757-9ffe-feedb716b4cb	0
-644	211	420	1b3d7b2a-e47e-4da1-9227-60ba87dc4d78	0
-645	211	420	b8aaed9b-3250-4211-a700-4fa6d528bc8d	0
-646	211	420	fc09b896-0148-4530-8822-ade702eed620	0
-647	211	420	87696beb-4e56-42f4-a06e-8d20c4f4f8c4	0
-648	211	420	aeba13e5-0774-423f-ac8b-52486d4fac77	0
-664	500	371	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-214	416	350	fc09b896-0148-4530-8822-ade702eed620	0
-166	400	342	fc09b896-0148-4530-8822-ade702eed620	0
-649	500	358	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-650	500	364	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-651	500	375	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-652	500	340	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-653	500	379	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-654	500	353	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-656	500	348	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-657	500	394	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-658	500	335	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-659	500	333	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-660	500	372	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-661	500	389	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-662	500	345	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-663	500	324	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-665	500	388	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-666	500	387	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-667	500	399	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-668	500	400	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-669	500	401	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-670	500	393	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-671	500	386	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-672	500	385	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-673	500	384	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-674	500	383	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-675	500	382	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-676	500	368	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-677	500	370	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-678	500	359	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-679	500	365	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-680	500	376	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-681	500	341	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-682	500	380	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-683	500	354	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-684	500	362	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-685	500	349	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-686	500	395	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-687	500	336	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-688	500	332	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-689	500	373	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-690	500	390	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-691	500	411	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-692	500	360	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-693	500	366	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-694	500	377	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-695	500	342	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-696	500	355	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-697	500	363	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-698	500	350	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-699	500	396	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-700	500	337	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-701	500	334	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-702	500	374	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-703	500	412	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-704	500	378	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-705	500	343	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-706	500	356	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-707	500	351	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-708	500	397	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-709	500	338	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-710	500	413	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-711	500	344	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-712	500	357	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-713	500	352	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-714	500	398	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-715	500	339	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-716	500	414	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-717	500	404	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-718	500	405	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-719	500	406	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-720	500	407	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-721	500	408	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-722	500	409	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-723	500	410	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-724	500	419	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-725	500	418	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-726	500	417	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-727	500	420	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-728	500	415	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-729	500	416	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-655	500	361	7298b4a0-0518-4481-b40c-24176e0da3e4	1
+731	120	5	7298b4a0-0518-4481-b40c-24176e0da3e4	0
+732	200	7	7298b4a0-0518-4481-b40c-24176e0da3e4	0
+733	140	9	7298b4a0-0518-4481-b40c-24176e0da3e4	0
+734	9999	2	7298b4a0-0518-4481-b40c-24176e0da3e4	0
+730	150	3	7298b4a0-0518-4481-b40c-24176e0da3e4	0
 \.
 
 
@@ -12102,7 +10477,7 @@ COPY public.webhook_webhookevent (id, event_type, webhook_id) FROM stdin;
 -- Name: account_customerevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.account_customerevent_id_seq', 46, true);
+SELECT pg_catalog.setval('public.account_customerevent_id_seq', 49, true);
 
 
 --
@@ -12130,14 +10505,14 @@ SELECT pg_catalog.setval('public.account_group_channels_id_seq', 3, true);
 -- Name: account_serviceaccount_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.account_serviceaccount_id_seq', 1, true);
+SELECT pg_catalog.setval('public.account_serviceaccount_id_seq', 3, true);
 
 
 --
 -- Name: account_serviceaccount_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.account_serviceaccount_permissions_id_seq', 7, true);
+SELECT pg_catalog.setval('public.account_serviceaccount_permissions_id_seq', 14, true);
 
 
 --
@@ -12200,7 +10575,7 @@ SELECT pg_catalog.setval('public.attribute_assignedpageattributevalue_id_seq', 1
 -- Name: attribute_assignedproductattributevalue_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.attribute_assignedproductattributevalue_id_seq', 1, false);
+SELECT pg_catalog.setval('public.attribute_assignedproductattributevalue_id_seq', 4, true);
 
 
 --
@@ -12277,7 +10652,7 @@ SELECT pg_catalog.setval('public.checkout_checkout_gift_cards_id_seq', 1, false)
 -- Name: checkout_checkoutmetadata_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.checkout_checkoutmetadata_id_seq', 13, true);
+SELECT pg_catalog.setval('public.checkout_checkoutmetadata_id_seq', 15, true);
 
 
 --
@@ -12480,7 +10855,7 @@ SELECT pg_catalog.setval('public.django_site_id_seq', 1, true);
 -- Name: drm_readingprogress_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.drm_readingprogress_id_seq', 3, true);
+SELECT pg_catalog.setval('public.drm_readingprogress_id_seq', 11, true);
 
 
 --
@@ -12536,7 +10911,7 @@ SELECT pg_catalog.setval('public.menu_menu_id_seq', 2, true);
 -- Name: menu_menuitem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.menu_menuitem_id_seq', 12, true);
+SELECT pg_catalog.setval('public.menu_menuitem_id_seq', 45, true);
 
 
 --
@@ -12550,14 +10925,14 @@ SELECT pg_catalog.setval('public.menu_menuitemtranslation_id_seq', 7, true);
 -- Name: order_fulfillment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.order_fulfillment_id_seq', 8, true);
+SELECT pg_catalog.setval('public.order_fulfillment_id_seq', 9, true);
 
 
 --
 -- Name: order_fulfillmentline_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.order_fulfillmentline_id_seq', 7, true);
+SELECT pg_catalog.setval('public.order_fulfillmentline_id_seq', 8, true);
 
 
 --
@@ -12571,14 +10946,14 @@ SELECT pg_catalog.setval('public.order_order_gift_cards_id_seq', 1, false);
 -- Name: order_order_number_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.order_order_number_seq', 41, true);
+SELECT pg_catalog.setval('public.order_order_number_seq', 43, true);
 
 
 --
 -- Name: order_orderevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.order_orderevent_id_seq', 74, true);
+SELECT pg_catalog.setval('public.order_orderevent_id_seq', 90, true);
 
 
 --
@@ -12634,14 +11009,14 @@ SELECT pg_catalog.setval('public.payment_transaction_id_seq', 1, false);
 -- Name: payment_transactionevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.payment_transactionevent_id_seq', 37, true);
+SELECT pg_catalog.setval('public.payment_transactionevent_id_seq', 39, true);
 
 
 --
 -- Name: payment_transactionitem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.payment_transactionitem_id_seq', 37, true);
+SELECT pg_catalog.setval('public.payment_transactionitem_id_seq', 39, true);
 
 
 --
@@ -12669,7 +11044,7 @@ SELECT pg_catalog.setval('public.product_assignedvariantattribute_id_seq', 1, fa
 -- Name: product_attributechoicevalue_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_attributechoicevalue_id_seq', 436, true);
+SELECT pg_catalog.setval('public.product_attributechoicevalue_id_seq', 440, true);
 
 
 --
@@ -12690,7 +11065,7 @@ SELECT pg_catalog.setval('public.product_attributepage_id_seq', 74, true);
 -- Name: product_attributeproduct_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_attributeproduct_id_seq', 1, false);
+SELECT pg_catalog.setval('public.product_attributeproduct_id_seq', 1, true);
 
 
 --
@@ -12704,35 +11079,35 @@ SELECT pg_catalog.setval('public.product_attributevariant_id_seq', 1, false);
 -- Name: product_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_category_id_seq', 1, true);
+SELECT pg_catalog.setval('public.product_category_id_seq', 46, true);
 
 
 --
 -- Name: product_categorytranslation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_categorytranslation_id_seq', 36, true);
+SELECT pg_catalog.setval('public.product_categorytranslation_id_seq', 126, true);
 
 
 --
 -- Name: product_collection_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_collection_id_seq', 1, false);
+SELECT pg_catalog.setval('public.product_collection_id_seq', 2, true);
 
 
 --
 -- Name: product_collection_products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_collection_products_id_seq', 29, true);
+SELECT pg_catalog.setval('public.product_collection_products_id_seq', 41, true);
 
 
 --
 -- Name: product_collectionchannellisting_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_collectionchannellisting_id_seq', 3, true);
+SELECT pg_catalog.setval('public.product_collectionchannellisting_id_seq', 9, true);
 
 
 --
@@ -12746,14 +11121,14 @@ SELECT pg_catalog.setval('public.product_collectiontranslation_id_seq', 1, false
 -- Name: product_product_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_product_id_seq', 1, false);
+SELECT pg_catalog.setval('public.product_product_id_seq', 4, true);
 
 
 --
 -- Name: product_productattribute_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_productattribute_id_seq', 91, true);
+SELECT pg_catalog.setval('public.product_productattribute_id_seq', 92, true);
 
 
 --
@@ -12767,42 +11142,42 @@ SELECT pg_catalog.setval('public.product_productattributetranslation_id_seq', 58
 -- Name: product_productchannellisting_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_productchannellisting_id_seq', 87, true);
+SELECT pg_catalog.setval('public.product_productchannellisting_id_seq', 99, true);
 
 
 --
 -- Name: product_productclass_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_productclass_id_seq', 1, true);
+SELECT pg_catalog.setval('public.product_productclass_id_seq', 2, true);
 
 
 --
 -- Name: product_productmedia_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_productmedia_id_seq', 48, true);
+SELECT pg_catalog.setval('public.product_productmedia_id_seq', 88, true);
 
 
 --
 -- Name: product_producttranslation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_producttranslation_id_seq', 87, true);
+SELECT pg_catalog.setval('public.product_producttranslation_id_seq', 95, true);
 
 
 --
 -- Name: product_productvariant_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_productvariant_id_seq', 1, false);
+SELECT pg_catalog.setval('public.product_productvariant_id_seq', 9, true);
 
 
 --
 -- Name: product_productvariantchannellisting_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_productvariantchannellisting_id_seq', 244, true);
+SELECT pg_catalog.setval('public.product_productvariantchannellisting_id_seq', 272, true);
 
 
 --
@@ -12928,21 +11303,21 @@ SELECT pg_catalog.setval('public.tax_taxconfigurationpercountry_id_seq', 1, fals
 -- Name: thumbnail_thumbnail_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.thumbnail_thumbnail_id_seq', 172, true);
+SELECT pg_catalog.setval('public.thumbnail_thumbnail_id_seq', 300, true);
 
 
 --
 -- Name: userprofile_address_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.userprofile_address_id_seq', 60, true);
+SELECT pg_catalog.setval('public.userprofile_address_id_seq', 63, true);
 
 
 --
 -- Name: userprofile_user_addresses_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.userprofile_user_addresses_id_seq', 1, false);
+SELECT pg_catalog.setval('public.userprofile_user_addresses_id_seq', 1, true);
 
 
 --
@@ -12956,7 +11331,7 @@ SELECT pg_catalog.setval('public.userprofile_user_groups_id_seq', 3, true);
 -- Name: userprofile_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.userprofile_user_id_seq', 6, true);
+SELECT pg_catalog.setval('public.userprofile_user_id_seq', 7, true);
 
 
 --
@@ -12998,7 +11373,7 @@ SELECT pg_catalog.setval('public.warehouse_reservation_id_seq', 1, false);
 -- Name: warehouse_stock_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.warehouse_stock_id_seq', 729, true);
+SELECT pg_catalog.setval('public.warehouse_stock_id_seq', 734, true);
 
 
 --
@@ -20835,5 +19210,5 @@ ALTER TABLE ONLY public.webhook_webhookevent
 -- PostgreSQL database dump complete
 --
 
-\unrestrict ifjWeMGj3M8EAIRPvhfWmsLrDXiWXx76RaaqSezhhYK33bgsNUcEbhUcicYQamn
+\unrestrict PnslLgL408HXPefgvvsWEjq0EF5oiyvwPwk5RhwelGe7LSIoBXw8KRK7K3zraui
 

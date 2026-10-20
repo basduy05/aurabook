@@ -5,9 +5,12 @@ import { type ReactNode } from "react";
 
 export function ConditionalFooter({ children }: { children: ReactNode }) {
 	const pathname = usePathname();
-	const isCommunity = pathname?.includes("/community");
+	const isImmersive =
+		pathname?.includes("/community") ||
+		pathname?.includes("/reader") ||
+		pathname?.includes("/search");
 
-	if (isCommunity) {
+	if (isImmersive) {
 		return null;
 	}
 

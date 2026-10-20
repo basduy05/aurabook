@@ -1,15 +1,5 @@
-import type { Metadata } from "next";
-import { CommunityAdminDashboard } from "@/ui/components/community/admin/community-admin-dashboard";
-
-export const metadata: Metadata = {
-	title: "Quản trị Cộng đồng & Độc giả | Saleor Admin",
-	description: "Bảng điều khiển quản trị mạng xã hội, kiểm duyệt bài viết và quản lý người dùng Aurabook theo chuẩn Saleor Dashboard.",
-};
+import { redirect } from "next/navigation";
 
 export default function StandaloneCommunityAdminPage() {
-	return (
-		<main className="min-h-screen bg-background text-foreground">
-			<CommunityAdminDashboard />
-		</main>
-	);
+	redirect("/system-admin?tab=readers");
 }

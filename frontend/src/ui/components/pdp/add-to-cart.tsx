@@ -3,10 +3,14 @@
 import { useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import { useTranslations } from "next-intl";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, BookOpen, ShieldCheck } from "lucide-react";
 import { bumpChromeVersion } from "@/lib/chrome-sync";
 import { Button } from "@/ui/components/ui/button";
+import { Badge } from "@/ui/components/ui/badge";
 import { DiscountPercentLabel } from "@/ui/components/ui/sale-label";
+import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
+import { Loader } from "@/ui/atoms/loader";
+import { AudioTeaserPlayer } from "./audio-teaser-player";
 import { cn } from "@/lib/utils";
 
 interface AddToCartProps {
@@ -17,6 +21,8 @@ interface AddToCartProps {
 	disabledReason?: "no-selection" | "out-of-stock";
 	secureCheckoutLabel: string;
 	freeShippingTrustLabel?: string | null;
+	productSlug?: string;
+	productName?: string;
 }
 
 function AddToCartButton({
@@ -54,8 +60,12 @@ function AddToCartButton({
 			disabled={disabled || pending}
 			className={cn("h-14 w-full text-base font-medium transition-all duration-200", pending && "opacity-80")}
 		>
-			<ShoppingBag className={cn("mr-2 h-5 w-5 transition-transform", pending && "scale-90")} />
-			{getButtonText()}
+			{pending ? (
+				<Loader key="cart-loader" size="sm" className="mr-2 text-primary-foreground fill-primary-foreground" />
+			) : (
+				<ShoppingBag key="cart-icon" className={cn("mr-2 h-5 w-5 transition-transform", pending && "scale-90")} />
+			)}
+			<span key="cart-text">{getButtonText()}</span>
 		</Button>
 	);
 }
@@ -68,7 +78,20 @@ export function AddToCart({
 	disabledReason,
 	secureCheckoutLabel,
 	freeShippingTrustLabel,
+	productSlug,
+	productName,
 }: AddToCartProps) {
+	const defaultEpubMap: Record<string, string> = {
+		"dac-nhan-tam": "/books/dac-nhan-tam.epub",
+		"bon-thoa-uoc": "/books/bon-thoa-uoc.epub",
+		"sapiens-luoc-su-loai-nguoi": "/books/sapiens-luoc-su-loai-nguoi.epub",
+		"tri-tue-do-thai": "/books/tri-tue-do-thai.epub",
+	};
+	const resolvedEpub =
+		(productSlug && defaultEpubMap[productSlug]) ||
+		(productSlug ? `/books/${productSlug}.epub` : "/books/dac-nhan-tam.epub");
+	const trialLink = `/reader/${productSlug || "sample-book"}?mode=trial&epub=${encodeURIComponent(resolvedEpub)}${productName ? `&title=${encodeURIComponent(productName)}` : ""}`;
+
 	return (
 		<div className="space-y-4">
 			<div className="flex items-baseline gap-3">
@@ -82,6 +105,24 @@ export function AddToCart({
 			</div>
 
 			<AddToCartButton disabled={disabled} disabledReason={disabledReason} />
+
+			{/* Reader DRM 15-Page Preview Action */}
+			<div className="flex items-center justify-between gap-3 rounded-card border border-border bg-muted/40 p-3 text-xs transition-colors hover:bg-muted/60">
+				<LinkWithChannel
+					href={trialLink}
+					className="flex items-center gap-2 font-medium text-foreground hover:underline"
+				>
+					<BookOpen className="h-4 w-4 text-primary" />
+					<span>Đọc thử 15 trang đầu (Tài khoản đã đăng ký)</span>
+				</LinkWithChannel>
+				<Badge variant="success" className="gap-1 text-[11px]">
+					<ShieldCheck className="h-3 w-3" />
+					<span>Bản quyền DRM</span>
+				</Badge>
+			</div>
+
+			{/* Audiobook Teaser Audio Preview (aurabook_apps.audio) */}
+			<AudioTeaserPlayer />
 
 			<div className="flex items-center justify-center gap-6 pt-2 text-xs text-muted-foreground">
 				<span className="flex items-center gap-1.5">

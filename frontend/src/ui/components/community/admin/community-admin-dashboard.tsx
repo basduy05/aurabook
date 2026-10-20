@@ -38,6 +38,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
+import { Loader } from "@/ui/atoms/loader";
 import { Badge } from "@/ui/components/ui/badge";
 import { type CommunityUser, type CommunityPost } from "@/lib/community/types";
 import { CommunityPostEditModal, PostHistoryModal } from "../community-post-edit-modal";
@@ -45,13 +46,40 @@ import { CommunityPostEditModal, PostHistoryModal } from "../community-post-edit
 type MainTab = "management" | "communications";
 type ManagementSubTab = "posts" | "users" | "settings";
 
-export function CommunityAdminDashboard() {
+export interface CommunityAdminDashboardProps {
+	embedded?: boolean;
+	embeddedTab?: "users" | "posts" | "announcements" | "settings";
+}
+
+export function CommunityAdminDashboard({
+	embedded = false,
+	embeddedTab,
+}: CommunityAdminDashboardProps = {}) {
 	const [authStatus, setAuthStatus] = useState<"checking" | "authorized" | "unauthorized">("checking");
 	const [adminUser, setAdminUser] = useState<{ id: string; email: string; fullName: string; isStaff: boolean } | null>(null);
 
 	// Navigation Tabs
-	const [mainTab, setMainTab] = useState<MainTab>("management");
-	const [mgmtSubTab, setMgmtSubTab] = useState<ManagementSubTab>("posts");
+	const [mainTab, setMainTab] = useState<MainTab>(
+		embeddedTab === "announcements" ? "communications" : "management"
+	);
+	const [mgmtSubTab, setMgmtSubTab] = useState<ManagementSubTab>(
+		embeddedTab === "users" ? "users" : embeddedTab === "settings" ? "settings" : "posts"
+	);
+
+	useEffect(() => {
+		if (embeddedTab === "users") {
+			setMainTab("management");
+			setMgmtSubTab("users");
+		} else if (embeddedTab === "posts") {
+			setMainTab("management");
+			setMgmtSubTab("posts");
+		} else if (embeddedTab === "announcements") {
+			setMainTab("communications");
+		} else if (embeddedTab === "settings") {
+			setMainTab("management");
+			setMgmtSubTab("settings");
+		}
+	}, [embeddedTab]);
 
 	// Communications State
 	const [isCreatingCommPost, setIsCreatingCommPost] = useState(false);
@@ -398,11 +426,8 @@ export function CommunityAdminDashboard() {
 	if (authStatus === "checking" || (isLoading && posts.length === 0 && authStatus === "authorized")) {
 		return (
 			<div className="flex min-h-[500px] w-full flex-col items-center justify-center gap-3 bg-background p-8 text-center text-foreground">
-				<RefreshCw className="h-8 w-8 animate-spin text-primary" />
-				<div className="space-y-1">
-					<p className="text-sm font-semibold">Đang kiểm tra quyền Quản trị viên Aurabook...</p>
-					<p className="text-xs text-muted-foreground">Kết nối Saleor Core & Dữ liệu Quản trị</p>
-				</div>
+				<Loader size="xl" text="Đang kiểm tra quyền Quản trị viên Aurabook..." />
+				<p className="text-xs text-muted-foreground">Kết nối Saleor Core & Dữ liệu Quản trị</p>
 			</div>
 		);
 	}
@@ -469,7 +494,7 @@ export function CommunityAdminDashboard() {
 						>
 							{isLoggingIn ? (
 								<>
-									<RefreshCw className="h-3.5 w-3.5 animate-spin" />
+									<Loader size="sm" className="mr-1 text-primary-foreground fill-primary-foreground" />
 									<span>Đang xác thực...</span>
 								</>
 							) : (
@@ -492,81 +517,87 @@ export function CommunityAdminDashboard() {
 	}
 
 	return (
-		<div className="min-h-screen w-full bg-background text-foreground pb-12 font-sans">
+		<div className={embedded ? "w-full text-foreground space-y-6" : "min-h-screen w-full bg-background text-foreground pb-12 font-sans"}>
 			{/* Top Bar with Saleor Breadcrumb & System Status */}
-			<header className="border-b border-border bg-card px-4 sm:px-8 py-3.5 shadow-2xs">
-				<div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-					<div className="space-y-1">
-						<nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-muted-foreground flex-wrap">
-							<span className="hover:text-foreground">Bảng điều khiển</span>
-							<span>/</span>
-							<span className="hover:text-foreground">Ứng dụng Saleor</span>
-							<span>/</span>
-							<span className="font-semibold text-foreground">Quản trị Cộng đồng & Độc giả</span>
-							{adminUser && (
-								<>
-									<span>•</span>
-									<span className="text-primary font-medium">{adminUser.fullName || adminUser.email} (Staff)</span>
-								</>
-							)}
-						</nav>
-						<div className="flex items-center gap-3">
-							<Image
-								src="/android-chrome-192x192.png"
-								alt="Aurabook"
-								width={24}
-								height={24}
-								className="h-6 w-6 rounded-md object-contain"
-								unoptimized
-							/>
-							<div className="flex items-center gap-2">
-								<h1 className="text-sm font-bold tracking-tight text-foreground">
-									Trung Tâm Quản Trị Cộng Đồng Aurabook
-								</h1>
-								<Badge variant="outline-solid" className="text-[10px] py-0 px-1.5 text-primary border-primary/30">
-									Saleor App
-								</Badge>
+			{!embedded && (
+				<header className="border-b border-border bg-card px-4 sm:px-8 py-3.5 shadow-2xs">
+					<div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+						<div className="space-y-1">
+							<nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-muted-foreground flex-wrap">
+								<span className="hover:text-foreground">Bảng điều khiển</span>
+								<span>/</span>
+								<span className="hover:text-foreground">Ứng dụng Saleor</span>
+								<span>/</span>
+								<span className="font-semibold text-foreground">Quản trị Cộng đồng & Độc giả</span>
+								{adminUser && (
+									<>
+										<span>•</span>
+										<span className="text-primary font-medium">{adminUser.fullName || adminUser.email} (Staff)</span>
+									</>
+								)}
+							</nav>
+							<div className="flex items-center gap-3">
+								<Image
+									src="/android-chrome-192x192.png"
+									alt="Aurabook"
+									width={24}
+									height={24}
+									className="h-6 w-6 rounded-md object-contain"
+									unoptimized
+								/>
+								<div className="flex items-center gap-2">
+									<h1 className="text-sm font-bold tracking-tight text-foreground">
+										Trung Tâm Quản Trị Cộng Đồng Aurabook
+									</h1>
+									<Badge variant="outline-solid" className="text-[10px] py-0 px-1.5 text-primary border-primary/30">
+										Saleor App
+									</Badge>
+								</div>
 							</div>
 						</div>
-					</div>
 
-					<div className="flex items-center gap-2">
-						<Link
-							href="/vi/channel-vnd/community"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-muted transition-colors shadow-2xs"
-						>
-							<ExternalLink strokeWidth={1.75} className="h-3.5 w-3.5" />
-							<span>Xem trang cộng đồng</span>
-						</Link>
-						<Button
-							type="button"
-							variant="outline-solid"
-							size="sm"
-							onClick={loadData}
-							disabled={isLoading}
-							className="h-8 text-xs gap-1.5"
-						>
-							<RefreshCw strokeWidth={1.75} className={`h-3.5 w-3.5 ${isLoading ? "animate-spin" : ""}`} />
-							<span>{isLoading ? "Đang đồng bộ..." : "Đồng bộ"}</span>
-						</Button>
-						<Button
-							type="button"
-							variant="outline-solid"
-							size="sm"
-							onClick={handleAdminLogout}
-							className="h-8 text-xs gap-1.5 text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/30"
-						>
-							<LogOut strokeWidth={1.75} className="h-3.5 w-3.5" />
-							<span>Đăng xuất</span>
-						</Button>
+						<div className="flex items-center gap-2">
+							<Link
+								href="/vi/channel-vnd/community"
+								target="_blank"
+								rel="noopener noreferrer"
+								className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-muted transition-colors shadow-2xs"
+							>
+								<ExternalLink strokeWidth={1.75} className="h-3.5 w-3.5" />
+								<span>Xem trang cộng đồng</span>
+							</Link>
+							<Button
+								type="button"
+								variant="outline-solid"
+								size="sm"
+								onClick={loadData}
+								disabled={isLoading}
+								className="h-8 text-xs gap-1.5"
+							>
+								{isLoading ? (
+									<Loader size="xs" />
+								) : (
+									<RefreshCw strokeWidth={1.75} className="h-3.5 w-3.5" />
+								)}
+								<span>{isLoading ? "Đang đồng bộ..." : "Đồng bộ"}</span>
+							</Button>
+							<Button
+								type="button"
+								variant="outline-solid"
+								size="sm"
+								onClick={handleAdminLogout}
+								className="h-8 text-xs gap-1.5 text-destructive hover:text-destructive hover:bg-destructive/10 border-destructive/30"
+							>
+								<LogOut strokeWidth={1.75} className="h-3.5 w-3.5" />
+								<span>Đăng xuất</span>
+							</Button>
+						</div>
 					</div>
-				</div>
-			</header>
+				</header>
+			)}
 
 			{/* Main Workspace Area */}
-			<div className="max-w-7xl mx-auto px-4 sm:px-8 pt-6 space-y-6">
+			<div className={embedded ? "w-full space-y-6" : "max-w-7xl mx-auto px-4 sm:px-8 pt-6 space-y-6"}>
 				{/* Macaw UI KPI Metric Cards */}
 				<div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
 					<div className="rounded-xl border border-border bg-card p-4 shadow-2xs">
@@ -607,6 +638,7 @@ export function CommunityAdminDashboard() {
 				</div>
 
 				{/* 2 Primary Navigation Tabs: Quản lý (Management) & Truyền thông (Communications) */}
+				{!embeddedTab && (
 				<div className="border-b border-border flex items-center gap-2">
 					<button
 						type="button"
@@ -646,6 +678,7 @@ export function CommunityAdminDashboard() {
 						)}
 					</button>
 				</div>
+				)}
 
 				{/* ============================================================== */}
 				{/* TAB 1: QUẢN LÝ (MANAGEMENT)                                      */}

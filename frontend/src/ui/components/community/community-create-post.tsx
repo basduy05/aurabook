@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Star, Send, Book, AlertCircle, Search, X, ExternalLink, CheckCircle2, MessageSquare } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { Input } from "@/ui/components/ui/input";
+import { Loader } from "@/ui/atoms/loader";
 import { type CommunityUser, type CommunityPost } from "@/lib/community/types";
 import { RichToolbar, MentionDropdown } from "./community-rich-editor";
 
@@ -383,8 +384,8 @@ export function CommunityCreatePost({
 								{showBookDropdown && (
 									<div className="absolute left-0 right-0 top-full mt-1 max-h-56 overflow-y-auto rounded-lg border border-border bg-card p-1 shadow-lg z-30 divide-y divide-border/60">
 										{isSearchingBooks ? (
-											<div className="p-3 text-center text-[13px] text-muted-foreground">
-												Đang tìm kiếm sách...
+											<div className="p-4 text-center text-[13px] text-muted-foreground flex flex-col items-center justify-center">
+												<Loader size="sm" text="Đang tìm kiếm sách trong hệ thống..." />
 											</div>
 										) : bookResults.length === 0 ? (
 											<div className="p-3 text-center text-[13px] text-muted-foreground">
@@ -439,7 +440,7 @@ export function CommunityCreatePost({
 							<div className="pt-2 border-t border-border/60">
 								{isCheckingEligibility ? (
 									<div className="text-[12px] text-muted-foreground flex items-center gap-2 py-1">
-										<div className="h-3 w-3 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+										<Loader size="xs" />
 										<span>Đang kiểm tra thông tin đơn hàng...</span>
 									</div>
 								) : hasPurchasedBook ? (
@@ -543,7 +544,11 @@ export function CommunityCreatePost({
 							disabled={isSubmitting}
 							className="gap-2 text-[13px] h-9.5 px-6 font-semibold whitespace-nowrap shrink-0 rounded-xl shadow-xs"
 						>
-							<Send className="h-3.5 w-3.5" />
+							{isSubmitting ? (
+								<Loader size="sm" className="text-primary-foreground fill-primary-foreground" />
+							) : (
+								<Send className="h-3.5 w-3.5" />
+							)}
 							{isSubmitting ? "Đang đăng..." : "Đăng bài viết"}
 						</Button>
 					</div>

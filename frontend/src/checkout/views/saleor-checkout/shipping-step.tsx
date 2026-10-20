@@ -22,6 +22,7 @@ import { MobileStickyAction } from "./mobile-sticky-action";
 import { useCheckoutStepNumber } from "@/checkout/hooks/use-checkout-steps";
 import { isInnerCityAddress } from "@/lib/vietnam-administrative/data";
 import { useTranslations } from "next-intl";
+import { Loader } from "@/ui/atoms/loader";
 
 interface ShippingStepProps {
 	checkout: CheckoutFragment;
@@ -187,7 +188,7 @@ export const ShippingStep: FC<ShippingStepProps> = ({
 
 				{showSpinner ? (
 					<div className="flex items-center gap-3 rounded-lg border border-border p-4">
-						<div className="h-5 w-5 animate-spin rounded-full border-2 border-foreground border-t-transparent" />
+						<Loader size="sm" />
 						<p className="text-sm text-muted-foreground">{t("shipping.loadingMethods")}</p>
 					</div>
 				) : filteredDeliveries.length === 0 ? (

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
@@ -5,10 +6,8 @@ import {
 	Phone,
 	MapPin,
 	Clock,
-	MessageSquare,
 	ChevronRight,
 	HelpCircle,
-	Sparkles,
 	Headphones,
 } from "lucide-react";
 import { Badge } from "@/ui/components/ui/badge";
@@ -28,7 +27,30 @@ export async function generateMetadata(props: {
 	};
 }
 
-export default async function ContactPage(props: {
+function ContactPageFallback() {
+	return (
+		<div className="container-content py-10 pb-20 animate-pulse">
+			<div className="mb-6 h-4 w-36 rounded bg-muted" />
+			<div className="mb-12 h-28 max-w-3xl rounded-2xl bg-muted" />
+			<div className="grid gap-10 lg:grid-cols-12">
+				<div className="h-96 rounded-2xl bg-muted lg:col-span-5" />
+				<div className="h-96 rounded-2xl bg-muted lg:col-span-7" />
+			</div>
+		</div>
+	);
+}
+
+export default function ContactPage(props: {
+	params: Promise<{ locale: string; channel: string }>;
+}) {
+	return (
+		<Suspense fallback={<ContactPageFallback />}>
+			<ContactContent params={props.params} />
+		</Suspense>
+	);
+}
+
+async function ContactContent(props: {
 	params: Promise<{ locale: string; channel: string }>;
 }) {
 	const { locale, channel } = await props.params;

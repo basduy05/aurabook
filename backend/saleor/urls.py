@@ -3,6 +3,7 @@ from django.conf.urls.static import static
 from django.contrib.staticfiles.views import serve
 from django.urls import re_path, path, include
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import RedirectView
 
 from .core.views import jwks, serve_media_view
 from .graphql.api import backend, schema
@@ -52,6 +53,9 @@ urlpatterns = [
     re_path(r"^\.well-known/jwks.json$", jwks, name="jwks"),
     # AuraBook Custom REST APIs
     path("aurabook/", include("aurabook_apps.urls")),
+    # Auto-redirect dashboard and admin to Aurabook Dashboard (Port 9000)
+    re_path(r"^dashboard/?$", RedirectView.as_view(url="http://localhost:9000/dashboard/", permanent=False)),
+    re_path(r"^admin/?$", RedirectView.as_view(url="http://localhost:9000/dashboard/", permanent=False)),
 ]
 
 if settings.DEBUG:

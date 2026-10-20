@@ -39,7 +39,6 @@ export function UserMenu({ user }: Props) {
 				<DropdownMenuItem asChild>
 					<LinkWithChannel href="/account/orders">{t("myOrders")}</LinkWithChannel>
 				</DropdownMenuItem>
-				<DropdownMenuSeparator />
 				<DropdownMenuItem asChild>
 					<LogoutButton className="w-full cursor-default">{t("logOut")}</LogoutButton>
 				</DropdownMenuItem>

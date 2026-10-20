@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { ShoppingBag } from "lucide-react";
 import { throttle } from "lodash-es";
 import { Button } from "@/ui/components/ui/button";
+import { Loader } from "@/ui/atoms/loader";
 import { cn } from "@/lib/utils";
 
 /** Scroll threshold (in pixels) before showing the sticky bar */
@@ -45,8 +46,12 @@ function StickyAddButton() {
 			disabled={pending}
 			className={cn("min-w-[130px] shrink-0", "transition-none disabled:opacity-100")}
 		>
-			<ShoppingBag className="h-4 w-4" />
-			{pending ? t("adding") : t("addToBag")}
+			{pending ? (
+				<Loader key="sticky-loader" size="sm" className="mr-1.5 text-primary-foreground fill-primary-foreground" />
+			) : (
+				<ShoppingBag key="sticky-icon" className="mr-1.5 h-4 w-4" />
+			)}
+			<span key="sticky-text">{pending ? t("adding") : t("addToBag")}</span>
 		</Button>
 	);
 }

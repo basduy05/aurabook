@@ -33,15 +33,15 @@ export function BrowseHeaderFrame({ params }: { params: BrowseRouteParams }) {
 			id="storefront-header"
 			className="relative sticky top-0 z-40 border-b border-border bg-background"
 		>
-			<div className="container-nav">
-				<div className="flex h-16 items-center justify-between gap-4">
+			<div className="container-nav px-3 sm:px-6">
+				<div className="flex h-16 items-center justify-between gap-3 lg:gap-4">
 					<Suspense fallback={<HeaderLogoFallback />}>
 						<Logo />
 					</Suspense>
 
 					<Suspense
 						fallback={
-							<nav className="hidden flex-1 justify-center lg:ml-10 lg:flex xl:ml-14" aria-hidden="true">
+							<nav className="hidden flex-1 justify-center lg:flex lg:mx-3 xl:mx-6 min-w-0" aria-hidden="true">
 								<div className="h-4 w-48 animate-pulse rounded bg-secondary" />
 							</nav>
 						}
@@ -52,10 +52,10 @@ export function BrowseHeaderFrame({ params }: { params: BrowseRouteParams }) {
 					<Suspense
 						fallback={
 							<div
-								className="hidden md:flex md:max-w-md md:flex-1 md:justify-end lg:flex-none"
+								className="hidden md:flex md:w-56 lg:w-60 xl:w-72 md:justify-end shrink-0"
 								aria-hidden="true"
 							>
-								<div className="h-10 w-full max-w-md animate-pulse rounded-lg bg-secondary" />
+								<div className="h-10 w-full animate-pulse rounded-lg bg-secondary" />
 							</div>
 						}
 					>

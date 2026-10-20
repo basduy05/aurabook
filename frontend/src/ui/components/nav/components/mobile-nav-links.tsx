@@ -154,12 +154,40 @@ export function MobileNavLinks({ items, nav }: { items: NavMenuItem[]; nav: NavC
 	const params = useParams<{ locale?: string }>();
 	const isEn = params?.locale === "en";
 
+	const EXCLUDED_HEADER_ITEMS = new Set([
+		"apparel",
+		"accessories",
+		"groceries",
+		"quần áo",
+		"phụ kiện",
+		"cửa hàng tạp hóa",
+		"cửa hàng tạp hoá",
+		"tạp hóa",
+		"tạp hoá",
+	]);
+
+	const visibleItems = items.filter((item) => {
+		const labelLower = item.label?.toLowerCase().trim();
+		if (EXCLUDED_HEADER_ITEMS.has(labelLower)) return false;
+		if (item.href) {
+			const hrefLower = item.href.toLowerCase();
+			if (
+				hrefLower.includes("/apparel") ||
+				hrefLower.includes("/accessories") ||
+				hrefLower.includes("/groceries") ||
+				hrefLower.includes("/quan-ao") ||
+				hrefLower.includes("/phu-kien") ||
+				hrefLower.includes("/tap-hoa")
+			) {
+				return false;
+			}
+		}
+		return true;
+	});
+
 	return (
 		<>
-			<li>
-				<MobileNavTopLink item={{ id: "all-products", label: nav.allProductsLabel, href: "/products" }} />
-			</li>
-			<li>
+			<li key="mobile-community">
 				<MobileNavTopLink
 					item={{
 						id: "community",
@@ -168,7 +196,10 @@ export function MobileNavLinks({ items, nav }: { items: NavMenuItem[]; nav: NavC
 					}}
 				/>
 			</li>
-			{items.map((item) => {
+			<li key="mobile-all-products">
+				<MobileNavTopLink item={{ id: "all-products", label: nav.allProductsLabel, href: "/products" }} />
+			</li>
+			{visibleItems.map((item) => {
 				if (hasNavMenuChildren(item)) {
 					return (
 						<li key={item.id} className="py-0">

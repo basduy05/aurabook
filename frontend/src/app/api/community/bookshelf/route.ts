@@ -318,7 +318,10 @@ export async function GET(request: Request) {
 				}
 
 				const progress = libraryProgressList.find(
-					(p) => p.product_id === numericProdId || p.product_id === product.id,
+					(p) =>
+						p.product_id === product.slug ||
+						p.product_id === numericProdId ||
+						p.product_id === product.id,
 				);
 
 				const format: BookshelfItem["format"] =
@@ -356,60 +359,16 @@ export async function GET(request: Request) {
 			}
 		}
 
-		// 7. Also check if there are digital books in libraryProgressList
+		// 7. Đồng bộ tiến trình đọc cho các sách ĐÃ MUA trong tủ sách (Tuyệt đối không cấp phát bản đọc thử vào tủ sách)
 		for (const prog of libraryProgressList) {
-			const foundExisting = Array.from(validBooksMap.values()).some((b) => b.productId === prog.product_id);
-			if (!foundExisting) {
-				try {
-					const relayId = Buffer.from(`Product:${prog.product_id}`).toString("base64");
-					const prodQuery = `
-						query GetProductDetails($id: ID!) {
-							product(id: $id, channel: "channel-vnd") {
-								id
-								name
-								slug
-								thumbnail(size: 512, format: WEBP) { url }
-								category { name slug }
-								productType { name slug isShippingRequired }
-							}
-						}
-					`;
-					const pRes = await fetch(SALEOR_URL, {
-						method: "POST",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({ query: prodQuery, variables: { id: relayId } }),
-					});
-					const pData = (await pRes.json()) as any;
-					const prod = pData?.data?.product;
-					if (prod) {
-						validBooksMap.set(prod.id, {
-							id: prod.id,
-							productId: prog.product_id,
-							productSlug: prod.slug,
-							title: prod.name,
-							author: "Aurabook Publishing",
-							categoryName: prod.category?.name || "Sách điện tử / Kỹ thuật số",
-							format: prod.productType?.slug === "audiobook" ? "AUDIOBOOK" : "EBOOK",
-							thumbnail:
-								prod.thumbnail?.url ||
-								"https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500&auto=format&fit=crop&q=80",
-							orderNumber: "DRM-LICENSED",
-							purchasedAt: prog.last_read_at || new Date().toISOString(),
-							license: {
-								isGranted: true,
-								status: "ACTIVE",
-								type: "DRM_SECURE_READ",
-							},
-							readingProgress: {
-								currentPage: prog.current_page,
-								totalPages: prog.total_pages,
-								percent: prog.completion_percent,
-								lastReadAt: prog.last_read_at,
-							},
-						});
-					}
-				} catch (err) {
-					console.warn("[community/bookshelf] Failed to fetch product for progress:", err);
+			for (const b of validBooksMap.values()) {
+				if (b.productId === prog.product_id || b.productSlug === prog.product_id || b.id === prog.product_id) {
+					b.readingProgress = {
+						currentPage: prog.current_page || b.readingProgress.currentPage,
+						totalPages: prog.total_pages || b.readingProgress.totalPages,
+						percent: prog.completion_percent || b.readingProgress.percent,
+						lastReadAt: prog.last_read_at || b.readingProgress.lastReadAt,
+					};
 				}
 			}
 		}

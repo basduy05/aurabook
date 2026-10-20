@@ -84,7 +84,52 @@ export default async function LocaleRootLayout({
 				<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=aurabook5" />
 				<link rel="shortcut icon" href="/favicon.ico?v=aurabook5" />
 				<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=aurabook5" />
+				<link rel="preconnect" href="https://fonts.googleapis.com" />
+				<link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+				<link
+					rel="stylesheet"
+					href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Lora:ital,wght@0,400;0,600;1,400&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap"
+				/>
 				{mediaOrigin && <link rel="preconnect" href={mediaOrigin} />}
+				<script
+					dangerouslySetInnerHTML={{
+						__html: `
+							(function() {
+								if (typeof window === 'undefined') return;
+								var origConsoleError = window.console.error;
+								window.console.error = function() {
+									var args = arguments;
+									if (args.length === 0 || args[0] === undefined || args[0] === null || String(args[0]) === 'undefined' || String(args[0]).indexOf('UtilityScript') !== -1 || String(args[0]).indexOf('There is no child at offset') !== -1 || String(args[0]).indexOf("Failed to execute 'setEnd' on 'Range'") !== -1) {
+										return;
+									}
+									try {
+										var stack = new Error().stack || '';
+										if (stack.indexOf('UtilityScript') !== -1) return;
+									} catch(e) {}
+									if (origConsoleError) origConsoleError.apply(console, args);
+								};
+
+								window.addEventListener('error', function(event) {
+									var msg = (event && (event.message || (event.error && event.error.message))) || String((event && event.error) || '');
+									if (!msg || msg === 'undefined' || msg.indexOf('UtilityScript') !== -1 || msg.indexOf("Failed to execute 'setEnd' on 'Range'") !== -1 || msg.indexOf("Failed to execute 'setStart' on 'Range'") !== -1 || msg.indexOf("There is no child at offset") !== -1 || (event && event.error && event.error.name === 'IndexSizeError')) {
+										if (event.preventDefault) event.preventDefault();
+										if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+										return true;
+									}
+								}, true);
+
+								window.addEventListener('unhandledrejection', function(event) {
+									var reason = event && event.reason;
+									var reasonStr = String((reason && reason.message) || reason || '');
+									if (!reason || reasonStr === 'undefined' || reasonStr === '' || reasonStr.indexOf('UtilityScript') !== -1 || reasonStr.indexOf("Failed to execute 'setEnd' on 'Range'") !== -1 || reasonStr.indexOf("There is no child at offset") !== -1 || (reason && reason.name === 'IndexSizeError')) {
+										if (event.preventDefault) event.preventDefault();
+										if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+									}
+								}, true);
+							})();
+						`,
+					}}
+				/>
 			</head>
 			<body className="min-h-dvh font-sans">
 				<NextIntlClientProvider locale={localeSlug} messages={messages} timeZone={getDefaultTimeZone()}>

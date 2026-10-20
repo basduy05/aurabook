@@ -11,7 +11,7 @@
       "isBlocked": false,
       "joinedAt": "2026-01-01T00:00:00.000Z",
       "realAccount": {
-        "id": "admin-account",
+        "id": "admin-account-aurabook",
         "email": "admin@aurabook.vn",
         "fullName": "Quản trị viên Aurabook",
         "ordersCount": 0,
@@ -21,11 +21,60 @@
       },
       "savedPosts": [],
       "followers": [
+        "user-VXNlcjo3",
         "user-1",
         "user-VXNlcjo0Ng=="
       ],
       "following": [],
       "role": "admin"
+    },
+    {
+      "id": "user-VXNlcjo3",
+      "username": "@duyduyy",
+      "displayName": "Duyduyy Nguyen",
+      "avatar": "https://ui-avatars.com/api/?name=Duyduyy%20Nguyen&background=10b981&color=fff",
+      "bio": "Thành viên cộng đồng độc giả Aurabook",
+      "favoriteGenre": "Văn học & Kỹ năng sống",
+      "hasAcceptedTerms": true,
+      "isBlocked": true,
+      "joinedAt": "2026-10-17T16:30:48.855Z",
+      "realAccount": {
+        "id": "VXNlcjo3",
+        "email": "usertest@gmail.com",
+        "fullName": "Duyduyy Nguyen",
+        "ordersCount": 0,
+        "totalSpent": "0 ₫",
+        "registeredDate": "Gần đây",
+        "lastActive": "Đang online"
+      },
+      "savedPosts": [],
+      "followers": [
+        "user-1",
+        "user-VXNlcjo0Ng=="
+      ],
+      "following": [
+        "admin-aurabook"
+      ],
+      "role": "admin",
+      "profileHistory": [
+        {
+          "id": "hist-1792254649158-wqth",
+          "changedAt": "2026-10-17T16:30:49.158Z",
+          "previousAvatar": "/android-chrome-512x512.png",
+          "previousDisplayName": "Quản trị viên Aurabook",
+          "previousUsername": "@aurabook_admin",
+          "previousBio": "Tài khoản chính thức của Ban Quản Trị Aurabook. Cập nhật thông báo, chính sách và đồng hành cùng cộng đồng độc giả.",
+          "previousFavoriteGenre": "Sách chọn lọc & Thông báo",
+          "newAvatar": "https://ui-avatars.com/api/?name=Duyduyy%20Nguyen&background=10b981&color=fff",
+          "newDisplayName": "Duyduyy Nguyen",
+          "newUsername": "@duyduyy",
+          "newBio": "Thành viên cộng đồng độc giả Aurabook",
+          "newFavoriteGenre": "Văn học & Kỹ năng sống",
+          "favoriteGenre": "Văn học & Kỹ năng sống",
+          "followersCount": 2,
+          "followingCount": 0
+        }
+      ]
     },
     {
       "id": "user-1",
@@ -191,8 +240,8 @@
         "id": "VXNlcjo0Ng==",
         "email": "basduy05@gmail.com",
         "fullName": "Duy Nguyễn Bá",
-        "ordersCount": 6,
-        "totalSpent": "2.098.000 ₫",
+        "ordersCount": 10,
+        "totalSpent": "2.543.000 ₫",
         "registeredDate": "Gần đây",
         "lastActive": "Đang online"
       },
@@ -304,9 +353,9 @@
     {
       "author": {
         "id": "admin-aurabook",
-        "username": "@aurabook_admin",
-        "displayName": "Quản trị viên Aurabook",
-        "avatar": "/android-chrome-512x512.png",
+        "username": "@duyduyy",
+        "displayName": "Duyduyy Nguyen",
+        "avatar": "https://ui-avatars.com/api/?name=Duyduyy%20Nguyen&background=10b981&color=fff",
         "isVerifiedBuyer": false
       },
       "title": "[SỰ KIỆN] 🎉 [SỰ KIỆN ĐẶC BIỆT] Chào Đón Chuỗi Hoạt Động Mới Cùng Cộng Đồng Độc Giả Aurabook!",
@@ -324,9 +373,9 @@
     {
       "author": {
         "id": "admin-aurabook",
-        "username": "@aurabook_admin",
-        "displayName": "Quản trị viên Aurabook",
-        "avatar": "/android-chrome-512x512.png",
+        "username": "@duyduyy",
+        "displayName": "Duyduyy Nguyen",
+        "avatar": "https://ui-avatars.com/api/?name=Duyduyy%20Nguyen&background=10b981&color=fff",
         "isVerifiedBuyer": false
       },
       "title": "[THÔNG BÁO] Hội Sách Mùa Thu 2026",
@@ -343,9 +392,9 @@
     {
       "author": {
         "id": "admin-aurabook",
-        "username": "@aurabook_admin",
-        "displayName": "Quản trị viên Aurabook",
-        "avatar": "/android-chrome-512x512.png",
+        "username": "@duyduyy",
+        "displayName": "Duyduyy Nguyen",
+        "avatar": "https://ui-avatars.com/api/?name=Duyduyy%20Nguyen&background=10b981&color=fff",
         "isVerifiedBuyer": false
       },
       "title": "Đọc sách là hành trình của tâm tưởng — và tại AuraBook Communities, sự riêng tư của bạn là ưu tiên số một.",
@@ -380,9 +429,9 @@
     {
       "author": {
         "id": "admin-aurabook",
-        "username": "@aurabook_admin",
-        "displayName": "Quản trị viên Aurabook",
-        "avatar": "/android-chrome-512x512.png",
+        "username": "@duyduyy",
+        "displayName": "Duyduyy Nguyen",
+        "avatar": "https://ui-avatars.com/api/?name=Duyduyy%20Nguyen&background=10b981&color=fff",
         "isVerifiedBuyer": false
       },
       "title": "[THÔNG BÁO] Chào mừng độc giả đến với Không gian Đọc sách Aurabook",
@@ -427,9 +476,9 @@
     {
       "author": {
         "id": "admin-aurabook",
-        "username": "@aurabook_admin",
-        "displayName": "Quản trị viên Aurabook",
-        "avatar": "/android-chrome-512x512.png",
+        "username": "@duyduyy",
+        "displayName": "Duyduyy Nguyen",
+        "avatar": "https://ui-avatars.com/api/?name=Duyduyy%20Nguyen&background=10b981&color=fff",
         "isVerifiedBuyer": false
       },
       "title": "Đọc sách là hành trình của tâm tưởng — và tại AuraBook Communities, sự riêng tư của bạn là ưu tiên số một.",

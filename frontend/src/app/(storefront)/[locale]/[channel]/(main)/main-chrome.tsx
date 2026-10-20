@@ -1,6 +1,7 @@
 import { type ReactNode, Suspense } from "react";
 import { Footer } from "@/ui/components/footer";
 import { ConditionalFooter } from "@/ui/components/conditional-footer";
+import { ConditionalHeader } from "@/ui/components/conditional-header";
 import { BrowseHeaderFrame } from "./browse-header-frame";
 import { type BrowseRouteParams } from "./browse-chrome-slots";
 
@@ -52,7 +53,9 @@ async function FooterSlot({ params }: { params: BrowseRouteParams }) {
 export function MainChrome({ params, children }: { params: BrowseRouteParams; children: ReactNode }) {
 	return (
 		<>
-			<BrowseHeaderFrame params={params} />
+			<ConditionalHeader>
+				<BrowseHeaderFrame params={params} />
+			</ConditionalHeader>
 			<div className="flex min-h-[calc(100dvh-var(--chrome-offset))] flex-col">
 				<main className="flex-1">{children}</main>
 				<ConditionalFooter>

@@ -35,6 +35,16 @@ export function resolvePaymentProvider(
 		dummyGateway && !isDummyPaymentAllowed() ? list.filter((gateway) => !isDummyGateway(gateway)) : list;
 
 	if (!hasSubstantiveGateway(effectiveList)) {
+		if (isDummyPaymentAllowed()) {
+			return {
+				type: "dummy",
+				gateway: dummyGateway ?? {
+					id: "saleor.io.dummy-payment-app",
+					name: "Cổng thanh toán Aurabook (VNPAY, MoMo, Thẻ Thử Nghiệm)",
+				},
+				submitMode: "server",
+			};
+		}
 		return { type: "none" };
 	}
 	if (hasUnsupportedPaymentGateway(effectiveList)) {

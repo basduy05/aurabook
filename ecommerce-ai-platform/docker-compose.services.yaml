@@ -1,0 +1,23 @@
+services:
+  # LiveKit Server cho Voice Agent CSKH
+  livekit:
+    image: livekit/livekit-server:latest
+    container_name: ecommerce-livekit
+    restart: unless-stopped
+    command: --dev
+    ports:
+      - "7880:7880"
+      - "7881:7881"
+      - "7882:7882/udp"
+    environment:
+      - LIVEKIT_KEYS=devkey:secret
+
+  # Web Reader Secure Gateway (phục vụ giao diện đọc sách EPUB/PDF bảo mật DRM)
+  web-reader:
+    image: nginx:alpine
+    container_name: ecommerce-web-reader
+    restart: unless-stopped
+    ports:
+      - "8088:80"
+    volumes:
+      - ./drm-security/reader-portal:/usr/share/nginx/html:ro

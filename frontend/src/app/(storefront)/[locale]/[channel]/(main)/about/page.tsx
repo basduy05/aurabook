@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
@@ -15,6 +16,7 @@ import {
 	BookHeart,
 } from "lucide-react";
 import { Badge } from "@/ui/components/ui/badge";
+import { Logo } from "@/ui/components/shared/logo";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 
 export async function generateMetadata(props: {
@@ -23,17 +25,45 @@ export async function generateMetadata(props: {
 	const { locale } = await props.params;
 	const isVi = locale === "vi";
 	return {
-		title: isVi ? "Giới thiệu về AuraBook | Nền tảng tri thức & Không gian sách tinh tuyển" : "About AuraBook | Curated Books & Reading Culture",
+		title: isVi
+			? "Giới thiệu về AuraBook | Nền tảng tri thức & Không gian sách tinh tuyển"
+			: "About AuraBook | Curated Books & Reading Culture",
 		description: isVi
 			? "Tìm hiểu về AuraBook — Hành trình kết nối độc giả với những tác phẩm chọn lọc, tôn vinh văn hóa đọc và bản quyền xuất bản tại Việt Nam."
 			: "Learn more about AuraBook — A curated book ecosystem bringing readers and meaningful literature together.",
 	};
 }
 
-export default async function AboutPage(props: {
+function AboutPageFallback() {
+	return (
+		<div className="container-content py-10 pb-20 animate-pulse">
+			<div className="mb-6 h-4 w-36 rounded bg-muted" />
+			<div className="h-72 w-full rounded-3xl bg-muted mb-16" />
+			<div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-16">
+				{Array.from({ length: 4 }).map((_, i) => (
+					<div key={i} className="h-28 rounded-2xl bg-muted" />
+				))}
+			</div>
+		</div>
+	);
+}
+
+export default function AboutPage(props: {
 	params: Promise<{ locale: string; channel: string }>;
 }) {
-	const { locale, channel } = await props.params;
+	return (
+		<Suspense fallback={<AboutPageFallback />}>
+			<AboutContent params={props.params} />
+		</Suspense>
+	);
+}
+
+async function AboutContent({
+	params: paramsPromise,
+}: {
+	params: Promise<{ locale: string; channel: string }>;
+}) {
+	const { locale, channel } = await paramsPromise;
 	const isVi = locale === "vi";
 
 	return (
@@ -51,43 +81,54 @@ export default async function AboutPage(props: {
 
 			{/* Hero Section */}
 			<div className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-card via-card/90 to-secondary/30 p-8 sm:p-12 lg:p-16 mb-16 shadow-xs">
-				<div className="relative z-10 max-w-3xl">
-					<div className="flex items-center gap-2 mb-4">
-						<Badge variant="outline-solid" className="gap-1.5 px-3 py-1 text-xs font-semibold">
-							<Sparkles className="h-3.5 w-3.5 text-primary" />
-							{isVi ? "Câu chuyện thương hiệu" : "Brand Story"}
-						</Badge>
+				<div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+					<div className="max-w-2xl">
+						<div className="flex flex-wrap items-center gap-3 mb-6">
+							<div className="inline-flex items-center rounded-2xl border border-border/80 bg-background/90 px-4 py-2 shadow-2xs backdrop-blur-xs">
+								<Logo className="h-7 sm:h-8 w-auto" />
+							</div>
+							<Badge variant="outline-solid" className="gap-1.5 px-3 py-1 text-xs font-semibold">
+								<Sparkles className="h-3.5 w-3.5 text-primary" />
+								{isVi ? "Câu chuyện thương hiệu" : "Brand Story"}
+							</Badge>
+						</div>
+						<h1 className="text-3xl font-bold tracking-tight sm:text-5xl text-foreground leading-[1.15]">
+							{isVi ? (
+								<>
+									Nơi Tri Thức Giao Thoa <br className="hidden sm:inline" />
+									<span className="text-primary">Cùng Cảm Xúc Sống Động</span>
+								</>
+							) : (
+								"Where Literature Meets Inspiration"
+							)}
+						</h1>
+						<p className="mt-5 text-base sm:text-lg text-muted-foreground leading-relaxed">
+							{isVi
+								? "AuraBook được sáng lập với khát vọng tạo nên một không gian văn hóa đọc tinh tuyển, nơi mỗi cuốn sách không chỉ là một ấn phẩm vật lý, mà là một trải nghiệm chạm đến chiều sâu tâm hồn của từng độc giả."
+								: "AuraBook was founded to build a curated haven for book lovers, where every page inspires meaningful reflection and personal growth."}
+						</p>
+						<div className="mt-8 flex flex-wrap items-center gap-4">
+							<Link
+								href={buildStorefrontPath(locale, channel, "/products")}
+								className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:opacity-90"
+							>
+								{isVi ? "Khám phá kho sách" : "Explore Books"}
+								<ArrowRight className="h-4 w-4" />
+							</Link>
+							<Link
+								href={buildStorefrontPath(locale, channel, "/community")}
+								className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-5 py-3 text-sm font-semibold text-foreground transition-all hover:bg-secondary"
+							>
+								<Users className="h-4 w-4 text-primary" />
+								{isVi ? "Cộng đồng độc giả" : "Join Community"}
+							</Link>
+						</div>
 					</div>
-					<h1 className="text-3xl font-bold tracking-tight sm:text-5xl text-foreground leading-[1.15]">
-						{isVi ? (
-							<>
-								Nơi Tri Thức Giao Thoa <br className="hidden sm:inline" />
-								<span className="text-primary">Cùng Cảm Xúc Sống Động</span>
-							</>
-						) : (
-							"Where Literature Meets Inspiration"
-						)}
-					</h1>
-					<p className="mt-5 text-base sm:text-lg text-muted-foreground leading-relaxed">
-						{isVi
-							? "AuraBook được sáng lập với khát vọng tạo nên một không gian văn hóa đọc tinh tuyển, nơi mỗi cuốn sách không chỉ là một ấn phẩm vật lý, mà là một trải nghiệm chạm đến chiều sâu tâm hồn của từng độc giả."
-							: "AuraBook was founded to build a curated haven for book lovers, where every page inspires meaningful reflection and personal growth."}
-					</p>
-					<div className="mt-8 flex flex-wrap items-center gap-4">
-						<Link
-							href={buildStorefrontPath(locale, channel, "/products")}
-							className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:opacity-90"
-						>
-							{isVi ? "Khám phá kho sách" : "Explore Books"}
-							<ArrowRight className="h-4 w-4" />
-						</Link>
-						<Link
-							href={buildStorefrontPath(locale, channel, "/community")}
-							className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-5 py-3 text-sm font-semibold text-foreground transition-all hover:bg-secondary"
-						>
-							<Users className="h-4 w-4 text-primary" />
-							{isVi ? "Cộng đồng độc giả" : "Join Community"}
-						</Link>
+
+					<div className="hidden lg:flex shrink-0 items-center justify-center">
+						<div className="relative flex h-44 w-52 items-center justify-center rounded-3xl border border-border/80 bg-background/70 p-6 shadow-xs backdrop-blur-xs">
+							<Logo className="h-12 w-auto" />
+						</div>
 					</div>
 				</div>
 			</div>
@@ -178,7 +219,7 @@ export default async function AboutPage(props: {
 			{/* Core Values */}
 			<div className="mb-16">
 				<div className="text-center max-w-2xl mx-auto mb-10">
-					<Badge variant="outline" className="mb-3">
+					<Badge variant="outline-solid" className="mb-3">
 						{isVi ? "Giá trị cốt lõi" : "Core Values"}
 					</Badge>
 					<h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
