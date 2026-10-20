@@ -494,7 +494,7 @@ export function DRMWebReader({
 	// Text selection state & Floating popover coordinates
 	const [selectedText, setSelectedText] = useState<string>("");
 	const [selectedCfi, setSelectedCfi] = useState<string>("");
-	const [selectionCoords, setSelectionCoords] = useState<{ x: number; y: number } | null>(null);
+	const [selectionCoords, setSelectionCoords] = useState<{ x: number; y: number; isBelow?: boolean } | null>(null);
 	const [savedQuotes, setSavedQuotes] = useState<SavedQuote[]>([]);
 	const [toastNotice, setToastNotice] = useState<string | null>(null);
 
@@ -570,6 +570,7 @@ export function DRMWebReader({
 		page: number;
 		cfi?: string;
 		sentence?: string;
+		chapterHref?: string;
 	} | null>(null);
 
 	// Tự động quay lại vị trí đang đọc sau khi người dùng không tương tác (Auto-Return to Active Reading Location after Inactivity)
@@ -1633,7 +1634,16 @@ export function DRMWebReader({
 						return;
 					}
 					try {
-						await renditionRef.current.next();
+						// Chế độ cuộn: Cuộn mượt màn hình xuống trang tiếp theo
+						if (layoutModeRef.current === "scroll") {
+							const container = document.getElementById("viewer-container");
+							if (container) {
+								container.scrollBy({ top: Math.round(container.clientHeight * 0.75), behavior: document.hasFocus() ? "smooth" : "auto" });
+							}
+						} else {
+							await renditionRef.current.next();
+						}
+
 						// Cơ chế kiểm tra với retry đảm bảo trang tiếp theo đã render xong trước khi lấy câu
 						let attempts = 0;
 						const tryPlayNextPage = () => {
@@ -1641,8 +1651,11 @@ export function DRMWebReader({
 							const { sentences: nextSentences } = getVisiblePageSentences();
 							const lastSentence = sentences[sentences.length - 1];
 							let filtered = nextSentences;
-							if (lastSentence && filtered.length > 0 && filtered[0] === lastSentence) {
-								filtered = filtered.slice(1);
+							if (lastSentence && filtered.length > 0) {
+								const lastIdx = filtered.findIndex((s) => s === lastSentence || s.includes(lastSentence) || lastSentence.includes(s));
+								if (lastIdx !== -1) {
+									filtered = filtered.slice(lastIdx + 1);
+								}
 							}
 
 							if (filtered.length > 0) {
@@ -1651,14 +1664,17 @@ export function DRMWebReader({
 								const upcomingAhead = getUpcomingSentencesAhead(filtered[0], lookaheadCount);
 								prefetchSentences(upcomingAhead.length > 0 ? upcomingAhead : filtered, 0, lookaheadCount);
 								playSentenceAtIndex(0);
-							} else if (attempts < 5) {
+							} else if (attempts < 6) {
 								attempts++;
-								setTimeout(tryPlayNextPage, 200);
+								setTimeout(tryPlayNextPage, 180);
 							} else {
 								// Fallback: Tìm các câu tiếp theo trong toàn chương để không bao giờ bị dừng giữa chừng
 								const upcoming = getUpcomingSentencesAhead(lastSentence, 15);
 								if (upcoming.length > 0) {
 									sentenceQueueRef.current = { sentences: upcoming, currentIndex: 0 };
+									if (renditionRef.current && layoutModeRef.current !== "scroll") {
+										renditionRef.current.next().catch(() => {});
+									}
 									playSentenceAtIndex(0);
 								} else {
 									handleStopReadAloud();
@@ -1699,17 +1715,20 @@ export function DRMWebReader({
 							if (layoutModeRef.current === "scroll") {
 								try {
 									if (!isUserBrowsingAwayRef.current) {
-										activeSpan.scrollIntoView({ behavior: "smooth", block: "center" });
+										const behavior = document.hasFocus() ? "smooth" : "auto";
+										activeSpan.scrollIntoView({ behavior, block: "center" });
 									}
 								} catch {}
 							} else {
-								// Chế độ phân trang (paginated): Kiểm tra nếu câu đang đọc nằm ở cột/trang tiếp theo
+								// Chế độ phân trang (paginated): Kiểm tra nếu câu đang đọc nằm ở cột hoặc trang tiếp theo
 								if (!isUserBrowsingAwayRef.current) {
 									const win = c.window as Window;
 									const winWidth = win?.innerWidth || c.document.documentElement.clientWidth;
+									const winHeight = win?.innerHeight || c.document.documentElement.clientHeight;
 									const rect = activeSpan.getBoundingClientRect();
-									// Nếu câu vượt khỏi vùng nhìn thấy theo chiều ngang:
-									if (rect.left >= winWidth - 10 || rect.right <= 10) {
+									// Nếu câu vượt khỏi vùng nhìn thấy theo chiều ngang hoặc chiều dọc:
+									const isOffScreen = rect.left >= winWidth - 10 || rect.right <= 10 || rect.top >= winHeight - 10 || rect.bottom <= 10;
+									if (isOffScreen) {
 										if (activeSentenceCfi) {
 											renditionRef.current?.display(activeSentenceCfi);
 										} else {
@@ -1727,12 +1746,18 @@ export function DRMWebReader({
 						page: currentPageRef.current,
 						cfi: activeSentenceCfi,
 						sentence: currentSentence,
+						chapterHref: activeChapterHref,
 					};
 				} else if (currentSentence) {
+					const curCfi = renditionRef.current?.location?.start?.cfi;
 					if (currentPlayingLocationRef.current) {
 						currentPlayingLocationRef.current.sentence = currentSentence;
+						if (curCfi && !currentPlayingLocationRef.current.cfi) {
+							currentPlayingLocationRef.current.cfi = curCfi;
+						}
+						currentPlayingLocationRef.current.chapterHref = activeChapterHref;
 					} else {
-						currentPlayingLocationRef.current = { page: currentPageRef.current, sentence: currentSentence };
+						currentPlayingLocationRef.current = { page: currentPageRef.current, sentence: currentSentence, cfi: curCfi, chapterHref: activeChapterHref };
 					}
 				}
 			} catch {}
@@ -1968,6 +1993,12 @@ export function DRMWebReader({
 			}
 
 			isContinuousPlayingRef.current = true;
+			// Đặt lại cờ browsing away để trình đọc lập tức bám theo câu đọc và tự động lật trang
+			isUserBrowsingAwayRef.current = false;
+			if (userInactivityTimerRef.current) {
+				clearTimeout(userInactivityTimerRef.current);
+				userInactivityTimerRef.current = null;
+			}
 			sentenceQueueRef.current = { sentences: sentencesToQueue, currentIndex: startIndex };
 
 			// Xóa trạng thái bôi đen để không che khuất màn hình
@@ -2291,6 +2322,7 @@ export function DRMWebReader({
 		try {
 			if (userInactivityTimerRef.current) {
 				clearTimeout(userInactivityTimerRef.current);
+				userInactivityTimerRef.current = null;
 			}
 			isUserBrowsingAwayRef.current = false;
 
@@ -2339,6 +2371,20 @@ export function DRMWebReader({
 				return true;
 			}
 
+			// Nếu vị trí đang đọc ở chương khác và có chapterHref
+			if (loc?.chapterHref && loc.chapterHref !== activeChapterHref && renditionRef.current) {
+				renditionRef.current.display(loc.chapterHref).then(() => {
+					if (loc.sentence) {
+						const contentsList = (renditionRef.current as any)?.getContents?.() || [];
+						for (const c of contentsList) {
+							if (c?.document) highlightSentenceInDoc(c.document, loc.sentence);
+						}
+					}
+					if (notify) showToast("📍 Đã chuyển về vị trí sách nói đang đọc");
+				}).catch(() => {});
+				return true;
+			}
+
 			// Chế độ scroll fallback
 			if (layoutModeRef.current === "scroll") {
 				const contentsList = (renditionRef.current as any)?.getContents?.() || [];
@@ -2360,7 +2406,7 @@ export function DRMWebReader({
 			console.warn("[syncToActiveReadingLocation] error:", e);
 		}
 		return false;
-	}, [jumpToCfiWithPulse, highlightSentenceInDoc, showToast]);
+	}, [jumpToCfiWithPulse, highlightSentenceInDoc, showToast, exactPosStorageKey, storageKey, activeChapterHref]);
 
 	// Tự động quay lại vị trí đang đọc sau khi người dùng không tương tác (Auto-Return to Active Reading Location after Inactivity)
 	const registerUserManualNavigation = useCallback(() => {
@@ -2506,7 +2552,10 @@ export function DRMWebReader({
 		const handleBlur = () => {
 			setTimeout(() => {
 				if (!document.hasFocus()) {
-					setIsScreenProtected(true);
+					// Nếu người dùng đang nghe sách nói, cho phép nội dung tự động di chuyển bên dưới mà không bị màn đen che khuất
+					if (!isContinuousPlayingRef.current && !isTtsPlaying) {
+						setIsScreenProtected(true);
+					}
 					recordAuditLog("Mất tiêu điểm ứng dụng (Kích hoạt công cụ chụp màn hình Snipping Tool / phần mềm ngoài)");
 				}
 			}, 20);
@@ -2518,12 +2567,14 @@ export function DRMWebReader({
 				if (isContinuousPlayingRef.current || isTtsPlaying || currentPlayingLocationRef.current?.sentence) {
 					syncToActiveReadingLocation(false);
 				}
-			}, 150);
+			}, 80);
 		};
 
 		const handleVisibilityChange = () => {
 			if (document.hidden || !document.hasFocus()) {
-				setIsScreenProtected(true);
+				if (!isContinuousPlayingRef.current && !isTtsPlaying) {
+					setIsScreenProtected(true);
+				}
 				recordAuditLog("Ẩn tab ứng dụng / Chuyển cửa sổ phần mềm ngoài");
 			} else {
 				setTimeout(() => {
@@ -2531,7 +2582,7 @@ export function DRMWebReader({
 					if (isContinuousPlayingRef.current || isTtsPlaying || currentPlayingLocationRef.current?.sentence) {
 						syncToActiveReadingLocation(false);
 					}
-				}, 150);
+				}, 80);
 			}
 		};
 
@@ -2991,9 +3042,21 @@ export function DRMWebReader({
 							const targetX = (iframeRect.left + rect.left + rect.width / 2) - viewerRect.left;
 							const targetY = (iframeRect.top + rect.top) - viewerRect.top;
 
+							// Giữ tọa độ ngang luôn nằm trọn trong khung đọc (cách mép tối thiểu 200px)
+							const minX = 200;
+							const maxX = Math.max(minX, viewerRect.width - 200);
+							const clampedX = Math.max(minX, Math.min(maxX, targetX));
+
+							// Nếu đoạn bôi đen ở sát mép trên (< 75px), tự động lật thanh công cụ xuống phía dưới đoạn văn
+							const isBelow = targetY < 75;
+							const clampedY = isBelow
+								? Math.min(viewerRect.height - 50, (iframeRect.top + rect.bottom) - viewerRect.top + 12)
+								: Math.max(16, targetY - 12);
+
 							setSelectionCoords({
-								x: Math.max(140, Math.min(viewerRect.width - 140, targetX)),
-								y: Math.max(45, targetY - 12),
+								x: clampedX,
+								y: clampedY,
+								isBelow,
 							});
 						}
 					} catch (e) {
@@ -4707,7 +4770,7 @@ export function DRMWebReader({
 						{selectedText && (
 							<div
 								key="drm-floating-selection-bar"
-								className={`absolute z-40 flex items-center gap-1.5 rounded-full border px-3 py-1.5 shadow-elevated backdrop-blur-md animate-in fade-in zoom-in-95 duration-150 transition-all select-none ${
+								className={`absolute z-40 flex max-w-[calc(100%-1rem)] items-center gap-1.5 rounded-full border px-2.5 py-1.5 shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in-95 duration-150 transition-all select-none overflow-x-auto no-scrollbar ${
 									isSepia ? "bg-[#fbf0d9]/95 border-[#d8cbb0] text-[#433422]" : "bg-card/95 border-border text-foreground" // design-tokens-allow
 								}`}
 								style={
@@ -4715,7 +4778,7 @@ export function DRMWebReader({
 										? {
 												left: `${selectionCoords.x}px`,
 												top: `${selectionCoords.y}px`,
-												transform: "translate(-50%, -100%)",
+												transform: selectionCoords.isBelow ? "translate(-50%, 0%)" : "translate(-50%, -100%)",
 											}
 										: {
 												bottom: "1.5rem",
@@ -4726,14 +4789,21 @@ export function DRMWebReader({
 							>
 								{/* Small pointer caret */}
 								{selectionCoords && (
-									<div className={`pointer-events-none absolute -bottom-1 left-1/2 -translate-x-1/2 h-2.5 w-2.5 rotate-45 border-r border-b ${
-										isSepia ? "bg-[#fbf0d9] border-[#d8cbb0]" : "bg-card border-border" // design-tokens-allow
-									}`} />
+									<div
+										className={`pointer-events-none absolute left-1/2 -translate-x-1/2 h-2.5 w-2.5 rotate-45 border ${
+											selectionCoords.isBelow
+												? "-top-1.5 border-l border-t"
+												: "-bottom-1.5 border-r border-b"
+										} ${
+											isSepia ? "bg-[#fbf0d9] border-[#d8cbb0]" : "bg-card border-border" // design-tokens-allow
+										}`}
+									/>
 								)}
 
 								<span
-									className="text-[11px] truncate max-w-[120px] px-1 font-medium italic opacity-75 font-serif"
+									className="hidden md:inline-block max-w-[90px] truncate text-[11px] font-medium italic opacity-75 font-serif border-r border-border/40 pr-2 shrink-0"
 									style={{ fontFamily: "'Literata', 'Merriweather', 'Lora', Georgia, serif" }}
+									title={selectedText}
 								>
 									"{selectedText}"
 								</span>
@@ -4745,7 +4815,7 @@ export function DRMWebReader({
 										const txt = selectedText;
 										startReadingFromSelection(txt);
 									}}
-									className="h-7 text-xs gap-1 rounded-full px-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold shadow-xs"
+									className="h-7 text-xs gap-1 rounded-full px-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold shadow-xs shrink-0 whitespace-nowrap"
 									title="Đọc tiếp liên tục từ đoạn văn bản bạn vừa bôi chọn cho đến hết sách"
 								>
 									<LocateFixed className="h-3 w-3" />
@@ -4756,7 +4826,7 @@ export function DRMWebReader({
 									variant="secondary"
 									size="sm"
 									onClick={handleHighlightSelected}
-									className="h-7 text-xs gap-1 rounded-full px-2.5"
+									className="h-7 text-xs gap-1 rounded-full px-2.5 shrink-0 whitespace-nowrap"
 									title="Tô màu Highlight đoạn này"
 								>
 									<Highlighter className="h-3 w-3 text-amber-500" />
@@ -4767,7 +4837,7 @@ export function DRMWebReader({
 									variant="secondary"
 									size="sm"
 									onClick={handleSaveQuote}
-									className="h-7 text-xs gap-1 rounded-full px-2.5"
+									className="h-7 text-xs gap-1 rounded-full px-2.5 shrink-0 whitespace-nowrap"
 									title="Lưu vào sổ tay trích dẫn"
 								>
 									<Quote className="h-3 w-3 text-primary" />
@@ -4778,7 +4848,7 @@ export function DRMWebReader({
 									variant="default"
 									size="sm"
 									onClick={handleAskAIAboutSelection}
-									className="h-7 text-xs gap-1 rounded-full px-2.5"
+									className="h-7 text-xs gap-1 rounded-full px-2.5 shrink-0 whitespace-nowrap"
 									title="Hỏi AI diễn giải ý nghĩa"
 								>
 									<Bot className="h-3 w-3" />
@@ -4792,7 +4862,7 @@ export function DRMWebReader({
 										setSelectedText("");
 										setSelectionCoords(null);
 									}}
-									className="h-6 w-6 rounded-full opacity-60 hover:opacity-100"
+									className="h-6 w-6 rounded-full opacity-60 hover:opacity-100 shrink-0"
 									title="Đóng thanh công cụ"
 								>
 									<X className="h-3.5 w-3.5" />
