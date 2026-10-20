@@ -491,10 +491,9 @@ export function DRMWebReader({
 	const [loadError, setLoadError] = useState<string | null>(null);
 	const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
-	// Text selection state & Floating popover coordinates
+	// Text selection state & Top action bar
 	const [selectedText, setSelectedText] = useState<string>("");
 	const [selectedCfi, setSelectedCfi] = useState<string>("");
-	const [selectionCoords, setSelectionCoords] = useState<{ x: number; y: number; isBelow?: boolean } | null>(null);
 	const [savedQuotes, setSavedQuotes] = useState<SavedQuote[]>([]);
 	const [toastNotice, setToastNotice] = useState<string | null>(null);
 
@@ -2003,7 +2002,6 @@ export function DRMWebReader({
 
 			// Xóa trạng thái bôi đen để không che khuất màn hình
 			setSelectedText("");
-			setSelectionCoords(null);
 			try {
 				const contentsList = (renditionRef.current as any)?.getContents?.() || [];
 				contentsList.forEach((c: any) => {
@@ -3014,13 +3012,12 @@ export function DRMWebReader({
 						const sel = contents.window?.getSelection();
 						if (!sel || sel.isCollapsed || !sel.toString().trim()) {
 							setSelectedText("");
-							setSelectionCoords(null);
 						}
 					}, 120);
 				});
 			});
 
-			// Catch text selection inside ePub and compute floating popover position near cursor
+			// Catch text selection inside ePub and show top action bar
 			rendition.on("selected", (cfiRange: string, contents: any) => {
 				if (!isMounted) return;
 				const selection = contents?.window?.getSelection();
@@ -3028,40 +3025,6 @@ export function DRMWebReader({
 				if (text && text.length > 1) {
 					setSelectedText(text);
 					setSelectedCfi(cfiRange);
-
-					// Compute precise relative coordinates for floating toolbar
-					try {
-						if (selection.rangeCount > 0) {
-							const range = selection.getRangeAt(0);
-							const rect = range.getBoundingClientRect();
-							const iframe = viewerRef.current?.querySelector("iframe");
-							const iframeRect = iframe ? iframe.getBoundingClientRect() : { top: 0, left: 0 };
-							const viewerRect = viewerRef.current?.getBoundingClientRect() || { top: 0, left: 0, width: 800, height: 600 };
-
-							// Relative position inside viewer container
-							const targetX = (iframeRect.left + rect.left + rect.width / 2) - viewerRect.left;
-							const targetY = (iframeRect.top + rect.top) - viewerRect.top;
-
-							// Giữ tọa độ ngang luôn nằm trọn trong khung đọc (cách mép tối thiểu 200px)
-							const minX = 200;
-							const maxX = Math.max(minX, viewerRect.width - 200);
-							const clampedX = Math.max(minX, Math.min(maxX, targetX));
-
-							// Nếu đoạn bôi đen ở sát mép trên (< 75px), tự động lật thanh công cụ xuống phía dưới đoạn văn
-							const isBelow = targetY < 75;
-							const clampedY = isBelow
-								? Math.min(viewerRect.height - 50, (iframeRect.top + rect.bottom) - viewerRect.top + 12)
-								: Math.max(16, targetY - 12);
-
-							setSelectionCoords({
-								x: clampedX,
-								y: clampedY,
-								isBelow,
-							});
-						}
-					} catch (e) {
-						setSelectionCoords(null);
-					}
 				}
 			});
 
@@ -3546,7 +3509,6 @@ export function DRMWebReader({
 		} catch {}
 		showToast("Đã tô màu đoạn văn bản thành công.");
 		setSelectedText("");
-		setSelectionCoords(null);
 	};
 
 	// Save quote action
@@ -3575,7 +3537,6 @@ export function DRMWebReader({
 		}
 		showToast("Đã lưu đoạn trích dẫn vào mục Trích dẫn đã lưu!");
 		setSelectedText("");
-		setSelectionCoords(null);
 	};
 
 	// Delete saved quote
@@ -3616,7 +3577,6 @@ export function DRMWebReader({
 		if (!selectedText) return;
 		const quoteText = selectedText;
 		setSelectedText("");
-		setSelectionCoords(null);
 		setIsAiOpen(true);
 		setAiTab("chat");
 		handleSendAIMessage(`Hãy diễn giải ý nghĩa triết lý và bối cảnh của đoạn văn này: "${quoteText}"`, quoteText);
@@ -3931,7 +3891,9 @@ export function DRMWebReader({
 			)}
 
 			{/* 2. TOP-CENTER REAL USER IDENTITY WATERMARK BADGE */}
-			<div className={`pointer-events-none absolute top-3.5 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-mono shadow-2xs backdrop-blur-xs select-none ${
+			<div className={`pointer-events-none absolute top-3.5 left-1/2 -translate-x-1/2 z-30 items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-mono shadow-2xs backdrop-blur-xs select-none ${
+				selectedText ? "hidden" : "flex"
+			} ${
 				isSepia ? "border-[#d8cbb0] bg-[#fbf0d9]/90 text-[#5c4a32]" : "border-border/70 bg-card/90 text-muted-foreground" // design-tokens-allow
 			}`}>
 				<ShieldCheck className="h-3.5 w-3.5 text-success shrink-0" />
@@ -4766,110 +4728,86 @@ export function DRMWebReader({
 							</div>
 						)}
 
-						{/* FLOATING TEXT SELECTION ACTION BAR - ANCHORED NEAR USER'S CURSOR SELECTION */}
-						{selectedText && (
-							<div
-								key="drm-floating-selection-bar"
-								className={`absolute z-40 flex max-w-[calc(100%-1rem)] items-center gap-1.5 rounded-full border px-2.5 py-1.5 shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in-95 duration-150 transition-all select-none overflow-x-auto no-scrollbar ${
-									isSepia ? "bg-[#fbf0d9]/95 border-[#d8cbb0] text-[#433422]" : "bg-card/95 border-border text-foreground" // design-tokens-allow
-								}`}
-								style={
-									selectionCoords
-										? {
-												left: `${selectionCoords.x}px`,
-												top: `${selectionCoords.y}px`,
-												transform: selectionCoords.isBelow ? "translate(-50%, 0%)" : "translate(-50%, -100%)",
-											}
-										: {
-												bottom: "1.5rem",
-												left: "50%",
-												transform: "translateX(-50%)",
-											}
-								}
-							>
-								{/* Small pointer caret */}
-								{selectionCoords && (
-									<div
-										className={`pointer-events-none absolute left-1/2 -translate-x-1/2 h-2.5 w-2.5 rotate-45 border ${
-											selectionCoords.isBelow
-												? "-top-1.5 border-l border-t"
-												: "-bottom-1.5 border-r border-b"
-										} ${
-											isSepia ? "bg-[#fbf0d9] border-[#d8cbb0]" : "bg-card border-border" // design-tokens-allow
-										}`}
-									/>
-								)}
-
-								<span
-									className="hidden md:inline-block max-w-[90px] truncate text-[11px] font-medium italic opacity-75 font-serif border-r border-border/40 pr-2 shrink-0"
-									style={{ fontFamily: "'Literata', 'Merriweather', 'Lora', Georgia, serif" }}
-									title={selectedText}
-								>
-									"{selectedText}"
-								</span>
-
-								<Button
-									variant="default"
-									size="sm"
-									onClick={() => {
-										const txt = selectedText;
-										startReadingFromSelection(txt);
-									}}
-									className="h-7 text-xs gap-1 rounded-full px-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold shadow-xs shrink-0 whitespace-nowrap"
-									title="Đọc tiếp liên tục từ đoạn văn bản bạn vừa bôi chọn cho đến hết sách"
-								>
-									<LocateFixed className="h-3 w-3" />
-									<span>Đọc tiếp từ đây</span>
-								</Button>
-
-								<Button
-									variant="secondary"
-									size="sm"
-									onClick={handleHighlightSelected}
-									className="h-7 text-xs gap-1 rounded-full px-2.5 shrink-0 whitespace-nowrap"
-									title="Tô màu Highlight đoạn này"
-								>
-									<Highlighter className="h-3 w-3 text-amber-500" />
-									<span>Highlight</span>
-								</Button>
-
-								<Button
-									variant="secondary"
-									size="sm"
-									onClick={handleSaveQuote}
-									className="h-7 text-xs gap-1 rounded-full px-2.5 shrink-0 whitespace-nowrap"
-									title="Lưu vào sổ tay trích dẫn"
-								>
-									<Quote className="h-3 w-3 text-primary" />
-									<span>Lưu trích dẫn</span>
-								</Button>
-
-								<Button
-									variant="default"
-									size="sm"
-									onClick={handleAskAIAboutSelection}
-									className="h-7 text-xs gap-1 rounded-full px-2.5 shrink-0 whitespace-nowrap"
-									title="Hỏi AI diễn giải ý nghĩa"
-								>
-									<Bot className="h-3 w-3" />
-									<span>Hỏi AI</span>
-								</Button>
-
-								<Button
-									variant="ghost"
-									size="icon"
-									onClick={() => {
-										setSelectedText("");
-										setSelectionCoords(null);
-									}}
-									className="h-6 w-6 rounded-full opacity-60 hover:opacity-100 shrink-0"
-									title="Đóng thanh công cụ"
-								>
-									<X className="h-3.5 w-3.5" />
-								</Button>
-							</div>
-						)}
 					</div>
+
+					{/* FLOATING TEXT SELECTION ACTION BAR - NỔI HOÀN TOÀN BÊN TRÊN PHẦN SÁCH, KHÔNG LỒNG TRONG KHUNG SÁCH, KHÔNG SCROLL */}
+					{selectedText && (
+						<div
+							key="drm-floating-selection-bar"
+							className={`fixed top-16 sm:top-[66px] left-1/2 -translate-x-1/2 z-50 flex items-center gap-1.5 sm:gap-2 rounded-full border px-3 sm:px-4 py-1.5 sm:py-2 shadow-2xl backdrop-blur-2xl animate-in fade-in slide-in-from-top-3 duration-200 select-none ${
+								isSepia
+									? "bg-[#fbf0d9]/95 border-[#d8cbb0] text-[#433422]"
+									: "bg-card/95 border-border text-foreground"
+							}`}
+						>
+							<span
+								className="hidden md:inline-block max-w-[140px] truncate text-xs font-medium italic opacity-75 font-serif border-r border-border/50 pr-2.5 shrink-0"
+								style={{ fontFamily: "'Literata', 'Merriweather', 'Lora', Georgia, serif" }}
+								title={selectedText}
+							>
+								"{selectedText}"
+							</span>
+
+							<Button
+								variant="default"
+								size="sm"
+								onClick={() => {
+									const txt = selectedText;
+									startReadingFromSelection(txt);
+								}}
+								className="h-8 text-xs gap-1.5 rounded-full px-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold shadow-xs shrink-0 whitespace-nowrap"
+								title="Đọc tiếp liên tục từ đoạn văn bản bạn vừa bôi chọn cho đến hết sách"
+							>
+								<LocateFixed className="h-3.5 w-3.5" />
+								<span>Đọc tiếp từ đây</span>
+							</Button>
+
+							<Button
+								variant="secondary"
+								size="sm"
+								onClick={handleHighlightSelected}
+								className="h-8 text-xs gap-1.5 rounded-full px-3 shrink-0 whitespace-nowrap font-medium"
+								title="Tô màu Highlight đoạn này"
+							>
+								<Highlighter className="h-3.5 w-3.5 text-amber-500" />
+								<span>Highlight</span>
+							</Button>
+
+							<Button
+								variant="secondary"
+								size="sm"
+								onClick={handleSaveQuote}
+								className="h-8 text-xs gap-1.5 rounded-full px-3 shrink-0 whitespace-nowrap font-medium"
+								title="Lưu vào sổ tay trích dẫn"
+							>
+								<Quote className="h-3.5 w-3.5 text-primary" />
+								<span>Lưu trích dẫn</span>
+							</Button>
+
+							<Button
+								variant="default"
+								size="sm"
+								onClick={handleAskAIAboutSelection}
+								className="h-8 text-xs gap-1.5 rounded-full px-3 shrink-0 whitespace-nowrap font-medium"
+								title="Hỏi AI diễn giải ý nghĩa"
+							>
+								<Bot className="h-3.5 w-3.5" />
+								<span>Hỏi AI</span>
+							</Button>
+
+							<Button
+								variant="ghost"
+								size="icon"
+								onClick={() => {
+									setSelectedText("");
+								}}
+								className="h-7 w-7 rounded-full opacity-60 hover:opacity-100 shrink-0 ml-0.5"
+								title="Đóng thanh công cụ"
+							>
+								<X className="h-4 w-4" />
+							</Button>
+						</div>
+					)}
 
 					{/* Floating Prev/Next Buttons (Available in all reading modes) */}
 					<Button
