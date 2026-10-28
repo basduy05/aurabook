@@ -89,7 +89,9 @@ export async function POST(req: Request) {
 		const cfg = getConfig() as any;
 		const body = ((await req.json()) || {}) as any;
 		const text = body.text || body.prompt || "";
-		const speed = typeof body.speed === "number" ? body.speed : 1.0;
+		// Luôn chuẩn hóa tốc độ về 1.0x - Trong cơ sở dữ liệu/cache chỉ lưu giọng 1x duy nhất
+		// Trình duyệt của người dùng sẽ tự điều khiển tốc độ tua nhanh/chậm (playbackRate) mà không cần tải lại
+		const speed = 1.0;
 		const voice = body.voice || body.model || cfg?.voice?.ttsVoice || "vi_VN-hoaimy-aurabook";
 
 		if (!text.trim() || !/[a-zA-Z0-9\u00C0-\u1EF9]/.test(text)) {
@@ -119,7 +121,7 @@ export async function POST(req: Request) {
 			});
 		}
 
-		// 1. Kiểm tra bộ nhớ đệm dùng chung (Shared Global Disk Cache) - Giúp mọi người dùng nghe tức thì 0ms
+		// 1. Kiểm tra bộ nhớ đệm dùng chung (Shared Global Disk Cache) - Chuẩn 1x cho mọi người dùng
 		const cacheDir = getCacheDir();
 		const hash = crypto.createHash("sha256").update(text.trim()).digest("hex");
 		const cacheKey = `${voice}_${speed.toFixed(2)}_${hash}`;

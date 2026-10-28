@@ -985,53 +985,59 @@ export function VoiceAgentWidget() {
 		],
 	);
 
-	// Tạm dừng nhận diện giọng nói khi Aura AI nói để mic không thu lại tiếng từ loa
+	// Tạm dừng và ngắt hoàn toàn micro khi Aura AI đang nói (chống barge-in và tiếng vọng)
 	const pauseSpeechRecognitionForAudio = useCallback(() => {
 		isAudioPlayingRef.current = true;
+		agentSpeakingRef.current = true;
+		setAgentSpeaking(true);
 		ignoreSpeechUntilRef.current = Date.now() + 99999999;
+		if (speechRestartTimerRef.current) {
+			clearTimeout(speechRestartTimerRef.current);
+			speechRestartTimerRef.current = null;
+		}
 		if (speechDebounceRef.current) {
 			clearTimeout(speechDebounceRef.current);
 			speechDebounceRef.current = null;
+		}
+		if (speechRecognitionRef.current) {
+			try {
+				speechRecognitionRef.current.abort();
+			} catch {}
 		}
 		setLiveUserTranscript("");
 	}, []);
 
-	// Khôi phục micro sau khi loa dứt tiếng
+	// Khôi phục micro sau khi loa dứt tiếng hoàn toàn (Đọc xong hết rồi mới cho phép người dùng nói)
 	const resumeSpeechRecognitionAfterAudio = useCallback(() => {
 		isAudioPlayingRef.current = false;
-		// Chờ 1.2s sau khi âm thanh dứt hẳn để triệt tiêu toàn bộ tiếng vọng âm vang phòng (Echo cancellation)
-		ignoreSpeechUntilRef.current = Date.now() + 1200;
+		agentSpeakingRef.current = false;
+		setAgentSpeaking(false);
+		// Chờ 600ms sau khi âm thanh dứt hẳn để triệt tiêu toàn bộ tiếng vọng âm vang phòng (Echo cancellation)
+		ignoreSpeechUntilRef.current = Date.now() + 600;
 		setLiveUserTranscript("");
 		if (speechDebounceRef.current) {
 			clearTimeout(speechDebounceRef.current);
 			speechDebounceRef.current = null;
 		}
-		// Đảm bảo micro được kích hoạt lại nếu đã bị ngắt trong lúc phát loa
+		// Đảm bảo micro chỉ được kích hoạt lại khi Aura đã đọc xong hoàn toàn
 		setTimeout(() => {
 			if (
 				!isTerminatedRef.current &&
 				isConnectedRef.current &&
 				!isMutedRef.current &&
 				!isAudioPlayingRef.current &&
+				!agentSpeakingRef.current &&
 				!isWaitingResponseRef.current &&
 				contactMethodRef.current === "call"
 			) {
 				try {
-					if (speechRecognitionRef.current) {
-						speechRecognitionRef.current.start();
-					} else {
-						startSpeechRecognitionRef.current();
-					}
-				} catch (e: any) {
-					if (e?.name !== "InvalidStateError") {
-						startSpeechRecognitionRef.current();
-					}
-				}
+					startSpeechRecognitionRef.current();
+				} catch {}
 			}
-		}, 1250);
+		}, 650);
 	}, []);
 
-	// Phát âm thanh giọng Aura AI từ chuỗi Base64
+	// Phát âm thanh giọng Aura AI từ chuỗi Base64 (Đọc liền mạch đến hết câu, người dùng không thể ngắt ngang)
 	const playAuraAudio = useCallback(
 		(base64Data: string, onAudioEndCallback?: () => void) => {
 			if (isTerminatedRef.current || !base64Data) {
@@ -1049,14 +1055,20 @@ export function VoiceAgentWidget() {
 				audio.src = `data:${mime};base64,${base64Data}`;
 				audio.playbackRate = 1.0;
 				setAgentSpeaking(true);
+				agentSpeakingRef.current = true;
+				isAudioPlayingRef.current = true;
 
 				audio.onended = () => {
 					setAgentSpeaking(false);
+					agentSpeakingRef.current = false;
+					isAudioPlayingRef.current = false;
 					resumeSpeechRecognitionAfterAudio();
 					onAudioEndCallback?.();
 				};
 				audio.onerror = () => {
 					setAgentSpeaking(false);
+					agentSpeakingRef.current = false;
+					isAudioPlayingRef.current = false;
 					resumeSpeechRecognitionAfterAudio();
 					onAudioEndCallback?.();
 				};
@@ -1064,12 +1076,16 @@ export function VoiceAgentWidget() {
 				audio.play().catch((e) => {
 					console.warn("[VoiceAgent] Audio autoplay bị chặn:", e);
 					setAgentSpeaking(false);
+					agentSpeakingRef.current = false;
+					isAudioPlayingRef.current = false;
 					resumeSpeechRecognitionAfterAudio();
 					onAudioEndCallback?.();
 				});
 			} catch (err) {
 				console.error("[VoiceAgent] Lỗi phát âm thanh:", err);
 				setAgentSpeaking(false);
+				agentSpeakingRef.current = false;
+				isAudioPlayingRef.current = false;
 				resumeSpeechRecognitionAfterAudio();
 				onAudioEndCallback?.();
 			}
@@ -1430,6 +1446,7 @@ export function VoiceAgentWidget() {
 					isConnectedRef.current &&
 					!isMutedRef.current &&
 					!isAudioPlayingRef.current &&
+					!agentSpeakingRef.current &&
 					!isWaitingResponseRef.current &&
 					contactMethodRef.current === "call"
 				) {
@@ -1439,6 +1456,7 @@ export function VoiceAgentWidget() {
 							isConnectedRef.current &&
 							!isMutedRef.current &&
 							!isAudioPlayingRef.current &&
+							!agentSpeakingRef.current &&
 							!isWaitingResponseRef.current &&
 							Date.now() >= ignoreSpeechUntilRef.current &&
 							contactMethodRef.current === "call"
@@ -2284,8 +2302,10 @@ export function VoiceAgentWidget() {
 							{contactMethod === "call" && (
 								<div className="flex items-center justify-between border-b border-border/70 bg-secondary/40 px-3.5 py-1.5 text-xs">
 									<div className="flex items-center gap-1.5 text-muted-foreground">
-										<Mic className={cn("h-3.5 w-3.5", agentSpeaking ? "text-muted-foreground" : "text-emerald-500 animate-pulse")} />
-										<span>{agentSpeaking ? "Aura AI đang nói..." : "Đang lắng nghe bạn..."}</span>
+										<Mic className={cn("h-3.5 w-3.5", agentSpeaking ? "text-amber-500 animate-pulse" : "text-emerald-500 animate-pulse")} />
+										<span className={cn(agentSpeaking ? "font-semibold text-amber-600 dark:text-amber-400" : "")}>
+											{agentSpeaking ? "Aura AI đang nói (Vui lòng đợi Aura đọc xong)..." : "🎧 Đang lắng nghe bạn..."}
+										</span>
 									</div>
 									<span className="font-mono text-foreground font-semibold">
 										{formatDuration(callDuration)}

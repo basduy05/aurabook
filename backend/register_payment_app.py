@@ -58,31 +58,19 @@ pay_perms = Permission.objects.filter(codename__in=["handle_payments", "manage_c
 payment_app.permissions.set(pay_perms)
 print(f"2. Đã tạo/kích hoạt Payment App '{payment_app.name}' ({payment_app.identifier}).")
 
-# Đảm bảo payment_app có AppToken
-if not AppToken.objects.filter(app=payment_app).exists():
-    AppToken.objects.create(app=payment_app, name="Dummy Payment Token")
-    print(f"   Đã tạo AppToken cho {payment_app.name}.")
+# Đảm bảo payment_app có AppToken rMzfSy3fOblvdjuw0jcbmJ2pXfYWNU cho Storefront
+token_str = "rMzfSy3fOblvdjuw0jcbmJ2pXfYWNU"
+token_obj = AppToken.objects.filter(auth_token=token_str).first()
+if not token_obj:
+    AppToken.objects.filter(app=payment_app).delete()
+    AppToken.objects.create(app=payment_app, name="Storefront Runtime Token", auth_token=token_str)
+    print(f"   Đã gắn AppToken '{token_str}' cho {payment_app.name}.")
+else:
+    token_obj.app = payment_app
+    token_obj.save()
+    print(f"   AppToken '{token_str}' đã hợp lệ cho {payment_app.name}.")
 
-# 3. Đăng ký Webhook cho Payment App để Saleor nhận diện availablePaymentGateways
-webhook, _ = Webhook.objects.update_or_create(
-    app=payment_app,
-    name="Aurabook Payment Sync Webhook",
-    defaults={
-        "target_url": "http://localhost:3000/api/payment/webhook",
-        "is_active": True,
-    }
-)
-
-sync_events = [
-    WebhookEventSyncType.PAYMENT_LIST_GATEWAYS,
-    WebhookEventSyncType.PAYMENT_GATEWAY_INITIALIZE_SESSION,
-    WebhookEventSyncType.TRANSACTION_INITIALIZE_SESSION,
-    WebhookEventSyncType.TRANSACTION_PROCESS_SESSION,
-]
-
-WebhookEvent.objects.filter(webhook=webhook).delete()
-for event_type in sync_events:
-    WebhookEvent.objects.create(webhook=webhook, event_type=event_type)
-
-print(f"3. Đã đăng ký Webhook và {len(sync_events)} Sync Payment Events cho {payment_app.name}.")
+# Xóa bỏ các Webhook lỗi hoặc không tồn tại endpoint
+Webhook.objects.filter(name="Aurabook Payment Sync Webhook").delete()
+print("3. Đã làm sạch các Webhook không cần thiết để tránh lỗi Webhook delivery.")
 print("--- HOÀN TẤT CẤU HÌNH PAYMENT TRONG SALEOR THÀNH CÔNG ---")

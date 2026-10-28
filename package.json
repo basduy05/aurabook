@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev:frontend": "pnpm --prefix frontend dev",
+    "dev:admin": "pnpm --prefix admin dev",
     "build:frontend": "pnpm --prefix frontend build",
+    "build:admin": "pnpm --prefix admin build",
     "test:frontend": "pnpm --prefix frontend test:run",
     "lint:frontend": "pnpm --prefix frontend lint",
     "typecheck:frontend": "pnpm --prefix frontend typecheck",

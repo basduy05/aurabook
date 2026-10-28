@@ -159,8 +159,8 @@ NGUYÊN TẮC PHÂN TÍCH & TRÌNH BÀY (BẮT BUỘC TUÂN THỦ NGHIÊM NGẶT
 			userMessageContent = `${cleanQuery} (Lưu ý: Bắt buộc trả lời bằng tiếng Việt đầy đủ, trọn vẹn 3 mục: Bối cảnh & Ý nghĩa, Triết lý & Tâm lý học, Bài học Thực tiễn).`;
 		}
 
-		// Chuyển hoàn toàn sang Gemma 2 (2B) theo yêu cầu người dùng: 100% GPU, phản hồi siêu tốc, không bị nghẽn CPU
-		const candidateModels = ["gemma2:2b"];
+		// Hỗ trợ cả Gemma 2 (2B) và Gemma 3 (4B) hiện có trong Ollama, ưu tiên Gemma 2 siêu tốc
+		const candidateModels = ["gemma2:2b", "gemma3:4b"];
 
 		// STREAMING RESPONSE (Chế độ truyền chunking tăng tốc độ hiển thị)
 		if (isStream) {
@@ -203,7 +203,7 @@ NGUYÊN TẮC PHÂN TÍCH & TRÌNH BÀY (BẮT BUỘC TUÂN THỦ NGHIÊM NGẶT
 										num_predict: -1, // Không giới hạn token output (Done reason: stop khi hoàn tất trọn vẹn bài viết)
 									},
 								}),
-								signal: AbortSignal.timeout(600000), // Timeout 10 phút, bảo đảm không bao giờ bị ngắt kết nối dở dang
+								signal: AbortSignal.timeout(28000), // Timeout 28s, tự động kích hoạt GraphRAG fallback nếu server chậm
 							});
 
 							if (ollamaRes.ok && ollamaRes.body) {
@@ -364,7 +364,7 @@ NGUYÊN TẮC PHÂN TÍCH & TRÌNH BÀY (BẮT BUỘC TUÂN THỦ NGHIÊM NGẶT
 							num_predict: -1, // Không giới hạn token output
 						},
 					}),
-					signal: AbortSignal.timeout(600000),
+					signal: AbortSignal.timeout(28000),
 				});
 
 				if (ollamaRes.ok) {

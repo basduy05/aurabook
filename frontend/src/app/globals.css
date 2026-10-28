@@ -90,6 +90,19 @@
 	html[data-typography="editorial"] .text-h3 {
 		font-weight: 500;
 	}
+
+	/* Scrollbar hiding utilities for clean modern UI without scroll bars */
+	.no-scrollbar::-webkit-scrollbar,
+	.scrollbar-hide::-webkit-scrollbar,
+	.scrollbar-none::-webkit-scrollbar {
+		display: none;
+	}
+	.no-scrollbar,
+	.scrollbar-hide,
+	.scrollbar-none {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
 }
 
 /* DRM Anti-print protection */

@@ -4,27 +4,17 @@
     "llmProvider": "ollama",
     "llmModel": "gemma2:2b",
     "llmBaseUrl": "http://localhost:11434",
-    "sttProvider": "whisper-local",
-    "sttModel": "Systran/faster-whisper-small",
-    "sttBaseUrl": "http://localhost:8000/v1",
-    "sttApiKey": "",
     "llmApiKey": "",
     "temperature": 0.7,
-    "maxTokens": 180,
-    "ttsProvider": "piper-local",
     "ttsVoice": "f5-tts-vietnamese",
-    "ttsBaseUrl": "http://localhost:5050/v1",
-    "ttsApiKey": "",
     "ttsSpeed": 1,
     "systemPrompt": "Bạn là Aura AI, Chuyên viên Chăm sóc Khách hàng & Tư vấn Sách Thông minh của AuraBook. Giọng điệu thân thiện, ấm áp, trả lời ngắn gọn và tra cứu sách chính xác.",
-    "language": "vi-VN",
-    "voiceId": "f5-tts-vietnamese"
+    "activeVoice": "f5-tts-vietnamese"
   },
   "rag": {
     "apiUrl": "http://localhost:8080/v1",
     "apiKey": "app-aurabook-rag-dev-key",
-    "datasetId": "",
-    "knowledgeBase": "AuraBook Literature & Policy Dataset (KB-01)",
+    "datasetId": "dataset-aurabook-literature-01",
     "topK": 4,
     "scoreThreshold": 0.65
   },
@@ -32,12 +22,10 @@
     "lcpServerUrl": "http://localhost:8989",
     "singleTabLock": true
   },
-  "updatedAt": "2026-10-19T14:14:57.589Z",
+  "updatedAt": "2026-10-21T05:41:49.097Z",
   "preset": "local-free",
   "reader": {
     "llmModel": "gemma2:2b",
-    "maxTokens": -1,
-    "temperature": 0.4,
-    "provider": "ollama"
+    "maxTokens": 8192
   }
 }

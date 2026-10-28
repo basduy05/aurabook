@@ -65,7 +65,7 @@ Start-Process powershell.exe -ArgumentList "-NoExit", "-Command", $workerScript 
 Write-Host "  [OK] Voice Agent Worker đã được khởi chạy trong cửa sổ riêng." -ForegroundColor Green
 
 # 5. Khởi chạy Storefront Next.js (port 3000)
-Write-Host "`n[5/5] Khởi chạy Storefront Next.js (port 3000)..." -ForegroundColor Yellow
+Write-Host "`n[5/6] Khởi chạy Storefront Next.js (port 3000)..." -ForegroundColor Yellow
 $p3 = netstat -ano 2>$null | Select-String ":3000 " | Select-String "LISTENING"
 if (-not $p3) {
     Start-Process powershell.exe -ArgumentList "-NoExit", "-Command", "Set-Location '$FRONTEND'; npm run dev" -WindowStyle Minimized
@@ -79,19 +79,38 @@ if (-not $p3) {
     Write-Host "  [OK] Storefront Next.js đã đang chạy trên port 3000." -ForegroundColor Green
 }
 
+# 6. Khởi chạy Cổng Quản Trị Hệ Thống Độc Lập (port 3001)
+Write-Host "`n[6/6] Khởi chạy Cổng Quản Trị Hệ Thống Độc Lập (port 3001)..." -ForegroundColor Yellow
+$ADMIN_DIR = Join-Path $ROOT "admin"
+$p3001 = netstat -ano 2>$null | Select-String ":3001 " | Select-String "LISTENING"
+if (-not $p3001) {
+    Start-Process powershell.exe -ArgumentList "-NoExit", "-Command", "Set-Location '$ADMIN_DIR'; pnpm dev" -WindowStyle Minimized
+    for ($i = 0; $i -lt 8; $i++) {
+        Start-Sleep -Seconds 1
+        $p3001 = netstat -ano 2>$null | Select-String ":3001 " | Select-String "LISTENING"
+        if ($p3001) { break }
+    }
+    Write-Host "  [OK] Cổng Quản Trị Hệ Thống đã được khởi chạy trên port 3001." -ForegroundColor Green
+} else {
+    Write-Host "  [OK] Cổng Quản Trị Hệ Thống đã đang chạy trên port 3001." -ForegroundColor Green
+}
+
 Write-Host ""
 Write-Host "============================================================" -ForegroundColor Green
 Write-Host "   TOÀN BỘ HỆ THỐNG AURABOOK & AI ĐÃ SẴN SÀNG!              " -ForegroundColor Green
 Write-Host "============================================================" -ForegroundColor Green
-Write-Host "  1. Storefront (Độc giả & Mua sắm) : http://localhost:3000" -ForegroundColor Cyan
+Write-Host "  1. Storefront (Độc giả & Mua sắm)       : http://localhost:3000" -ForegroundColor Cyan
 Write-Host "     -> Đã tích hợp Widget Voice CSKH nổi & Web Reader DRM" -ForegroundColor White
-Write-Host "  2. Admin Dashboard (Quản trị)     : http://localhost:9000/dashboard/" -ForegroundColor Cyan
-Write-Host "  3. Core RAG (Dify Tri thức)       : http://localhost:8080" -ForegroundColor Cyan
-Write-Host "  4. LiveKit WebRTC Server          : ws://localhost:7880" -ForegroundColor Cyan
-Write-Host "  5. DRM Web Reader Gateway         : http://localhost:8088" -ForegroundColor Cyan
-Write-Host "  6. GraphQL API Backend            : http://localhost:8000/graphql/" -ForegroundColor Cyan
-Write-Host "  7. Mailpit (Hòm thư test)         : http://localhost:8025" -ForegroundColor Cyan
+Write-Host "  2. System Admin (Quản trị hệ thống riêng): http://localhost:3001" -ForegroundColor Yellow
+Write-Host "     -> Độc lập hoàn toàn, phân hệ bảo mật riêng" -ForegroundColor White
+Write-Host "  3. Saleor Dashboard (Quản trị kho/đơn)  : http://localhost:9000/dashboard/" -ForegroundColor Cyan
+Write-Host "  4. Core RAG (Dify Tri thức)             : http://localhost:8080" -ForegroundColor Cyan
+Write-Host "  5. LiveKit WebRTC Server                : ws://localhost:7880" -ForegroundColor Cyan
+Write-Host "  6. DRM Web Reader Gateway               : http://localhost:8088" -ForegroundColor Cyan
+Write-Host "  7. GraphQL API Backend                  : http://localhost:8000/graphql/" -ForegroundColor Cyan
+Write-Host "  8. Mailpit (Hòm thư test)               : http://localhost:8025" -ForegroundColor Cyan
 Write-Host "============================================================" -ForegroundColor Green
 Write-Host ""
 
 Start-Process "http://localhost:3000"
+Start-Process "http://localhost:3001"

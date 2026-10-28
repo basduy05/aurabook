@@ -1,0 +1,54 @@
+[
+  {
+    "id": "drm-sess-01",
+    "userEmail": "basduy05@gmail.com",
+    "bookTitle": "Cây Cam Ngọt Của Tôi",
+    "bookSlug": "cay-cam-ngot-cua-toi",
+    "currentPage": 13,
+    "totalPages": 244,
+    "progressPercent": 5,
+    "deviceInfo": "Chrome 131 / Windows 11 (Aura DRM Web Reader)",
+    "lastActive": "Vừa xong",
+    "activeTabLock": false,
+    "isRevoked": true
+  },
+  {
+    "id": "drm-sess-02",
+    "userEmail": "basduy05@gmail.com",
+    "bookTitle": "Đắc Nhân Tâm",
+    "bookSlug": "dac-nhan-tam",
+    "currentPage": 12,
+    "totalPages": 352,
+    "progressPercent": 3,
+    "deviceInfo": "Edge 131 / Windows 11 (Aura DRM Web Reader)",
+    "lastActive": "15 phút trước",
+    "activeTabLock": true,
+    "isRevoked": false
+  },
+  {
+    "id": "drm-sess-03",
+    "userEmail": "usertest@gmail.com",
+    "bookTitle": "Sapiens: Lược Sử Loài Người",
+    "bookSlug": "sapiens-luoc-su-loai-nguoi",
+    "currentPage": 48,
+    "totalPages": 320,
+    "progressPercent": 15,
+    "deviceInfo": "Safari / macOS (Aura DRM Mobile)",
+    "lastActive": "1 giờ trước",
+    "activeTabLock": true,
+    "isRevoked": false
+  },
+  {
+    "id": "drm-sess-04",
+    "userEmail": "reader.vip@aurabook.vn",
+    "bookTitle": "Nhà Giả Kim",
+    "bookSlug": "nha-gia-kim",
+    "currentPage": 112,
+    "totalPages": 228,
+    "progressPercent": 49,
+    "deviceInfo": "Firefox / Linux (Aura DRM Web Reader)",
+    "lastActive": "2 giờ trước",
+    "activeTabLock": false,
+    "isRevoked": false
+  }
+]

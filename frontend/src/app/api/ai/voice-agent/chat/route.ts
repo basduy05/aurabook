@@ -352,7 +352,7 @@ async function queryLLM({
 
 	// 2. Ollama Local (Chạy hoàn toàn trên Gemma 2 2B của Google: 100% GPU, phản hồi siêu tốc dưới 1 giây)
 	const targetBase = (baseUrl || "http://127.0.0.1:11434").replace(/\/v1\/?$/, "");
-	const ollamaModelsToTry = ["gemma2:2b"];
+	const ollamaModelsToTry = ["gemma2:2b", "gemma3:4b"];
 
 	for (const curModel of ollamaModelsToTry) {
 		try {

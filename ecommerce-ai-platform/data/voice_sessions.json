@@ -1,5 +1,47 @@
 [
   {
+    "id": "sess-1792557047567",
+    "startedAt": "11:30:47 21/10/2026",
+    "endedAt": "11:31:44 21/10/2026",
+    "durationSeconds": 53,
+    "contactMethod": "call",
+    "customerName": "Phương",
+    "customerPhone": "09867564321",
+    "customerGender": "Anh",
+    "customerAge": "18 - 24",
+    "topic": "Tư vấn chọn sách & Sách bán chạy",
+    "messages": [
+      {
+        "id": "welcome-personalized",
+        "sender": "agent",
+        "text": "Dạ em chào Anh Phương! Em là Aura AI, chuyên viên tư vấn của AuraBook. Em thấy Anh Phương đang quan tâm đến \"Tư vấn chọn sách & Sách bán chạy\". Em có thể hỗ trợ gì cho mình ạ?",
+        "timestamp": "11:30"
+      },
+      {
+        "id": "user-1792557076638",
+        "sender": "user",
+        "text": "Xin chào độc giả đây là chào bác sĩ nhẹ nhàng",
+        "timestamp": "11:31"
+      },
+      {
+        "id": "agent-1792557084988",
+        "sender": "agent",
+        "text": "Dạ em đã kiểm tra xong cho mình rồi, cảm ơn Anh Phương đã đợi em nhé ạ! dạ em chào Anh Phương ạ! Em là Aura AI - Chuyên viên tư vấn của AuraBook. Em rất sẵn lòng hỗ trợ mình. Anh Phương có thể chia sẻ cụ thể hơn giúp em là mình đang quan tâm đến thể loại sách nào (như tâm lý học, lịch sử văn minh, trí tuệ tư duy hay nghệ thuật giao tiếp) hoặc cần tra cứu đơn hàng để em phục vụ mình tốt nhất nhé ạ!",
+        "timestamp": "11:31"
+      }
+    ],
+    "rating": 1,
+    "reviewTags": [
+      "⚠️ Phản hồi chưa chính xác",
+      "🐢 Tốc độ phản hồi còn chậm",
+      "🔇 Âm thanh nghe gián đoạn",
+      "❌ Chưa hiểu đúng câu hỏi",
+      "📖 Gợi ý sách chưa phù hợp"
+    ],
+    "feedbackComment": "",
+    "status": "completed"
+  },
+  {
     "id": "sess-1792470077025",
     "startedAt": "11:21:17 20/10/2026",
     "endedAt": "11:23:27 20/10/2026",

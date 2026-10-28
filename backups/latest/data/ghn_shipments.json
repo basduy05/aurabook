@@ -56,8 +56,8 @@
     "fee": 16500,
     "codAmount": 0,
     "weightGrams": 500,
-    "status": "ready_to_pick",
-    "statusDisplay": "Chờ lấy hàng",
+    "status": "storing",
+    "statusDisplay": "Đã nhập kho phân loại",
     "sender": {
       "name": "Nhà sách Aurabook",
       "phone": "0912345678",
@@ -75,6 +75,13 @@
     "createdAt": "2026-10-10T16:11:04.018Z",
     "estimatedDeliveryDate": "2026-10-13T16:11:04.018Z",
     "history": [
+      {
+        "status": "storing",
+        "statusName": "Đã nhập kho phân loại",
+        "description": "Kiện hàng đã nhập trung tâm khai thác GHN Hà Nội và đang được luân chuyển.",
+        "time": "2026-10-21T05:24:08.873Z",
+        "location": "Bưu cục Trung tâm GHN Hà Nội"
+      },
       {
         "status": "ready_to_pick",
         "statusName": "Chờ lấy hàng",
@@ -95,8 +102,8 @@
     "fee": 16500,
     "codAmount": 0,
     "weightGrams": 500,
-    "status": "delivered",
-    "statusDisplay": "Giao hàng thành công (Completed)",
+    "status": "storing",
+    "statusDisplay": "Đã nhập kho phân loại",
     "sender": {
       "name": "Nhà sách Aurabook",
       "phone": "0912345678",
@@ -113,27 +120,12 @@
     "itemsSummary": "Đơn hàng sách Aurabook",
     "createdAt": "2026-10-09T17:19:13.382Z",
     "estimatedDeliveryDate": "2026-10-10T17:19:13.382Z",
-    "deliveredAt": "2026-10-10T09:30:00.000Z",
     "history": [
-      {
-        "status": "delivered",
-        "statusName": "Giao hàng thành công (Completed)",
-        "description": "Người nhận đã nhận hàng thành công và thanh toán. Đơn hàng hoàn tất.",
-        "time": "2026-10-10T09:30:00.000Z",
-        "location": "Số 88 Đường La Thành, Ba Đình, Hà Nội"
-      },
-      {
-        "status": "delivering",
-        "statusName": "Đang giao hàng",
-        "description": "Kiện hàng đã tới bưu cục phát. Shipper GHN đang trên đường giao đến bạn.",
-        "time": "2026-10-10T07:15:00.000Z",
-        "location": "Bưu cục phát GHN Ba Đình"
-      },
       {
         "status": "storing",
         "statusName": "Đã nhập kho phân loại",
         "description": "Kiện hàng đã nhập trung tâm khai thác GHN Hà Nội và đang được luân chuyển.",
-        "time": "2026-10-09T20:00:00.000Z",
+        "time": "2026-10-21T05:24:11.759Z",
         "location": "Bưu cục Trung tâm GHN Hà Nội"
       },
       {

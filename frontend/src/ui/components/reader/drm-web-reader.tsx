@@ -479,6 +479,12 @@ export function DRMWebReader({
 	const [fontSize, setFontSize] = useState<number>(100);
 	const [fontFamily, setFontFamily] = useState<string>("original");
 	const [currentPage, setCurrentPage] = useState<number>(1);
+
+	// Trạng thái đọc thử linh hoạt: nếu người dùng đã mua sách, tự động tắt hoàn toàn chế độ đọc thử
+	const [isTrialActive, setIsTrialActive] = useState<boolean>(isTrial);
+	const isTrialActiveRef = useRef<boolean>(isTrial);
+	isTrialActiveRef.current = isTrialActive;
+
 	const [totalPages, setTotalPages] = useState<number>(isTrial ? 15 : 150);
 	const [readPercentage, setReadPercentage] = useState<number>(1);
 	const [viewedCount, setViewedCount] = useState<number>(1);
@@ -486,6 +492,54 @@ export function DRMWebReader({
 	const [isTrialLocked, setIsTrialLocked] = useState<boolean>(false);
 	const isTrialLockedRef = useRef<boolean>(false);
 	isTrialLockedRef.current = isTrialLocked;
+
+	useEffect(() => {
+		setIsTrialActive(isTrial);
+		isTrialActiveRef.current = isTrial;
+		if (!isTrial) {
+			setIsTrialLocked(false);
+			isTrialLockedRef.current = false;
+			setTotalPages((prev) => (prev <= 15 ? 150 : prev));
+		}
+	}, [isTrial]);
+
+	// Tự động kiểm tra bản quyền: người nào đã mua sách rồi nhưng nhấn đọc thử thì tự động gỡ bỏ chế độ đọc thử
+	useEffect(() => {
+		let isCancelled = false;
+		async function checkPurchasedStatus() {
+			if (!bookSlug) return;
+			try {
+				const res = await fetch(`/api/reviews/check-eligibility?productSlug=${encodeURIComponent(bookSlug)}`);
+				if (res.ok) {
+					const data = (await res.json()) as any;
+					if (data?.hasPurchased && !isCancelled) {
+						setIsTrialActive(false);
+						isTrialActiveRef.current = false;
+						setIsTrialLocked(false);
+						isTrialLockedRef.current = false;
+						setIsPaywallOpen(false);
+						setTotalPages((prev) => (prev <= 15 ? 150 : prev));
+
+						// Gỡ bỏ query param mode=trial trên URL trình duyệt nếu đã mua
+						try {
+							const currentUrl = new URL(window.location.href);
+							if (currentUrl.searchParams.has("mode")) {
+								currentUrl.searchParams.delete("mode");
+								window.history.replaceState({}, "", currentUrl.toString());
+							}
+						} catch {}
+					}
+				}
+			} catch {}
+		}
+		if (isTrialActive) {
+			checkPurchasedStatus();
+		}
+		return () => {
+			isCancelled = true;
+		};
+	}, [bookSlug, isTrialActive]);
+
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const [isPaywallOpen, setIsPaywallOpen] = useState<boolean>(false);
 	const [loadError, setLoadError] = useState<string | null>(null);
@@ -494,6 +548,7 @@ export function DRMWebReader({
 	// Text selection state & Top action bar
 	const [selectedText, setSelectedText] = useState<string>("");
 	const [selectedCfi, setSelectedCfi] = useState<string>("");
+	const [selectionCoords, setSelectionCoords] = useState<{ x: number; y: number; isTopFlipped: boolean } | null>(null);
 	const [savedQuotes, setSavedQuotes] = useState<SavedQuote[]>([]);
 	const [toastNotice, setToastNotice] = useState<string | null>(null);
 
@@ -532,6 +587,8 @@ export function DRMWebReader({
 
 	// Audio Narration (Sách nói - Continuous Auto-Advancing TTS)
 	const [isTtsPlaying, setIsTtsPlaying] = useState<boolean>(false);
+	const isTtsPlayingRef = useRef<boolean>(false);
+	isTtsPlayingRef.current = isTtsPlaying;
 	const [isTtsLoading, setIsTtsLoading] = useState<boolean>(false);
 	const [ttsSpeed, setTtsSpeed] = useState<number>(1.0);
 	const ttsSpeedRef = useRef<number>(1.0);
@@ -1216,7 +1273,7 @@ export function DRMWebReader({
 
 				const rect = el.getBoundingClientRect();
 				const inHorizontal = rect.right > 8 && rect.left < winWidth - 8;
-				const inVertical = rect.bottom > 8 && rect.top < winHeight - 8;
+				const inVertical = rect.bottom > 10 && rect.top < winHeight - 6;
 
 				if (inHorizontal && inVertical) {
 					let t = "";
@@ -1580,7 +1637,8 @@ export function DRMWebReader({
 			for (let i = startIndex; i < endIndex; i++) {
 				const sentence = sentencesList[i]?.trim();
 				if (!sentence || sentence.length < 2) continue;
-				const cacheKey = `${currentVoice}:${currentSpeed}:${sentence}`;
+				// Cache key không phụ thuộc vào speed vì server chỉ lưu 1.0x và trình duyệt tự điều khiển playbackRate
+				const cacheKey = `${currentVoice}:${sentence}`;
 				if (audioPrefetchCache.current.has(cacheKey) || inFlightPrefetches.current.has(cacheKey)) {
 					continue;
 				}
@@ -1591,7 +1649,7 @@ export function DRMWebReader({
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
 						text: sentence,
-						speed: currentSpeed,
+						speed: 1.0,
 						voice: currentVoice,
 						tone: "standard",
 					}),
@@ -1700,12 +1758,14 @@ export function DRMWebReader({
 			// Highlight câu đang đọc trong iframe và tự động chuyển trang / cuộn bám theo
 			let activeSentenceCfi: string | undefined;
 			try {
+				let foundSpan = false;
 				const contentsList = (renditionRef.current as any)?.getContents?.() || [];
 				for (const c of contentsList) {
 					if (c?.document) {
 						highlightSentenceInDoc(c.document, currentSentence);
 						const activeSpan = c.document.querySelector(".aurabook-sentence-active") as HTMLElement | null;
 						if (activeSpan) {
+							foundSpan = true;
 							if (typeof c.cfiFromNode === "function") {
 								try {
 									activeSentenceCfi = c.cfiFromNode(activeSpan);
@@ -1728,17 +1788,37 @@ export function DRMWebReader({
 									// Nếu câu vượt khỏi vùng nhìn thấy theo chiều ngang hoặc chiều dọc:
 									const isOffScreen = rect.left >= winWidth - 10 || rect.right <= 10 || rect.top >= winHeight - 10 || rect.bottom <= 10;
 									if (isOffScreen) {
-										if (activeSentenceCfi) {
-											renditionRef.current?.display(activeSentenceCfi);
-										} else {
-											renditionRef.current?.next();
-										}
+										renditionRef.current?.next();
+										setTimeout(() => {
+											try {
+												const curContents = (renditionRef.current as any)?.getContents?.() || [];
+												for (const cc of curContents) {
+													if (cc?.document) {
+														highlightSentenceInDoc(cc.document, currentSentence);
+													}
+												}
+											} catch {}
+										}, 250);
 									}
 								}
 							}
 							break;
 						}
 					}
+				}
+				// Nếu câu đang đọc không tồn tại trong trang hiện tại (đã sang trang sau hoặc chương sau)
+				if (!foundSpan && !isUserBrowsingAwayRef.current && renditionRef.current && layoutModeRef.current !== "scroll") {
+					renditionRef.current.next().catch(() => {});
+					setTimeout(() => {
+						try {
+							const curContents = (renditionRef.current as any)?.getContents?.() || [];
+							for (const cc of curContents) {
+								if (cc?.document) {
+									highlightSentenceInDoc(cc.document, currentSentence);
+								}
+							}
+						} catch {}
+					}, 250);
 				}
 				if (activeSentenceCfi) {
 					currentPlayingLocationRef.current = {
@@ -1763,7 +1843,8 @@ export function DRMWebReader({
 
 			const currentSpeed = ttsSpeedRef.current;
 			const currentVoice = selectedVoiceRef.current;
-			const cacheKey = `${currentVoice}:${currentSpeed}:${currentSentence.trim()}`;
+			// Cache key độc lập với speed vì server chỉ lưu 1.0x, trình duyệt tự tua nhanh/chậm
+			const cacheKey = `${currentVoice}:${currentSentence.trim()}`;
 
 			// Kích hoạt nạp trước song song các câu kế tiếp (lên tới 14-25 câu phía trước trải dài qua các trang)
 			const lookaheadCount = Math.max(14, Math.round(12 * currentSpeed));
@@ -1785,7 +1866,7 @@ export function DRMWebReader({
 							headers: { "Content-Type": "application/json" },
 							body: JSON.stringify({
 								text: currentSentence,
-								speed: currentSpeed,
+								speed: 1.0,
 								voice: currentVoice,
 								tone: "standard",
 							}),
@@ -1842,8 +1923,22 @@ export function DRMWebReader({
 				const audio = ttsAudioRef.current;
 				const mime = audioBase64.startsWith("UklGR") ? "audio/wav" : "audio/mpeg";
 				audio.src = `data:${mime};base64,${audioBase64}`;
-				// Server đã tổng hợp audio theo đúng currentSpeed, do đó playbackRate đặt 1.0 chuẩn xác,
-				// tránh bị nhân đôi tốc độ (double-scaling) khiến âm thanh bị biến dạng hoặc đọc giật cục
+				
+				// Dùng tính năng tua của trình duyệt (Browser Native Playback Rate)
+				// preservesPitch = true giúp giữ nguyên 100% tone giọng tự nhiên, không bị méo tiếng hay biến dạng âm thanh
+				audio.preservesPitch = true;
+				(audio as any).mozPreservesPitch = true;
+				(audio as any).webkitPreservesPitch = true;
+				audio.playbackRate = ttsSpeedRef.current;
+
+				audio.onloadedmetadata = () => {
+					try {
+						audio.preservesPitch = true;
+						(audio as any).mozPreservesPitch = true;
+						(audio as any).webkitPreservesPitch = true;
+						audio.playbackRate = ttsSpeedRef.current;
+					} catch {}
+				};
 				// Cập nhật vị trí đang phát audio sách nói hiện tại
 				const currentCfiTarget = activeSentenceCfi || currentPlayingLocationRef.current?.cfi || renditionRef.current?.location?.start?.cfi || "";
 				currentPlayingLocationRef.current = {
@@ -1869,7 +1964,7 @@ export function DRMWebReader({
 				}
 
 				audio.ontimeupdate = () => {
-					if (isTrial && audio.currentTime >= 60) {
+					if (isTrialActiveRef.current && audio.currentTime >= 60) {
 						audio.pause();
 						isContinuousPlayingRef.current = false;
 						setIsTtsPlaying(false);
@@ -1916,7 +2011,7 @@ export function DRMWebReader({
 				}
 			}
 		},
-		[getVisiblePageSentences, highlightSentenceInDoc, isTrial, prefetchSentences, getUpcomingSentencesAhead, showToast, activeChapterHref, storageKey, exactPosStorageKey],
+		[getVisiblePageSentences, highlightSentenceInDoc, isTrialActive, prefetchSentences, getUpcomingSentencesAhead, showToast, activeChapterHref, storageKey, exactPosStorageKey],
 	);
 
 	// Đọc tiếp liên tục từ đoạn văn bản được bôi chọn (Continuous Read-Aloud from Selection)
@@ -1970,20 +2065,16 @@ export function DRMWebReader({
 				// Khớp thành công trên trang hiện tại: Giữ TOÀN BỘ câu của trang, bắt đầu phát từ matchIdx!
 				startIndex = matchIdx;
 			} else {
-				// Nếu không khớp trực tiếp trên trang hiện tại, tìm trong phạm vi toàn chương (Lookahead)
-				const upcoming = getUpcomingSentencesAhead(rawTarget, 40);
-				if (upcoming.length > 0) {
-					sentencesToQueue = upcoming;
-					startIndex = 0;
-				} else {
-					// Fallback cuối: tách các câu từ đoạn bôi đen và đọc tiếp
-					const selSentences = rawTarget
-						.split(/(?<=[.?!…\n])\s+/)
-						.map((s) => s.trim())
-						.filter((s) => s.length > 1);
-					sentencesToQueue = selSentences.length > 0 ? selSentences : [rawTarget];
-					startIndex = 0;
-				}
+				// Nếu câu được bôi chọn nằm ngay cuối trang và chưa lọt vào pageRes.sentences:
+				// Tách câu từ đoạn bôi đen và nối vào cuối danh sách câu của trang hiện tại,
+				// Nhờ đó khi câu này đọc xong, index >= sentences.length sẽ lập tức kích hoạt lật trang mượt mà!
+				const selSentences = rawTarget
+					.split(/(?<=[.?!…\n])\s+/)
+					.map((s) => s.trim())
+					.filter((s) => s.length > 1);
+				const targetSents = selSentences.length > 0 ? selSentences : [rawTarget];
+				startIndex = sentencesToQueue.length;
+				sentencesToQueue = [...sentencesToQueue, ...targetSents];
 			}
 
 			if (sentencesToQueue.length === 0) {
@@ -2044,6 +2135,11 @@ export function DRMWebReader({
 	const handleToggleReadAloud = useCallback(() => {
 		if (isTtsPlaying) {
 			isContinuousPlayingRef.current = false;
+			if (userInactivityTimerRef.current) {
+				clearTimeout(userInactivityTimerRef.current);
+				userInactivityTimerRef.current = null;
+			}
+			isUserBrowsingAwayRef.current = false;
 			if (ttsAudioRef.current) {
 				ttsAudioRef.current.pause();
 			}
@@ -2061,7 +2157,10 @@ export function DRMWebReader({
 			!ttsAudioRef.current.ended &&
 			ttsAudioRef.current.currentTime > 0
 		) {
-			ttsAudioRef.current.playbackRate = 1.0;
+			ttsAudioRef.current.preservesPitch = true;
+			(ttsAudioRef.current as any).mozPreservesPitch = true;
+			(ttsAudioRef.current as any).webkitPreservesPitch = true;
+			ttsAudioRef.current.playbackRate = ttsSpeedRef.current;
 			ttsAudioRef.current.play().catch(() => {});
 			setIsTtsPlaying(true);
 			showToast("▶️ Tiếp tục đọc sách");
@@ -2136,8 +2235,16 @@ export function DRMWebReader({
 		setTtsSpeed(newSpeed);
 		ttsSpeedRef.current = newSpeed;
 		saveAudiobookSettings({ speed: newSpeed });
-		if (ttsAudioRef.current && isTtsPlaying) {
-			ttsAudioRef.current.playbackRate = 1.0;
+		
+		// Dùng tính năng tua của trình duyệt: điều chỉnh playbackRate trực tiếp trên câu đang phát
+		// Thay đổi tốc độ tức thì 0 delay, không cần load lại âm thanh và giữ nguyên 100% tone giọng
+		if (ttsAudioRef.current) {
+			try {
+				ttsAudioRef.current.preservesPitch = true;
+				(ttsAudioRef.current as any).mozPreservesPitch = true;
+				(ttsAudioRef.current as any).webkitPreservesPitch = true;
+				ttsAudioRef.current.playbackRate = newSpeed;
+			} catch {}
 		}
 		// Nạp trước ngay các câu tiếp theo theo tốc độ mới
 		const currentSent = currentPlayingLocationRef.current?.sentence;
@@ -2149,7 +2256,7 @@ export function DRMWebReader({
 			}
 		}
 		showToast(`Tốc độ đọc: ${newSpeed}x`);
-	}, [isTtsPlaying, showToast, saveAudiobookSettings, getUpcomingSentencesAhead, prefetchSentences]);
+	}, [showToast, saveAudiobookSettings, getUpcomingSentencesAhead, prefetchSentences]);
 
 	const handleChangeTtsVoice = useCallback((newVoice: string) => {
 		setSelectedVoice(newVoice);
@@ -2177,15 +2284,14 @@ export function DRMWebReader({
 		// Đợi 2.5 giây sau khi mở sách hoặc đổi chương để ưu tiên toàn bộ UI và luồng đọc chính
 		const warmupTimer = setTimeout(() => {
 			if (isCancelled) return;
-			const currentSpeed = ttsSpeedRef.current;
 			const currentVoice = selectedVoiceRef.current;
 			// Thu thập danh sách câu trong toàn bộ chương
 			const chapterSentences = getUpcomingSentencesAhead("", 60);
 			if (!chapterSentences || chapterSentences.length === 0) return;
 
-			// Lọc ra các câu chưa có trong bộ nhớ tạm
+			// Lọc ra các câu chưa có trong bộ nhớ tạm (chuẩn 1x dùng chung)
 			const missingSentences = chapterSentences.filter((s) => {
-				const k = `${currentVoice}:${currentSpeed}:${s.trim()}`;
+				const k = `${currentVoice}:${s.trim()}`;
 				return !audioPrefetchCache.current.has(k) && !inFlightPrefetches.current.has(k);
 			});
 
@@ -2324,6 +2430,12 @@ export function DRMWebReader({
 			}
 			isUserBrowsingAwayRef.current = false;
 
+			// NẾU KHÔNG PHẢI BẤM NÚT THỦ CÔNG (notify === false) VÀ SÁCH NÓI KHÔNG ĐANG PHÁT:
+			// Tuyệt đối không tự động quay về chỗ đang nói!
+			if (!notify && !isContinuousPlayingRef.current && !isTtsPlayingRef.current) {
+				return false;
+			}
+
 			if (!renditionRef.current) return false;
 			const loc = currentPlayingLocationRef.current;
 			let targetCfi = loc?.cfi;
@@ -2408,7 +2520,13 @@ export function DRMWebReader({
 
 	// Tự động quay lại vị trí đang đọc sau khi người dùng không tương tác (Auto-Return to Active Reading Location after Inactivity)
 	const registerUserManualNavigation = useCallback(() => {
-		if (!isContinuousPlayingRef.current && !isTtsPlaying && !currentPlayingLocationRef.current?.sentence) {
+		// NẾU NGƯỜI DÙNG KHÔNG BẬT PHÁT ÂM THANH: Tuyệt đối không tự động quay về!
+		if (!isContinuousPlayingRef.current && !isTtsPlayingRef.current) {
+			if (userInactivityTimerRef.current) {
+				clearTimeout(userInactivityTimerRef.current);
+				userInactivityTimerRef.current = null;
+			}
+			isUserBrowsingAwayRef.current = false;
 			return;
 		}
 
@@ -2418,13 +2536,13 @@ export function DRMWebReader({
 		}
 
 		userInactivityTimerRef.current = setTimeout(() => {
-			if (isContinuousPlayingRef.current || isTtsPlaying || currentPlayingLocationRef.current?.sentence) {
+			if (isContinuousPlayingRef.current || isTtsPlayingRef.current) {
 				syncToActiveReadingLocation(false);
 				showToast("📍 Tự động quay trở lại vị trí sách nói đang đọc");
 			}
 			isUserBrowsingAwayRef.current = false;
-		}, 5500); // Sau 5.5 giây người dùng dừng tương tác, tự động quay về câu đang nói
-	}, [isTtsPlaying, syncToActiveReadingLocation, showToast]);
+		}, 5500); // Sau 5.5 giây người dùng dừng tương tác, tự động quay về câu đang nói nếu audio đang chạy
+	}, [syncToActiveReadingLocation, showToast]);
 
 	const registerUserManualNavigationRef = useRef(registerUserManualNavigation);
 	registerUserManualNavigationRef.current = registerUserManualNavigation;
@@ -2440,8 +2558,8 @@ export function DRMWebReader({
 
 	// Đi đến vị trí đang đọc / vị trí con trỏ (Jump to speaking sentence / cursor / selected text)
 	const handleJumpToCursor = useCallback(async () => {
-		// 1. ƯU TIÊN SỐ 1: Nếu sách nói ĐANG PHÁT hoặc có câu đọc dở, nhảy ngay về câu đang nói bằng jumpToCfiWithPulse mượt mà!
-		if (isContinuousPlayingRef.current || isTtsPlaying || currentPlayingLocationRef.current?.sentence || currentPlayingLocationRef.current?.cfi) {
+		// 1. ƯU TIÊN SỐ 1: Nếu sách nói ĐANG PHÁT, nhảy ngay về câu đang nói bằng jumpToCfiWithPulse mượt mà!
+		if (isContinuousPlayingRef.current || isTtsPlayingRef.current) {
 			const synced = await syncToActiveReadingLocation(true);
 			if (synced) return;
 		}
@@ -2562,7 +2680,8 @@ export function DRMWebReader({
 		const handleFocus = () => {
 			setTimeout(() => {
 				setIsScreenProtected(false);
-				if (isContinuousPlayingRef.current || isTtsPlaying || currentPlayingLocationRef.current?.sentence) {
+				// Chỉ tự động đồng bộ về vị trí đang đọc nếu người dùng ĐANG BẬT phát âm thanh
+				if (isContinuousPlayingRef.current || isTtsPlayingRef.current) {
 					syncToActiveReadingLocation(false);
 				}
 			}, 80);
@@ -2570,14 +2689,15 @@ export function DRMWebReader({
 
 		const handleVisibilityChange = () => {
 			if (document.hidden || !document.hasFocus()) {
-				if (!isContinuousPlayingRef.current && !isTtsPlaying) {
+				if (!isContinuousPlayingRef.current && !isTtsPlayingRef.current) {
 					setIsScreenProtected(true);
 				}
 				recordAuditLog("Ẩn tab ứng dụng / Chuyển cửa sổ phần mềm ngoài");
 			} else {
 				setTimeout(() => {
 					setIsScreenProtected(false);
-					if (isContinuousPlayingRef.current || isTtsPlaying || currentPlayingLocationRef.current?.sentence) {
+					// Chỉ tự động đồng bộ về vị trí đang đọc nếu người dùng ĐANG BẬT phát âm thanh
+					if (isContinuousPlayingRef.current || isTtsPlayingRef.current) {
 						syncToActiveReadingLocation(false);
 					}
 				}, 80);
@@ -2902,7 +3022,8 @@ export function DRMWebReader({
 
 				contents.window.addEventListener("focus", () => {
 					setIsScreenProtected(false);
-					if (isContinuousPlayingRef.current || isTtsPlaying || currentPlayingLocationRef.current?.sentence) {
+					// Chỉ tự động đồng bộ về vị trí đang đọc nếu người dùng ĐANG BẬT phát âm thanh
+					if (isContinuousPlayingRef.current || isTtsPlayingRef.current) {
 						syncToActiveReadingLocation(false);
 					}
 				});
@@ -3012,12 +3133,39 @@ export function DRMWebReader({
 						const sel = contents.window?.getSelection();
 						if (!sel || sel.isCollapsed || !sel.toString().trim()) {
 							setSelectedText("");
+							setSelectionCoords(null);
 						}
 					}, 120);
 				});
+
+				// Cập nhật tọa độ bôi đen chính xác khi người dùng nhả chuột
+				contents.document.addEventListener("mouseup", () => {
+					setTimeout(() => {
+						const sel = contents?.window?.getSelection();
+						const txt = sel ? sel.toString().trim() : "";
+						if (txt && txt.length > 1 && sel && sel.rangeCount > 0) {
+							try {
+								const range = sel.getRangeAt(0);
+								const rangeRect = range.getBoundingClientRect();
+								const iWin = contents?.window || contents?.document?.defaultView;
+								const iframe = (iWin?.frameElement || viewerRef.current?.querySelector("iframe")) as HTMLIFrameElement | null;
+								const iframeRect = iframe ? iframe.getBoundingClientRect() : viewerRef.current?.getBoundingClientRect();
+								if (iframeRect && rangeRect) {
+									const absX = iframeRect.left + rangeRect.left + rangeRect.width / 2;
+									const absTopY = iframeRect.top + rangeRect.top;
+									const absBottomY = iframeRect.top + rangeRect.bottom;
+									const isTopFlipped = absTopY - 60 < 75;
+									const clampedX = Math.max(260, Math.min(window.innerWidth - 260, absX));
+									const targetY = isTopFlipped ? absBottomY + 12 : absTopY - 12;
+									setSelectionCoords({ x: clampedX, y: targetY, isTopFlipped });
+								}
+							} catch {}
+						}
+					}, 50);
+				});
 			});
 
-			// Catch text selection inside ePub and show top action bar
+			// Catch text selection inside ePub and show floating action bar right near selection
 			rendition.on("selected", (cfiRange: string, contents: any) => {
 				if (!isMounted) return;
 				const selection = contents?.window?.getSelection();
@@ -3025,6 +3173,24 @@ export function DRMWebReader({
 				if (text && text.length > 1) {
 					setSelectedText(text);
 					setSelectedCfi(cfiRange);
+					try {
+						const range = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+						if (range) {
+							const rangeRect = range.getBoundingClientRect();
+							const iWin = contents?.window || contents?.document?.defaultView;
+							const iframe = (iWin?.frameElement || viewerRef.current?.querySelector("iframe")) as HTMLIFrameElement | null;
+							const iframeRect = iframe ? iframe.getBoundingClientRect() : viewerRef.current?.getBoundingClientRect();
+							if (iframeRect && rangeRect) {
+								const absX = iframeRect.left + rangeRect.left + rangeRect.width / 2;
+								const absTopY = iframeRect.top + rangeRect.top;
+								const absBottomY = iframeRect.top + rangeRect.bottom;
+								const isTopFlipped = absTopY - 60 < 75;
+								const clampedX = Math.max(260, Math.min(window.innerWidth - 260, absX));
+								const targetY = isTopFlipped ? absBottomY + 12 : absTopY - 12;
+								setSelectionCoords({ x: clampedX, y: targetY, isTopFlipped });
+							}
+						}
+					} catch {}
 				}
 			});
 
@@ -3167,7 +3333,7 @@ export function DRMWebReader({
 				}
 
 				// Trial enforcement: Track unique pages read across the book (15 pages non-continuous limit)
-				if (isTrial) {
+				if (isTrialActiveRef.current) {
 					viewedPagesRef.current.add(curPageNum);
 					const count = viewedPagesRef.current.size;
 					setViewedCount(count);
@@ -3179,7 +3345,7 @@ export function DRMWebReader({
 				}
 
 				// Sync reading progress to Backend aurabook_apps.drm database (CHỈ DÀNH CHO SÁCH ĐÃ MUA, TUYỆT ĐỐI KHÔNG CẤP PHÁT BẢN ĐỌC THỬ VÀO TỦ SÁCH)
-				if (userProfileRef.current?.email && !isTrial) {
+				if (userProfileRef.current?.email && !isTrialActiveRef.current) {
 					fetch("/api/drm/progress", {
 						method: "POST",
 						headers: { "Content-Type": "application/json" },
@@ -3390,14 +3556,14 @@ export function DRMWebReader({
 		registerUserManualNavigation();
 
 		// Strict hard lock for trial: cannot read beyond 15 pages
-		if (isTrial && (isTrialLockedRef.current || viewedPagesRef.current.size >= 15 || currentPageRef.current >= 15)) {
+		if (isTrialActiveRef.current && (isTrialLockedRef.current || viewedPagesRef.current.size >= 15 || currentPageRef.current >= 15)) {
 			setIsTrialLocked(true);
 			setIsPaywallOpen(true);
 			showToast("Bạn đã đọc hết 15 trang đọc thử. Vui lòng mua sách để mở khóa bản quyền.");
 			return;
 		}
 
-		if (isTrial) {
+		if (isTrialActiveRef.current) {
 			const nextP = Math.min(15, currentPageRef.current + 1);
 			currentPageRef.current = nextP;
 			setCurrentPage(nextP);
@@ -3427,7 +3593,7 @@ export function DRMWebReader({
 	const prevPage = () => {
 		registerUserManualNavigation();
 
-		if (isTrial) {
+		if (isTrialActiveRef.current) {
 			const prevP = Math.max(1, currentPageRef.current - 1);
 			currentPageRef.current = prevP;
 			setCurrentPage(prevP);
@@ -3452,7 +3618,7 @@ export function DRMWebReader({
 	const handleNavigateChapter = (chapter: TocItem, chIdx?: number) => {
 		registerUserManualNavigation();
 
-		if (isTrial) {
+		if (isTrialActiveRef.current) {
 			const chapterIndex = typeof chIdx === "number"
 				? chIdx
 				: tocList.findIndex(
@@ -3955,7 +4121,7 @@ export function DRMWebReader({
 								{bookTitle}
 							</h1>
 						</div>
-						{isTrial && (
+						{isTrialActive && (
 							<Badge variant="outline-solid" className="ml-1 gap-1 py-0.5 px-2 text-[10px] font-medium border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300 shrink-0">
 								<span>Bản đọc thử ({viewedCount}/15 trang)</span>
 							</Badge>
@@ -3970,7 +4136,13 @@ export function DRMWebReader({
 						<Button
 							variant={isAudioPopoverOpen ? "default" : isTtsPlaying ? "default" : isSepia ? "ghost" : "outline-solid"}
 							size="sm"
-							onClick={() => setIsAudioPopoverOpen((prev) => !prev)}
+							onClick={() => {
+								setIsAudioPopoverOpen((prev) => {
+									const next = !prev;
+									if (next) setIsSettingsOpen(false);
+									return next;
+								});
+							}}
 							className={
 								isTtsPlaying
 									? "bg-primary text-primary-foreground font-semibold shadow-xs"
@@ -3993,7 +4165,7 @@ export function DRMWebReader({
 								{/* Header */}
 								<div className="flex items-center justify-between pb-2 mb-3 border-b border-inherit">
 									<div className="flex items-center gap-2">
-										<span className="text-xs font-bold">Điều Khiển Sách Nói</span>
+										<span className="text-sm font-bold">Điều Khiển Sách Nói</span>
 										{isTtsPlaying && (
 											<span className="flex h-2 w-2 relative">
 												<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
@@ -4176,34 +4348,23 @@ export function DRMWebReader({
 						)}
 					</div>
 
-					{/* AI Reading Companion Button */}
-					<Button
-						variant={isAiOpen ? "default" : isSepia ? "ghost" : "outline-solid"}
-						size="sm"
-						onClick={() => setIsAiOpen(!isAiOpen)}
-						className={isSepia && !isAiOpen ? "gap-1.5 border border-[#d8cbb0] bg-[#fbf0d9] hover:bg-[#ede2cd]" : "gap-1.5"} // design-tokens-allow
-						title="Trợ lý AI Đọc sách & Trích dẫn"
-					>
-						<Bot className="h-3.5 w-3.5" />
-						<span className="hidden sm:inline">Trợ lý AI</span>
-						{savedQuotes.length > 0 && (
-							<span className="ml-0.5 rounded-full bg-primary-foreground/20 px-1.5 py-0.2 text-[10px] font-bold">
-								{savedQuotes.length}
-							</span>
-						)}
-					</Button>
-
 					{/* READING DISPLAY SETTINGS POPOVER BUTTON (Layout, Font size, Line height) */}
 					<div className="relative">
 						<Button
 							variant={isSettingsOpen ? "secondary" : isSepia ? "ghost" : "outline-solid"}
 							size="sm"
-							onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+							onClick={() => {
+								setIsSettingsOpen((prev) => {
+									const next = !prev;
+									if (next) setIsAudioPopoverOpen(false);
+									return next;
+								});
+							}}
 							className={isSepia ? "gap-1.5 border border-[#d8cbb0] bg-[#fbf0d9] hover:bg-[#ede2cd]" : "gap-1.5"} // design-tokens-allow
 							title="Cài đặt thông số đọc sách (1 trang, 2 trang, cuộn dọc)"
 						>
 							<SlidersHorizontal className="h-3.5 w-3.5" />
-							<span className="hidden md:inline text-xs">Cài đặt đọc</span>
+							<span className="hidden sm:inline">Cài đặt đọc</span>
 						</Button>
 
 						{/* SETTINGS DROPDOWN POPOVER (z-[70] so it's above AI sidebar) */}
@@ -4464,7 +4625,7 @@ export function DRMWebReader({
 														className="h-3.5 w-3.5 rounded-full shadow-xs transition-transform group-hover:scale-110"
 														style={{ backgroundColor: color.primary }}
 													/>
-													<span className="text-[9px] mt-1 truncate max-w-full leading-none">
+													<span className="text-[10px] font-medium mt-1 truncate max-w-full leading-none">
 														{color.name.split(" ")[0]}
 													</span>
 												</button>
@@ -4512,6 +4673,23 @@ export function DRMWebReader({
 					>
 						{isFullscreen ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
 					</Button>
+
+					{/* AI Reading Companion Button (Bên phải trong cùng) */}
+					<Button
+						variant={isAiOpen ? "default" : isSepia ? "ghost" : "outline-solid"}
+						size="sm"
+						onClick={() => setIsAiOpen(!isAiOpen)}
+						className={isSepia && !isAiOpen ? "gap-1.5 border border-[#d8cbb0] bg-[#fbf0d9] hover:bg-[#ede2cd]" : "gap-1.5"} // design-tokens-allow
+						title="Trợ lý AI Đọc sách & Trích dẫn"
+					>
+						<Bot className="h-3.5 w-3.5" />
+						<span className="hidden sm:inline">Trợ lý AI</span>
+						{savedQuotes.length > 0 && (
+							<span className="ml-0.5 rounded-full bg-primary-foreground/20 px-1.5 py-0.2 text-[10px] font-bold">
+								{savedQuotes.length}
+							</span>
+						)}
+					</Button>
 				</div>
 			</header>
 
@@ -4552,14 +4730,14 @@ export function DRMWebReader({
 							</div>
 						</div>
 
-						{/* Chapters list (NO icon, NO "Đang đọc" text, clean active highlighting) */}
-						<div className="flex-1 overflow-y-auto p-2 space-y-1">
+						{/* Chapters list (Tắt bỏ thanh scroll, cuộn mượt mà không thanh cuộn) */}
+						<div className="flex-1 overflow-y-auto p-2 space-y-1 no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
 							{filteredToc.map((chapter, chIdx) => {
 								const isCurrent =
 									(chapter.href && activeChapterHref.includes(chapter.href)) ||
 									(chapter.href && chapter.href.includes(activeChapterHref)) ||
 									chapter.id === activeChapterHref;
-								const isLocked = isTrial && chIdx > 1;
+								const isLocked = isTrialActive && chIdx > 1;
 
 								return (
 									<button
@@ -4688,7 +4866,7 @@ export function DRMWebReader({
 						/>
 
 						{/* HARD TRIAL LOCK SCREEN: Blocks reading completely when 15 pages are reached */}
-						{isTrial && isTrialLocked && (
+						{isTrialActive && isTrialLocked && (
 							<div
 								key="drm-trial-lock-overlay"
 								className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-background/90 backdrop-blur-md p-6 text-center select-none animate-in fade-in duration-200"
@@ -4730,11 +4908,26 @@ export function DRMWebReader({
 
 					</div>
 
-					{/* FLOATING TEXT SELECTION ACTION BAR - NỔI HOÀN TOÀN BÊN TRÊN PHẦN SÁCH, KHÔNG LỒNG TRONG KHUNG SÁCH, KHÔNG SCROLL */}
+					{/* FLOATING TEXT SELECTION ACTION BAR - NỔI HOÀN TOÀN BÊN TRÊN PHẦN SÁCH, TỌA ĐỘ BÁM SÁT ĐOẠN BÔI CHỌN, KHÔNG SCROLL */}
 					{selectedText && (
 						<div
 							key="drm-floating-selection-bar"
-							className={`fixed top-16 sm:top-[66px] left-1/2 -translate-x-1/2 z-50 flex items-center gap-1.5 sm:gap-2 rounded-full border px-3 sm:px-4 py-1.5 sm:py-2 shadow-2xl backdrop-blur-2xl animate-in fade-in slide-in-from-top-3 duration-200 select-none ${
+							style={
+								selectionCoords
+									? {
+											position: "fixed",
+											left: `${selectionCoords.x}px`,
+											top: `${selectionCoords.y}px`,
+											transform: selectionCoords.isTopFlipped ? "translate(-50%, 0)" : "translate(-50%, -100%)",
+									  }
+									: {
+											position: "fixed",
+											left: "50%",
+											top: "76px",
+											transform: "translate(-50%, 0)",
+									  }
+							}
+							className={`z-50 flex items-center gap-1.5 sm:gap-2 rounded-full border px-3 sm:px-4 py-1.5 sm:py-2 shadow-2xl backdrop-blur-2xl animate-in fade-in zoom-in-95 duration-150 select-none overflow-visible whitespace-nowrap ${
 								isSepia
 									? "bg-[#fbf0d9]/95 border-[#d8cbb0] text-[#433422]"
 									: "bg-card/95 border-border text-foreground"
@@ -5298,7 +5491,7 @@ export function DRMWebReader({
 
 				<div className="flex items-center gap-4">
 					<span className="tabular-nums font-mono font-medium max-w-[280px] sm:max-w-md truncate" title={tocList.find(c => (c.href && activeChapterHref.includes(c.href)) || c.id === activeChapterHref)?.label || ""}>
-						{isTrial ? (
+						{isTrialActive ? (
 							`Đọc thử: Đã xem ${viewedCount}/15 trang (${readPercentage}%)`
 						) : (() => {
 							const idx = tocList.findIndex(c => (c.href && activeChapterHref.includes(c.href)) || (c.href && activeChapterHref && c.href.includes(activeChapterHref)) || c.id === activeChapterHref);
@@ -5325,7 +5518,7 @@ export function DRMWebReader({
 			</footer>
 
 			{/* TRIAL PAYWALL MODAL */}
-			{isPaywallOpen && (
+			{isTrialActive && isPaywallOpen && (
 				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-in fade-in duration-200">
 					<div
 						className={`relative w-full max-w-md rounded-card border p-6 text-center shadow-2xl animate-in zoom-in-95 duration-200 ${

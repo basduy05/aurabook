@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict PnslLgL408HXPefgvvsWEjq0EF5oiyvwPwk5RhwelGe7LSIoBXw8KRK7K3zraui
+\restrict lAy11n5uGsZrlYjc7D7WKkHr7Dc64QfidY1Zr4HcchPVNTsxVXBvLthrmgEeja6
 
 -- Dumped from database version 16.15 (Debian 16.15-1.pgdg12+2)
 -- Dumped by pg_dump version 16.15 (Debian 16.15-1.pgdg12+2)
@@ -4605,6 +4605,7 @@ COPY public.account_address (id, first_name, last_name, company_name, street_add
 61	Duy	Nguyen Ba		Coc Thon, Cam Thuong	Ba Vi	QUẬN THANH XUÂN	100000	VN	Hà Nội	+84362632175		{}	{}	f
 62	Duy	Nguyen Ba		Coc Thon, Cam Thuong	Ba Vi	QUẬN THANH XUÂN	100000	VN	Hà Nội	+84362632175		{}	{}	f
 63	Duy	Nguyen Ba		Coc Thon, Cam Thuong	Ba Vi	QUẬN THANH XUÂN	100000	VN	Hà Nội	+84362632175		{}	{}	f
+64	Duy	Nguyen Ba		Coc Thon, Cam Thuong	Ba Vi	QUẬN THANH XUÂN	100000	VN	Hà Nội	+84362632175		{}	{}	f
 \.
 
 
@@ -4626,6 +4627,7 @@ COPY public.account_customerevent (id, date, type, parameters, user_id, app_id, 
 47	2026-10-15 10:15:14.978772+00	placed_order	{}	6	\N	acad3bf8-42f4-41f4-be29-2a0ac1c5701b
 48	2026-10-17 16:29:55.438785+00	account_created	{}	7	\N	\N
 49	2026-10-19 03:46:55.611483+00	placed_order	{}	6	\N	ae9dfdec-db0e-4b7b-b315-6807c6b451f3
+50	2026-10-20 08:37:21.249438+00	placed_order	{}	6	\N	344c44a7-bfc3-438d-8f42-c14c929dfb99
 \.
 
 
@@ -5229,11 +5231,11 @@ COPY public.account_staffnotificationrecipient (id, staff_email, active, user_id
 
 COPY public.account_user (id, is_superuser, email, is_staff, is_active, password, date_joined, last_login, default_billing_address_id, default_shipping_address_id, note, first_name, last_name, avatar, private_metadata, metadata, jwt_token_key, language_code, search_document, updated_at, uuid, external_reference, last_password_reset_request, is_confirmed, last_confirm_email_request, number_of_orders, search_vector, customer_type_id) FROM stdin;
 2	f	customer@example.com	f	t	pbkdf2_sha256$1000000$IYO0B8K4uGcCgWcN39qspD$yLCRJU/0N94fKHZwjgPphciK6IVoPZSkSEGCu4PMR4w=	2026-10-08 07:25:35.222499+00	2026-10-08 07:26:00.983257+00	\N	\N	\N	Khách	Hàng		{}	{}	tYdd7vaPyVYX	en		2026-10-08 07:26:00.983409+00	cc071f17-16e3-4a53-86e0-38eb75667270	\N	2026-10-08 08:38:18.326821+00	t	\N	0	\N	\N
-4	t	admin@example.com	t	t	pbkdf2_sha256$1000000$V1U9blCavygryPagvC58lq$kysawB3NammHoZbUfvxH9LirR5vYcvGtICeGWtDwIsQ=	2026-10-09 15:04:57.722594+00	2026-10-19 14:23:12.114917+00	\N	\N	\N				{}	{"onboarding": "{\\"onboardingExpanded\\":true,\\"stepsCompleted\\":[\\"get-started\\",\\"explore-orders\\",\\"view-extensions\\"],\\"stepsExpanded\\":{}}", "sidebar_app_webhook_alert_state": "{\\"lastClickDate\\":\\"2026-10-19T13:49:51.041Z\\",\\"lastFailedAttemptDate\\":\\"\\"}"}	7VbODWADAx7b	en		2026-10-19 14:23:12.115304+00	fe882b22-6646-43b1-a551-44ab934ae13e	\N	\N	t	\N	0	\N	\N
-6	f	basduy05@gmail.com	f	t	pbkdf2_sha256$1000000$yi9vfvWaNeUkk3AEn2Safp$YUfrOn1icawYDjJW/57OSYvqSxkBD9kKw0nhOzf3y+g=	2026-10-09 16:16:41.021344+00	2026-10-19 16:08:33.754612+00	62	\N	\N				{}	{}	doDGkOooGOAl	en		2026-10-19 16:08:33.754961+00	2bd6eab4-6e15-469e-b039-f4fb3d599921	\N	\N	t	\N	7	'basduy05@gmail.com':1A 'gmail.com':2B	1
+7	f	usertest@gmail.com	f	t	pbkdf2_sha256$1000000$Hxuhd4CAWC23cpsIoB49A1$BiOSslL6MFS4kFrODZK2ozIFg5E9tK2clXIM9S9SE+k=	2026-10-17 16:29:52.674969+00	2026-10-21 05:40:30.641237+00	\N	\N	\N	Duyduyy	Nguyen		{}	{}	dRJVzqobBElC	en		2026-10-21 05:40:30.641575+00	aa0d588f-14b4-44c2-9956-f46fdeb3b2bf	\N	\N	t	\N	0	'duyduyy':1A 'gmail.com':4B 'nguyen':2A 'usertest@gmail.com':3A	1
+6	f	basduy05@gmail.com	f	t	pbkdf2_sha256$1000000$yi9vfvWaNeUkk3AEn2Safp$YUfrOn1icawYDjJW/57OSYvqSxkBD9kKw0nhOzf3y+g=	2026-10-09 16:16:41.021344+00	2026-10-21 08:52:41.210156+00	62	\N	\N				{}	{}	doDGkOooGOAl	en		2026-10-21 08:52:41.210477+00	2bd6eab4-6e15-469e-b039-f4fb3d599921	\N	\N	t	\N	8	'basduy05@gmail.com':1A 'gmail.com':2B	1
+1	t	basduygame@gmail.com	t	t	pbkdf2_sha256$1000000$ScyUZA9j0qj8MXbDgDyaKO$+g53Mp6JCWgtoZFTj0HbBissPHu52tL5dNuw4xNtVqo=	2026-10-08 07:25:34.670974+00	2026-10-21 08:57:00.329832+00	\N	\N	\N	Ba Duy	Nguyen		{}	{"onboarding": "{\\"onboardingExpanded\\":true,\\"stepsCompleted\\":[\\"get-started\\",\\"view-extensions\\",\\"explore-orders\\",\\"invite-staff\\"],\\"stepsExpanded\\":{}}", "sidebar_app_webhook_alert_state": "{\\"lastClickDate\\":\\"2026-10-21T04:47:54.251Z\\",\\"lastFailedAttemptDate\\":\\"2026-10-20T08:37:20.434Z\\"}"}	VaLwhMRt2eV0	en		2026-10-21 08:57:00.330452+00	5b0648de-22b5-4ffb-907b-74b2f34c54b2	\N	2026-10-09 06:57:45.902424+00	t	\N	0	'ba':1A 'basduygame@gmail.com':4A 'duy':2A 'gmail.com':5B 'nguyen':3A	1
 5	f	baduynguyen210705@gmail.com	t	t		2026-10-09 15:39:38.32072+00	\N	\N	\N	\N	Duy	Nguyen Ba		{}	{}	pY0pAMPXgcuk	en		2026-10-09 15:39:38.330744+00	bfd536c5-198d-40cd-9660-c8f194f6c948	\N	\N	t	\N	0	'ba':3A 'baduynguyen210705@gmail.com':4A 'duy':1A 'gmail.com':5B 'nguyen':2A	1
-7	f	usertest@gmail.com	f	t	pbkdf2_sha256$1000000$Hxuhd4CAWC23cpsIoB49A1$BiOSslL6MFS4kFrODZK2ozIFg5E9tK2clXIM9S9SE+k=	2026-10-17 16:29:52.674969+00	2026-10-19 17:05:34.781611+00	\N	\N	\N	Duyduyy	Nguyen		{}	{}	dRJVzqobBElC	en		2026-10-19 17:05:34.781961+00	aa0d588f-14b4-44c2-9956-f46fdeb3b2bf	\N	\N	t	\N	0	'duyduyy':1A 'gmail.com':4B 'nguyen':2A 'usertest@gmail.com':3A	1
-1	t	basduygame@gmail.com	t	t	pbkdf2_sha256$1000000$ScyUZA9j0qj8MXbDgDyaKO$+g53Mp6JCWgtoZFTj0HbBissPHu52tL5dNuw4xNtVqo=	2026-10-08 07:25:34.670974+00	2026-10-19 17:07:17.299124+00	\N	\N	\N	Ba Duy	Nguyen		{}	{"onboarding": "{\\"onboardingExpanded\\":true,\\"stepsCompleted\\":[\\"get-started\\",\\"view-extensions\\",\\"explore-orders\\",\\"invite-staff\\"],\\"stepsExpanded\\":{}}", "sidebar_app_webhook_alert_state": "{\\"lastClickDate\\":\\"2026-10-19T10:33:11.746Z\\",\\"lastFailedAttemptDate\\":\\"\\"}"}	VaLwhMRt2eV0	en		2026-10-19 17:07:17.299271+00	5b0648de-22b5-4ffb-907b-74b2f34c54b2	\N	2026-10-09 06:57:45.902424+00	t	\N	0	'ba':1A 'basduygame@gmail.com':4A 'duy':2A 'gmail.com':5B 'nguyen':3A	1
+4	t	admin@example.com	t	t	pbkdf2_sha256$1000000$V1U9blCavygryPagvC58lq$kysawB3NammHoZbUfvxH9LirR5vYcvGtICeGWtDwIsQ=	2026-10-09 15:04:57.722594+00	2026-10-20 04:51:10.820719+00	\N	\N	\N				{}	{"onboarding": "{\\"onboardingExpanded\\":true,\\"stepsCompleted\\":[\\"get-started\\",\\"explore-orders\\",\\"view-extensions\\"],\\"stepsExpanded\\":{}}", "sidebar_app_webhook_alert_state": "{\\"lastClickDate\\":\\"2026-10-19T13:49:51.041Z\\",\\"lastFailedAttemptDate\\":\\"\\"}"}	7VbODWADAx7b	en		2026-10-20 04:51:10.820967+00	fe882b22-6646-43b1-a551-44ab934ae13e	\N	\N	t	\N	0	\N	\N
 \.
 
 
@@ -5819,7 +5821,7 @@ COPY public.ai_search_bookchunk (id, product_id, product_slug, chunk_index, chun
 --
 
 COPY public.app_app (id, private_metadata, metadata, name, created_at, is_active, about_app, app_url, configuration_url, data_privacy, data_privacy_url, homepage_url, identifier, support_url, type, version, manifest_url, audience, is_installed, author, uuid, brand_logo_default, removed_at) FROM stdin;
-3	{}	{}	Quản trị Hệ thống	2026-10-19 03:53:56.692912+00	t	Trung tâm Quản trị Hợp nhất: Quản trị Độc giả, Kiểm duyệt Cộng đồng & Hệ sinh thái AI (Voice CSKH, GraphRAG, DRM Security)	http://localhost:3000/system-admin	http://localhost:3000/system-admin	\N	\N	http://localhost:3000/system-admin	aurabook.system.admin	\N	thirdparty	1.0.0	http://localhost:3000/api/system/admin/manifest	\N	t	\N	559c14f1-d90a-45aa-82af-e7fc4bc9af27		\N
+4	{}	{}	Cổng thanh toán Aurabook (VNPAY, MoMo, Thẻ Thử Nghiệm)	2026-10-20 06:20:23.053233+00	t	Cổng thanh toán tích hợp Aurabook hỗ trợ VNPAY, MoMo Sandbox và Thẻ Test	http://localhost:3000	http://localhost:3000	\N	\N	http://localhost:3000	saleor.io.dummy-payment-app	\N	thirdparty	1.0.0	\N	\N	t	\N	5a145233-3b3a-4a52-bbcf-1d03e4008e8b		\N
 \.
 
 
@@ -5828,10 +5830,12 @@ COPY public.app_app (id, private_metadata, metadata, name, created_at, is_active
 --
 
 COPY public.app_app_permissions (id, app_id, permission_id) FROM stdin;
-11	3	344
-12	3	403
-13	3	172
-14	3	111
+17	4	344
+18	4	291
+19	4	431
+20	4	403
+21	4	172
+22	4	111
 \.
 
 
@@ -5880,6 +5884,8 @@ COPY public.app_appproblem (id, created_at, updated_at, message, key, count, is_
 --
 
 COPY public.app_apptoken (id, name, auth_token, app_id, token_last_4) FROM stdin;
+3	Dummy Payment Token	pbkdf2_sha256$1000000$hqd7H2Pc95irTK5rCZGmWg$Mop0wD0AzUFD8GzFUlzGr1XzSBB9tANver7+lg8AWvE=	4	Jubu
+4	Storefront Runtime Token	pbkdf2_sha256$1000000$srdakOYOS2Db6QrIlscfuZ$cpC5vE9wYfvX/uLn+uW+Fjypyob4v1igoAake7NmzJA=	4	YWNU
 \.
 
 
@@ -5949,7 +5955,6 @@ COPY public.attribute_assignedpageattributevalue (id, sort_order, value_id, page
 59	2	14	16
 60	3	15	16
 61	4	16	16
-62	5	17	16
 63	6	18	16
 64	7	388	16
 65	8	19	16
@@ -6024,6 +6029,7 @@ COPY public.attribute_assignedpageattributevalue (id, sort_order, value_id, page
 134	6	434	23
 135	7	435	23
 136	8	436	23
+62	0	17	16
 \.
 
 
@@ -6346,6 +6352,7 @@ COPY public.attribute_attributetranslation (id, language_code, name, attribute_i
 
 COPY public.attribute_attributevalue (id, name, attribute_id, slug, sort_order, value, content_type, file_url, rich_text, "boolean", date_time, reference_page_id, reference_product_id, plain_text, reference_variant_id, external_reference, reference_category_id, reference_collection_id, "numeric") FROM stdin;
 437	Tri_Tue_Do_Thai_-_Eran_Katz_b94f5a7c.epub	92	tri_tue_do_thai_-_eran_katz_b94f5a7cepub	\N		application/epub+zip	file_upload/Tri_Tue_Do_Thai_-_Eran_Katz_b94f5a7c.epub	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
+17	4	16	storefront-homepage-featured-limit	0		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	4
 106	Elastane	36	elastane	1		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 107	Polyester	36	polyester	2		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 108	39	37	39	0		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
@@ -6367,7 +6374,6 @@ COPY public.attribute_attributevalue (id, name, attribute_id, slug, sort_order, 
 14	Khám phá bộ sưu tập sách chọn lọc, kết nối cùng cộng đồng độc giả đam mê đọc sách.	12	storefront-homepage-hero-subheading	0		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 15	Khám phá tủ sách	13	storefront-homepage-hero-cta-label	0		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 16	Tác Phẩm Nổi Bật	15	storefront-homepage-featured-heading	0		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
-17	8	16	storefront-homepage-featured-limit	0		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	8
 18	Danh Mục Chủ Đề	17	storefront-homepage-categories-heading	0		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 19	Hành Trình Của Chúng Tôi	19	storefront-homepage-brand-story-heading	0		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 20	AuraBook được thành lập với sứ mệnh lan tỏa văn hóa đọc văn minh, mang lại những tác phẩm sâu sắc và truyền cảm hứng.	20	storefront-homepage-brand-story-paragraph-1	0		\N	\N	null	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
@@ -6709,6 +6715,7 @@ COPY public.checkout_checkout (created_at, last_change, email, token, user_id, b
 2026-10-09 14:47:59.241462+00	2026-10-09 15:02:29.336914+00	basduygame@gmail.com	e5862592-5a11-40a5-a3de-c1a10e0233fd	1	\N	0.000	\N		\N	\N	\N	\N	\N	\N	VND	VN	\N	\N	2	vi	\N	2026-10-09 15:02:29.336732+00	0.000	0.000	0.0000	35000.000	35000.000	35000.000	35000.000	f	none	none	\N	f	0.000	0.000	\N	f	\N	\N	\N	0.000	t	t	2026-10-09 16:02:29.377971+00	\N	2026-10-09 14:47:59.531016+00	\N	\N	t
 2026-10-10 17:37:34.922182+00	2026-10-10 17:37:50.274092+00	test@aurabook.vn	d60bff3a-3412-43e8-95b9-815817d747f7	\N	\N	0.000	\N		\N	\N	\N	\N	\N	\N	VND	VN	\N	\N	2	en	\N	2026-10-10 17:37:50.273959+00	0.000	0.000	0.0000	0.000	0.000	0.000	0.000	f	none	none	\N	f	31906000.000	31906000.000	\N	f	\N	\N	\N	0.000	t	t	2026-10-10 17:37:50.273959+00	\N	2026-10-10 17:37:50.248031+00	\N	\N	t
 2026-10-10 17:37:00.875369+00	2026-10-10 17:37:19.709966+00	test@aurabook.vn	37814d9b-6b5d-4a7c-8144-e83370a742cb	\N	\N	0.000	\N		\N	\N	\N	\N	\N	\N	VND	VN	\N	\N	2	en	\N	2026-10-10 17:37:19.709807+00	0.000	0.000	0.0000	0.000	0.000	0.000	0.000	f	none	none	\N	f	0.000	0.000	\N	f	\N	\N	\N	0.000	t	t	2026-10-10 17:37:19.709807+00	\N	2026-10-10 17:37:19.02876+00	\N	\N	t
+2026-10-20 06:22:55.340357+00	2026-10-20 06:22:56.085751+00	usertest@gmail.com	9e544775-7d7f-4c53-b4bc-d69338b0b16a	7	\N	0.000	\N		\N	\N	\N	\N	\N	\N	VND	VN	\N	\N	2	vi	\N	2026-10-20 09:31:58.754851+00	0.000	0.000	0.0000	49000.000	49000.000	49000.000	49000.000	f	none	none	\N	f	49000.000	49000.000	\N	f	\N	\N	\N	0.000	t	t	2026-10-20 09:31:58.754851+00	\N	\N	\N	\N	t
 2026-10-10 17:37:50.407912+00	2026-10-10 17:38:06.081431+00	test@aurabook.vn	e07898d3-57a6-4a37-90e9-616789e3f6f8	\N	\N	0.000	\N		\N	\N	\N	\N	\N	\N	USD	US	\N	\N	1	en	\N	2026-10-10 17:38:06.081279+00	0.000	0.000	0.0000	0.000	0.000	0.000	0.000	f	none	none	\N	f	1310.400	1310.400	\N	f	\N	\N	\N	0.000	t	t	2026-10-10 17:38:06.081279+00	\N	2026-10-10 17:38:06.055289+00	\N	\N	t
 \.
 
@@ -6744,6 +6751,7 @@ f2eddaf0-4482-4b58-9032-74ae0374502b	\N	41	Giao Hàng Nhanh (GHN) - Hỏa Tốc 
 --
 
 COPY public.checkout_checkoutline (quantity, checkout_id, variant_id, price_override, created_at, old_id, id, metadata, private_metadata, currency, tax_rate, total_price_gross_amount, total_price_net_amount, is_gift, undiscounted_unit_price_amount, prior_unit_price_amount, price_override_reason) FROM stdin;
+1	9e544775-7d7f-4c53-b4bc-d69338b0b16a	52	\N	2026-10-20 06:22:55.948436+00	\N	f9bda570-2014-4c1a-a8a7-953c64d8c93c	{}	{}	VND	0.0000	49000.000	49000.000	f	49000.000	\N	\N
 \.
 
 
@@ -6759,6 +6767,7 @@ COPY public.checkout_checkoutmetadata (id, private_metadata, metadata, checkout_
 10	{}	{}	37814d9b-6b5d-4a7c-8144-e83370a742cb
 11	{}	{}	d60bff3a-3412-43e8-95b9-815817d747f7
 12	{}	{}	e07898d3-57a6-4a37-90e9-616789e3f6f8
+17	{}	{"commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-20T06:22:55.020Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	9e544775-7d7f-4c53-b4bc-d69338b0b16a
 \.
 
 
@@ -6783,6 +6792,24 @@ COPY public.core_eventdeliveryattempt (id, created_at, task_id, duration, respon
 --
 
 COPY public.core_eventpayload (id, payload, created_at, payload_file) FROM stdin;
+1		2026-10-20 06:23:19.021787+00	payloads/lcbEc9qsueRl/1.json
+2		2026-10-20 06:23:20.64482+00	payloads/mQbOhTpM6Qjk/2.json
+3		2026-10-20 06:23:27.423031+00	payloads/FE7whSwvm5vc/3.json
+4		2026-10-20 06:23:27.710122+00	payloads/PDgeEWPP6B9j/4.json
+5		2026-10-20 06:23:43.58573+00	payloads/jkM2ITV7WeN4/5.json
+6		2026-10-20 06:23:44.313523+00	payloads/00ChTfDka2LE/6.json
+7		2026-10-20 06:23:44.668406+00	payloads/QOIKHQrsXNTJ/7.json
+8		2026-10-20 08:37:10.77292+00	payloads/4fQd51Pbnfrf/8.json
+9		2026-10-20 08:37:11.357534+00	payloads/th30R5XZsypg/9.json
+10		2026-10-20 08:37:12.048755+00	payloads/48xyo6a8L4d2/10.json
+11		2026-10-20 08:37:12.632251+00	payloads/kZM2nbaSHUtl/11.json
+12		2026-10-20 08:37:16.118391+00	payloads/bLJYmhcO1JPI/12.json
+13		2026-10-20 08:37:16.380495+00	payloads/m0HlKt8plQJq/13.json
+14		2026-10-20 08:37:16.53544+00	payloads/K4oo8xV0TH8I/14.json
+15		2026-10-20 08:37:18.767326+00	payloads/EV4TOEAzF02e/15.json
+16		2026-10-20 08:37:19.190217+00	payloads/RqnmPdKI8UhN/16.json
+17		2026-10-20 08:37:19.972631+00	payloads/ccbZ6gFQB1qF/17.json
+18		2026-10-20 08:37:20.424015+00	payloads/xxJHy8iwM8kF/18.json
 \.
 
 
@@ -8663,11 +8690,13 @@ COPY public.drm_readingprogress (id, user_email, product_id, current_page, total
 3	customer@example.com	145	45	180	25	2026-10-08 13:58:52.917717+00
 7	basduy05@gmail.com	bon-thoa-uoc	1	158	0.6	2026-10-18 13:33:54.331956+00
 5	basduy05@gmail.com	sample-book	1	2	50	2026-10-15 09:02:35.394978+00
+12	usertest@gmail.com	cay-cam-ngot-cua-toi	3	16	18.8	2026-10-20 12:23:13.851995+00
+13	basduy05@gmail.com	cay-cam-ngot-cua-toi	13	244	5.3	2026-10-21 04:55:44.973186+00
 4	basduy05@gmail.com	enterprise-cloud-on-premises-tales	4	8	50	2026-10-14 09:21:31.009915+00
-6	basduy05@gmail.com	dac-nhan-tam	1	4	25	2026-10-18 16:02:58.907654+00
 9	usertest@gmail.com	dac-nhan-tam	12	352	3.4	2026-10-17 18:04:24.066419+00
 11	usertest@gmail.com	sapiens-luoc-su-loai-nguoi	1	9	11.1	2026-10-19 16:29:02.871636+00
 8	basduy05@gmail.com	tri-tue-do-thai	15	16	93.8	2026-10-15 09:56:49.173237+00
+6	basduy05@gmail.com	dac-nhan-tam	5	352	1.4	2026-10-20 01:04:44.204108+00
 10	basduy05@gmail.com	sapiens-luoc-su-loai-nguoi	40	938	4.3	2026-10-19 14:23:37.550602+00
 \.
 
@@ -8735,35 +8764,22 @@ COPY public.menu_menu (id, name, slug, metadata, private_metadata) FROM stdin;
 --
 
 COPY public.menu_menuitem (id, name, sort_order, url, lft, rght, tree_id, level, category_id, collection_id, menu_id, page_id, parent_id, metadata, private_metadata) FROM stdin;
-31	Phát triển bản thân	0	\N	2	7	66	1	32	\N	1	\N	30	{}	{}
-32	Giao tiếp & Ứng xử	0	\N	3	4	66	2	33	\N	1	\N	31	{}	{}
-33	Tâm lý & Thói quen	1	\N	5	6	66	2	34	\N	1	\N	31	{}	{}
-34	Triết lý & Tư duy	1	\N	8	13	66	1	35	\N	1	\N	30	{}	{}
-35	Minh triết sống	0	\N	9	10	66	2	36	\N	1	\N	34	{}	{}
-36	Trí tuệ nhân loại	1	\N	11	12	66	2	37	\N	1	\N	34	{}	{}
-37	Lịch sử & Khoa học	2	\N	14	19	66	1	38	\N	1	\N	30	{}	{}
-38	Lược sử văn minh	0	\N	15	16	66	2	39	\N	1	\N	37	{}	{}
-39	Khoa học & Vũ trụ	1	\N	17	18	66	2	40	\N	1	\N	37	{}	{}
-40	Kinh doanh & Đầu tư	3	\N	20	25	66	1	41	\N	1	\N	30	{}	{}
-41	Quản trị & Lãnh đạo	0	\N	21	22	66	2	42	\N	1	\N	40	{}	{}
-42	Tài chính cá nhân	1	\N	23	24	66	2	43	\N	1	\N	40	{}	{}
-43	Văn học & Tiểu thuyết	4	\N	26	31	66	1	44	\N	1	\N	30	{}	{}
-44	Văn học kinh điển	0	\N	27	28	66	2	45	\N	1	\N	43	{}	{}
-45	Truyện ngắn & Tản văn	1	\N	29	30	66	2	46	\N	1	\N	43	{}	{}
 2	Chính sách bảo mật	0	/privacy	2	3	61	1	\N	\N	2	\N	1	{}	{}
 3	Điều khoản dịch vụ	1	/terms	4	5	61	1	\N	\N	2	\N	1	{}	{}
 4	Chính sách vận chuyển	2	/shipping	6	7	61	1	\N	\N	2	\N	1	{}	{}
 1	Hỗ trợ khách hàng	0	\N	1	10	61	0	\N	\N	2	\N	\N	{}	{}
+56	Sách Kỹ Năng - Phát Triển Bản Thân	0	\N	1	2	64	0	78	\N	1	\N	\N	{}	{}
 7	Giới thiệu	0	/about	2	3	62	1	\N	\N	2	\N	6	{}	{}
+57	Tư Duy - Trí Tuệ & Triết Lý Sống	1	\N	1	2	65	0	81	\N	1	\N	\N	{}	{}
 8	Liên hệ	1	/contact	4	5	62	1	\N	\N	2	\N	6	{}	{}
 6	Về Aurabook	1	\N	1	8	62	0	\N	\N	2	\N	\N	{}	{}
 9	Câu hỏi thường gặp	2	/faq	6	7	62	1	\N	\N	2	\N	6	{}	{}
 11	Sách bán chạy	0	/bestsellers	2	3	63	1	\N	\N	2	\N	10	{}	{}
 10	Khám phá kho sách	2	\N	1	6	63	0	\N	\N	2	\N	\N	{}	{}
 12	Sách mới phát hành	1	/new-releases	4	5	63	1	\N	\N	2	\N	10	{}	{}
-28	Sách bán chạy	0	\N	1	2	64	0	\N	1	1	\N	\N	{}	{}
-29	Sách mới phát hành	1	\N	1	2	65	0	\N	2	1	\N	\N	{}	{}
-30	Thể loại	2	/products	1	32	66	0	\N	\N	1	\N	\N	{}	{}
+58	Lịch Sử - Khoa Học & Xã Hội	2	\N	1	2	66	0	85	\N	1	\N	\N	{}	{}
+59	Kinh Doanh - Khởi Nghiệp & Đầu Tư	3	\N	1	2	67	0	88	\N	1	\N	\N	{}	{}
+60	Văn Học & Tiểu Thuyết Tuyển Chọn	4	\N	1	2	68	0	91	\N	1	\N	\N	{}	{}
 \.
 
 
@@ -8820,6 +8836,7 @@ COPY public.order_order (created_at, tracking_client_id, user_email, id, billing
 2026-10-09 17:10:23.901739+00		basduy05@gmail.com	9c3af7bb-cbcf-48ad-bffb-2694a0058b4b	21	20	6	607000.000	\N	vi	22000.000	607000.000	22000.000	fulfilled	Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)	40	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1791565822882, Thẻ: 4242)	3000	b7528b83-168f-4f49-802f-f80e72fc5c17	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "ghn_status": "delivered", "ghn_carrier": "Giao Hàng Nhanh (GHN)", "ghn_service": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)", "delivered_at": "2026-10-09T17:13:34.499571+00:00", "ghn_updated_at": "2026-10-09T17:13:34.499571+00:00", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1791565822882", "delivery_status": "completed", "payment_gateway": "test-card", "ghn_tracking_code": "GHN83921005VN", "ghn_origin_address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu, Cầu Giấy, Hà Nội", "ghn_status_display": "Giao hàng thành công (Completed)", "payment_recorded_at": "2026-10-09T17:10:22.995Z", "ghn_origin_warehouse": "Kho Tổng Aurabook Hà Nội", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-09T17:03:59.345Z\\",\\"consent\\":\\"unknown\\"}", "delivery_status_display": "Đã hoàn tất (Completed)", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	607000.000	607000.000	607000.000	checkout	\N	\N		2026-10-09 17:13:34.499834+00	f	5	\N	0.000	full	full	'+84987844198':41B,58B '12':29B,46B '12721':40B,57B '1791565822882':22B,68 '328223582':59C '4242':24B '5':1A 'basduy05@gmail.com':3A 'card':16B,21B,67 'credit':14B 'debit':15B 'duy':25B,42B 'gd':19B 'gmail.com':4B 'ha':35B,52B 'l':62C 'lam':32B,49B 'ma':18B 'monospace':60C,63C 'nghiem':13B 'nguyen':26B,43B 'nha':28B,45B 'noi':36B,53B 'phuong':5B,37B,54B 'so':27B,44B 'son':38B,55B 't3jkzxi6owmzywy3ymity2jjzi00ogfklwjmzmitmjy5ngewmdu4yjri':2A 'tay':39B,56B 'tee':61C,64C 'test':17B,20B,66 'thanh':7B,10B 'the':9B,23B 'thu':12B 'thuc':6B 'toan':8B,11B 'vhjhbnnhy3rpb25jdgvtojyynwqwywnllthlotutngjhzs1izwu2lwu1mzc5yzk2owq4oq':65 'vietnam':33B,50B 'vn':34B,51B 'đuong':30B,31B,47B,48B	f	f	22000.000	\N	{}		{}	\N	\N	\N	585000.000	585000.000	\N	22000.000	\N	\N	1	{}	{}
 2026-10-09 17:18:51.383407+00		basduy05@gmail.com	a1b10dd0-cd8c-467f-abdf-b2b40a22721a	19	18	6	885000.000	\N	vi	35000.000	885000.000	35000.000	fulfilled	Giao Hàng Nhanh (GHN) - Hỏa Tốc (Nội thành HN)	41	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1791562851352, Thẻ: 4242)	1000	a43c9037-36fe-4a64-a158-0bd8dba8cf94	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "ghn_status": "delivered", "ghn_carrier": "Giao Hàng Nhanh (GHN)", "ghn_service": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)", "delivered_at": "2026-10-09T17:19:38.140647+00:00", "ghn_updated_at": "2026-10-09T17:19:38.140647+00:00", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1791562851352", "delivery_status": "completed", "payment_gateway": "test-card", "ghn_tracking_code": "GHN83921006VN", "ghn_origin_address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu, Cầu Giấy, Hà Nội", "ghn_status_display": "Giao hàng thành công (Completed)", "payment_recorded_at": "2026-10-09T16:20:51.587Z", "ghn_origin_warehouse": "Kho Tổng Aurabook Hà Nội", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-09T16:19:48.567Z\\",\\"consent\\":\\"unknown\\"}", "delivery_status_display": "Đã hoàn tất (Completed)", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	885000.000	885000.000	885000.000	checkout	\N	\N		2026-10-09 17:19:38.141072+00	f	6	\N	0.000	full	full	'100000':36B,48B '118223583':49C '1791562851352':22B '41':54C '420':53C,58C '4242':24B '6':1A 'ba':26B,38B 'balance':52C,57C 'basduy05@gmail.com':3A 'card':16B,21B 'credit':14B 'debit':15B 'duy':25B,37B 'gd':19B 'gmail.com':4B 'ha':32B,34B,44B,46B 'la':28B,40B 'ma':18B 'nghiem':13B 'noi':33B,35B,45B,47B 'paul':50C,55C 'phuong':5B 's':51C,56C 't3jkzxi6ytfimtbkzdaty2q4yy00njdmlwfizgytyjjindbhmji3mjfh':2A 'test':17B,20B 'thanh':7B,10B,29B,41B 'the':9B,23B 'thu':12B 'thuc':6B 'toan':8B,11B 'vhjhbnnhy3rpb25jdgvtoju0ngmymmziltaxyzqtndy1oc05ndnjlwjhnti4ngrkywu1nw':59 'vietnam':30B,42B 'vn':31B,43B 'đuong':27B,39B	f	f	35000.000	\N	{}		{}	\N	\N	\N	850000.000	850000.000	\N	35000.000	\N	\N	1	{}	{}
 2026-10-09 17:40:10.684393+00		basduy05@gmail.com	0a7b5191-5bec-490c-9fd8-aa550e6c80bf	24	23	6	217000.000	\N	vi	22000.000	217000.000	22000.000	fulfilled	Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)	40	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1791567608757, Thẻ: 4242)	1000	f602bbc7-5c2a-4c78-a9cc-8cec78703c8e	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "ghn_status": "ready_to_pick", "ghn_carrier": "Giao Hàng Nhanh (GHN)", "ghn_service": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)", "delivered_at": "2026-10-10T16:11:28.372904+00:00", "ghn_updated_at": "2026-10-10T16:11:37.822881+00:00", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1791567608757", "delivery_status": "delivering", "payment_gateway": "test-card", "ghn_tracking_code": "GHN83921007VN", "ghn_origin_address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu, Cầu Giấy, Hà Nội", "ghn_status_display": "Đang giao hàng", "payment_recorded_at": "2026-10-09T17:40:09.063Z", "ghn_origin_warehouse": "Kho Tổng Aurabook Hà Nội", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-09T17:36:37.616Z\\",\\"consent\\":\\"unknown\\"}", "delivery_status_display": "Đang giao hàng", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	217000.000	217000.000	217000.000	checkout	\N	\N		2026-10-10 16:11:37.823073+00	f	7	\N	0.000	full	full	'+84912345678':34B,44B '123':27B,37B '1791567608757':22B,54 '328223580':45C '4242':24B '7':1A 'basduy05@gmail.com':3A 'card':16B,21B,53 'credit':14B 'debit':15B 'duy':25B,35B 'gd':19B 'gmail.com':4B 'ha':32B,42B 'le':28B,38B 'loi':29B,39B 'ma':18B 'monospace':46C,49C 'nghiem':13B 'nguyen':26B,36B 'noi':33B,43B 'phuong':5B 's':48C 't3jkzxi6mge3yjuxotetnwjlyy00otbjltlmzdgtywe1ntblnmm4mgjm':2A 'tee':47C,50C 'test':17B,20B,52 'thanh':7B,10B 'the':9B,23B 'thu':12B 'thuc':6B 'toan':8B,11B 'vhjhbnnhy3rpb25jdgvtojnmmjdlmwu5lwuwmgutndm0ni1inmrmlty1zdlhyjq1zgy3oa':51 'vietnam':30B,40B 'vn':31B,41B	f	f	22000.000	\N	{}		{}	\N	\N	\N	195000.000	195000.000	\N	22000.000	\N	\N	1	{}	{}
+2026-10-20 08:37:21.022302+00		basduy05@gmail.com	344c44a7-bfc3-438d-8f42-c14c929dfb99	64	\N	6	55000.000	\N	vi	0.000	55000.000	0.000	unfulfilled	\N	\N	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1792485439358, Thẻ: 4242)	0.5	9dd259eb-5ba2-4eac-96c3-4f72bda5af4f	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1792485439358", "payment_gateway": "test-card", "payment_recorded_at": "2026-10-20T08:37:19.531Z", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-20T06:01:17.881Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	55000.000	55000.000	55000.000	checkout	\N	\N		2026-10-20 08:37:21.160681+00	f	44	\N	0.000	full	full	'+84362632175':42B '100000':41B '1792485439358':22B,76 '4242':24B '44':1A 'ba':27B,39B 'ban':58C 'basduy05@gmail.com':3A 'cam':30B,46C,49C,64C 'card':16B,21B,75 'cay':45C,48C,63C 'coc':28B 'credit':14B 'cua':51C,66C 'de':55C,70C 'debit':15B 'duy':25B 'eb':44C 'eb-cay-cam-ngot':43C 'ebook':59C 'gd':19B 'gmail.com':4B 'ha':34B 'laranja':56C,71C 'lima':57C,72C 'ma':18B 'meu':53C,68C 'nghiem':13B 'ngot':47C,50C,65C 'nguyen':26B 'noi':35B 'pe':54C,69C 'phuong':5B 'quan':36B 'sach':60C 't3jkzxi6mzq0yzq0ytctymzjmy00mzhklthmndityze0yzkyowrmyjk5':2A 'test':17B,20B,74 'thanh':7B,10B,37B 'the':9B,23B 'thon':29B 'thu':12B 'thuc':6B 'thuong':31B 'toan':8B,11B 'toi':52C,67C 'tu':62C 'vhjhbnnhy3rpb25jdgvtomuzmmjjytu0ltyzntitndy0zi1imtq2lwu5nzvmntrmnmexna':73 'vi':40B 'vietnam':32B 'vn':33B 'xuan':38B 'đien':61C	f	f	0.000	\N	{}	\N	{}	\N	\N	\N	55000.000	55000.000	\N	0.000	\N	\N	1	{}	{}
 2026-10-10 17:32:41.358659+00		basduy05@gmail.com	b6582232-9eba-49a2-afcc-807bc51d5710	26	25	6	89000.000	\N	vi	22000.000	89000.000	22000.000	unfulfilled	Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)	48	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1791653560147, Thẻ: 4242)	200	5d0d4284-7dd0-478f-bcdf-5e4ad276eb35	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1791653560147", "payment_gateway": "test-card", "payment_recorded_at": "2026-10-10T17:32:40.417Z", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-10T16:47:54.647Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	89000.000	89000.000	89000.000	checkout	\N	\N		2026-10-10 17:32:41.448774+00	f	8	\N	0.000	full	full	'+84362632175':40B,56B '12':29B,45B '1791653560147':22B,70 '4242':24B '8':1A 'apple':57C,60C 'ba':38B,54B 'basduy05@gmail.com':3A 'bean':62C,65C 'cam':31B,47B 'card':16B,21B,69 'credit':14B 'debit':15B 'duy':25B,41B 'gd':19B 'gmail.com':4B 'ha':35B,51B 'huyen':37B,53B 'juice':58C,61C,63C,66C 'ma':18B 'nghiem':13B 'nguyen':26B,42B 'nha':28B,44B 'noi':36B,52B 'phuong':5B 'so':27B,43B 't3jkzxi6yjy1odiymzitowviys00oweylwfmy2mtoda3ymm1mwq1nzew':2A 'test':17B,20B,68 'thanh':7B,10B 'the':9B,23B 'thu':12B 'thuc':6B 'thuong':32B,48B 'toan':8B,11B 'uhjvzhvjdfzhcmlhbnq6mzg0':59C 'uhjvzhvjdfzhcmlhbnq6mzg1':64C 'vhjhbnnhy3rpb25jdgvtojhiotbhzwjklwixywmtndu2zs05mzfmltq3mjbmmdrmymzhyq':67 'vi':39B,55B 'vietnam':33B,49B 'vn':34B,50B 'đuong':30B,46B	f	f	22000.000	\N	{}		{}	\N	\N	\N	67000.000	67000.000	\N	22000.000	\N	\N	2	{}	{}
 2026-10-10 18:05:05.144987+00		basduy05@gmail.com	88bda358-3d7a-47d3-8b0e-4cf935f8ab2a	28	27	6	242000.000	\N	vi	22000.000	242000.000	22000.000	unfulfilled	Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)	48	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1791655504140, Thẻ: 4242)	1000	1799fe63-77ff-4aaa-9463-ffa87dde23ef	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "ghn_status": "storing", "ghn_carrier": "Giao Hàng Nhanh (GHN)", "ghn_service": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)", "ghn_updated_at": "2026-10-12T11:42:33.246175+00:00", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1791655504140", "delivery_status": "delivering", "payment_gateway": "test-card", "ghn_tracking_code": "GHN83921009VN", "ghn_origin_address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu, Cầu Giấy, Hà Nội", "ghn_status_display": "Đang giao hàng", "payment_recorded_at": "2026-10-10T18:05:04.332Z", "ghn_origin_warehouse": "Kho Tổng Aurabook Hà Nội", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-10T17:51:42.644Z\\",\\"consent\\":\\"unknown\\"}", "delivery_status_display": "Đang giao hàng", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	242000.000	242000.000	242000.000	checkout	\N	\N		2026-10-12 11:42:33.24638+00	f	9	\N	0.000	full	full	'+84912345678':39B,54B '100000':38B,53B '1791655504140':22B,66 '218223580':55C '4242':24B '9':1A 'ba':34B,49B 'bas':26B,41B 'basduy05@gmail.com':3A 'blue':56C,60C 'cam':36B,51B 'card':16B,21B,65 'coc':27B,42B 'credit':14B 'debit':15B 'duy':25B,40B 'gd':19B 'gmail.com':4B 'ha':31B,46B 'huyen':33B,48B 'm':59C 'ma':18B 'nghiem':13B 'noi':32B,47B 'phuong':5B 'polygon':57C,61C 'shirt':58C,62C 't3jkzxi6odhizgezntgtm2q3ys00n2qzlthimgutngnmotm1zjhhyjjh':2A 'test':17B,20B,64 'thanh':7B,10B 'the':9B,23B 'thon':28B,43B 'thu':12B 'thuc':6B 'thuong':37B,52B 'toan':8B,11B 'vhjhbnnhy3rpb25jdgvtojqynjhjntk2lta0y2etngnhzi1hotbiltc0yte2mjm0ymq3na':63 'vi':35B,50B 'vietnam':29B,44B 'vn':30B,45B	f	f	22000.000	\N	{}		{}	\N	\N	\N	220000.000	220000.000	\N	22000.000	\N	\N	1	{}	{}
 2026-10-19 03:46:55.467203+00		basduy05@gmail.com	ae9dfdec-db0e-4b7b-b315-6807c6b451f3	63	\N	6	89000.000	\N	vi	0.000	89000.000	0.000	unfulfilled	\N	\N	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1792381614187, Thẻ: 4242)	0.5	aa9ba21c-c530-4cfb-995e-1dea0c906dcf	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1792381614187", "payment_gateway": "test-card", "payment_recorded_at": "2026-10-19T03:46:54.316Z", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-19T03:46:43.290Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	89000.000	89000.000	89000.000	checkout	\N	\N		2026-10-19 03:46:55.574917+00	f	43	\N	0.000	full	full	'+84362632175':42B '100000':41B '1792381614187':22B,74 '4242':24B '43':1A 'a':51C,66C 'ba':27B,39B 'ban':56C 'basduy05@gmail.com':3A 'brief':52C,67C 'cam':30B 'card':16B,21B,73 'coc':28B 'credit':14B 'debit':15B 'duy':25B 'eb':44C 'eb-sapiens':43C 'ebook':57C 'gd':19B 'gmail.com':4B 'ha':34B 'history':53C,68C 'humankind':55C,70C 'loai':49C,64C 'luoc':47C,62C 'ma':18B 'nghiem':13B 'nguoi':50C,65C 'nguyen':26B 'noi':35B 'of':54C,69C 'phuong':5B 'quan':36B 'sach':58C 'sapiens':45C,46C,61C 'su':48C,63C 't3jkzxi6ywu5zgzkzwmtzgiwzs00yjdilwizmtutnjgwn2m2yjq1mwyz':2A 'test':17B,20B,72 'thanh':7B,10B,37B 'the':9B,23B 'thon':29B 'thu':12B 'thuc':6B 'thuong':31B 'toan':8B,11B 'tu':60C 'vhjhbnnhy3rpb25jdgvtojq4mdkyndk5ltkxztctndawzc05yjc0lwrhmwuzm2e1zmzhmq':71 'vi':40B 'vietnam':32B 'vn':33B 'xuan':38B 'đien':59C	f	f	0.000	\N	{}	\N	{}	\N	\N	\N	89000.000	89000.000	\N	0.000	\N	\N	1	{}	{}
@@ -8902,6 +8919,11 @@ COPY public.order_orderevent (id, date, type, user_id, parameters, app_id, order
 88	2026-10-19 03:46:55.747553+00	confirmed	6	{}	\N	ae9dfdec-db0e-4b7b-b315-6807c6b451f3	\N
 89	2026-10-19 03:46:55.837614+00	email_sent	\N	{"email": "basduy05@gmail.com", "email_type": "payment_confirmation"}	\N	ae9dfdec-db0e-4b7b-b315-6807c6b451f3	\N
 90	2026-10-19 03:46:56.18831+00	email_sent	\N	{"email": "basduy05@gmail.com", "email_type": "order_confirmation"}	\N	ae9dfdec-db0e-4b7b-b315-6807c6b451f3	\N
+91	2026-10-20 08:37:21.260246+00	placed	6	{}	\N	344c44a7-bfc3-438d-8f42-c14c929dfb99	\N
+92	2026-10-20 08:37:21.278507+00	order_fully_paid	6	{}	\N	344c44a7-bfc3-438d-8f42-c14c929dfb99	\N
+93	2026-10-20 08:37:21.66569+00	confirmed	6	{}	\N	344c44a7-bfc3-438d-8f42-c14c929dfb99	\N
+94	2026-10-20 08:37:22.285887+00	email_sent	\N	{"email": "basduy05@gmail.com", "email_type": "payment_confirmation"}	\N	344c44a7-bfc3-438d-8f42-c14c929dfb99	\N
+95	2026-10-20 08:37:22.535407+00	email_sent	\N	{"email": "basduy05@gmail.com", "email_type": "order_confirmation"}	\N	344c44a7-bfc3-438d-8f42-c14c929dfb99	\N
 \.
 
 
@@ -8935,8 +8957,9 @@ Monospace Tee	328223580	1	195000.000	195000.000	t	0	\N	0.0000	Monospace Tee	VND	
 Apple Juice	\N	1	35000.000	35000.000	t	0	\N	0.0000	Apple Juice	VND		UHJvZHVjdFZhcmlhbnQ6Mzg0	35000.000	35000.000	0.000	0.000	\N	fixed	35000.000	35000.000	35000.000	35000.000	f	UHJvZHVjdFZhcmlhbnQ6Mzg0	\N	\N	b6582232-9eba-49a2-afcc-807bc51d5710	626245bd-13b1-4219-b3d5-a1da8f5efdd2	\N	2026-10-10 17:32:41.385559+00	35000.000	35000.000	{}	{}	\N	{}	\N	{}	f	f	\N	23	\N
 Bean Juice	\N	1	32000.000	32000.000	t	0	\N	0.0000	Bean Juice	VND		UHJvZHVjdFZhcmlhbnQ6Mzg1	32000.000	32000.000	0.000	0.000	\N	fixed	32000.000	32000.000	32000.000	32000.000	f	UHJvZHVjdFZhcmlhbnQ6Mzg1	\N	\N	b6582232-9eba-49a2-afcc-807bc51d5710	8154a968-ead7-4a32-9b97-08c6f829780f	\N	2026-10-10 17:32:41.385644+00	32000.000	32000.000	{}	{}	\N	{}	\N	{}	f	f	\N	23	\N
 Blue Polygon Shirt	218223580	1	220000.000	220000.000	t	0	\N	0.0000	Blue Polygon Shirt	VND		M	220000.000	220000.000	0.000	0.000	\N	fixed	220000.000	220000.000	220000.000	220000.000	f	UHJvZHVjdFZhcmlhbnQ6MzYx	\N	\N	88bda358-3d7a-47d3-8b0e-4cf935f8ab2a	f665a9a2-b105-4b84-93bb-e026083aa408	\N	2026-10-10 18:05:05.172945+00	220000.000	220000.000	{}	{}	\N	{}	\N	{}	f	f	\N	20	\N
-Đắc Nhân Tâm (How to Win Friends and Influence People)	EB-DAC-NHAN-TAM	1	59000.000	59000.000	f	0	2	0.0000	Đắc Nhân Tâm (How to Win Friends and Influence People)	VND		Bản Ebook (Sách Điện Tử)	59000.000	59000.000	0.000	0.000	\N	fixed	59000.000	59000.000	59000.000	59000.000	f	UHJvZHVjdFZhcmlhbnQ6Mg==	\N	\N	acad3bf8-42f4-41f4-be29-2a0ac1c5701b	f54abbb5-4b74-4882-9a80-d2ece79d22a5	\N	2026-10-15 10:15:14.774596+00	59000.000	59000.000	{}	{}	\N	{}	\N	{}	f	f	\N	2	\N
-Sapiens: Lược Sử Loài Người (A Brief History of Humankind)	EB-SAPIENS	1	89000.000	89000.000	f	0	6	0.0000	Sapiens: Lược Sử Loài Người (A Brief History of Humankind)	VND		Bản Ebook (Sách Điện Tử)	89000.000	89000.000	0.000	0.000	\N	fixed	89000.000	89000.000	89000.000	89000.000	f	UHJvZHVjdFZhcmlhbnQ6Ng==	\N	\N	ae9dfdec-db0e-4b7b-b315-6807c6b451f3	77f74351-84a2-409a-bdca-f87176a15157	\N	2026-10-19 03:46:55.513007+00	89000.000	89000.000	{}	{}	\N	{}	\N	{}	f	f	\N	2	\N
+Đắc Nhân Tâm (How to Win Friends and Influence People)	EB-DAC-NHAN-TAM	1	59000.000	59000.000	f	0	\N	0.0000	Đắc Nhân Tâm (How to Win Friends and Influence People)	VND		Bản Ebook (Sách Điện Tử)	59000.000	59000.000	0.000	0.000	\N	fixed	59000.000	59000.000	59000.000	59000.000	f	UHJvZHVjdFZhcmlhbnQ6Mg==	\N	\N	acad3bf8-42f4-41f4-be29-2a0ac1c5701b	f54abbb5-4b74-4882-9a80-d2ece79d22a5	\N	2026-10-15 10:15:14.774596+00	59000.000	59000.000	{}	{}	\N	{}	\N	{}	f	f	\N	2	\N
+Sapiens: Lược Sử Loài Người (A Brief History of Humankind)	EB-SAPIENS	1	89000.000	89000.000	f	0	\N	0.0000	Sapiens: Lược Sử Loài Người (A Brief History of Humankind)	VND		Bản Ebook (Sách Điện Tử)	89000.000	89000.000	0.000	0.000	\N	fixed	89000.000	89000.000	89000.000	89000.000	f	UHJvZHVjdFZhcmlhbnQ6Ng==	\N	\N	ae9dfdec-db0e-4b7b-b315-6807c6b451f3	77f74351-84a2-409a-bdca-f87176a15157	\N	2026-10-19 03:46:55.513007+00	89000.000	89000.000	{}	{}	\N	{}	\N	{}	f	f	\N	2	\N
+Cây Cam Ngọt Của Tôi (Meu Pé de Laranja Lima)	EB-CAY-CAM-NGOT	1	55000.000	55000.000	f	0	58	0.0000	Cây Cam Ngọt Của Tôi (Meu Pé de Laranja Lima)	VND		Bản Ebook (Sách Điện Tử)	55000.000	55000.000	0.000	0.000	\N	fixed	55000.000	55000.000	55000.000	55000.000	f	UHJvZHVjdFZhcmlhbnQ6NTg=	\N	\N	344c44a7-bfc3-438d-8f42-c14c929dfb99	6f2fc786-6e1f-416b-acb4-5b5a015a60da	\N	2026-10-20 08:37:21.081087+00	55000.000	55000.000	{}	{}	\N	{}	\N	{}	f	f	\N	2	\N
 \.
 
 
@@ -8960,7 +8983,6 @@ COPY public.page_page (id, slug, title, content, created_at, is_published, publi
 1	storefront-policy	Chính sách Cửa hàng (Toàn cầu)	null	2026-10-08 05:43:52.814832+00	t	\N	\N	\N	{}	{}	2	t	\N
 2	storefront-policy-channel-vnd	Chính sách Cửa hàng (Kênh VND)	null	2026-10-08 05:43:52.873827+00	t	\N	\N	\N	{}	{}	2	t	\N
 14	storefront-chrome	Giao diện Thanh thông báo & Menu (Toàn cầu)	null	2026-10-09 15:14:56.217527+00	t	\N	\N	\N	{}	{}	3	t	\N
-16	storefront-homepage	Trang chủ AuraBook (Toàn cầu)	null	2026-10-09 15:14:56.508656+00	t	\N	\N	\N	{}	{}	8	t	\N
 17	storefront-homepage-channel-vnd	Trang chủ AuraBook (Kênh VND)	null	2026-10-09 15:14:56.823+00	t	\N	\N	\N	{}	{}	8	t	\N
 18	storefront-products	Trang Danh Sách Sản Phẩm (Toàn cầu)	null	2026-10-09 15:14:57.033142+00	t	\N	\N	\N	{}	{}	9	t	\N
 19	storefront-products-channel-vnd	Trang Danh Sách Sản Phẩm (Kênh VND)	null	2026-10-09 15:14:57.063396+00	t	\N	\N	\N	{}	{}	9	t	\N
@@ -8968,6 +8990,7 @@ COPY public.page_page (id, slug, title, content, created_at, is_published, publi
 21	storefront-cart-channel-vnd	Trang Giỏ Hàng (Kênh VND)	null	2026-10-09 15:14:57.235944+00	t	\N	\N	\N	{}	{}	10	t	\N
 22	storefront-checkout	Trang Thanh Toán (Toàn cầu)	null	2026-10-09 15:14:57.386051+00	t	\N	\N	\N	{}	{}	11	t	\N
 23	storefront-checkout-channel-vnd	Trang Thanh Toán (Kênh VND)	null	2026-10-09 15:14:57.492431+00	t	\N	\N	\N	{}	{}	11	t	\N
+16	storefront-homepage	Trang chủ AuraBook (Toàn cầu)	null	2026-10-09 15:14:56.508656+00	t	2026-10-20 01:19:08.197571+00			{}	{}	8	t	\N
 \.
 
 
@@ -9037,6 +9060,7 @@ COPY public.payment_transactionevent (id, created_at, status, transaction_id, am
 5	2026-10-10 18:05:04.805585+00	\N	5	242000.000	\N	aurabook.community.admin	VND	\N	t	Manual adjustment of the transaction.	\N	charge_success	\N	\N	\N	\N
 38	2026-10-15 10:15:14.024812+00	\N	38	59000.000	\N	aurabook.community.admin	VND	\N	t	Manual adjustment of the transaction.	\N	charge_success	\N	\N	\N	\N
 39	2026-10-19 03:46:54.961636+00	\N	39	89000.000	\N	aurabook.community.admin	VND	\N	t	Manual adjustment of the transaction.	\N	charge_success	\N	\N	\N	\N
+40	2026-10-20 08:37:20.592106+00	\N	40	55000.000	\N	aurabook.system.admin	VND	\N	t	Manual adjustment of the transaction.	\N	charge_success	\N	\N	\N	\N
 \.
 
 
@@ -9052,6 +9076,7 @@ COPY public.payment_transactionitem (id, private_metadata, metadata, created_at,
 5	{}	{}	2026-10-10 18:05:04.795037+00	2026-10-10 18:05:04.814072+00	\N	{}	VND	242000.000	0.000	0.000	\N	88bda358-3d7a-47d3-8b0e-4cf935f8ab2a	\N	aurabook.community.admin	0.000	0.000	0.000	0.000	\N	Thanh toán thành công qua thẻ thử nghiệm	Thẻ thanh toán thử nghiệm	TEST_CARD_1791655504140	0.000	\N	4268c596-04ca-4caf-a90b-74a16234bd74	t	t	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 38	{}	{}	2026-10-15 10:15:14.00782+00	2026-10-15 10:15:14.042075+00	\N	{}	VND	59000.000	0.000	0.000	\N	acad3bf8-42f4-41f4-be29-2a0ac1c5701b	\N	aurabook.community.admin	0.000	0.000	0.000	0.000	\N	Thanh toán thành công qua thẻ thử nghiệm	Thẻ thanh toán thử nghiệm	TEST_CARD_1792059312167	0.000	\N	50fb83aa-120c-42b8-8db7-2db1df14c94d	t	t	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 39	{}	{}	2026-10-19 03:46:54.952557+00	2026-10-19 03:46:54.97558+00	\N	{}	VND	89000.000	0.000	0.000	\N	ae9dfdec-db0e-4b7b-b315-6807c6b451f3	\N	aurabook.community.admin	0.000	0.000	0.000	0.000	\N	Thanh toán thành công qua thẻ thử nghiệm	Thẻ thanh toán thử nghiệm	TEST_CARD_1792381614187	0.000	\N	48092499-91e7-400d-9b74-da1e33a5ffa1	t	t	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
+40	{}	{}	2026-10-20 08:37:20.577844+00	2026-10-20 08:37:20.60865+00	\N	{}	VND	55000.000	0.000	0.000	\N	344c44a7-bfc3-438d-8f42-c14c929dfb99	\N	aurabook.system.admin	0.000	0.000	0.000	0.000	\N	Thanh toán thành công qua thẻ thử nghiệm	Thẻ thanh toán thử nghiệm	TEST_CARD_1792485439358	0.000	\N	e32bca54-6352-464f-b146-e975f54f6a14	t	t	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 \.
 
 
@@ -9628,21 +9653,22 @@ COPY public.plugins_pluginconfiguration (id, name, description, active, configur
 --
 
 COPY public.product_category (id, name, slug, description, lft, rght, tree_id, level, parent_id, background_image, seo_description, seo_title, background_image_alt, metadata, private_metadata, description_plaintext, updated_at) FROM stdin;
-46	Truyện ngắn & Tản văn	truyen-ngan-tan-van-cam-xuc	{"time": 1792043678673, "blocks": [{"id": "block_0", "data": {"text": "Những trang viết sâu lắng, nhẹ nhàng về tình yêu, cuộc sống và con người."}, "type": "paragraph"}], "version": "2.30.7"}	4	5	5	1	44		Những trang viết sâu lắng, nhẹ nhàng về tình yêu, cuộc sống và con người.	Truyện Ngắn & Tản Văn Cảm Xúc | AuraBook		{}	{}	Những trang viết sâu lắng, nhẹ nhàng về tình yêu, cuộc sống và con người.	2026-10-15 05:54:38.691207+00
-32	Phát triển bản thân	sach-ky-nang-phat-trien-ban-than	{"time": 1792043677586, "blocks": [{"id": "block_0", "data": {"text": "Cẩm nang nâng cao năng lực giao tiếp, lãnh đạo, quản trị cảm xúc và hoàn thiện bản thân mỗi ngày."}, "type": "paragraph"}], "version": "2.30.7"}	1	6	1	0	\N		Cẩm nang nâng cao năng lực giao tiếp, lãnh đạo, quản trị cảm xúc và hoàn thiện bản thân mỗi ngày.	Sách Kỹ Năng & Phát Triển Bản Thân Tuyển Chọn | AuraBook		{}	{}	Cẩm nang nâng cao năng lực giao tiếp, lãnh đạo, quản trị cảm xúc và hoàn thiện bản thân mỗi ngày.	2026-10-15 05:54:37.596479+00
-33	Giao tiếp & Ứng xử	nghe-thuat-giao-tiep-ung-xu	{"time": 1792043677687, "blocks": [{"id": "block_0", "data": {"text": "Nghệ thuật thấu hiểu tâm lý, thu phục lòng người và xây dựng mối quan hệ chân thành, bền vững."}, "type": "paragraph"}], "version": "2.30.7"}	2	3	1	1	32		Nghệ thuật thấu hiểu tâm lý, thu phục lòng người và xây dựng mối quan hệ chân thành, bền vững.	Nghệ Thuật Giao Tiếp & Ứng Xử | AuraBook		{}	{}	Nghệ thuật thấu hiểu tâm lý, thu phục lòng người và xây dựng mối quan hệ chân thành, bền vững.	2026-10-15 05:54:37.702549+00
-34	Tâm lý & Thói quen	quan-tri-tam-tri-thoi-quen	{"time": 1792043677771, "blocks": [{"id": "block_0", "data": {"text": "Xây dựng kỷ luật tự giác, rèn luyện tư duy tích cực và giải phóng năng lực tiềm ẩn."}, "type": "paragraph"}], "version": "2.30.7"}	4	5	1	1	32		Xây dựng kỷ luật tự giác, rèn luyện tư duy tích cực và giải phóng năng lực tiềm ẩn.	Quản Trị Tâm Trí & Thói Quen | AuraBook		{}	{}	Xây dựng kỷ luật tự giác, rèn luyện tư duy tích cực và giải phóng năng lực tiềm ẩn.	2026-10-15 05:54:37.783972+00
-35	Triết lý & Tư duy	tu-duy-tri-tue-triet-ly-song	{"time": 1792043677835, "blocks": [{"id": "block_0", "data": {"text": "Những tác phẩm khai sáng tư duy, triết lý minh triết sống cổ xưa và phương pháp tư duy phi thường của các bậc danh nhân."}, "type": "paragraph"}], "version": "2.30.7"}	1	6	2	0	\N		Những tác phẩm khai sáng tư duy, triết lý minh triết sống cổ xưa và phương pháp tư duy phi thường của các bậc danh nhân.	Tư Duy, Trí Tuệ & Triết Lý Sống Đỉnh Cao | AuraBook		{}	{}	Những tác phẩm khai sáng tư duy, triết lý minh triết sống cổ xưa và phương pháp tư duy phi thường của các bậc danh nhân.	2026-10-15 05:54:37.84208+00
-36	Minh triết sống	minh-triet-song-khai-phong	{"time": 1792043677891, "blocks": [{"id": "block_0", "data": {"text": "Nguyên tắc sống thông thái giúp giải phóng tâm trí, sống an nhiên và tự do tự tại."}, "type": "paragraph"}], "version": "2.30.7"}	2	3	2	1	35		Nguyên tắc sống thông thái giúp giải phóng tâm trí, sống an nhiên và tự do tự tại.	Minh Triết Sống & Khai Phóng | AuraBook		{}	{}	Nguyên tắc sống thông thái giúp giải phóng tâm trí, sống an nhiên và tự do tự tại.	2026-10-15 05:54:37.904128+00
-39	Lược sử văn minh	luoc-su-nhan-loai-van-minh	{"time": 1792043678111, "blocks": [{"id": "block_0", "data": {"text": "Hành trình hàng vạn năm của loài người từ thuở hồng hoang tới kỷ nguyên hiện đại."}, "type": "paragraph"}], "version": "2.30.7"}	2	3	3	1	38		Hành trình hàng vạn năm của loài người từ thuở hồng hoang tới kỷ nguyên hiện đại.	Lược Sử Nhân Loại & Nền Văn Minh | AuraBook		{}	{}	Hành trình hàng vạn năm của loài người từ thuở hồng hoang tới kỷ nguyên hiện đại.	2026-10-15 05:54:38.124459+00
-37	Trí tuệ nhân loại	tri-tue-do-thai-danh-nhan	{"time": 1792043677957, "blocks": [{"id": "block_0", "data": {"text": "Bí quyết phát triển trí tuệ, ghi nhớ thần tốc và nghệ thuật thành công của dân tộc Do Thái."}, "type": "paragraph"}], "version": "2.30.7"}	4	5	2	1	35		Bí quyết phát triển trí tuệ, ghi nhớ thần tốc và nghệ thuật thành công của dân tộc Do Thái.	Trí Tuệ Do Thái & Danh Nhân | AuraBook		{}	{}	Bí quyết phát triển trí tuệ, ghi nhớ thần tốc và nghệ thuật thành công của dân tộc Do Thái.	2026-10-15 05:54:37.97881+00
-43	Tài chính cá nhân	tai-chinh-ca-nhan-dau-tu	{"time": 1792043678441, "blocks": [{"id": "block_0", "data": {"text": "Xây dựng tư duy thịnh vượng, tự do tài chính và đầu tư bền vững."}, "type": "paragraph"}], "version": "2.30.7"}	4	5	4	1	41		Xây dựng tư duy thịnh vượng, tự do tài chính và đầu tư bền vững.	Tài Chính Cá Nhân & Đầu Tư | AuraBook		{}	{}	Xây dựng tư duy thịnh vượng, tự do tài chính và đầu tư bền vững.	2026-10-15 05:54:38.459608+00
-45	Văn học kinh điển	van-hoc-kinh-dien-the-gioi	{"time": 1792043678602, "blocks": [{"id": "block_0", "data": {"text": "Tác phẩm văn chương bất hủ vượt thời gian của các đại văn hào."}, "type": "paragraph"}], "version": "2.30.7"}	2	3	5	1	44		Tác phẩm văn chương bất hủ vượt thời gian của các đại văn hào.	Văn Học Kinh Điển Thế Giới | AuraBook		{}	{}	Tác phẩm văn chương bất hủ vượt thời gian của các đại văn hào.	2026-10-15 05:54:38.613734+00
-38	Lịch sử & Khoa học	lich-su-khoa-hoc-xa-hoi	{"time": 1792043678036, "blocks": [{"id": "block_0", "data": {"text": "Khám phá tiến trình vĩ đại của nền văn minh nhân loại, nguồn gốc giống loài và bức tranh tương lai."}, "type": "paragraph"}], "version": "2.30.7"}	1	6	3	0	\N		Khám phá tiến trình vĩ đại của nền văn minh nhân loại, nguồn gốc giống loài và bức tranh tương lai.	Lịch Sử, Khoa Học & Tri Thức Xã Hội | AuraBook		{}	{}	Khám phá tiến trình vĩ đại của nền văn minh nhân loại, nguồn gốc giống loài và bức tranh tương lai.	2026-10-15 05:54:38.043155+00
-40	Khoa học & Vũ trụ	khoa-hoc-vu-tru-tuong-lai	{"time": 1792043678182, "blocks": [{"id": "block_0", "data": {"text": "Bí ẩn thế giới tự nhiên, bước nhảy vọt công nghệ và dự báo tương lai loài người."}, "type": "paragraph"}], "version": "2.30.7"}	4	5	3	1	38		Bí ẩn thế giới tự nhiên, bước nhảy vọt công nghệ và dự báo tương lai loài người.	Khoa Học, Vũ Trụ & Tương Lai | AuraBook		{}	{}	Bí ẩn thế giới tự nhiên, bước nhảy vọt công nghệ và dự báo tương lai loài người.	2026-10-15 05:54:38.19733+00
-41	Kinh doanh & Đầu tư	kinh-doanh-khoi-nghiep-dau-tu	{"time": 1792043678284, "blocks": [{"id": "block_0", "data": {"text": "Kiến thức quản trị doanh nghiệp thực chiến, chiến lược đột phá và phương pháp đầu tư tài chính thông minh."}, "type": "paragraph"}], "version": "2.30.7"}	1	6	4	0	\N		Kiến thức quản trị doanh nghiệp thực chiến, chiến lược đột phá và phương pháp đầu tư tài chính thông minh.	Sách Kinh Doanh, Khởi Nghiệp & Tài Chính Thông Minh | AuraBook		{}	{}	Kiến thức quản trị doanh nghiệp thực chiến, chiến lược đột phá và phương pháp đầu tư tài chính thông minh.	2026-10-15 05:54:38.29119+00
-42	Quản trị & Lãnh đạo	quan-tri-doanh-nghiep-lanh-dao	{"time": 1792043678358, "blocks": [{"id": "block_0", "data": {"text": "Nghệ thuật xây dựng đội ngũ, vận hành tinh gọn và truyền cảm hứng."}, "type": "paragraph"}], "version": "2.30.7"}	2	3	4	1	41		Nghệ thuật xây dựng đội ngũ, vận hành tinh gọn và truyền cảm hứng.	Quản Trị Doanh Nghiệp & Lãnh Đạo | AuraBook		{}	{}	Nghệ thuật xây dựng đội ngũ, vận hành tinh gọn và truyền cảm hứng.	2026-10-15 05:54:38.371167+00
-44	Văn học & Tiểu thuyết	van-hoc-tieu-thuyet-tuyen-chon	{"time": 1792043678525, "blocks": [{"id": "block_0", "data": {"text": "Những tuyệt tác văn học kinh điển trong nước và thế giới lay động trái tim triệu độc giả."}, "type": "paragraph"}], "version": "2.30.7"}	1	6	5	0	\N		Những tuyệt tác văn học kinh điển trong nước và thế giới lay động trái tim triệu độc giả.	Văn Học & Tiểu Thuyết Kinh Điển Nuôi Dưỡng Tâm Hồn | AuraBook		{}	{}	Những tuyệt tác văn học kinh điển trong nước và thế giới lay động trái tim triệu độc giả.	2026-10-15 05:54:38.53375+00
+79	Nghệ Thuật Giao Tiếp & Ứng Xử	nghe-thuat-giao-tiep-ung-xu	{"time": 1792459157991, "blocks": [{"id": "block_0", "data": {"text": "Nghệ thuật thấu hiểu tâm lý, thu phục lòng người và xây dựng mối quan hệ chân thành, bền vững."}, "type": "paragraph"}], "version": "2.30.7"}	2	3	1	1	78		Nghệ thuật thấu hiểu tâm lý, thu phục lòng người và xây dựng mối quan hệ chân thành, bền vững.	Nghệ Thuật Giao Tiếp & Ứng Xử | AuraBook		{}	{}	Nghệ thuật thấu hiểu tâm lý, thu phục lòng người và xây dựng mối quan hệ chân thành, bền vững.	2026-10-20 01:19:17.999967+00
+78	Sách Kỹ Năng - Phát Triển Bản Thân	sach-ky-nang-phat-trien-ban-than	{"time": 1792459157957, "blocks": [{"id": "block_0", "data": {"text": "Cẩm nang nâng cao năng lực giao tiếp, lãnh đạo, quản trị cảm xúc và hoàn thiện bản thân mỗi ngày."}, "type": "paragraph"}], "version": "2.30.7"}	1	6	1	0	\N		Cẩm nang nâng cao năng lực giao tiếp, lãnh đạo, quản trị cảm xúc và hoàn thiện bản thân mỗi ngày.	Sách Kỹ Năng & Phát Triển Bản Thân Tuyển Chọn | AuraBook		{}	{}	Cẩm nang nâng cao năng lực giao tiếp, lãnh đạo, quản trị cảm xúc và hoàn thiện bản thân mỗi ngày.	2026-10-20 01:19:17.961025+00
+80	Quản Trị Tâm Trí & Thói Quen	quan-tri-tam-tri-thoi-quen	{"time": 1792459158024, "blocks": [{"id": "block_0", "data": {"text": "Xây dựng kỷ luật tự giác, rèn luyện tư duy tích cực và giải phóng năng lực tiềm ẩn."}, "type": "paragraph"}], "version": "2.30.7"}	4	5	1	1	78		Xây dựng kỷ luật tự giác, rèn luyện tư duy tích cực và giải phóng năng lực tiềm ẩn.	Quản Trị Tâm Trí & Thói Quen | AuraBook		{}	{}	Xây dựng kỷ luật tự giác, rèn luyện tư duy tích cực và giải phóng năng lực tiềm ẩn.	2026-10-20 01:19:18.030124+00
+82	Minh Triết Sống & Khai Phóng	minh-triet-song-khai-phong	{"time": 1792459158082, "blocks": [{"id": "block_0", "data": {"text": "Nguyên tắc sống thông thái giúp giải phóng tâm trí, sống an nhiên và tự do tự tại."}, "type": "paragraph"}], "version": "2.30.7"}	2	3	2	1	81		Nguyên tắc sống thông thái giúp giải phóng tâm trí, sống an nhiên và tự do tự tại.	Minh Triết Sống & Khai Phóng | AuraBook		{}	{}	Nguyên tắc sống thông thái giúp giải phóng tâm trí, sống an nhiên và tự do tự tại.	2026-10-20 01:19:18.090071+00
+83	Trí Tuệ Do Thái & Danh Nhân	tri-tue-do-thai-danh-nhan	{"time": 1792459158113, "blocks": [{"id": "block_0", "data": {"text": "Bí quyết phát triển trí tuệ, ghi nhớ thần tốc và nghệ thuật thành công của dân tộc Do Thái."}, "type": "paragraph"}], "version": "2.30.7"}	4	5	2	1	81		Bí quyết phát triển trí tuệ, ghi nhớ thần tốc và nghệ thuật thành công của dân tộc Do Thái.	Trí Tuệ Do Thái & Danh Nhân | AuraBook		{}	{}	Bí quyết phát triển trí tuệ, ghi nhớ thần tốc và nghệ thuật thành công của dân tộc Do Thái.	2026-10-20 01:19:18.118749+00
+81	Tư Duy - Trí Tuệ & Triết Lý Sống	tu-duy-tri-tue-triet-ly-song	{"time": 1792459158054, "blocks": [{"id": "block_0", "data": {"text": "Những tác phẩm khai sáng tư duy, triết lý minh triết sống cổ xưa và phương pháp tư duy phi thường của các bậc danh nhân."}, "type": "paragraph"}], "version": "2.30.7"}	1	8	2	0	\N		Những tác phẩm khai sáng tư duy, triết lý minh triết sống cổ xưa và phương pháp tư duy phi thường của các bậc danh nhân.	Tư Duy, Trí Tuệ & Triết Lý Sống Đỉnh Cao | AuraBook		{}	{}	Những tác phẩm khai sáng tư duy, triết lý minh triết sống cổ xưa và phương pháp tư duy phi thường của các bậc danh nhân.	2026-10-20 01:19:18.05691+00
+84	Tư Duy Phản Biện & Nhận Thức	tu-duy-phan-bien-nhan-thuc	{"time": 1792459158141, "blocks": [{"id": "block_0", "data": {"text": "Giải mã hai hệ thống tư duy não bộ, vượt qua thiên kiến nhận thức và đưa ra quyết định sáng suốt."}, "type": "paragraph"}], "version": "2.30.7"}	6	7	2	1	81		Giải mã hai hệ thống tư duy não bộ, vượt qua thiên kiến nhận thức và đưa ra quyết định sáng suốt.	Tư Duy Phản Biện & Nhận Thức | AuraBook		{}	{}	Giải mã hai hệ thống tư duy não bộ, vượt qua thiên kiến nhận thức và đưa ra quyết định sáng suốt.	2026-10-20 01:19:18.146824+00
+86	Lược Sử Nhân Loại & Nền Văn Minh	luoc-su-nhan-loai-van-minh	{"time": 1792459158202, "blocks": [{"id": "block_0", "data": {"text": "Hành trình hàng vạn năm của loài người từ thuở hồng hoang tới kỷ nguyên hiện đại."}, "type": "paragraph"}], "version": "2.30.7"}	2	3	3	1	85		Hành trình hàng vạn năm của loài người từ thuở hồng hoang tới kỷ nguyên hiện đại.	Lược Sử Nhân Loại & Nền Văn Minh | AuraBook		{}	{}	Hành trình hàng vạn năm của loài người từ thuở hồng hoang tới kỷ nguyên hiện đại.	2026-10-20 01:19:18.209353+00
+85	Lịch Sử - Khoa Học & Xã Hội	lich-su-khoa-hoc-xa-hoi	{"time": 1792459158175, "blocks": [{"id": "block_0", "data": {"text": "Khám phá tiến trình vĩ đại của nền văn minh nhân loại, nguồn gốc giống loài và bức tranh tương lai."}, "type": "paragraph"}], "version": "2.30.7"}	1	6	3	0	\N		Khám phá tiến trình vĩ đại của nền văn minh nhân loại, nguồn gốc giống loài và bức tranh tương lai.	Lịch Sử, Khoa Học & Tri Thức Xã Hội | AuraBook		{}	{}	Khám phá tiến trình vĩ đại của nền văn minh nhân loại, nguồn gốc giống loài và bức tranh tương lai.	2026-10-20 01:19:18.178832+00
+87	Khoa Học, Vũ Trụ & Tương Lai	khoa-hoc-vu-tru-tuong-lai	{"time": 1792459158240, "blocks": [{"id": "block_0", "data": {"text": "Bí ẩn thế giới tự nhiên, bước nhảy vọt công nghệ và dự báo tương lai loài người."}, "type": "paragraph"}], "version": "2.30.7"}	4	5	3	1	85		Bí ẩn thế giới tự nhiên, bước nhảy vọt công nghệ và dự báo tương lai loài người.	Khoa Học, Vũ Trụ & Tương Lai | AuraBook		{}	{}	Bí ẩn thế giới tự nhiên, bước nhảy vọt công nghệ và dự báo tương lai loài người.	2026-10-20 01:19:18.245882+00
+89	Quản Trị Doanh Nghiệp & Lãnh Đạo	quan-tri-doanh-nghiep-lanh-dao	{"time": 1792459158298, "blocks": [{"id": "block_0", "data": {"text": "Nghệ thuật xây dựng đội ngũ, vận hành tinh gọn và truyền cảm hứng."}, "type": "paragraph"}], "version": "2.30.7"}	2	3	4	1	88		Nghệ thuật xây dựng đội ngũ, vận hành tinh gọn và truyền cảm hứng.	Quản Trị Doanh Nghiệp & Lãnh Đạo | AuraBook		{}	{}	Nghệ thuật xây dựng đội ngũ, vận hành tinh gọn và truyền cảm hứng.	2026-10-20 01:19:18.30572+00
+88	Kinh Doanh - Khởi Nghiệp & Đầu Tư	kinh-doanh-khoi-nghiep-dau-tu	{"time": 1792459158268, "blocks": [{"id": "block_0", "data": {"text": "Kiến thức quản trị doanh nghiệp thực chiến, chiến lược đột phá và phương pháp đầu tư tài chính thông minh."}, "type": "paragraph"}], "version": "2.30.7"}	1	6	4	0	\N		Kiến thức quản trị doanh nghiệp thực chiến, chiến lược đột phá và phương pháp đầu tư tài chính thông minh.	Sách Kinh Doanh, Khởi Nghiệp & Tài Chính Thông Minh | AuraBook		{}	{}	Kiến thức quản trị doanh nghiệp thực chiến, chiến lược đột phá và phương pháp đầu tư tài chính thông minh.	2026-10-20 01:19:18.272109+00
+90	Tài Chính Cá Nhân & Đầu Tư	tai-chinh-ca-nhan-dau-tu	{"time": 1792459158332, "blocks": [{"id": "block_0", "data": {"text": "Xây dựng tư duy thịnh vượng, hiểu rõ quy luật tiền tệ và đầu tư bền vững."}, "type": "paragraph"}], "version": "2.30.7"}	4	5	4	1	88		Xây dựng tư duy thịnh vượng, hiểu rõ quy luật tiền tệ và đầu tư bền vững.	Tài Chính Cá Nhân & Đầu Tư | AuraBook		{}	{}	Xây dựng tư duy thịnh vượng, hiểu rõ quy luật tiền tệ và đầu tư bền vững.	2026-10-20 01:19:18.339598+00
+92	Văn Học Kinh Điển Thế Giới	van-hoc-kinh-dien-the-gioi	{"time": 1792459158406, "blocks": [{"id": "block_0", "data": {"text": "Tác phẩm văn chương bất hủ vượt thời gian của các đại văn hào."}, "type": "paragraph"}], "version": "2.30.7"}	2	3	5	1	91		Tác phẩm văn chương bất hủ vượt thời gian của các đại văn hào.	Văn Học Kinh Điển Thế Giới | AuraBook		{}	{}	Tác phẩm văn chương bất hủ vượt thời gian của các đại văn hào.	2026-10-20 01:19:18.41369+00
+91	Văn Học & Tiểu Thuyết Tuyển Chọn	van-hoc-tieu-thuyet-tuyen-chon	{"time": 1792459158368, "blocks": [{"id": "block_0", "data": {"text": "Những tuyệt tác văn học kinh điển trong nước và thế giới lay động trái tim triệu độc giả."}, "type": "paragraph"}], "version": "2.30.7"}	1	6	5	0	\N		Những tuyệt tác văn học kinh điển trong nước và thế giới lay động trái tim triệu độc giả.	Văn Học & Tiểu Thuyết Kinh Điển Nuôi Dưỡng Tâm Hồn | AuraBook		{}	{}	Những tuyệt tác văn học kinh điển trong nước và thế giới lay động trái tim triệu độc giả.	2026-10-20 01:19:18.372569+00
+93	Truyện Ngắn & Tản Văn Cảm Xúc	truyen-ngan-tan-van-cam-xuc	{"time": 1792459158443, "blocks": [{"id": "block_0", "data": {"text": "Những trang viết sâu lắng, nhẹ nhàng về tình yêu, cuộc sống và con người."}, "type": "paragraph"}], "version": "2.30.7"}	4	5	5	1	91		Những trang viết sâu lắng, nhẹ nhàng về tình yêu, cuộc sống và con người.	Truyện Ngắn & Tản Văn Cảm Xúc | AuraBook		{}	{}	Những trang viết sâu lắng, nhẹ nhàng về tình yêu, cuộc sống và con người.	2026-10-20 01:19:18.44908+00
 \.
 
 
@@ -9651,36 +9677,38 @@ COPY public.product_category (id, name, slug, description, lft, rght, tree_id, l
 --
 
 COPY public.product_categorytranslation (id, seo_title, seo_description, language_code, name, description, category_id, slug) FROM stdin;
-97	Sách Kỹ Năng & Phát Triển Bản Thân Tuyển Chọn | AuraBook	Cẩm nang nâng cao năng lực giao tiếp, lãnh đạo, quản trị cảm xúc và hoàn thiện bản thân mỗi ngày.	en	Sách Kỹ Năng - Phát Triển Bản Thân	{"time": 1792043677586, "blocks": [{"id": "block_0", "data": {"text": "Cẩm nang nâng cao năng lực giao tiếp, lãnh đạo, quản trị cảm xúc và hoàn thiện bản thân mỗi ngày."}, "type": "paragraph"}], "version": "2.30.7"}	32	\N
-98	Sách Kỹ Năng & Phát Triển Bản Thân Tuyển Chọn | AuraBook	Cẩm nang nâng cao năng lực giao tiếp, lãnh đạo, quản trị cảm xúc và hoàn thiện bản thân mỗi ngày.	vi	Sách Kỹ Năng - Phát Triển Bản Thân	{"time": 1792043677586, "blocks": [{"id": "block_0", "data": {"text": "Cẩm nang nâng cao năng lực giao tiếp, lãnh đạo, quản trị cảm xúc và hoàn thiện bản thân mỗi ngày."}, "type": "paragraph"}], "version": "2.30.7"}	32	\N
-99	Nghệ Thuật Giao Tiếp & Ứng Xử | AuraBook	Nghệ thuật thấu hiểu tâm lý, thu phục lòng người và xây dựng mối quan hệ chân thành, bền vững.	en	Nghệ Thuật Giao Tiếp & Ứng Xử	{"time": 1792043677687, "blocks": [{"id": "block_0", "data": {"text": "Nghệ thuật thấu hiểu tâm lý, thu phục lòng người và xây dựng mối quan hệ chân thành, bền vững."}, "type": "paragraph"}], "version": "2.30.7"}	33	\N
-100	Nghệ Thuật Giao Tiếp & Ứng Xử | AuraBook	Nghệ thuật thấu hiểu tâm lý, thu phục lòng người và xây dựng mối quan hệ chân thành, bền vững.	vi	Nghệ Thuật Giao Tiếp & Ứng Xử	{"time": 1792043677687, "blocks": [{"id": "block_0", "data": {"text": "Nghệ thuật thấu hiểu tâm lý, thu phục lòng người và xây dựng mối quan hệ chân thành, bền vững."}, "type": "paragraph"}], "version": "2.30.7"}	33	\N
-101	Quản Trị Tâm Trí & Thói Quen | AuraBook	Xây dựng kỷ luật tự giác, rèn luyện tư duy tích cực và giải phóng năng lực tiềm ẩn.	en	Quản Trị Tâm Trí & Thói Quen	{"time": 1792043677771, "blocks": [{"id": "block_0", "data": {"text": "Xây dựng kỷ luật tự giác, rèn luyện tư duy tích cực và giải phóng năng lực tiềm ẩn."}, "type": "paragraph"}], "version": "2.30.7"}	34	\N
-102	Quản Trị Tâm Trí & Thói Quen | AuraBook	Xây dựng kỷ luật tự giác, rèn luyện tư duy tích cực và giải phóng năng lực tiềm ẩn.	vi	Quản Trị Tâm Trí & Thói Quen	{"time": 1792043677771, "blocks": [{"id": "block_0", "data": {"text": "Xây dựng kỷ luật tự giác, rèn luyện tư duy tích cực và giải phóng năng lực tiềm ẩn."}, "type": "paragraph"}], "version": "2.30.7"}	34	\N
-103	Tư Duy, Trí Tuệ & Triết Lý Sống Đỉnh Cao | AuraBook	Những tác phẩm khai sáng tư duy, triết lý minh triết sống cổ xưa và phương pháp tư duy phi thường của các bậc danh nhân.	en	Tư Duy - Trí Tuệ & Triết Lý Sống	{"time": 1792043677835, "blocks": [{"id": "block_0", "data": {"text": "Những tác phẩm khai sáng tư duy, triết lý minh triết sống cổ xưa và phương pháp tư duy phi thường của các bậc danh nhân."}, "type": "paragraph"}], "version": "2.30.7"}	35	\N
-104	Tư Duy, Trí Tuệ & Triết Lý Sống Đỉnh Cao | AuraBook	Những tác phẩm khai sáng tư duy, triết lý minh triết sống cổ xưa và phương pháp tư duy phi thường của các bậc danh nhân.	vi	Tư Duy - Trí Tuệ & Triết Lý Sống	{"time": 1792043677835, "blocks": [{"id": "block_0", "data": {"text": "Những tác phẩm khai sáng tư duy, triết lý minh triết sống cổ xưa và phương pháp tư duy phi thường của các bậc danh nhân."}, "type": "paragraph"}], "version": "2.30.7"}	35	\N
-105	Minh Triết Sống & Khai Phóng | AuraBook	Nguyên tắc sống thông thái giúp giải phóng tâm trí, sống an nhiên và tự do tự tại.	en	Minh Triết Sống & Khai Phóng	{"time": 1792043677891, "blocks": [{"id": "block_0", "data": {"text": "Nguyên tắc sống thông thái giúp giải phóng tâm trí, sống an nhiên và tự do tự tại."}, "type": "paragraph"}], "version": "2.30.7"}	36	\N
-106	Minh Triết Sống & Khai Phóng | AuraBook	Nguyên tắc sống thông thái giúp giải phóng tâm trí, sống an nhiên và tự do tự tại.	vi	Minh Triết Sống & Khai Phóng	{"time": 1792043677891, "blocks": [{"id": "block_0", "data": {"text": "Nguyên tắc sống thông thái giúp giải phóng tâm trí, sống an nhiên và tự do tự tại."}, "type": "paragraph"}], "version": "2.30.7"}	36	\N
-107	Trí Tuệ Do Thái & Danh Nhân | AuraBook	Bí quyết phát triển trí tuệ, ghi nhớ thần tốc và nghệ thuật thành công của dân tộc Do Thái.	en	Trí Tuệ Do Thái & Danh Nhân	{"time": 1792043677957, "blocks": [{"id": "block_0", "data": {"text": "Bí quyết phát triển trí tuệ, ghi nhớ thần tốc và nghệ thuật thành công của dân tộc Do Thái."}, "type": "paragraph"}], "version": "2.30.7"}	37	\N
-108	Trí Tuệ Do Thái & Danh Nhân | AuraBook	Bí quyết phát triển trí tuệ, ghi nhớ thần tốc và nghệ thuật thành công của dân tộc Do Thái.	vi	Trí Tuệ Do Thái & Danh Nhân	{"time": 1792043677957, "blocks": [{"id": "block_0", "data": {"text": "Bí quyết phát triển trí tuệ, ghi nhớ thần tốc và nghệ thuật thành công của dân tộc Do Thái."}, "type": "paragraph"}], "version": "2.30.7"}	37	\N
-109	Lịch Sử, Khoa Học & Tri Thức Xã Hội | AuraBook	Khám phá tiến trình vĩ đại của nền văn minh nhân loại, nguồn gốc giống loài và bức tranh tương lai.	en	Lịch Sử - Khoa Học & Xã Hội	{"time": 1792043678036, "blocks": [{"id": "block_0", "data": {"text": "Khám phá tiến trình vĩ đại của nền văn minh nhân loại, nguồn gốc giống loài và bức tranh tương lai."}, "type": "paragraph"}], "version": "2.30.7"}	38	\N
-110	Lịch Sử, Khoa Học & Tri Thức Xã Hội | AuraBook	Khám phá tiến trình vĩ đại của nền văn minh nhân loại, nguồn gốc giống loài và bức tranh tương lai.	vi	Lịch Sử - Khoa Học & Xã Hội	{"time": 1792043678036, "blocks": [{"id": "block_0", "data": {"text": "Khám phá tiến trình vĩ đại của nền văn minh nhân loại, nguồn gốc giống loài và bức tranh tương lai."}, "type": "paragraph"}], "version": "2.30.7"}	38	\N
-111	Lược Sử Nhân Loại & Nền Văn Minh | AuraBook	Hành trình hàng vạn năm của loài người từ thuở hồng hoang tới kỷ nguyên hiện đại.	en	Lược Sử Nhân Loại & Nền Văn Minh	{"time": 1792043678111, "blocks": [{"id": "block_0", "data": {"text": "Hành trình hàng vạn năm của loài người từ thuở hồng hoang tới kỷ nguyên hiện đại."}, "type": "paragraph"}], "version": "2.30.7"}	39	\N
-112	Lược Sử Nhân Loại & Nền Văn Minh | AuraBook	Hành trình hàng vạn năm của loài người từ thuở hồng hoang tới kỷ nguyên hiện đại.	vi	Lược Sử Nhân Loại & Nền Văn Minh	{"time": 1792043678111, "blocks": [{"id": "block_0", "data": {"text": "Hành trình hàng vạn năm của loài người từ thuở hồng hoang tới kỷ nguyên hiện đại."}, "type": "paragraph"}], "version": "2.30.7"}	39	\N
-113	Khoa Học, Vũ Trụ & Tương Lai | AuraBook	Bí ẩn thế giới tự nhiên, bước nhảy vọt công nghệ và dự báo tương lai loài người.	en	Khoa Học, Vũ Trụ & Tương Lai	{"time": 1792043678182, "blocks": [{"id": "block_0", "data": {"text": "Bí ẩn thế giới tự nhiên, bước nhảy vọt công nghệ và dự báo tương lai loài người."}, "type": "paragraph"}], "version": "2.30.7"}	40	\N
-114	Khoa Học, Vũ Trụ & Tương Lai | AuraBook	Bí ẩn thế giới tự nhiên, bước nhảy vọt công nghệ và dự báo tương lai loài người.	vi	Khoa Học, Vũ Trụ & Tương Lai	{"time": 1792043678182, "blocks": [{"id": "block_0", "data": {"text": "Bí ẩn thế giới tự nhiên, bước nhảy vọt công nghệ và dự báo tương lai loài người."}, "type": "paragraph"}], "version": "2.30.7"}	40	\N
-115	Sách Kinh Doanh, Khởi Nghiệp & Tài Chính Thông Minh | AuraBook	Kiến thức quản trị doanh nghiệp thực chiến, chiến lược đột phá và phương pháp đầu tư tài chính thông minh.	en	Kinh Doanh - Khởi Nghiệp & Đầu Tư	{"time": 1792043678284, "blocks": [{"id": "block_0", "data": {"text": "Kiến thức quản trị doanh nghiệp thực chiến, chiến lược đột phá và phương pháp đầu tư tài chính thông minh."}, "type": "paragraph"}], "version": "2.30.7"}	41	\N
-116	Sách Kinh Doanh, Khởi Nghiệp & Tài Chính Thông Minh | AuraBook	Kiến thức quản trị doanh nghiệp thực chiến, chiến lược đột phá và phương pháp đầu tư tài chính thông minh.	vi	Kinh Doanh - Khởi Nghiệp & Đầu Tư	{"time": 1792043678284, "blocks": [{"id": "block_0", "data": {"text": "Kiến thức quản trị doanh nghiệp thực chiến, chiến lược đột phá và phương pháp đầu tư tài chính thông minh."}, "type": "paragraph"}], "version": "2.30.7"}	41	\N
-117	Quản Trị Doanh Nghiệp & Lãnh Đạo | AuraBook	Nghệ thuật xây dựng đội ngũ, vận hành tinh gọn và truyền cảm hứng.	en	Quản Trị Doanh Nghiệp & Lãnh Đạo	{"time": 1792043678358, "blocks": [{"id": "block_0", "data": {"text": "Nghệ thuật xây dựng đội ngũ, vận hành tinh gọn và truyền cảm hứng."}, "type": "paragraph"}], "version": "2.30.7"}	42	\N
-118	Quản Trị Doanh Nghiệp & Lãnh Đạo | AuraBook	Nghệ thuật xây dựng đội ngũ, vận hành tinh gọn và truyền cảm hứng.	vi	Quản Trị Doanh Nghiệp & Lãnh Đạo	{"time": 1792043678358, "blocks": [{"id": "block_0", "data": {"text": "Nghệ thuật xây dựng đội ngũ, vận hành tinh gọn và truyền cảm hứng."}, "type": "paragraph"}], "version": "2.30.7"}	42	\N
-119	Tài Chính Cá Nhân & Đầu Tư | AuraBook	Xây dựng tư duy thịnh vượng, tự do tài chính và đầu tư bền vững.	en	Tài Chính Cá Nhân & Đầu Tư	{"time": 1792043678441, "blocks": [{"id": "block_0", "data": {"text": "Xây dựng tư duy thịnh vượng, tự do tài chính và đầu tư bền vững."}, "type": "paragraph"}], "version": "2.30.7"}	43	\N
-120	Tài Chính Cá Nhân & Đầu Tư | AuraBook	Xây dựng tư duy thịnh vượng, tự do tài chính và đầu tư bền vững.	vi	Tài Chính Cá Nhân & Đầu Tư	{"time": 1792043678441, "blocks": [{"id": "block_0", "data": {"text": "Xây dựng tư duy thịnh vượng, tự do tài chính và đầu tư bền vững."}, "type": "paragraph"}], "version": "2.30.7"}	43	\N
-121	Văn Học & Tiểu Thuyết Kinh Điển Nuôi Dưỡng Tâm Hồn | AuraBook	Những tuyệt tác văn học kinh điển trong nước và thế giới lay động trái tim triệu độc giả.	en	Văn Học & Tiểu Thuyết Tuyển Chọn	{"time": 1792043678525, "blocks": [{"id": "block_0", "data": {"text": "Những tuyệt tác văn học kinh điển trong nước và thế giới lay động trái tim triệu độc giả."}, "type": "paragraph"}], "version": "2.30.7"}	44	\N
-122	Văn Học & Tiểu Thuyết Kinh Điển Nuôi Dưỡng Tâm Hồn | AuraBook	Những tuyệt tác văn học kinh điển trong nước và thế giới lay động trái tim triệu độc giả.	vi	Văn Học & Tiểu Thuyết Tuyển Chọn	{"time": 1792043678525, "blocks": [{"id": "block_0", "data": {"text": "Những tuyệt tác văn học kinh điển trong nước và thế giới lay động trái tim triệu độc giả."}, "type": "paragraph"}], "version": "2.30.7"}	44	\N
-123	Văn Học Kinh Điển Thế Giới | AuraBook	Tác phẩm văn chương bất hủ vượt thời gian của các đại văn hào.	en	Văn Học Kinh Điển Thế Giới	{"time": 1792043678602, "blocks": [{"id": "block_0", "data": {"text": "Tác phẩm văn chương bất hủ vượt thời gian của các đại văn hào."}, "type": "paragraph"}], "version": "2.30.7"}	45	\N
-124	Văn Học Kinh Điển Thế Giới | AuraBook	Tác phẩm văn chương bất hủ vượt thời gian của các đại văn hào.	vi	Văn Học Kinh Điển Thế Giới	{"time": 1792043678602, "blocks": [{"id": "block_0", "data": {"text": "Tác phẩm văn chương bất hủ vượt thời gian của các đại văn hào."}, "type": "paragraph"}], "version": "2.30.7"}	45	\N
-125	Truyện Ngắn & Tản Văn Cảm Xúc | AuraBook	Những trang viết sâu lắng, nhẹ nhàng về tình yêu, cuộc sống và con người.	en	Truyện Ngắn & Tản Văn Cảm Xúc	{"time": 1792043678673, "blocks": [{"id": "block_0", "data": {"text": "Những trang viết sâu lắng, nhẹ nhàng về tình yêu, cuộc sống và con người."}, "type": "paragraph"}], "version": "2.30.7"}	46	\N
-126	Truyện Ngắn & Tản Văn Cảm Xúc | AuraBook	Những trang viết sâu lắng, nhẹ nhàng về tình yêu, cuộc sống và con người.	vi	Truyện Ngắn & Tản Văn Cảm Xúc	{"time": 1792043678673, "blocks": [{"id": "block_0", "data": {"text": "Những trang viết sâu lắng, nhẹ nhàng về tình yêu, cuộc sống và con người."}, "type": "paragraph"}], "version": "2.30.7"}	46	\N
+189	Sách Kỹ Năng & Phát Triển Bản Thân Tuyển Chọn | AuraBook	Cẩm nang nâng cao năng lực giao tiếp, lãnh đạo, quản trị cảm xúc và hoàn thiện bản thân mỗi ngày.	en	Sách Kỹ Năng - Phát Triển Bản Thân	{"time": 1792459157957, "blocks": [{"id": "block_0", "data": {"text": "Cẩm nang nâng cao năng lực giao tiếp, lãnh đạo, quản trị cảm xúc và hoàn thiện bản thân mỗi ngày."}, "type": "paragraph"}], "version": "2.30.7"}	78	\N
+190	Sách Kỹ Năng & Phát Triển Bản Thân Tuyển Chọn | AuraBook	Cẩm nang nâng cao năng lực giao tiếp, lãnh đạo, quản trị cảm xúc và hoàn thiện bản thân mỗi ngày.	vi	Sách Kỹ Năng - Phát Triển Bản Thân	{"time": 1792459157957, "blocks": [{"id": "block_0", "data": {"text": "Cẩm nang nâng cao năng lực giao tiếp, lãnh đạo, quản trị cảm xúc và hoàn thiện bản thân mỗi ngày."}, "type": "paragraph"}], "version": "2.30.7"}	78	\N
+191	Nghệ Thuật Giao Tiếp & Ứng Xử | AuraBook	Nghệ thuật thấu hiểu tâm lý, thu phục lòng người và xây dựng mối quan hệ chân thành, bền vững.	en	Nghệ Thuật Giao Tiếp & Ứng Xử	{"time": 1792459157991, "blocks": [{"id": "block_0", "data": {"text": "Nghệ thuật thấu hiểu tâm lý, thu phục lòng người và xây dựng mối quan hệ chân thành, bền vững."}, "type": "paragraph"}], "version": "2.30.7"}	79	\N
+192	Nghệ Thuật Giao Tiếp & Ứng Xử | AuraBook	Nghệ thuật thấu hiểu tâm lý, thu phục lòng người và xây dựng mối quan hệ chân thành, bền vững.	vi	Nghệ Thuật Giao Tiếp & Ứng Xử	{"time": 1792459157991, "blocks": [{"id": "block_0", "data": {"text": "Nghệ thuật thấu hiểu tâm lý, thu phục lòng người và xây dựng mối quan hệ chân thành, bền vững."}, "type": "paragraph"}], "version": "2.30.7"}	79	\N
+193	Quản Trị Tâm Trí & Thói Quen | AuraBook	Xây dựng kỷ luật tự giác, rèn luyện tư duy tích cực và giải phóng năng lực tiềm ẩn.	en	Quản Trị Tâm Trí & Thói Quen	{"time": 1792459158024, "blocks": [{"id": "block_0", "data": {"text": "Xây dựng kỷ luật tự giác, rèn luyện tư duy tích cực và giải phóng năng lực tiềm ẩn."}, "type": "paragraph"}], "version": "2.30.7"}	80	\N
+194	Quản Trị Tâm Trí & Thói Quen | AuraBook	Xây dựng kỷ luật tự giác, rèn luyện tư duy tích cực và giải phóng năng lực tiềm ẩn.	vi	Quản Trị Tâm Trí & Thói Quen	{"time": 1792459158024, "blocks": [{"id": "block_0", "data": {"text": "Xây dựng kỷ luật tự giác, rèn luyện tư duy tích cực và giải phóng năng lực tiềm ẩn."}, "type": "paragraph"}], "version": "2.30.7"}	80	\N
+195	Tư Duy, Trí Tuệ & Triết Lý Sống Đỉnh Cao | AuraBook	Những tác phẩm khai sáng tư duy, triết lý minh triết sống cổ xưa và phương pháp tư duy phi thường của các bậc danh nhân.	en	Tư Duy - Trí Tuệ & Triết Lý Sống	{"time": 1792459158054, "blocks": [{"id": "block_0", "data": {"text": "Những tác phẩm khai sáng tư duy, triết lý minh triết sống cổ xưa và phương pháp tư duy phi thường của các bậc danh nhân."}, "type": "paragraph"}], "version": "2.30.7"}	81	\N
+196	Tư Duy, Trí Tuệ & Triết Lý Sống Đỉnh Cao | AuraBook	Những tác phẩm khai sáng tư duy, triết lý minh triết sống cổ xưa và phương pháp tư duy phi thường của các bậc danh nhân.	vi	Tư Duy - Trí Tuệ & Triết Lý Sống	{"time": 1792459158054, "blocks": [{"id": "block_0", "data": {"text": "Những tác phẩm khai sáng tư duy, triết lý minh triết sống cổ xưa và phương pháp tư duy phi thường của các bậc danh nhân."}, "type": "paragraph"}], "version": "2.30.7"}	81	\N
+197	Minh Triết Sống & Khai Phóng | AuraBook	Nguyên tắc sống thông thái giúp giải phóng tâm trí, sống an nhiên và tự do tự tại.	en	Minh Triết Sống & Khai Phóng	{"time": 1792459158082, "blocks": [{"id": "block_0", "data": {"text": "Nguyên tắc sống thông thái giúp giải phóng tâm trí, sống an nhiên và tự do tự tại."}, "type": "paragraph"}], "version": "2.30.7"}	82	\N
+198	Minh Triết Sống & Khai Phóng | AuraBook	Nguyên tắc sống thông thái giúp giải phóng tâm trí, sống an nhiên và tự do tự tại.	vi	Minh Triết Sống & Khai Phóng	{"time": 1792459158082, "blocks": [{"id": "block_0", "data": {"text": "Nguyên tắc sống thông thái giúp giải phóng tâm trí, sống an nhiên và tự do tự tại."}, "type": "paragraph"}], "version": "2.30.7"}	82	\N
+199	Trí Tuệ Do Thái & Danh Nhân | AuraBook	Bí quyết phát triển trí tuệ, ghi nhớ thần tốc và nghệ thuật thành công của dân tộc Do Thái.	en	Trí Tuệ Do Thái & Danh Nhân	{"time": 1792459158113, "blocks": [{"id": "block_0", "data": {"text": "Bí quyết phát triển trí tuệ, ghi nhớ thần tốc và nghệ thuật thành công của dân tộc Do Thái."}, "type": "paragraph"}], "version": "2.30.7"}	83	\N
+200	Trí Tuệ Do Thái & Danh Nhân | AuraBook	Bí quyết phát triển trí tuệ, ghi nhớ thần tốc và nghệ thuật thành công của dân tộc Do Thái.	vi	Trí Tuệ Do Thái & Danh Nhân	{"time": 1792459158113, "blocks": [{"id": "block_0", "data": {"text": "Bí quyết phát triển trí tuệ, ghi nhớ thần tốc và nghệ thuật thành công của dân tộc Do Thái."}, "type": "paragraph"}], "version": "2.30.7"}	83	\N
+201	Tư Duy Phản Biện & Nhận Thức | AuraBook	Giải mã hai hệ thống tư duy não bộ, vượt qua thiên kiến nhận thức và đưa ra quyết định sáng suốt.	en	Tư Duy Phản Biện & Nhận Thức	{"time": 1792459158141, "blocks": [{"id": "block_0", "data": {"text": "Giải mã hai hệ thống tư duy não bộ, vượt qua thiên kiến nhận thức và đưa ra quyết định sáng suốt."}, "type": "paragraph"}], "version": "2.30.7"}	84	\N
+202	Tư Duy Phản Biện & Nhận Thức | AuraBook	Giải mã hai hệ thống tư duy não bộ, vượt qua thiên kiến nhận thức và đưa ra quyết định sáng suốt.	vi	Tư Duy Phản Biện & Nhận Thức	{"time": 1792459158141, "blocks": [{"id": "block_0", "data": {"text": "Giải mã hai hệ thống tư duy não bộ, vượt qua thiên kiến nhận thức và đưa ra quyết định sáng suốt."}, "type": "paragraph"}], "version": "2.30.7"}	84	\N
+203	Lịch Sử, Khoa Học & Tri Thức Xã Hội | AuraBook	Khám phá tiến trình vĩ đại của nền văn minh nhân loại, nguồn gốc giống loài và bức tranh tương lai.	en	Lịch Sử - Khoa Học & Xã Hội	{"time": 1792459158175, "blocks": [{"id": "block_0", "data": {"text": "Khám phá tiến trình vĩ đại của nền văn minh nhân loại, nguồn gốc giống loài và bức tranh tương lai."}, "type": "paragraph"}], "version": "2.30.7"}	85	\N
+204	Lịch Sử, Khoa Học & Tri Thức Xã Hội | AuraBook	Khám phá tiến trình vĩ đại của nền văn minh nhân loại, nguồn gốc giống loài và bức tranh tương lai.	vi	Lịch Sử - Khoa Học & Xã Hội	{"time": 1792459158175, "blocks": [{"id": "block_0", "data": {"text": "Khám phá tiến trình vĩ đại của nền văn minh nhân loại, nguồn gốc giống loài và bức tranh tương lai."}, "type": "paragraph"}], "version": "2.30.7"}	85	\N
+205	Lược Sử Nhân Loại & Nền Văn Minh | AuraBook	Hành trình hàng vạn năm của loài người từ thuở hồng hoang tới kỷ nguyên hiện đại.	en	Lược Sử Nhân Loại & Nền Văn Minh	{"time": 1792459158202, "blocks": [{"id": "block_0", "data": {"text": "Hành trình hàng vạn năm của loài người từ thuở hồng hoang tới kỷ nguyên hiện đại."}, "type": "paragraph"}], "version": "2.30.7"}	86	\N
+206	Lược Sử Nhân Loại & Nền Văn Minh | AuraBook	Hành trình hàng vạn năm của loài người từ thuở hồng hoang tới kỷ nguyên hiện đại.	vi	Lược Sử Nhân Loại & Nền Văn Minh	{"time": 1792459158202, "blocks": [{"id": "block_0", "data": {"text": "Hành trình hàng vạn năm của loài người từ thuở hồng hoang tới kỷ nguyên hiện đại."}, "type": "paragraph"}], "version": "2.30.7"}	86	\N
+207	Khoa Học, Vũ Trụ & Tương Lai | AuraBook	Bí ẩn thế giới tự nhiên, bước nhảy vọt công nghệ và dự báo tương lai loài người.	en	Khoa Học, Vũ Trụ & Tương Lai	{"time": 1792459158240, "blocks": [{"id": "block_0", "data": {"text": "Bí ẩn thế giới tự nhiên, bước nhảy vọt công nghệ và dự báo tương lai loài người."}, "type": "paragraph"}], "version": "2.30.7"}	87	\N
+208	Khoa Học, Vũ Trụ & Tương Lai | AuraBook	Bí ẩn thế giới tự nhiên, bước nhảy vọt công nghệ và dự báo tương lai loài người.	vi	Khoa Học, Vũ Trụ & Tương Lai	{"time": 1792459158240, "blocks": [{"id": "block_0", "data": {"text": "Bí ẩn thế giới tự nhiên, bước nhảy vọt công nghệ và dự báo tương lai loài người."}, "type": "paragraph"}], "version": "2.30.7"}	87	\N
+209	Sách Kinh Doanh, Khởi Nghiệp & Tài Chính Thông Minh | AuraBook	Kiến thức quản trị doanh nghiệp thực chiến, chiến lược đột phá và phương pháp đầu tư tài chính thông minh.	en	Kinh Doanh - Khởi Nghiệp & Đầu Tư	{"time": 1792459158268, "blocks": [{"id": "block_0", "data": {"text": "Kiến thức quản trị doanh nghiệp thực chiến, chiến lược đột phá và phương pháp đầu tư tài chính thông minh."}, "type": "paragraph"}], "version": "2.30.7"}	88	\N
+210	Sách Kinh Doanh, Khởi Nghiệp & Tài Chính Thông Minh | AuraBook	Kiến thức quản trị doanh nghiệp thực chiến, chiến lược đột phá và phương pháp đầu tư tài chính thông minh.	vi	Kinh Doanh - Khởi Nghiệp & Đầu Tư	{"time": 1792459158268, "blocks": [{"id": "block_0", "data": {"text": "Kiến thức quản trị doanh nghiệp thực chiến, chiến lược đột phá và phương pháp đầu tư tài chính thông minh."}, "type": "paragraph"}], "version": "2.30.7"}	88	\N
+211	Quản Trị Doanh Nghiệp & Lãnh Đạo | AuraBook	Nghệ thuật xây dựng đội ngũ, vận hành tinh gọn và truyền cảm hứng.	en	Quản Trị Doanh Nghiệp & Lãnh Đạo	{"time": 1792459158298, "blocks": [{"id": "block_0", "data": {"text": "Nghệ thuật xây dựng đội ngũ, vận hành tinh gọn và truyền cảm hứng."}, "type": "paragraph"}], "version": "2.30.7"}	89	\N
+212	Quản Trị Doanh Nghiệp & Lãnh Đạo | AuraBook	Nghệ thuật xây dựng đội ngũ, vận hành tinh gọn và truyền cảm hứng.	vi	Quản Trị Doanh Nghiệp & Lãnh Đạo	{"time": 1792459158298, "blocks": [{"id": "block_0", "data": {"text": "Nghệ thuật xây dựng đội ngũ, vận hành tinh gọn và truyền cảm hứng."}, "type": "paragraph"}], "version": "2.30.7"}	89	\N
+213	Tài Chính Cá Nhân & Đầu Tư | AuraBook	Xây dựng tư duy thịnh vượng, hiểu rõ quy luật tiền tệ và đầu tư bền vững.	en	Tài Chính Cá Nhân & Đầu Tư	{"time": 1792459158332, "blocks": [{"id": "block_0", "data": {"text": "Xây dựng tư duy thịnh vượng, hiểu rõ quy luật tiền tệ và đầu tư bền vững."}, "type": "paragraph"}], "version": "2.30.7"}	90	\N
+214	Tài Chính Cá Nhân & Đầu Tư | AuraBook	Xây dựng tư duy thịnh vượng, hiểu rõ quy luật tiền tệ và đầu tư bền vững.	vi	Tài Chính Cá Nhân & Đầu Tư	{"time": 1792459158332, "blocks": [{"id": "block_0", "data": {"text": "Xây dựng tư duy thịnh vượng, hiểu rõ quy luật tiền tệ và đầu tư bền vững."}, "type": "paragraph"}], "version": "2.30.7"}	90	\N
+215	Văn Học & Tiểu Thuyết Kinh Điển Nuôi Dưỡng Tâm Hồn | AuraBook	Những tuyệt tác văn học kinh điển trong nước và thế giới lay động trái tim triệu độc giả.	en	Văn Học & Tiểu Thuyết Tuyển Chọn	{"time": 1792459158368, "blocks": [{"id": "block_0", "data": {"text": "Những tuyệt tác văn học kinh điển trong nước và thế giới lay động trái tim triệu độc giả."}, "type": "paragraph"}], "version": "2.30.7"}	91	\N
+216	Văn Học & Tiểu Thuyết Kinh Điển Nuôi Dưỡng Tâm Hồn | AuraBook	Những tuyệt tác văn học kinh điển trong nước và thế giới lay động trái tim triệu độc giả.	vi	Văn Học & Tiểu Thuyết Tuyển Chọn	{"time": 1792459158368, "blocks": [{"id": "block_0", "data": {"text": "Những tuyệt tác văn học kinh điển trong nước và thế giới lay động trái tim triệu độc giả."}, "type": "paragraph"}], "version": "2.30.7"}	91	\N
+217	Văn Học Kinh Điển Thế Giới | AuraBook	Tác phẩm văn chương bất hủ vượt thời gian của các đại văn hào.	en	Văn Học Kinh Điển Thế Giới	{"time": 1792459158406, "blocks": [{"id": "block_0", "data": {"text": "Tác phẩm văn chương bất hủ vượt thời gian của các đại văn hào."}, "type": "paragraph"}], "version": "2.30.7"}	92	\N
+218	Văn Học Kinh Điển Thế Giới | AuraBook	Tác phẩm văn chương bất hủ vượt thời gian của các đại văn hào.	vi	Văn Học Kinh Điển Thế Giới	{"time": 1792459158406, "blocks": [{"id": "block_0", "data": {"text": "Tác phẩm văn chương bất hủ vượt thời gian của các đại văn hào."}, "type": "paragraph"}], "version": "2.30.7"}	92	\N
+219	Truyện Ngắn & Tản Văn Cảm Xúc | AuraBook	Những trang viết sâu lắng, nhẹ nhàng về tình yêu, cuộc sống và con người.	en	Truyện Ngắn & Tản Văn Cảm Xúc	{"time": 1792459158443, "blocks": [{"id": "block_0", "data": {"text": "Những trang viết sâu lắng, nhẹ nhàng về tình yêu, cuộc sống và con người."}, "type": "paragraph"}], "version": "2.30.7"}	93	\N
+220	Truyện Ngắn & Tản Văn Cảm Xúc | AuraBook	Những trang viết sâu lắng, nhẹ nhàng về tình yêu, cuộc sống và con người.	vi	Truyện Ngắn & Tản Văn Cảm Xúc	{"time": 1792459158443, "blocks": [{"id": "block_0", "data": {"text": "Những trang viết sâu lắng, nhẹ nhàng về tình yêu, cuộc sống và con người."}, "type": "paragraph"}], "version": "2.30.7"}	93	\N
 \.
 
 
@@ -9718,10 +9746,6 @@ COPY public.product_collectionchannellisting (id, published_at, is_published, ch
 --
 
 COPY public.product_collectionproduct (id, collection_id, product_id, sort_order) FROM stdin;
-30	4	1	0
-31	4	2	0
-32	4	3	0
-33	4	4	0
 34	1	1	\N
 35	1	2	\N
 36	1	3	\N
@@ -9730,6 +9754,19 @@ COPY public.product_collectionproduct (id, collection_id, product_id, sort_order
 39	2	2	\N
 40	2	3	\N
 41	2	4	\N
+59	4	1	0
+60	4	2	0
+61	4	3	0
+62	4	4	0
+63	4	5	0
+64	4	6	0
+65	4	7	0
+66	4	8	0
+67	4	9	0
+68	4	10	0
+69	4	11	0
+70	4	12	0
+71	4	13	0
 \.
 
 
@@ -9746,10 +9783,19 @@ COPY public.product_collectiontranslation (id, seo_title, seo_description, langu
 --
 
 COPY public.product_product (id, name, description, updated_at, product_type_id, category_id, seo_description, seo_title, weight, metadata, private_metadata, slug, default_variant_id, description_plaintext, rating, search_document, created_at, search_vector, search_index_dirty, tax_class_id, external_reference) FROM stdin;
-4	Trí Tuệ Do Thái (Jerome Becomes a Genius)	{"time": 1792043680340, "blocks": [{"id": "block_0", "data": {"text": "Trí Tuệ Do Thái của kỷ lục gia trí nhớ Eran Katz hé mở những bí quyết tư duy độc đáo, phương pháp ghi nhớ phi thường và tinh thần học hỏi trọn đời của dân tộc thông minh nhất thế giới."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Thông qua hành trình biến chàng trai bình thường Jerome thành một thiên tài, cuốn sách cung cấp các nguyên tắc thực tế để tối ưu hóa não bộ, rèn luyện tư duy logic, sáng tạo và mở khóa tiềm năng vượt trội."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Tác phẩm truyền cảm hứng mãnh liệt về ý chí vươn lên, lòng hiếu học và nghệ thuật làm chủ tri thức."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-15 09:01:34.258405+00	2	37	Trí Tuệ Do Thái của kỷ lục gia trí nhớ Eran Katz hé mở những bí quyết tư duy độc đáo, phương pháp ghi nhớ phi thường và tinh thần học hỏi trọn đời của dân tộc thông minh nhất thế giới.	Trí Tuệ Do Thái (Jerome Becomes a Genius) | AuraBook	\N	{"author": "Eran Katz", "epub_file": "ebooks/tri-tue-do-thai.epub", "book_format": "Both Ebook and Physical Available"}	{}	tri-tue-do-thai	9	Trí Tuệ Do Thái của kỷ lục gia trí nhớ Eran Katz hé mở những bí quyết tư duy độc đáo, phương pháp ghi nhớ phi thường và tinh thần học hỏi trọn đời của dân tộc thông minh nhất thế giới. Thông qua hành trình biến chàng trai bình thường Jerome thành một thiên tài, cuốn sách cung cấp các nguyên tắc thực tế để tối ưu hóa não bộ, rèn luyện tư duy logic, sáng tạo và mở khóa tiềm năng vượt trội. Tác phẩm truyền cảm hứng mãnh liệt về ý chí vươn lên, lòng hiếu học và nghệ thuật làm chủ tri thức.	\N		2026-10-15 05:54:40.347339+00	\N	t	\N	\N
-2	Bốn Thỏa Ước (The Four Agreements)	{"time": 1792043679512, "blocks": [{"id": "block_0", "data": {"text": "Bốn Thỏa Ước (The Four Agreements) của Don Miguel Ruiz tiết lộ những minh triết cổ xưa của người Toltec nhằm giúp chúng ta tự giải thoát khỏi những niềm tin giới hạn, nỗi sợ hãi và những đau khổ không đáng có."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Bốn nguyên tắc thông thái bao gồm: 1. Không phạm tội với lời nói; 2. Không biến mọi chuyện thành vấn đề cá nhân; 3. Không giả định; 4. Luôn làm hết khả năng của mình."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Một cuốn sách ngắn gọn nhưng có sức mạnh chuyển hóa nội tâm sâu sắc, đem lại sự thanh thản, tự do và niềm vui sống đích thực."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-15 09:09:34.288339+00	2	36	Bốn Thỏa Ước (The Four Agreements) của Don Miguel Ruiz tiết lộ những minh triết cổ xưa của người Toltec nhằm giúp chúng ta tự giải thoát khỏi những niềm tin giới hạn, nỗi sợ hãi và những đau khổ không đáng có.	Bốn Thỏa Ước (The Four Agreements) | AuraBook	\N	{"author": "Don Miguel Ruiz", "epub_file": "ebooks/bon-thoa-uoc.epub", "book_format": "Both Ebook and Physical Available"}	{}	bon-thoa-uoc	5	Bốn Thỏa Ước (The Four Agreements) của Don Miguel Ruiz tiết lộ những minh triết cổ xưa của người Toltec nhằm giúp chúng ta tự giải thoát khỏi những niềm tin giới hạn, nỗi sợ hãi và những đau khổ không đáng có. Bốn nguyên tắc thông thái bao gồm: 1. Không phạm tội với lời nói; 2. Không biến mọi chuyện thành vấn đề cá nhân; 3. Không giả định; 4. Luôn làm hết khả năng của mình. Một cuốn sách ngắn gọn nhưng có sức mạnh chuyển hóa nội tâm sâu sắc, đem lại sự thanh thản, tự do và niềm vui sống đích thực.	\N		2026-10-15 05:54:39.517816+00	\N	t	\N	\N
-3	Sapiens: Lược Sử Loài Người (A Brief History of Humankind)	{"time": 1792043679887, "blocks": [{"id": "block_0", "data": {"text": "Sapiens: Lược Sử Loài Người của giáo sư lịch sử Yuval Noah Harari là hiện tượng xuất bản toàn cầu, giải mã lịch sử vĩ đại của loài người từ thời kỳ đồ đá cho đến hiện đại."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Cuốn sách phân tích sâu sắc ba cuộc cách mạng định hình vận mệnh: Cách mạng Nhận thức (khởi đầu lịch sử), Cách mạng Nông nghiệp (mở rộng xã hội) và Cách mạng Khoa học (kiến tạo sức mạnh chưa từng có)."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Một tác phẩm kinh điển mở rộng tầm nhìn, kích thích tư duy phản biện và giúp chúng ta hiểu rõ loài người là ai, từ đâu đến và đang đi về đâu."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-15 09:10:02.569159+00	2	39	Sapiens: Lược Sử Loài Người của giáo sư lịch sử Yuval Noah Harari là hiện tượng xuất bản toàn cầu, giải mã lịch sử vĩ đại của loài người từ thời kỳ đồ đá cho đến hiện đại.	Sapiens: Lược Sử Loài Người (A Brief History of Humankind) | AuraBook	\N	{"author": "Yuval Noah Harari", "epub_file": "ebooks/sapiens-luoc-su-loai-nguoi.epub", "book_format": "Both Ebook and Physical Available"}	{}	sapiens-luoc-su-loai-nguoi	7	Sapiens: Lược Sử Loài Người của giáo sư lịch sử Yuval Noah Harari là hiện tượng xuất bản toàn cầu, giải mã lịch sử vĩ đại của loài người từ thời kỳ đồ đá cho đến hiện đại. Cuốn sách phân tích sâu sắc ba cuộc cách mạng định hình vận mệnh: Cách mạng Nhận thức (khởi đầu lịch sử), Cách mạng Nông nghiệp (mở rộng xã hội) và Cách mạng Khoa học (kiến tạo sức mạnh chưa từng có). Một tác phẩm kinh điển mở rộng tầm nhìn, kích thích tư duy phản biện và giúp chúng ta hiểu rõ loài người là ai, từ đâu đến và đang đi về đâu.	\N		2026-10-15 05:54:39.891549+00	\N	t	\N	\N
-1	Đắc Nhân Tâm (How to Win Friends and Influence People)	{"time": 1792043678888, "blocks": [{"id": "block_0", "data": {"text": "Đắc Nhân Tâm (How to Win Friends and Influence People) của Dale Carnegie là cuốn sách nổi tiếng nhất, có tầm ảnh hưởng lớn nhất mọi thời đại về nghệ thuật đối nhân xử thế và giao tiếp."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Tác phẩm đem lại những nguyên tắc vàng đã được thử thách qua thời gian, giúp bạn thấu hiểu tâm lý con người, xây dựng sự tin cậy, cảm hóa người khác bằng sự chân thành và giải quyết các mâu thuẫn một cách khéo léo."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Dù trong công việc hay đời sống thường ngày, đây là cẩm nang gối đầu giường không thể thiếu cho bất kỳ ai muốn vươn tới thành công và hạnh phúc trọn vẹn."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-15 10:22:32.099514+00	2	33	Đắc Nhân Tâm (How to Win Friends and Influence People) của Dale Carnegie là cuốn sách nổi tiếng nhất, có tầm ảnh hưởng lớn nhất mọi thời đại về nghệ thuật đối nhân xử thế và giao tiếp.	Đắc Nhân Tâm (How to Win Friends and Influence People) | AuraBook	\N	{"author": "Dale Carnegie", "epub_file": "ebooks/dac-nhan-tam.epub", "book_format": "Both Ebook and Physical Available"}	{}	dac-nhan-tam	3	Đắc Nhân Tâm (How to Win Friends and Influence People) của Dale Carnegie là cuốn sách nổi tiếng nhất, có tầm ảnh hưởng lớn nhất mọi thời đại về nghệ thuật đối nhân xử thế và giao tiếp. Tác phẩm đem lại những nguyên tắc vàng đã được thử thách qua thời gian, giúp bạn thấu hiểu tâm lý con người, xây dựng sự tin cậy, cảm hóa người khác bằng sự chân thành và giải quyết các mâu thuẫn một cách khéo léo. Dù trong công việc hay đời sống thường ngày, đây là cẩm nang gối đầu giường không thể thiếu cho bất kỳ ai muốn vươn tới thành công và hạnh phúc trọn vẹn.	\N		2026-10-15 05:52:50.576094+00	\N	t	\N	\N
+4	Trí Tuệ Do Thái (Jerome Becomes a Genius)	{"time": 1792459159361, "blocks": [{"id": "block_0", "data": {"text": "Trí Tuệ Do Thái của kỷ lục gia trí nhớ Eran Katz hé mở những bí quyết tư duy độc đáo, phương pháp ghi nhớ phi thường và tinh thần học hỏi trọn đời của dân tộc thông minh nhất thế giới."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Thông qua hành trình biến chàng trai bình thường Jerome thành một thiên tài, cuốn sách cung cấp các nguyên tắc thực tế để tối ưu hóa não bộ, rèn luyện tư duy logic, sáng tạo và mở khóa tiềm năng vượt trội."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Tác phẩm truyền cảm hứng mãnh liệt về ý chí vươn lên, lòng hiếu học và nghệ thuật làm chủ tri thức."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-20 01:19:19.563522+00	2	83	Trí Tuệ Do Thái của kỷ lục gia trí nhớ Eran Katz hé mở những bí quyết tư duy độc đáo, phương pháp ghi nhớ phi thường và tinh thần học hỏi trọn đời của dân tộc thông minh nhất thế giới.	Trí Tuệ Do Thái (Jerome Becomes a Genius) | AuraBook	\N	{"author": "Eran Katz", "epub_file": "ebooks/tri-tue-do-thai.epub", "book_format": "Both Ebook and Physical Available"}	{}	tri-tue-do-thai	51	Trí Tuệ Do Thái của kỷ lục gia trí nhớ Eran Katz hé mở những bí quyết tư duy độc đáo, phương pháp ghi nhớ phi thường và tinh thần học hỏi trọn đời của dân tộc thông minh nhất thế giới. Thông qua hành trình biến chàng trai bình thường Jerome thành một thiên tài, cuốn sách cung cấp các nguyên tắc thực tế để tối ưu hóa não bộ, rèn luyện tư duy logic, sáng tạo và mở khóa tiềm năng vượt trội. Tác phẩm truyền cảm hứng mãnh liệt về ý chí vươn lên, lòng hiếu học và nghệ thuật làm chủ tri thức.	\N		2026-10-15 05:54:40.347339+00	\N	t	\N	\N
+1	Đắc Nhân Tâm (How to Win Friends and Influence People)	{"time": 1792459158531, "blocks": [{"id": "block_0", "data": {"text": "Đắc Nhân Tâm (How to Win Friends and Influence People) của Dale Carnegie là cuốn sách nổi tiếng nhất, có tầm ảnh hưởng lớn nhất mọi thời đại về nghệ thuật đối nhân xử thế và giao tiếp."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Tác phẩm đem lại những nguyên tắc vàng đã được thử thách qua thời gian, giúp bạn thấu hiểu tâm lý con người, xây dựng sự tin cậy, cảm hóa người khác bằng sự chân thành và giải quyết các mâu thuẫn một cách khéo léo."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Dù trong công việc hay đời sống thường ngày, đây là cẩm nang gối đầu giường không thể thiếu cho bất kỳ ai muốn vươn tới thành công và hạnh phúc trọn vẹn."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-20 01:19:18.860566+00	2	79	Đắc Nhân Tâm (How to Win Friends and Influence People) của Dale Carnegie là cuốn sách nổi tiếng nhất, có tầm ảnh hưởng lớn nhất mọi thời đại về nghệ thuật đối nhân xử thế và giao tiếp.	Đắc Nhân Tâm (How to Win Friends and Influence People) | AuraBook	\N	{"author": "Dale Carnegie", "epub_file": "ebooks/dac-nhan-tam.epub", "book_format": "Both Ebook and Physical Available"}	{}	dac-nhan-tam	45	Đắc Nhân Tâm (How to Win Friends and Influence People) của Dale Carnegie là cuốn sách nổi tiếng nhất, có tầm ảnh hưởng lớn nhất mọi thời đại về nghệ thuật đối nhân xử thế và giao tiếp. Tác phẩm đem lại những nguyên tắc vàng đã được thử thách qua thời gian, giúp bạn thấu hiểu tâm lý con người, xây dựng sự tin cậy, cảm hóa người khác bằng sự chân thành và giải quyết các mâu thuẫn một cách khéo léo. Dù trong công việc hay đời sống thường ngày, đây là cẩm nang gối đầu giường không thể thiếu cho bất kỳ ai muốn vươn tới thành công và hạnh phúc trọn vẹn.	\N		2026-10-15 05:52:50.576094+00	\N	t	\N	\N
+9	Chiến Tranh Tiền Tệ - Tập 1: Dòng Chảy Của Tiền Ngầm	{"time": 1792459160402, "blocks": [{"id": "block_0", "data": {"text": "Chiến Tranh Tiền Tệ (Tập 1) của học giả tài chính Song Hongbing là cuốn sách gây chấn động dư luận quốc tế, vén bức màn bí ẩn đằng sau hệ thống tài chính và ngân hàng thế giới."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Tác phẩm giải mã lịch sử phát triển của các gia tộc tài phiệt ngân hàng quốc tế như Rothschild, sự ra đời của Cục Dự trữ Liên bang Mỹ (Fed) và bản chất của những cuộc khủng hoảng kinh tế toàn cầu."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Cuốn sách mở ra góc nhìn hoàn toàn mới về quyền lực của tiền tệ và những cuộc chiến kinh tế không tiếng súng."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-20 01:19:20.606045+00	2	90	Chiến Tranh Tiền Tệ (Tập 1) của học giả tài chính Song Hongbing là cuốn sách gây chấn động dư luận quốc tế, vén bức màn bí ẩn đằng sau hệ thống tài chính và ngân hàng thế giới.	Chiến Tranh Tiền Tệ - Tập 1: Dòng Chảy Của Tiền Ngầm | AuraBook	\N	{"author": "Song Hongbing", "epub_file": "ebooks/chien-tranh-tien-te-tap-1.epub", "book_format": "Both Ebook and Physical Available"}	{}	chien-tranh-tien-te-tap-1	61	Chiến Tranh Tiền Tệ (Tập 1) của học giả tài chính Song Hongbing là cuốn sách gây chấn động dư luận quốc tế, vén bức màn bí ẩn đằng sau hệ thống tài chính và ngân hàng thế giới. Tác phẩm giải mã lịch sử phát triển của các gia tộc tài phiệt ngân hàng quốc tế như Rothschild, sự ra đời của Cục Dự trữ Liên bang Mỹ (Fed) và bản chất của những cuộc khủng hoảng kinh tế toàn cầu. Cuốn sách mở ra góc nhìn hoàn toàn mới về quyền lực của tiền tệ và những cuộc chiến kinh tế không tiếng súng.	\N		2026-10-20 01:08:34.961298+00	\N	f	\N	\N
+3	Sapiens: Lược Sử Loài Người (A Brief History of Humankind)	{"time": 1792459159124, "blocks": [{"id": "block_0", "data": {"text": "Sapiens: Lược Sử Loài Người của giáo sư lịch sử Yuval Noah Harari là hiện tượng xuất bản toàn cầu, giải mã lịch sử vĩ đại của loài người từ thời kỳ đồ đá cho đến hiện đại."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Cuốn sách phân tích sâu sắc ba cuộc cách mạng định hình vận mệnh: Cách mạng Nhận thức (khởi đầu lịch sử), Cách mạng Nông nghiệp (mở rộng xã hội) và Cách mạng Khoa học (kiến tạo sức mạnh chưa từng có)."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Một tác phẩm kinh điển mở rộng tầm nhìn, kích thích tư duy phản biện và giúp chúng ta hiểu rõ loài người là ai, từ đâu đến và đang đi về đâu."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-20 01:19:19.338632+00	2	86	Sapiens: Lược Sử Loài Người của giáo sư lịch sử Yuval Noah Harari là hiện tượng xuất bản toàn cầu, giải mã lịch sử vĩ đại của loài người từ thời kỳ đồ đá cho đến hiện đại.	Sapiens: Lược Sử Loài Người (A Brief History of Humankind) | AuraBook	\N	{"author": "Yuval Noah Harari", "epub_file": "ebooks/sapiens-luoc-su-loai-nguoi.epub", "book_format": "Both Ebook and Physical Available"}	{}	sapiens-luoc-su-loai-nguoi	49	Sapiens: Lược Sử Loài Người của giáo sư lịch sử Yuval Noah Harari là hiện tượng xuất bản toàn cầu, giải mã lịch sử vĩ đại của loài người từ thời kỳ đồ đá cho đến hiện đại. Cuốn sách phân tích sâu sắc ba cuộc cách mạng định hình vận mệnh: Cách mạng Nhận thức (khởi đầu lịch sử), Cách mạng Nông nghiệp (mở rộng xã hội) và Cách mạng Khoa học (kiến tạo sức mạnh chưa từng có). Một tác phẩm kinh điển mở rộng tầm nhìn, kích thích tư duy phản biện và giúp chúng ta hiểu rõ loài người là ai, từ đâu đến và đang đi về đâu.	\N		2026-10-15 05:54:39.891549+00	\N	t	\N	\N
+5	10 Điều Tạo Nên Số Phận (The Ten Commitments)	{"time": 1792459159586, "blocks": [{"id": "block_0", "data": {"text": "10 Điều Tạo Nên Số Phận của bác sĩ David Simon là tác phẩm sâu sắc về sự thức tỉnh nội tâm và quản trị số phận cá nhân thông qua 10 cam kết cốt lõi của tâm thức."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Tác giả chỉ ra rằng số phận không phải điều ngẫu nhiên mà được dệt nên từ những lựa chọn, thói quen suy nghĩ và phản ứng cảm xúc mỗi ngày của chính chúng ta."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Cuốn sách hướng dẫn độc giả buông bỏ những niềm tin kìm hãm, chữa lành tổn thương và thiết lập lại mục đích sống an nhiên, tự tại."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-20 01:19:19.741567+00	2	80	10 Điều Tạo Nên Số Phận của bác sĩ David Simon là tác phẩm sâu sắc về sự thức tỉnh nội tâm và quản trị số phận cá nhân thông qua 10 cam kết cốt lõi của tâm thức.	10 Điều Tạo Nên Số Phận (The Ten Commitments) | AuraBook	\N	{"author": "David Simon, M.D", "epub_file": "ebooks/10-dieu-tao-nen-so-phan.epub", "book_format": "Both Ebook and Physical Available"}	{}	10-dieu-tao-nen-so-phan	53	10 Điều Tạo Nên Số Phận của bác sĩ David Simon là tác phẩm sâu sắc về sự thức tỉnh nội tâm và quản trị số phận cá nhân thông qua 10 cam kết cốt lõi của tâm thức. Tác giả chỉ ra rằng số phận không phải điều ngẫu nhiên mà được dệt nên từ những lựa chọn, thói quen suy nghĩ và phản ứng cảm xúc mỗi ngày của chính chúng ta. Cuốn sách hướng dẫn độc giả buông bỏ những niềm tin kìm hãm, chữa lành tổn thương và thiết lập lại mục đích sống an nhiên, tự tại.	\N		2026-10-20 01:08:34.121922+00	\N	f	\N	\N
+6	Bí Mật Của Một Trí Nhớ Siêu Phàm (Where Did You Put My Keys?)	{"time": 1792459159764, "blocks": [{"id": "block_0", "data": {"text": "Bí Mật Của Một Trí Nhớ Siêu Phàm tiếp tục là tuyệt tác của kỷ lục gia thế giới Eran Katz, tác giả của cuốn sách nổi tiếng Trí Tuệ Do Thái."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Cuốn sách chia sẻ các kỹ thuật ghi nhớ độc đáo, hài hước nhưng cực kỳ hiệu nghiệm: phương pháp liên tưởng hình ảnh kỳ lạ, kỹ thuật căn phòng La Mã và cách thức ghi nhớ hàng nghìn dữ liệu số, từ vựng ngoại ngữ hay khuôn mặt."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Cẩm nang thực hành tuyệt vời cho học sinh, sinh viên, người đi làm và bất kỳ ai muốn nâng cấp não bộ lên một tầm cao mới."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-20 01:19:19.94554+00	2	83	Bí Mật Của Một Trí Nhớ Siêu Phàm tiếp tục là tuyệt tác của kỷ lục gia thế giới Eran Katz, tác giả của cuốn sách nổi tiếng Trí Tuệ Do Thái.	Bí Mật Của Một Trí Nhớ Siêu Phàm (Where Did You Put My Keys?) | AuraBo	\N	{"author": "Eran Katz", "epub_file": "ebooks/bi-mat-cua-mot-tri-nho-sieu-pham.epub", "book_format": "Both Ebook and Physical Available"}	{}	bi-mat-cua-mot-tri-nho-sieu-pham	55	Bí Mật Của Một Trí Nhớ Siêu Phàm tiếp tục là tuyệt tác của kỷ lục gia thế giới Eran Katz, tác giả của cuốn sách nổi tiếng Trí Tuệ Do Thái. Cuốn sách chia sẻ các kỹ thuật ghi nhớ độc đáo, hài hước nhưng cực kỳ hiệu nghiệm: phương pháp liên tưởng hình ảnh kỳ lạ, kỹ thuật căn phòng La Mã và cách thức ghi nhớ hàng nghìn dữ liệu số, từ vựng ngoại ngữ hay khuôn mặt. Cẩm nang thực hành tuyệt vời cho học sinh, sinh viên, người đi làm và bất kỳ ai muốn nâng cấp não bộ lên một tầm cao mới.	\N		2026-10-20 01:08:34.318814+00	\N	f	\N	\N
+8	Cây Cam Ngọt Của Tôi (Meu Pé de Laranja Lima)	{"time": 1792459160175, "blocks": [{"id": "block_0", "data": {"text": "Cây Cam Ngọt Của Tôi là tác phẩm văn chương kinh điển của nhà văn Brazil José Mauro de Vasconcelos, một trong những cuốn sách làm rung động hàng triệu trái tim độc giả toàn cầu."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Tác phẩm kể về cậu bé Zezé 5 tuổi, sinh ra trong một gia đình nghèo đông con, thông minh sớm biết đọc nhưng nghịch ngợm và thiếu thốn sự âu yếm; người bạn thân duy nhất lắng nghe mọi tâm sự của em chính là cây cam ngọt sau vườn."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Một khúc ca bi tráng về tuổi thơ, sự dịu dàng của tình người và bài học sâu sắc rằng không có sự dịu dàng, cuộc đời sẽ chẳng còn ý nghĩa."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-20 01:19:20.380012+00	2	92	Cây Cam Ngọt Của Tôi là tác phẩm văn chương kinh điển của nhà văn Brazil José Mauro de Vasconcelos, một trong những cuốn sách làm rung động hàng triệu trái tim độc giả toàn cầu.	Cây Cam Ngọt Của Tôi (Meu Pé de Laranja Lima) | AuraBook	\N	{"author": "José Mauro de Vasconcelos", "epub_file": "ebooks/cay-cam-ngot-cua-toi.epub", "book_format": "Both Ebook and Physical Available"}	{}	cay-cam-ngot-cua-toi	59	Cây Cam Ngọt Của Tôi là tác phẩm văn chương kinh điển của nhà văn Brazil José Mauro de Vasconcelos, một trong những cuốn sách làm rung động hàng triệu trái tim độc giả toàn cầu. Tác phẩm kể về cậu bé Zezé 5 tuổi, sinh ra trong một gia đình nghèo đông con, thông minh sớm biết đọc nhưng nghịch ngợm và thiếu thốn sự âu yếm; người bạn thân duy nhất lắng nghe mọi tâm sự của em chính là cây cam ngọt sau vườn. Một khúc ca bi tráng về tuổi thơ, sự dịu dàng của tình người và bài học sâu sắc rằng không có sự dịu dàng, cuộc đời sẽ chẳng còn ý nghĩa.	\N		2026-10-20 01:08:34.753112+00	\N	f	\N	\N
+11	Chiến Tranh Tiền Tệ - Tập 3: Rừng Rậm Tài Chính	{"time": 1792459160876, "blocks": [{"id": "block_0", "data": {"text": "Chiến Tranh Tiền Tệ (Tập 3) đưa người đọc vào khu rừng rậm của các công cụ phái sinh tài chính, bong bóng tín dụng và cạm bẫy nợ công."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Song Hongbing vạch rõ cách thức các định chế tài chính toàn cầu thao túng thị trường tiền tệ và đe dọa sự ổn định của các nền kinh tế đang phát triển."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Tác phẩm là lời cảnh tỉnh mạnh mẽ và là kim chỉ nam tài chính vô giá trong kỷ nguyên tái định hình trật tự tiền tệ thế giới."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-20 01:19:21.073114+00	2	90	Chiến Tranh Tiền Tệ (Tập 3) đưa người đọc vào khu rừng rậm của các công cụ phái sinh tài chính, bong bóng tín dụng và cạm bẫy nợ công.	Chiến Tranh Tiền Tệ - Tập 3: Rừng Rậm Tài Chính | AuraBook	\N	{"author": "Song Hongbing", "epub_file": "ebooks/chien-tranh-tien-te-tap-3.epub", "book_format": "Both Ebook and Physical Available"}	{}	chien-tranh-tien-te-tap-3	65	Chiến Tranh Tiền Tệ (Tập 3) đưa người đọc vào khu rừng rậm của các công cụ phái sinh tài chính, bong bóng tín dụng và cạm bẫy nợ công. Song Hongbing vạch rõ cách thức các định chế tài chính toàn cầu thao túng thị trường tiền tệ và đe dọa sự ổn định của các nền kinh tế đang phát triển. Tác phẩm là lời cảnh tỉnh mạnh mẽ và là kim chỉ nam tài chính vô giá trong kỷ nguyên tái định hình trật tự tiền tệ thế giới.	\N		2026-10-20 01:08:35.338844+00	\N	f	\N	\N
+13	Tư Duy Nhanh Và Chậm (Thinking, Fast and Slow)	{"time": 1792459161306, "blocks": [{"id": "block_0", "data": {"text": "Tư Duy Nhanh Và Chậm (Thinking, Fast and Slow) của chủ nhân giải Nobel Kinh tế Daniel Kahneman là một trong những kiệt tác vĩ đại nhất về tâm lý học nhận thức và kinh tế học hành vi."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Tác phẩm giải phẫu hai hệ thống tư duy chi phối bộ não: Hệ thống 1 hoạt động tự động, nhanh chóng theo trực giác; và Hệ thống 2 hoạt động chậm rãi, cần nỗ lực suy luận logic."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Cuốn sách chỉ ra hàng loạt bẫy thiên kiến nhận thức, ảo tưởng về sự hiểu biết và cách thức rèn luyện tư duy phản biện sắc bén để đưa ra những quyết định sáng suốt trong kinh doanh cũng như cuộc sống."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-20 01:19:21.479179+00	2	84	Tư Duy Nhanh Và Chậm (Thinking, Fast and Slow) của chủ nhân giải Nobel Kinh tế Daniel Kahneman là một trong những kiệt tác vĩ đại nhất về tâm lý học nhận thức và kinh tế học hành vi.	Tư Duy Nhanh Và Chậm (Thinking, Fast and Slow) | AuraBook	\N	{"author": "Daniel Kahneman", "epub_file": "ebooks/tu-duy-nhanh-va-cham.epub", "book_format": "Both Ebook and Physical Available"}	{}	tu-duy-nhanh-va-cham	69	Tư Duy Nhanh Và Chậm (Thinking, Fast and Slow) của chủ nhân giải Nobel Kinh tế Daniel Kahneman là một trong những kiệt tác vĩ đại nhất về tâm lý học nhận thức và kinh tế học hành vi. Tác phẩm giải phẫu hai hệ thống tư duy chi phối bộ não: Hệ thống 1 hoạt động tự động, nhanh chóng theo trực giác; và Hệ thống 2 hoạt động chậm rãi, cần nỗ lực suy luận logic. Cuốn sách chỉ ra hàng loạt bẫy thiên kiến nhận thức, ảo tưởng về sự hiểu biết và cách thức rèn luyện tư duy phản biện sắc bén để đưa ra những quyết định sáng suốt trong kinh doanh cũng như cuộc sống.	\N		2026-10-20 01:08:35.748292+00	\N	f	\N	\N
+12	Chủ Nghĩa Khắc Kỷ: Phong Cách Sống Bản Lĩnh & Bình Thản	{"time": 1792459161101, "blocks": [{"id": "block_0", "data": {"text": "Chủ Nghĩa Khắc Kỷ (A Guide to the Good Life) của giáo sư triết học William B. Irvine là cẩm nang thực hành triết học Khắc kỷ (Stoicism) hiện đại, gần gũi và ứng dụng thiết thực nhất."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Tác phẩm hướng dẫn nghệ thuật làm chủ cảm xúc: phân biệt rạch ròi giữa những điều ta kiểm soát được và những điều ngoài tầm với, kỹ thuật tưởng tượng tiêu cực để trân trọng hiện tại và cách duy trì sự bình thản trước mọi phong ba bão táp."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Một cuốn sách mang lại liều thuốc tinh thần mạnh mẽ giúp tâm trí an định và sống trọn vẹn từng khoảnh khắc."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-20 04:58:14.829631+00	2	82	Chủ Nghĩa Khắc Kỷ (A Guide to the Good Life) của giáo sư triết học William B. Irvine là cẩm nang thực hành triết học Khắc kỷ (Stoicism) hiện đại, gần gũi và ứng dụng thiết thực nhất.	Chủ Nghĩa Khắc Kỷ: Phong Cách Sống Bản Lĩnh & Bình Thản | AuraBook	\N	{"author": "William B. Irvine", "epub_file": "ebooks/chu-nghia-khac-ky-phong-cach-song-ban-linh-va-binh-than.epub", "book_format": "Both Ebook and Physical Available"}	{}	chu-nghia-khac-ky-phong-cach-song-ban-linh-va-binh-than	67	Chủ Nghĩa Khắc Kỷ (A Guide to the Good Life) của giáo sư triết học William B. Irvine là cẩm nang thực hành triết học Khắc kỷ (Stoicism) hiện đại, gần gũi và ứng dụng thiết thực nhất. Tác phẩm hướng dẫn nghệ thuật làm chủ cảm xúc: phân biệt rạch ròi giữa những điều ta kiểm soát được và những điều ngoài tầm với, kỹ thuật tưởng tượng tiêu cực để trân trọng hiện tại và cách duy trì sự bình thản trước mọi phong ba bão táp. Một cuốn sách mang lại liều thuốc tinh thần mạnh mẽ giúp tâm trí an định và sống trọn vẹn từng khoảnh khắc.	\N		2026-10-20 01:08:35.533166+00	\N	t	\N	\N
+2	Bốn Thỏa Ước (The Four Agreements)	{"time": 1792459158890, "blocks": [{"id": "block_0", "data": {"text": "Bốn Thỏa Ước (The Four Agreements) của Don Miguel Ruiz tiết lộ những minh triết cổ xưa của người Toltec nhằm giúp chúng ta tự giải thoát khỏi những niềm tin giới hạn, nỗi sợ hãi và những đau khổ không đáng có."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Bốn nguyên tắc thông thái bao gồm: 1. Không phạm tội với lời nói; 2. Không biến mọi chuyện thành vấn đề cá nhân; 3. Không giả định; 4. Luôn làm hết khả năng của mình."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Một cuốn sách ngắn gọn nhưng có sức mạnh chuyển hóa nội tâm sâu sắc, đem lại sự thanh thản, tự do và niềm vui sống đích thực."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-20 01:19:19.102983+00	2	82	Bốn Thỏa Ước (The Four Agreements) của Don Miguel Ruiz tiết lộ những minh triết cổ xưa của người Toltec nhằm giúp chúng ta tự giải thoát khỏi những niềm tin giới hạn, nỗi sợ hãi và những đau khổ không đáng có.	Bốn Thỏa Ước (The Four Agreements) | AuraBook	\N	{"author": "Don Miguel Ruiz", "epub_file": "ebooks/bon-thoa-uoc.epub", "book_format": "Both Ebook and Physical Available"}	{}	bon-thoa-uoc	47	Bốn Thỏa Ước (The Four Agreements) của Don Miguel Ruiz tiết lộ những minh triết cổ xưa của người Toltec nhằm giúp chúng ta tự giải thoát khỏi những niềm tin giới hạn, nỗi sợ hãi và những đau khổ không đáng có. Bốn nguyên tắc thông thái bao gồm: 1. Không phạm tội với lời nói; 2. Không biến mọi chuyện thành vấn đề cá nhân; 3. Không giả định; 4. Luôn làm hết khả năng của mình. Một cuốn sách ngắn gọn nhưng có sức mạnh chuyển hóa nội tâm sâu sắc, đem lại sự thanh thản, tự do và niềm vui sống đích thực.	\N		2026-10-15 05:54:39.517816+00	\N	t	\N	\N
+7	Cách Nghĩ Để Thành Công (Think and Grow Rich)	{"time": 1792459159965, "blocks": [{"id": "block_0", "data": {"text": "Cách Nghĩ Để Thành Công (Think and Grow Rich) của Napoleon Hill là cuốn sách gối đầu giường của hàng triệu doanh nhân và lãnh đạo trên toàn thế giới suốt gần một thế kỷ qua."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Đúc kết từ 13 nguyên tắc thành công được nghiên cứu qua hơn 500 cá nhân kiệt xuất nhất nước Mỹ (như Thomas Edison, Henry Ford, Andrew Carnegie), cuốn sách chỉ ra rằng giàu có bắt đầu từ tư duy và khát vọng cháy bỏng."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Một tác phẩm truyền cảm hứng mãnh liệt, biến những mục tiêu tưởng chừng bất khả thi thành hiện thực cụ thể."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-20 01:19:20.150279+00	2	80	Cách Nghĩ Để Thành Công (Think and Grow Rich) của Napoleon Hill là cuốn sách gối đầu giường của hàng triệu doanh nhân và lãnh đạo trên toàn thế giới suốt gần một thế kỷ qua.	Cách Nghĩ Để Thành Công (Think and Grow Rich) | AuraBook	\N	{"author": "Napoleon Hill", "epub_file": "ebooks/cach-nghi-de-thanh-cong.epub", "book_format": "Both Ebook and Physical Available"}	{}	cach-nghi-de-thanh-cong	57	Cách Nghĩ Để Thành Công (Think and Grow Rich) của Napoleon Hill là cuốn sách gối đầu giường của hàng triệu doanh nhân và lãnh đạo trên toàn thế giới suốt gần một thế kỷ qua. Đúc kết từ 13 nguyên tắc thành công được nghiên cứu qua hơn 500 cá nhân kiệt xuất nhất nước Mỹ (như Thomas Edison, Henry Ford, Andrew Carnegie), cuốn sách chỉ ra rằng giàu có bắt đầu từ tư duy và khát vọng cháy bỏng. Một tác phẩm truyền cảm hứng mãnh liệt, biến những mục tiêu tưởng chừng bất khả thi thành hiện thực cụ thể.	\N		2026-10-20 01:08:34.521446+00	\N	f	\N	\N
+10	Chiến Tranh Tiền Tệ - Tập 2: Sự Thống Trị Của Quyền Lực Vàng	{"time": 1792459160635, "blocks": [{"id": "block_0", "data": {"text": "Chiến Tranh Tiền Tệ (Tập 2) tiếp nối phân tích chuyên sâu về sự trỗi dậy và sụp đổ của bản vị vàng trong dòng chảy lịch sử cận hiện đại."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Tác giả phân tích cuộc đối đầu khốc liệt giữa tiền giấy pháp định (Fiat Currency) và vàng, những âm mưu tài chính phía sau các cuộc thế chiến và chiến lược thâu tóm tài sản quốc gia."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Cuốn sách cung cấp tri thức tài chính vĩ mô sắc bén giúp độc giả định vị và bảo vệ tài sản trước những biến động khôn lường."}, "type": "paragraph"}], "version": "2.30.7"}	2026-10-20 01:19:20.850526+00	2	90	Chiến Tranh Tiền Tệ (Tập 2) tiếp nối phân tích chuyên sâu về sự trỗi dậy và sụp đổ của bản vị vàng trong dòng chảy lịch sử cận hiện đại.	Chiến Tranh Tiền Tệ - Tập 2: Sự Thống Trị Của Quyền Lực Vàng | AuraBoo	\N	{"author": "Song Hongbing", "epub_file": "ebooks/chien-tranh-tien-te-tap-2.epub", "book_format": "Both Ebook and Physical Available"}	{}	chien-tranh-tien-te-tap-2	63	Chiến Tranh Tiền Tệ (Tập 2) tiếp nối phân tích chuyên sâu về sự trỗi dậy và sụp đổ của bản vị vàng trong dòng chảy lịch sử cận hiện đại. Tác giả phân tích cuộc đối đầu khốc liệt giữa tiền giấy pháp định (Fiat Currency) và vàng, những âm mưu tài chính phía sau các cuộc thế chiến và chiến lược thâu tóm tài sản quốc gia. Cuốn sách cung cấp tri thức tài chính vĩ mô sắc bén giúp độc giả định vị và bảo vệ tài sản trước những biến động khôn lường.	\N		2026-10-20 01:08:35.148242+00	\N	f	\N	\N
 \.
 
 
@@ -9758,17 +9804,45 @@ COPY public.product_product (id, name, description, updated_at, product_type_id,
 --
 
 COPY public.product_productchannellisting (id, published_at, is_published, channel_id, product_id, discounted_price_amount, currency, visible_in_listings, available_for_purchase_at, discounted_price_dirty) FROM stdin;
-89	\N	t	2	1	118000.000	VND	t	2026-10-15 05:54:38.888189+00	f
-90	\N	t	1	1	5.990	USD	t	2026-10-15 05:54:38.888189+00	f
-92	\N	t	2	2	98000.000	VND	t	2026-10-15 05:54:38.888189+00	f
-93	\N	t	1	2	4.990	USD	t	2026-10-15 05:54:38.888189+00	f
-95	\N	t	2	3	189000.000	VND	t	2026-10-15 05:54:38.888189+00	f
-96	\N	t	1	3	9.490	USD	t	2026-10-15 05:54:38.888189+00	f
-98	\N	t	2	4	135000.000	VND	t	2026-10-15 05:54:38.888189+00	f
-99	\N	t	1	4	6.790	USD	t	2026-10-15 05:54:38.888189+00	f
+89	\N	t	2	1	118000.000	VND	t	2026-10-20 01:19:18.531875+00	f
+90	\N	t	1	1	5.990	USD	t	2026-10-20 01:19:18.531875+00	f
+92	\N	t	2	2	98000.000	VND	t	2026-10-20 01:19:18.531875+00	f
+93	\N	t	1	2	4.990	USD	t	2026-10-20 01:19:18.531875+00	f
+95	\N	t	2	3	189000.000	VND	t	2026-10-20 01:19:18.531875+00	f
+96	\N	t	1	3	9.490	USD	t	2026-10-20 01:19:18.531875+00	f
+98	\N	t	2	4	135000.000	VND	t	2026-10-20 01:19:18.531875+00	f
+99	\N	t	1	4	6.790	USD	t	2026-10-20 01:19:18.531875+00	f
+102	\N	t	2	5	98000.000	VND	t	2026-10-20 01:19:18.531875+00	f
+103	\N	t	1	5	4.990	USD	t	2026-10-20 01:19:18.531875+00	f
+105	\N	t	2	6	119000.000	VND	t	2026-10-20 01:19:18.531875+00	f
+106	\N	t	1	6	5.990	USD	t	2026-10-20 01:19:18.531875+00	f
+108	\N	t	2	7	115000.000	VND	t	2026-10-20 01:19:18.531875+00	f
+109	\N	t	1	7	5.790	USD	t	2026-10-20 01:19:18.531875+00	f
 91	\N	f	3	2	\N	PLN	f	\N	t
+111	\N	t	2	8	108000.000	VND	t	2026-10-20 01:19:18.531875+00	f
 94	\N	f	3	3	\N	PLN	f	\N	t
+112	\N	t	1	8	5.490	USD	t	2026-10-20 01:19:18.531875+00	f
 97	\N	f	3	4	\N	PLN	f	\N	t
+100	\N	t	3	1	\N	PLN	t	\N	f
+114	\N	t	2	9	139000.000	VND	t	2026-10-20 01:19:18.531875+00	f
+115	\N	t	1	9	6.990	USD	t	2026-10-20 01:19:18.531875+00	f
+117	\N	t	2	10	139000.000	VND	t	2026-10-20 01:19:18.531875+00	f
+118	\N	t	1	10	6.990	USD	t	2026-10-20 01:19:18.531875+00	f
+120	\N	t	2	11	139000.000	VND	t	2026-10-20 01:19:18.531875+00	f
+121	\N	t	1	11	6.990	USD	t	2026-10-20 01:19:18.531875+00	f
+123	\N	t	2	12	129000.000	VND	t	2026-10-20 01:19:18.531875+00	f
+124	\N	t	1	12	6.490	USD	t	2026-10-20 01:19:18.531875+00	f
+101	\N	t	3	5	\N	PLN	t	\N	f
+126	\N	t	2	13	159000.000	VND	t	2026-10-20 01:19:18.531875+00	f
+127	\N	t	1	13	7.990	USD	t	2026-10-20 01:19:18.531875+00	f
+104	\N	t	3	6	\N	PLN	t	\N	f
+122	\N	f	3	12	\N	PLN	f	\N	t
+107	\N	t	3	7	\N	PLN	t	\N	f
+110	\N	t	3	8	\N	PLN	t	\N	f
+113	\N	t	3	9	\N	PLN	t	\N	f
+116	\N	t	3	10	\N	PLN	t	\N	f
+119	\N	t	3	11	\N	PLN	t	\N	f
+125	\N	t	3	13	\N	PLN	t	\N	f
 \.
 
 
@@ -9777,41 +9851,19 @@ COPY public.product_productchannellisting (id, published_at, is_published, chann
 --
 
 COPY public.product_productmedia (id, sort_order, image, alt, type, external_url, oembed_data, product_id, to_remove, metadata, private_metadata) FROM stdin;
-80	0	products/3be221cdd7210e10180502e55238a751.jpg_784f9d0c.webp		IMAGE	\N	{}	2	f	{}	{}
-87	0	products/105d0465def3d6bd1d1cd366a2a62866.jpg_4254698c.webp		IMAGE	\N	{}	4	f	{}	{}
-88	1	products/ba86524ef8ecb2480e10efd4a449d5c8.jpg_fa3795ff.webp		IMAGE	\N	{}	4	f	{}	{}
-82	0	products/2e0daae3f9383a3e1c5d85b1e0156953.jpg_8b2f960f.webp		IMAGE	\N	{}	3	f	{}	{}
-85	1	products/fb3cbce3d9acc09adfaf8ea3311e197d.png_cd54a137.webp		IMAGE	\N	{}	3	f	{}	{}
-84	2	products/c0c4225cbc443c182bd27fc23c143d62.png_dbc19d82.webp		IMAGE	\N	{}	3	f	{}	{}
-81	3	products/a7a94b1778ee336051ebfaa8dcdc19c0.png_a3bd5b84.webp		IMAGE	\N	{}	3	f	{}	{}
-83	4	products/388629f80448264a556f8cac5493f9fd.png_049eeaca.webp		IMAGE	\N	{}	3	f	{}	{}
-86	2	products/2e047442259c182aeea90fabb9a572e1.png_f443dacd.webp		IMAGE	\N	{}	4	f	{}	{}
-72	8	products/a0fc98b52cd5d888c6153310c918bfc9.jpg_23fb3cda.webp		IMAGE	\N	{}	2	f	{}	{}
-73	9	products/6df8c376b6d4fc9825ce2a8cec8079e2.jpg_87ec1598.webp		IMAGE	\N	{}	2	f	{}	{}
-75	10	products/1b4b4afa92ce67e948931a769c99cbc6.jpg_b020dd17.webp		IMAGE	\N	{}	2	f	{}	{}
-59	0	products/185d27fe442a1668cf0196c1b82c87eb.jpg_88331813.webp		IMAGE	\N	{}	1	f	{}	{}
-54	1	products/a7598562258bd86f3b05432efdf0cbc0.jpg_c93c5b42.webp		IMAGE	\N	{}	1	f	{}	{}
-55	2	products/bed9d3d46ff35a6d8c9ca7294896b7f3.jpg_3465acaf.webp		IMAGE	\N	{}	1	f	{}	{}
-56	3	products/409018d87687c46a0a12cecf3f982283.jpg_1e65cc25.webp		IMAGE	\N	{}	1	f	{}	{}
-57	4	products/031bc9781c34ddb6a588cd875862460d.jpg_0c8bad27.webp		IMAGE	\N	{}	1	f	{}	{}
-58	5	products/b577852aa77a3d9ed41dfc62de83aeab.jpg_d6ee255c.webp		IMAGE	\N	{}	1	f	{}	{}
-64	6	products/5fd464a18d6701bc4a54f276178108e2.jpg_cfa220c3.webp		IMAGE	\N	{}	1	f	{}	{}
-63	7	products/b7dd476560d2a2c09095516f94be51f7.jpg_392db3cc.webp		IMAGE	\N	{}	1	f	{}	{}
-62	8	products/41f2139e7511de8b97a2a500032c46c9.jpg_1de58382.webp		IMAGE	\N	{}	1	f	{}	{}
-61	9	products/392ad5b5f0166b04645d675fadab1f3e.jpg_fcbdca78.webp		IMAGE	\N	{}	1	f	{}	{}
-60	10	products/0ad59d3f8246ff56495e95e767ce99f7.jpg_212cf733.webp		IMAGE	\N	{}	1	f	{}	{}
-79	1	products/2197a9f2aefd4dbbc8b125726bbd3429.jpg_385fac5e.webp		IMAGE	\N	{}	2	f	{}	{}
-78	2	products/ab4a086761b07c8bfd7c2cd735f49931.jpg_2922ca75.webp		IMAGE	\N	{}	2	f	{}	{}
-66	3	products/0e35dcd41f3073264f41b11274bbbe14.jpg_6631ec19.webp		IMAGE	\N	{}	2	f	{}	{}
-67	4	products/bc4bccc35374232fbd50a18013c47493.jpg_dfbc347b.webp		IMAGE	\N	{}	2	f	{}	{}
-68	5	products/55faa82f3e1386b8ad1d23565588bce2.jpg_0e5d8ac4.webp		IMAGE	\N	{}	2	f	{}	{}
-69	6	products/2500a1c5b1f5d8df6c1a46280ef76be2.jpg_2c88a425.webp		IMAGE	\N	{}	2	f	{}	{}
-70	7	products/cb447ee89f108a9b4b85da64bef1cd5c.jpg_e1a0b4ad.webp		IMAGE	\N	{}	2	f	{}	{}
-76	11	products/8e92b168c40655e1c53f2bab25d629e1.jpg_78bb84e3.webp		IMAGE	\N	{}	2	f	{}	{}
-77	12	products/150ec31a90fd8bdfecb4489ec700e907.jpg_823336ea.webp		IMAGE	\N	{}	2	f	{}	{}
-71	13	products/ca27310bee7c23b4a538294b373debbf.jpg_e228dcca.webp		IMAGE	\N	{}	2	f	{}	{}
-65	14	products/9c69d35b91d35c46a46bc06bf1f10fbc.jpg_04696499.webp		IMAGE	\N	{}	2	f	{}	{}
-74	15	products/69d7da2a49157404151637f514332377.jpg_04c552fd.webp		IMAGE	\N	{}	2	f	{}	{}
+141	0	products/book-dac-nhan-tam-cover.jpg	Bìa sách Đắc Nhân Tâm (How to Win Friends and Influence People)	IMAGE	\N	{}	1	f	{}	{}
+142	0	products/book-bon-thoa-uoc-cover.jpg	Bìa sách Bốn Thỏa Ước (The Four Agreements)	IMAGE	\N	{}	2	f	{}	{}
+143	0	products/book-sapiens-luoc-su-loai-nguoi-cover.jpeg	Bìa sách Sapiens: Lược Sử Loài Người (A Brief History of Humankind)	IMAGE	\N	{}	3	f	{}	{}
+144	0	products/book-tri-tue-do-thai-cover.jpeg	Bìa sách Trí Tuệ Do Thái (Jerome Becomes a Genius)	IMAGE	\N	{}	4	f	{}	{}
+145	0	products/book-10-dieu-tao-nen-so-phan-cover.jpeg	Bìa sách 10 Điều Tạo Nên Số Phận (The Ten Commitments)	IMAGE	\N	{}	5	f	{}	{}
+146	0	products/book-bi-mat-cua-mot-tri-nho-sieu-pham-cover.jpeg	Bìa sách Bí Mật Của Một Trí Nhớ Siêu Phàm (Where Did You Put My Keys?)	IMAGE	\N	{}	6	f	{}	{}
+147	0	products/book-cach-nghi-de-thanh-cong-cover.jpeg	Bìa sách Cách Nghĩ Để Thành Công (Think and Grow Rich)	IMAGE	\N	{}	7	f	{}	{}
+148	0	products/book-cay-cam-ngot-cua-toi-cover.jpeg	Bìa sách Cây Cam Ngọt Của Tôi (Meu Pé de Laranja Lima)	IMAGE	\N	{}	8	f	{}	{}
+149	0	products/book-chien-tranh-tien-te-tap-1-cover.jpeg	Bìa sách Chiến Tranh Tiền Tệ - Tập 1: Dòng Chảy Của Tiền Ngầm	IMAGE	\N	{}	9	f	{}	{}
+150	0	products/book-chien-tranh-tien-te-tap-2-cover.jpeg	Bìa sách Chiến Tranh Tiền Tệ - Tập 2: Sự Thống Trị Của Quyền Lực Vàng	IMAGE	\N	{}	10	f	{}	{}
+151	0	products/book-chien-tranh-tien-te-tap-3-cover.jpeg	Bìa sách Chiến Tranh Tiền Tệ - Tập 3: Rừng Rậm Tài Chính	IMAGE	\N	{}	11	f	{}	{}
+152	0	products/book-chu-nghia-khac-ky-cover.jpeg	Bìa sách Chủ Nghĩa Khắc Kỷ: Phong Cách Sống Bản Lĩnh & Bình Thản	IMAGE	\N	{}	12	f	{}	{}
+153	0	products/book-tu-duy-nhanh-va-cham-cover.jpeg	Bìa sách Tư Duy Nhanh Và Chậm (Thinking, Fast and Slow)	IMAGE	\N	{}	13	f	{}	{}
 \.
 
 
@@ -9828,6 +9880,24 @@ COPY public.product_producttranslation (id, seo_title, seo_description, language
 93	Sapiens: Lược Sử Loài Người (A Brief History of Humankind) | AuraBook	Sapiens: Lược Sử Loài Người của giáo sư lịch sử Yuval Noah Harari là hiện tượng xuất bản toàn cầu, giải mã lịch sử vĩ đại của loài người từ thời kỳ đồ đá cho đến hiện đại.	vi	Sapiens: Lược Sử Loài Người (A Brief History of Humankind)	{"time": 1792043679887, "blocks": [{"id": "block_0", "data": {"text": "Sapiens: Lược Sử Loài Người của giáo sư lịch sử Yuval Noah Harari là hiện tượng xuất bản toàn cầu, giải mã lịch sử vĩ đại của loài người từ thời kỳ đồ đá cho đến hiện đại."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Cuốn sách phân tích sâu sắc ba cuộc cách mạng định hình vận mệnh: Cách mạng Nhận thức (khởi đầu lịch sử), Cách mạng Nông nghiệp (mở rộng xã hội) và Cách mạng Khoa học (kiến tạo sức mạnh chưa từng có)."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Một tác phẩm kinh điển mở rộng tầm nhìn, kích thích tư duy phản biện và giúp chúng ta hiểu rõ loài người là ai, từ đâu đến và đang đi về đâu."}, "type": "paragraph"}], "version": "2.30.7"}	3	\N
 94	Trí Tuệ Do Thái (Jerome Becomes a Genius) | AuraBook	Trí Tuệ Do Thái của kỷ lục gia trí nhớ Eran Katz hé mở những bí quyết tư duy độc đáo, phương pháp ghi nhớ phi thường và tinh thần học hỏi trọn đời của dân tộc thông minh nhất thế giới.	en	Trí Tuệ Do Thái (Jerome Becomes a Genius)	{"time": 1792043680340, "blocks": [{"id": "block_0", "data": {"text": "Trí Tuệ Do Thái của kỷ lục gia trí nhớ Eran Katz hé mở những bí quyết tư duy độc đáo, phương pháp ghi nhớ phi thường và tinh thần học hỏi trọn đời của dân tộc thông minh nhất thế giới."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Thông qua hành trình biến chàng trai bình thường Jerome thành một thiên tài, cuốn sách cung cấp các nguyên tắc thực tế để tối ưu hóa não bộ, rèn luyện tư duy logic, sáng tạo và mở khóa tiềm năng vượt trội."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Tác phẩm truyền cảm hứng mãnh liệt về ý chí vươn lên, lòng hiếu học và nghệ thuật làm chủ tri thức."}, "type": "paragraph"}], "version": "2.30.7"}	4	\N
 95	Trí Tuệ Do Thái (Jerome Becomes a Genius) | AuraBook	Trí Tuệ Do Thái của kỷ lục gia trí nhớ Eran Katz hé mở những bí quyết tư duy độc đáo, phương pháp ghi nhớ phi thường và tinh thần học hỏi trọn đời của dân tộc thông minh nhất thế giới.	vi	Trí Tuệ Do Thái (Jerome Becomes a Genius)	{"time": 1792043680340, "blocks": [{"id": "block_0", "data": {"text": "Trí Tuệ Do Thái của kỷ lục gia trí nhớ Eran Katz hé mở những bí quyết tư duy độc đáo, phương pháp ghi nhớ phi thường và tinh thần học hỏi trọn đời của dân tộc thông minh nhất thế giới."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Thông qua hành trình biến chàng trai bình thường Jerome thành một thiên tài, cuốn sách cung cấp các nguyên tắc thực tế để tối ưu hóa não bộ, rèn luyện tư duy logic, sáng tạo và mở khóa tiềm năng vượt trội."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Tác phẩm truyền cảm hứng mãnh liệt về ý chí vươn lên, lòng hiếu học và nghệ thuật làm chủ tri thức."}, "type": "paragraph"}], "version": "2.30.7"}	4	\N
+96	10 Điều Tạo Nên Số Phận (The Ten Commitments) | AuraBook	10 Điều Tạo Nên Số Phận của bác sĩ David Simon là tác phẩm sâu sắc về sự thức tỉnh nội tâm và quản trị số phận cá nhân thông qua 10 cam kết cốt lõi của tâm thức.	en	10 Điều Tạo Nên Số Phận (The Ten Commitments)	{"time": 1792458514117, "blocks": [{"id": "block_0", "data": {"text": "10 Điều Tạo Nên Số Phận của bác sĩ David Simon là tác phẩm sâu sắc về sự thức tỉnh nội tâm và quản trị số phận cá nhân thông qua 10 cam kết cốt lõi của tâm thức."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Tác giả chỉ ra rằng số phận không phải điều ngẫu nhiên mà được dệt nên từ những lựa chọn, thói quen suy nghĩ và phản ứng cảm xúc mỗi ngày của chính chúng ta."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Cuốn sách hướng dẫn độc giả buông bỏ những niềm tin kìm hãm, chữa lành tổn thương và thiết lập lại mục đích sống an nhiên, tự tại."}, "type": "paragraph"}], "version": "2.30.7"}	5	\N
+97	10 Điều Tạo Nên Số Phận (The Ten Commitments) | AuraBook	10 Điều Tạo Nên Số Phận của bác sĩ David Simon là tác phẩm sâu sắc về sự thức tỉnh nội tâm và quản trị số phận cá nhân thông qua 10 cam kết cốt lõi của tâm thức.	vi	10 Điều Tạo Nên Số Phận (The Ten Commitments)	{"time": 1792458514117, "blocks": [{"id": "block_0", "data": {"text": "10 Điều Tạo Nên Số Phận của bác sĩ David Simon là tác phẩm sâu sắc về sự thức tỉnh nội tâm và quản trị số phận cá nhân thông qua 10 cam kết cốt lõi của tâm thức."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Tác giả chỉ ra rằng số phận không phải điều ngẫu nhiên mà được dệt nên từ những lựa chọn, thói quen suy nghĩ và phản ứng cảm xúc mỗi ngày của chính chúng ta."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Cuốn sách hướng dẫn độc giả buông bỏ những niềm tin kìm hãm, chữa lành tổn thương và thiết lập lại mục đích sống an nhiên, tự tại."}, "type": "paragraph"}], "version": "2.30.7"}	5	\N
+98	Bí Mật Của Một Trí Nhớ Siêu Phàm (Where Did You Put My Keys?) | AuraBo	Bí Mật Của Một Trí Nhớ Siêu Phàm tiếp tục là tuyệt tác của kỷ lục gia thế giới Eran Katz, tác giả của cuốn sách nổi tiếng Trí Tuệ Do Thái.	en	Bí Mật Của Một Trí Nhớ Siêu Phàm (Where Did You Put My Keys?)	{"time": 1792458514315, "blocks": [{"id": "block_0", "data": {"text": "Bí Mật Của Một Trí Nhớ Siêu Phàm tiếp tục là tuyệt tác của kỷ lục gia thế giới Eran Katz, tác giả của cuốn sách nổi tiếng Trí Tuệ Do Thái."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Cuốn sách chia sẻ các kỹ thuật ghi nhớ độc đáo, hài hước nhưng cực kỳ hiệu nghiệm: phương pháp liên tưởng hình ảnh kỳ lạ, kỹ thuật căn phòng La Mã và cách thức ghi nhớ hàng nghìn dữ liệu số, từ vựng ngoại ngữ hay khuôn mặt."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Cẩm nang thực hành tuyệt vời cho học sinh, sinh viên, người đi làm và bất kỳ ai muốn nâng cấp não bộ lên một tầm cao mới."}, "type": "paragraph"}], "version": "2.30.7"}	6	\N
+99	Bí Mật Của Một Trí Nhớ Siêu Phàm (Where Did You Put My Keys?) | AuraBo	Bí Mật Của Một Trí Nhớ Siêu Phàm tiếp tục là tuyệt tác của kỷ lục gia thế giới Eran Katz, tác giả của cuốn sách nổi tiếng Trí Tuệ Do Thái.	vi	Bí Mật Của Một Trí Nhớ Siêu Phàm (Where Did You Put My Keys?)	{"time": 1792458514315, "blocks": [{"id": "block_0", "data": {"text": "Bí Mật Của Một Trí Nhớ Siêu Phàm tiếp tục là tuyệt tác của kỷ lục gia thế giới Eran Katz, tác giả của cuốn sách nổi tiếng Trí Tuệ Do Thái."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Cuốn sách chia sẻ các kỹ thuật ghi nhớ độc đáo, hài hước nhưng cực kỳ hiệu nghiệm: phương pháp liên tưởng hình ảnh kỳ lạ, kỹ thuật căn phòng La Mã và cách thức ghi nhớ hàng nghìn dữ liệu số, từ vựng ngoại ngữ hay khuôn mặt."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Cẩm nang thực hành tuyệt vời cho học sinh, sinh viên, người đi làm và bất kỳ ai muốn nâng cấp não bộ lên một tầm cao mới."}, "type": "paragraph"}], "version": "2.30.7"}	6	\N
+100	Cách Nghĩ Để Thành Công (Think and Grow Rich) | AuraBook	Cách Nghĩ Để Thành Công (Think and Grow Rich) của Napoleon Hill là cuốn sách gối đầu giường của hàng triệu doanh nhân và lãnh đạo trên toàn thế giới suốt gần một thế kỷ qua.	en	Cách Nghĩ Để Thành Công (Think and Grow Rich)	{"time": 1792458514518, "blocks": [{"id": "block_0", "data": {"text": "Cách Nghĩ Để Thành Công (Think and Grow Rich) của Napoleon Hill là cuốn sách gối đầu giường của hàng triệu doanh nhân và lãnh đạo trên toàn thế giới suốt gần một thế kỷ qua."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Đúc kết từ 13 nguyên tắc thành công được nghiên cứu qua hơn 500 cá nhân kiệt xuất nhất nước Mỹ (như Thomas Edison, Henry Ford, Andrew Carnegie), cuốn sách chỉ ra rằng giàu có bắt đầu từ tư duy và khát vọng cháy bỏng."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Một tác phẩm truyền cảm hứng mãnh liệt, biến những mục tiêu tưởng chừng bất khả thi thành hiện thực cụ thể."}, "type": "paragraph"}], "version": "2.30.7"}	7	\N
+101	Cách Nghĩ Để Thành Công (Think and Grow Rich) | AuraBook	Cách Nghĩ Để Thành Công (Think and Grow Rich) của Napoleon Hill là cuốn sách gối đầu giường của hàng triệu doanh nhân và lãnh đạo trên toàn thế giới suốt gần một thế kỷ qua.	vi	Cách Nghĩ Để Thành Công (Think and Grow Rich)	{"time": 1792458514518, "blocks": [{"id": "block_0", "data": {"text": "Cách Nghĩ Để Thành Công (Think and Grow Rich) của Napoleon Hill là cuốn sách gối đầu giường của hàng triệu doanh nhân và lãnh đạo trên toàn thế giới suốt gần một thế kỷ qua."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Đúc kết từ 13 nguyên tắc thành công được nghiên cứu qua hơn 500 cá nhân kiệt xuất nhất nước Mỹ (như Thomas Edison, Henry Ford, Andrew Carnegie), cuốn sách chỉ ra rằng giàu có bắt đầu từ tư duy và khát vọng cháy bỏng."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Một tác phẩm truyền cảm hứng mãnh liệt, biến những mục tiêu tưởng chừng bất khả thi thành hiện thực cụ thể."}, "type": "paragraph"}], "version": "2.30.7"}	7	\N
+102	Cây Cam Ngọt Của Tôi (Meu Pé de Laranja Lima) | AuraBook	Cây Cam Ngọt Của Tôi là tác phẩm văn chương kinh điển của nhà văn Brazil José Mauro de Vasconcelos, một trong những cuốn sách làm rung động hàng triệu trái tim độc giả toàn cầu.	en	Cây Cam Ngọt Của Tôi (Meu Pé de Laranja Lima)	{"time": 1792458514750, "blocks": [{"id": "block_0", "data": {"text": "Cây Cam Ngọt Của Tôi là tác phẩm văn chương kinh điển của nhà văn Brazil José Mauro de Vasconcelos, một trong những cuốn sách làm rung động hàng triệu trái tim độc giả toàn cầu."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Tác phẩm kể về cậu bé Zezé 5 tuổi, sinh ra trong một gia đình nghèo đông con, thông minh sớm biết đọc nhưng nghịch ngợm và thiếu thốn sự âu yếm; người bạn thân duy nhất lắng nghe mọi tâm sự của em chính là cây cam ngọt sau vườn."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Một khúc ca bi tráng về tuổi thơ, sự dịu dàng của tình người và bài học sâu sắc rằng không có sự dịu dàng, cuộc đời sẽ chẳng còn ý nghĩa."}, "type": "paragraph"}], "version": "2.30.7"}	8	\N
+103	Cây Cam Ngọt Của Tôi (Meu Pé de Laranja Lima) | AuraBook	Cây Cam Ngọt Của Tôi là tác phẩm văn chương kinh điển của nhà văn Brazil José Mauro de Vasconcelos, một trong những cuốn sách làm rung động hàng triệu trái tim độc giả toàn cầu.	vi	Cây Cam Ngọt Của Tôi (Meu Pé de Laranja Lima)	{"time": 1792458514750, "blocks": [{"id": "block_0", "data": {"text": "Cây Cam Ngọt Của Tôi là tác phẩm văn chương kinh điển của nhà văn Brazil José Mauro de Vasconcelos, một trong những cuốn sách làm rung động hàng triệu trái tim độc giả toàn cầu."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Tác phẩm kể về cậu bé Zezé 5 tuổi, sinh ra trong một gia đình nghèo đông con, thông minh sớm biết đọc nhưng nghịch ngợm và thiếu thốn sự âu yếm; người bạn thân duy nhất lắng nghe mọi tâm sự của em chính là cây cam ngọt sau vườn."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Một khúc ca bi tráng về tuổi thơ, sự dịu dàng của tình người và bài học sâu sắc rằng không có sự dịu dàng, cuộc đời sẽ chẳng còn ý nghĩa."}, "type": "paragraph"}], "version": "2.30.7"}	8	\N
+104	Chiến Tranh Tiền Tệ - Tập 1: Dòng Chảy Của Tiền Ngầm | AuraBook	Chiến Tranh Tiền Tệ (Tập 1) của học giả tài chính Song Hongbing là cuốn sách gây chấn động dư luận quốc tế, vén bức màn bí ẩn đằng sau hệ thống tài chính và ngân hàng thế giới.	en	Chiến Tranh Tiền Tệ - Tập 1: Dòng Chảy Của Tiền Ngầm	{"time": 1792458514958, "blocks": [{"id": "block_0", "data": {"text": "Chiến Tranh Tiền Tệ (Tập 1) của học giả tài chính Song Hongbing là cuốn sách gây chấn động dư luận quốc tế, vén bức màn bí ẩn đằng sau hệ thống tài chính và ngân hàng thế giới."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Tác phẩm giải mã lịch sử phát triển của các gia tộc tài phiệt ngân hàng quốc tế như Rothschild, sự ra đời của Cục Dự trữ Liên bang Mỹ (Fed) và bản chất của những cuộc khủng hoảng kinh tế toàn cầu."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Cuốn sách mở ra góc nhìn hoàn toàn mới về quyền lực của tiền tệ và những cuộc chiến kinh tế không tiếng súng."}, "type": "paragraph"}], "version": "2.30.7"}	9	\N
+105	Chiến Tranh Tiền Tệ - Tập 1: Dòng Chảy Của Tiền Ngầm | AuraBook	Chiến Tranh Tiền Tệ (Tập 1) của học giả tài chính Song Hongbing là cuốn sách gây chấn động dư luận quốc tế, vén bức màn bí ẩn đằng sau hệ thống tài chính và ngân hàng thế giới.	vi	Chiến Tranh Tiền Tệ - Tập 1: Dòng Chảy Của Tiền Ngầm	{"time": 1792458514958, "blocks": [{"id": "block_0", "data": {"text": "Chiến Tranh Tiền Tệ (Tập 1) của học giả tài chính Song Hongbing là cuốn sách gây chấn động dư luận quốc tế, vén bức màn bí ẩn đằng sau hệ thống tài chính và ngân hàng thế giới."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Tác phẩm giải mã lịch sử phát triển của các gia tộc tài phiệt ngân hàng quốc tế như Rothschild, sự ra đời của Cục Dự trữ Liên bang Mỹ (Fed) và bản chất của những cuộc khủng hoảng kinh tế toàn cầu."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Cuốn sách mở ra góc nhìn hoàn toàn mới về quyền lực của tiền tệ và những cuộc chiến kinh tế không tiếng súng."}, "type": "paragraph"}], "version": "2.30.7"}	9	\N
+106	Chiến Tranh Tiền Tệ - Tập 2: Sự Thống Trị Của Quyền Lực Vàng | AuraBoo	Chiến Tranh Tiền Tệ (Tập 2) tiếp nối phân tích chuyên sâu về sự trỗi dậy và sụp đổ của bản vị vàng trong dòng chảy lịch sử cận hiện đại.	en	Chiến Tranh Tiền Tệ - Tập 2: Sự Thống Trị Của Quyền Lực Vàng	{"time": 1792458515145, "blocks": [{"id": "block_0", "data": {"text": "Chiến Tranh Tiền Tệ (Tập 2) tiếp nối phân tích chuyên sâu về sự trỗi dậy và sụp đổ của bản vị vàng trong dòng chảy lịch sử cận hiện đại."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Tác giả phân tích cuộc đối đầu khốc liệt giữa tiền giấy pháp định (Fiat Currency) và vàng, những âm mưu tài chính phía sau các cuộc thế chiến và chiến lược thâu tóm tài sản quốc gia."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Cuốn sách cung cấp tri thức tài chính vĩ mô sắc bén giúp độc giả định vị và bảo vệ tài sản trước những biến động khôn lường."}, "type": "paragraph"}], "version": "2.30.7"}	10	\N
+107	Chiến Tranh Tiền Tệ - Tập 2: Sự Thống Trị Của Quyền Lực Vàng | AuraBoo	Chiến Tranh Tiền Tệ (Tập 2) tiếp nối phân tích chuyên sâu về sự trỗi dậy và sụp đổ của bản vị vàng trong dòng chảy lịch sử cận hiện đại.	vi	Chiến Tranh Tiền Tệ - Tập 2: Sự Thống Trị Của Quyền Lực Vàng	{"time": 1792458515145, "blocks": [{"id": "block_0", "data": {"text": "Chiến Tranh Tiền Tệ (Tập 2) tiếp nối phân tích chuyên sâu về sự trỗi dậy và sụp đổ của bản vị vàng trong dòng chảy lịch sử cận hiện đại."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Tác giả phân tích cuộc đối đầu khốc liệt giữa tiền giấy pháp định (Fiat Currency) và vàng, những âm mưu tài chính phía sau các cuộc thế chiến và chiến lược thâu tóm tài sản quốc gia."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Cuốn sách cung cấp tri thức tài chính vĩ mô sắc bén giúp độc giả định vị và bảo vệ tài sản trước những biến động khôn lường."}, "type": "paragraph"}], "version": "2.30.7"}	10	\N
+108	Chiến Tranh Tiền Tệ - Tập 3: Rừng Rậm Tài Chính | AuraBook	Chiến Tranh Tiền Tệ (Tập 3) đưa người đọc vào khu rừng rậm của các công cụ phái sinh tài chính, bong bóng tín dụng và cạm bẫy nợ công.	en	Chiến Tranh Tiền Tệ - Tập 3: Rừng Rậm Tài Chính	{"time": 1792458515336, "blocks": [{"id": "block_0", "data": {"text": "Chiến Tranh Tiền Tệ (Tập 3) đưa người đọc vào khu rừng rậm của các công cụ phái sinh tài chính, bong bóng tín dụng và cạm bẫy nợ công."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Song Hongbing vạch rõ cách thức các định chế tài chính toàn cầu thao túng thị trường tiền tệ và đe dọa sự ổn định của các nền kinh tế đang phát triển."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Tác phẩm là lời cảnh tỉnh mạnh mẽ và là kim chỉ nam tài chính vô giá trong kỷ nguyên tái định hình trật tự tiền tệ thế giới."}, "type": "paragraph"}], "version": "2.30.7"}	11	\N
+109	Chiến Tranh Tiền Tệ - Tập 3: Rừng Rậm Tài Chính | AuraBook	Chiến Tranh Tiền Tệ (Tập 3) đưa người đọc vào khu rừng rậm của các công cụ phái sinh tài chính, bong bóng tín dụng và cạm bẫy nợ công.	vi	Chiến Tranh Tiền Tệ - Tập 3: Rừng Rậm Tài Chính	{"time": 1792458515336, "blocks": [{"id": "block_0", "data": {"text": "Chiến Tranh Tiền Tệ (Tập 3) đưa người đọc vào khu rừng rậm của các công cụ phái sinh tài chính, bong bóng tín dụng và cạm bẫy nợ công."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Song Hongbing vạch rõ cách thức các định chế tài chính toàn cầu thao túng thị trường tiền tệ và đe dọa sự ổn định của các nền kinh tế đang phát triển."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Tác phẩm là lời cảnh tỉnh mạnh mẽ và là kim chỉ nam tài chính vô giá trong kỷ nguyên tái định hình trật tự tiền tệ thế giới."}, "type": "paragraph"}], "version": "2.30.7"}	11	\N
+110	Chủ Nghĩa Khắc Kỷ: Phong Cách Sống Bản Lĩnh & Bình Thản | AuraBook	Chủ Nghĩa Khắc Kỷ (A Guide to the Good Life) của giáo sư triết học William B. Irvine là cẩm nang thực hành triết học Khắc kỷ (Stoicism) hiện đại, gần gũi và ứng dụng thiết thực nhất.	en	Chủ Nghĩa Khắc Kỷ: Phong Cách Sống Bản Lĩnh & Bình Thản	{"time": 1792458515530, "blocks": [{"id": "block_0", "data": {"text": "Chủ Nghĩa Khắc Kỷ (A Guide to the Good Life) của giáo sư triết học William B. Irvine là cẩm nang thực hành triết học Khắc kỷ (Stoicism) hiện đại, gần gũi và ứng dụng thiết thực nhất."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Tác phẩm hướng dẫn nghệ thuật làm chủ cảm xúc: phân biệt rạch ròi giữa những điều ta kiểm soát được và những điều ngoài tầm với, kỹ thuật tưởng tượng tiêu cực để trân trọng hiện tại và cách duy trì sự bình thản trước mọi phong ba bão táp."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Một cuốn sách mang lại liều thuốc tinh thần mạnh mẽ giúp tâm trí an định và sống trọn vẹn từng khoảnh khắc."}, "type": "paragraph"}], "version": "2.30.7"}	12	\N
+111	Chủ Nghĩa Khắc Kỷ: Phong Cách Sống Bản Lĩnh & Bình Thản | AuraBook	Chủ Nghĩa Khắc Kỷ (A Guide to the Good Life) của giáo sư triết học William B. Irvine là cẩm nang thực hành triết học Khắc kỷ (Stoicism) hiện đại, gần gũi và ứng dụng thiết thực nhất.	vi	Chủ Nghĩa Khắc Kỷ: Phong Cách Sống Bản Lĩnh & Bình Thản	{"time": 1792458515530, "blocks": [{"id": "block_0", "data": {"text": "Chủ Nghĩa Khắc Kỷ (A Guide to the Good Life) của giáo sư triết học William B. Irvine là cẩm nang thực hành triết học Khắc kỷ (Stoicism) hiện đại, gần gũi và ứng dụng thiết thực nhất."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Tác phẩm hướng dẫn nghệ thuật làm chủ cảm xúc: phân biệt rạch ròi giữa những điều ta kiểm soát được và những điều ngoài tầm với, kỹ thuật tưởng tượng tiêu cực để trân trọng hiện tại và cách duy trì sự bình thản trước mọi phong ba bão táp."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Một cuốn sách mang lại liều thuốc tinh thần mạnh mẽ giúp tâm trí an định và sống trọn vẹn từng khoảnh khắc."}, "type": "paragraph"}], "version": "2.30.7"}	12	\N
+112	Tư Duy Nhanh Và Chậm (Thinking, Fast and Slow) | AuraBook	Tư Duy Nhanh Và Chậm (Thinking, Fast and Slow) của chủ nhân giải Nobel Kinh tế Daniel Kahneman là một trong những kiệt tác vĩ đại nhất về tâm lý học nhận thức và kinh tế học hành vi.	en	Tư Duy Nhanh Và Chậm (Thinking, Fast and Slow)	{"time": 1792458515745, "blocks": [{"id": "block_0", "data": {"text": "Tư Duy Nhanh Và Chậm (Thinking, Fast and Slow) của chủ nhân giải Nobel Kinh tế Daniel Kahneman là một trong những kiệt tác vĩ đại nhất về tâm lý học nhận thức và kinh tế học hành vi."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Tác phẩm giải phẫu hai hệ thống tư duy chi phối bộ não: Hệ thống 1 hoạt động tự động, nhanh chóng theo trực giác; và Hệ thống 2 hoạt động chậm rãi, cần nỗ lực suy luận logic."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Cuốn sách chỉ ra hàng loạt bẫy thiên kiến nhận thức, ảo tưởng về sự hiểu biết và cách thức rèn luyện tư duy phản biện sắc bén để đưa ra những quyết định sáng suốt trong kinh doanh cũng như cuộc sống."}, "type": "paragraph"}], "version": "2.30.7"}	13	\N
+113	Tư Duy Nhanh Và Chậm (Thinking, Fast and Slow) | AuraBook	Tư Duy Nhanh Và Chậm (Thinking, Fast and Slow) của chủ nhân giải Nobel Kinh tế Daniel Kahneman là một trong những kiệt tác vĩ đại nhất về tâm lý học nhận thức và kinh tế học hành vi.	vi	Tư Duy Nhanh Và Chậm (Thinking, Fast and Slow)	{"time": 1792458515745, "blocks": [{"id": "block_0", "data": {"text": "Tư Duy Nhanh Và Chậm (Thinking, Fast and Slow) của chủ nhân giải Nobel Kinh tế Daniel Kahneman là một trong những kiệt tác vĩ đại nhất về tâm lý học nhận thức và kinh tế học hành vi."}, "type": "paragraph"}, {"id": "block_1", "data": {"text": "Tác phẩm giải phẫu hai hệ thống tư duy chi phối bộ não: Hệ thống 1 hoạt động tự động, nhanh chóng theo trực giác; và Hệ thống 2 hoạt động chậm rãi, cần nỗ lực suy luận logic."}, "type": "paragraph"}, {"id": "block_2", "data": {"text": "Cuốn sách chỉ ra hàng loạt bẫy thiên kiến nhận thức, ảo tưởng về sự hiểu biết và cách thức rèn luyện tư duy phản biện sắc bén để đưa ra những quyết định sáng suốt trong kinh doanh cũng như cuộc sống."}, "type": "paragraph"}], "version": "2.30.7"}	13	\N
 \.
 
 
@@ -9854,14 +9924,32 @@ COPY public.product_producttype (id, name, has_variants, is_shipping_required, w
 --
 
 COPY public.product_productvariant (id, sku, name, product_id, track_inventory, weight, metadata, private_metadata, sort_order, is_preorder, preorder_end_date, preorder_global_threshold, quantity_limit_per_customer, created_at, updated_at, external_reference) FROM stdin;
-2	EB-DAC-NHAN-TAM	Bản Ebook (Sách Điện Tử)	1	f	0	{"format": "ebook", "epub_path": "/books/dac-nhan-tam.epub", "is_digital": true, "drm_protected": true, "format_display": "Bản Ebook (Sách Điện Tử)", "instant_delivery": true}	{}	0	f	\N	\N	\N	2026-10-15 05:54:39.270762+00	2026-10-15 05:54:39.270789+00	\N
-4	EB-BON-THOA-UOC	Bản Ebook (Sách Điện Tử)	2	f	0	{"format": "ebook", "epub_path": "/books/bon-thoa-uoc.epub", "is_digital": true, "drm_protected": true, "format_display": "Bản Ebook (Sách Điện Tử)", "instant_delivery": true}	{}	0	f	\N	\N	\N	2026-10-15 05:54:39.6687+00	2026-10-15 05:54:39.668728+00	\N
-5	VT-BON-THOA-UOC	Bản Sách Giấy (Bìa Mềm Tuyển Chọn)	2	t	0.35	{"format": "physical", "cover_type": "Paperback", "is_digital": false, "format_display": "Bản Sách Giấy (Bìa Mềm Tuyển Chọn)", "shipping_required": true}	{}	1	f	\N	\N	\N	2026-10-15 05:54:39.762774+00	2026-10-15 05:54:39.762811+00	\N
-6	EB-SAPIENS	Bản Ebook (Sách Điện Tử)	3	f	0	{"format": "ebook", "epub_path": "/books/sapiens-luoc-su-loai-nguoi.epub", "is_digital": true, "drm_protected": true, "format_display": "Bản Ebook (Sách Điện Tử)", "instant_delivery": true}	{}	0	f	\N	\N	\N	2026-10-15 05:54:40.022242+00	2026-10-15 05:54:40.022275+00	\N
-7	VT-SAPIENS	Bản Sách Giấy (Bìa Cứng Tuyển Chọn)	3	t	0.75	{"format": "physical", "cover_type": "Paperback", "is_digital": false, "format_display": "Bản Sách Giấy (Bìa Cứng Tuyển Chọn)", "shipping_required": true}	{}	1	f	\N	\N	\N	2026-10-15 05:54:40.13328+00	2026-10-15 05:54:40.133313+00	\N
-8	EB-TRI-TUE-DO-THAI	Bản Ebook (Sách Điện Tử)	4	f	0	{"format": "ebook", "epub_path": "/books/tri-tue-do-thai.epub", "is_digital": true, "drm_protected": true, "format_display": "Bản Ebook (Sách Điện Tử)", "instant_delivery": true}	{}	0	f	\N	\N	\N	2026-10-15 05:54:40.531356+00	2026-10-15 05:54:40.531394+00	\N
-9	VT-TRI-TUE-DO-THAI	Bản Sách Giấy (Bìa Mềm Tuyển Chọn)	4	t	0.5	{"format": "physical", "cover_type": "Paperback", "is_digital": false, "format_display": "Bản Sách Giấy (Bìa Mềm Tuyển Chọn)", "shipping_required": true}	{}	1	f	\N	\N	\N	2026-10-15 05:54:40.819382+00	2026-10-15 05:54:40.819434+00	\N
-3	VT-DAC-NHAN-TAM	Bản Sách Giấy (Bìa Mềm Tuyển Chọn)	1	t	0	{"format": "physical", "cover_type": "Paperback", "is_digital": false, "format_display": "Bản Sách Giấy (Bìa Mềm Tuyển Chọn)", "shipping_required": true}	{}	1	f	\N	\N	\N	2026-10-15 05:54:39.383068+00	2026-10-15 10:23:18.443339+00	\N
+44	EB-DAC-NHAN-TAM	Bản Ebook (Sách Điện Tử)	1	f	0	{"format": "ebook", "epub_path": "/books/dac-nhan-tam.epub", "is_digital": true, "drm_protected": true, "format_display": "Bản Ebook (Sách Điện Tử)", "instant_delivery": true}	{}	0	f	\N	\N	\N	2026-10-20 01:19:18.727972+00	2026-10-20 01:19:18.727987+00	\N
+45	VT-DAC-NHAN-TAM	Bản Sách Giấy (Bìa Mềm Tuyển Chọn)	1	t	0.45	{"format": "physical", "cover_type": "Paperback", "is_digital": false, "format_display": "Bản Sách Giấy (Bìa Mềm Tuyển Chọn)", "shipping_required": true}	{}	1	f	\N	\N	\N	2026-10-20 01:19:18.785398+00	2026-10-20 01:19:18.785418+00	\N
+46	EB-BON-THOA-UOC	Bản Ebook (Sách Điện Tử)	2	f	0	{"format": "ebook", "epub_path": "/books/bon-thoa-uoc.epub", "is_digital": true, "drm_protected": true, "format_display": "Bản Ebook (Sách Điện Tử)", "instant_delivery": true}	{}	0	f	\N	\N	\N	2026-10-20 01:19:19.017961+00	2026-10-20 01:19:19.017975+00	\N
+47	VT-BON-THOA-UOC	Bản Sách Giấy (Bìa Mềm Tuyển Chọn)	2	t	0.35	{"format": "physical", "cover_type": "Paperback", "is_digital": false, "format_display": "Bản Sách Giấy (Bìa Mềm Tuyển Chọn)", "shipping_required": true}	{}	1	f	\N	\N	\N	2026-10-20 01:19:19.059965+00	2026-10-20 01:19:19.059981+00	\N
+48	EB-SAPIENS	Bản Ebook (Sách Điện Tử)	3	f	0	{"format": "ebook", "epub_path": "/books/sapiens-luoc-su-loai-nguoi.epub", "is_digital": true, "drm_protected": true, "format_display": "Bản Ebook (Sách Điện Tử)", "instant_delivery": true}	{}	0	f	\N	\N	\N	2026-10-20 01:19:19.216448+00	2026-10-20 01:19:19.216462+00	\N
+49	VT-SAPIENS	Bản Sách Giấy (Bìa Cứng Tuyển Chọn)	3	t	0.75	{"format": "physical", "cover_type": "Paperback", "is_digital": false, "format_display": "Bản Sách Giấy (Bìa Cứng Tuyển Chọn)", "shipping_required": true}	{}	1	f	\N	\N	\N	2026-10-20 01:19:19.281401+00	2026-10-20 01:19:19.281417+00	\N
+50	EB-TRI-TUE-DO-THAI	Bản Ebook (Sách Điện Tử)	4	f	0	{"format": "ebook", "epub_path": "/books/tri-tue-do-thai.epub", "is_digital": true, "drm_protected": true, "format_display": "Bản Ebook (Sách Điện Tử)", "instant_delivery": true}	{}	0	f	\N	\N	\N	2026-10-20 01:19:19.43967+00	2026-10-20 01:19:19.439684+00	\N
+51	VT-TRI-TUE-DO-THAI	Bản Sách Giấy (Bìa Mềm Tuyển Chọn)	4	t	0.5	{"format": "physical", "cover_type": "Paperback", "is_digital": false, "format_display": "Bản Sách Giấy (Bìa Mềm Tuyển Chọn)", "shipping_required": true}	{}	1	f	\N	\N	\N	2026-10-20 01:19:19.494788+00	2026-10-20 01:19:19.494804+00	\N
+52	EB-10-DIEU-TAO-NEN-SO-PHAN	Bản Ebook (Sách Điện Tử)	5	f	0	{"format": "ebook", "epub_path": "/books/10-dieu-tao-nen-so-phan.epub", "is_digital": true, "drm_protected": true, "format_display": "Bản Ebook (Sách Điện Tử)", "instant_delivery": true}	{}	0	f	\N	\N	\N	2026-10-20 01:19:19.653472+00	2026-10-20 01:19:19.653498+00	\N
+53	VT-10-DIEU-TAO-NEN-SO-PHAN	Bản Sách Giấy (Bìa Mềm Tuyển Chọn)	5	t	0.4	{"format": "physical", "cover_type": "Paperback", "is_digital": false, "format_display": "Bản Sách Giấy (Bìa Mềm Tuyển Chọn)", "shipping_required": true}	{}	1	f	\N	\N	\N	2026-10-20 01:19:19.696455+00	2026-10-20 01:19:19.696474+00	\N
+54	EB-BI-MAT-TRI-NHO	Bản Ebook (Sách Điện Tử)	6	f	0	{"format": "ebook", "epub_path": "/books/bi-mat-cua-mot-tri-nho-sieu-pham.epub", "is_digital": true, "drm_protected": true, "format_display": "Bản Ebook (Sách Điện Tử)", "instant_delivery": true}	{}	0	f	\N	\N	\N	2026-10-20 01:19:19.847643+00	2026-10-20 01:19:19.847658+00	\N
+55	VT-BI-MAT-TRI-NHO	Bản Sách Giấy (Bìa Mềm Tuyển Chọn)	6	t	0.45	{"format": "physical", "cover_type": "Paperback", "is_digital": false, "format_display": "Bản Sách Giấy (Bìa Mềm Tuyển Chọn)", "shipping_required": true}	{}	1	f	\N	\N	\N	2026-10-20 01:19:19.899786+00	2026-10-20 01:19:19.8998+00	\N
+56	EB-CACH-NGHI-THANH-CONG	Bản Ebook (Sách Điện Tử)	7	f	0	{"format": "ebook", "epub_path": "/books/cach-nghi-de-thanh-cong.epub", "is_digital": true, "drm_protected": true, "format_display": "Bản Ebook (Sách Điện Tử)", "instant_delivery": true}	{}	0	f	\N	\N	\N	2026-10-20 01:19:20.040737+00	2026-10-20 01:19:20.040752+00	\N
+57	VT-CACH-NGHI-THANH-CONG	Bản Sách Giấy (Bìa Mềm Tuyển Chọn)	7	t	0.45	{"format": "physical", "cover_type": "Paperback", "is_digital": false, "format_display": "Bản Sách Giấy (Bìa Mềm Tuyển Chọn)", "shipping_required": true}	{}	1	f	\N	\N	\N	2026-10-20 01:19:20.094731+00	2026-10-20 01:19:20.094747+00	\N
+58	EB-CAY-CAM-NGOT	Bản Ebook (Sách Điện Tử)	8	f	0	{"format": "ebook", "epub_path": "/books/cay-cam-ngot-cua-toi.epub", "is_digital": true, "drm_protected": true, "format_display": "Bản Ebook (Sách Điện Tử)", "instant_delivery": true}	{}	0	f	\N	\N	\N	2026-10-20 01:19:20.26782+00	2026-10-20 01:19:20.267835+00	\N
+59	VT-CAY-CAM-NGOT	Bản Sách Giấy (Bìa Mềm Tuyển Chọn)	8	t	0.4	{"format": "physical", "cover_type": "Paperback", "is_digital": false, "format_display": "Bản Sách Giấy (Bìa Mềm Tuyển Chọn)", "shipping_required": true}	{}	1	f	\N	\N	\N	2026-10-20 01:19:20.328081+00	2026-10-20 01:19:20.328095+00	\N
+60	EB-CHIEN-TRANH-TIEN-TE-1	Bản Ebook (Sách Điện Tử)	9	f	0	{"format": "ebook", "epub_path": "/books/chien-tranh-tien-te-tap-1.epub", "is_digital": true, "drm_protected": true, "format_display": "Bản Ebook (Sách Điện Tử)", "instant_delivery": true}	{}	0	f	\N	\N	\N	2026-10-20 01:19:20.473088+00	2026-10-20 01:19:20.473101+00	\N
+61	VT-CHIEN-TRANH-TIEN-TE-1	Bản Sách Giấy (Bìa Mềm Tuyển Chọn)	9	t	0.55	{"format": "physical", "cover_type": "Paperback", "is_digital": false, "format_display": "Bản Sách Giấy (Bìa Mềm Tuyển Chọn)", "shipping_required": true}	{}	1	f	\N	\N	\N	2026-10-20 01:19:20.527083+00	2026-10-20 01:19:20.527098+00	\N
+62	EB-CHIEN-TRANH-TIEN-TE-2	Bản Ebook (Sách Điện Tử)	10	f	0	{"format": "ebook", "epub_path": "/books/chien-tranh-tien-te-tap-2.epub", "is_digital": true, "drm_protected": true, "format_display": "Bản Ebook (Sách Điện Tử)", "instant_delivery": true}	{}	0	f	\N	\N	\N	2026-10-20 01:19:20.728779+00	2026-10-20 01:19:20.728793+00	\N
+63	VT-CHIEN-TRANH-TIEN-TE-2	Bản Sách Giấy (Bìa Mềm Tuyển Chọn)	10	t	0.55	{"format": "physical", "cover_type": "Paperback", "is_digital": false, "format_display": "Bản Sách Giấy (Bìa Mềm Tuyển Chọn)", "shipping_required": true}	{}	1	f	\N	\N	\N	2026-10-20 01:19:20.785959+00	2026-10-20 01:19:20.785975+00	\N
+64	EB-CHIEN-TRANH-TIEN-TE-3	Bản Ebook (Sách Điện Tử)	11	f	0	{"format": "ebook", "epub_path": "/books/chien-tranh-tien-te-tap-3.epub", "is_digital": true, "drm_protected": true, "format_display": "Bản Ebook (Sách Điện Tử)", "instant_delivery": true}	{}	0	f	\N	\N	\N	2026-10-20 01:19:20.949954+00	2026-10-20 01:19:20.949971+00	\N
+65	VT-CHIEN-TRANH-TIEN-TE-3	Bản Sách Giấy (Bìa Mềm Tuyển Chọn)	11	t	0.55	{"format": "physical", "cover_type": "Paperback", "is_digital": false, "format_display": "Bản Sách Giấy (Bìa Mềm Tuyển Chọn)", "shipping_required": true}	{}	1	f	\N	\N	\N	2026-10-20 01:19:21.008116+00	2026-10-20 01:19:21.008138+00	\N
+66	EB-CHU-NGHIA-KHAC-KY	Bản Ebook (Sách Điện Tử)	12	f	0	{"format": "ebook", "epub_path": "/books/chu-nghia-khac-ky-phong-cach-song-ban-linh-va-binh-than.epub", "is_digital": true, "drm_protected": true, "format_display": "Bản Ebook (Sách Điện Tử)", "instant_delivery": true}	{}	0	f	\N	\N	\N	2026-10-20 01:19:21.172432+00	2026-10-20 01:19:21.172448+00	\N
+67	VT-CHU-NGHIA-KHAC-KY	Bản Sách Giấy (Bìa Mềm Tuyển Chọn)	12	t	0.45	{"format": "physical", "cover_type": "Paperback", "is_digital": false, "format_display": "Bản Sách Giấy (Bìa Mềm Tuyển Chọn)", "shipping_required": true}	{}	1	f	\N	\N	\N	2026-10-20 01:19:21.226714+00	2026-10-20 01:19:21.226729+00	\N
+68	EB-TU-DUY-NHANH-CHAM	Bản Ebook (Sách Điện Tử)	13	f	0	{"format": "ebook", "epub_path": "/books/tu-duy-nhanh-va-cham.epub", "is_digital": true, "drm_protected": true, "format_display": "Bản Ebook (Sách Điện Tử)", "instant_delivery": true}	{}	0	f	\N	\N	\N	2026-10-20 01:19:21.374406+00	2026-10-20 01:19:21.37442+00	\N
+69	VT-TU-DUY-NHANH-CHAM	Bản Sách Giấy (Bìa Cứng Tuyển Chọn)	13	t	0.65	{"format": "physical", "cover_type": "Paperback", "is_digital": false, "format_display": "Bản Sách Giấy (Bìa Cứng Tuyển Chọn)", "shipping_required": true}	{}	1	f	\N	\N	\N	2026-10-20 01:19:21.424133+00	2026-10-20 01:19:21.424148+00	\N
 \.
 
 
@@ -9870,28 +9958,84 @@ COPY public.product_productvariant (id, sku, name, product_id, track_inventory, 
 --
 
 COPY public.product_productvariantchannellisting (id, currency, price_amount, channel_id, variant_id, cost_price_amount, preorder_quantity_threshold, discounted_price_amount, prior_price_amount) FROM stdin;
-251	USD	2.990	1	2	0.897	\N	2.320	\N
-254	USD	5.990	1	3	3.594	\N	4.650	\N
-256	PLN	7.640	3	4	2.290	\N	7.640	\N
-257	USD	2.490	1	4	0.747	\N	1.930	\N
-259	PLN	15.280	3	5	9.170	\N	15.280	\N
-260	USD	4.990	1	5	2.994	\N	3.860	\N
-262	PLN	13.880	3	6	4.160	\N	13.880	\N
-263	USD	4.490	1	6	1.347	\N	3.500	\N
-265	PLN	29.470	3	7	17.680	\N	29.470	\N
-266	USD	9.490	1	7	5.694	\N	7.440	\N
-268	PLN	10.760	3	8	3.230	\N	10.760	\N
-269	USD	3.490	1	8	1.047	\N	2.720	\N
-271	PLN	21.050	3	9	12.630	\N	21.050	\N
-272	USD	6.790	1	9	4.074	\N	5.310	\N
-249	VND	59000.000	2	2	17700.000	\N	59000.000	\N
-252	VND	118000.000	2	3	70800.000	\N	118000.000	\N
-255	VND	49000.000	2	4	14700.000	\N	49000.000	\N
-258	VND	98000.000	2	5	58800.000	\N	98000.000	\N
-261	VND	89000.000	2	6	26700.000	\N	89000.000	\N
-264	VND	189000.000	2	7	113400.000	\N	189000.000	\N
-267	VND	69000.000	2	8	20700.000	\N	69000.000	\N
-270	VND	135000.000	2	9	81000.000	\N	135000.000	\N
+375	VND	59000.000	2	44	17700.000	\N	59000.000	\N
+376	PLN	9.200	3	44	2.760	\N	9.200	\N
+377	USD	2.990	1	44	0.897	\N	2.990	\N
+378	VND	118000.000	2	45	70800.000	\N	118000.000	\N
+379	PLN	18.400	3	45	11.040	\N	18.400	\N
+380	USD	5.990	1	45	3.594	\N	5.990	\N
+381	VND	49000.000	2	46	14700.000	\N	49000.000	\N
+382	PLN	7.640	3	46	2.290	\N	7.640	\N
+383	USD	2.490	1	46	0.747	\N	2.490	\N
+384	VND	98000.000	2	47	58800.000	\N	98000.000	\N
+385	PLN	15.280	3	47	9.170	\N	15.280	\N
+386	USD	4.990	1	47	2.994	\N	4.990	\N
+387	VND	89000.000	2	48	26700.000	\N	89000.000	\N
+388	PLN	13.880	3	48	4.160	\N	13.880	\N
+389	USD	4.490	1	48	1.347	\N	4.490	\N
+390	VND	189000.000	2	49	113400.000	\N	189000.000	\N
+391	PLN	29.470	3	49	17.680	\N	29.470	\N
+392	USD	9.490	1	49	5.694	\N	9.490	\N
+393	VND	69000.000	2	50	20700.000	\N	69000.000	\N
+394	PLN	10.760	3	50	3.230	\N	10.760	\N
+395	USD	3.490	1	50	1.047	\N	3.490	\N
+396	VND	135000.000	2	51	81000.000	\N	135000.000	\N
+397	PLN	21.050	3	51	12.630	\N	21.050	\N
+398	USD	6.790	1	51	4.074	\N	6.790	\N
+399	VND	49000.000	2	52	14700.000	\N	49000.000	\N
+400	PLN	7.640	3	52	2.290	\N	7.640	\N
+401	USD	2.490	1	52	0.747	\N	2.490	\N
+402	VND	98000.000	2	53	58800.000	\N	98000.000	\N
+403	PLN	15.280	3	53	9.170	\N	15.280	\N
+404	USD	4.990	1	53	2.994	\N	4.990	\N
+405	VND	59000.000	2	54	17700.000	\N	59000.000	\N
+406	PLN	9.200	3	54	2.760	\N	9.200	\N
+407	USD	2.990	1	54	0.897	\N	2.990	\N
+408	VND	119000.000	2	55	71400.000	\N	119000.000	\N
+409	PLN	18.550	3	55	11.130	\N	18.550	\N
+410	USD	5.990	1	55	3.594	\N	5.990	\N
+411	VND	59000.000	2	56	17700.000	\N	59000.000	\N
+412	PLN	9.200	3	56	2.760	\N	9.200	\N
+413	USD	2.990	1	56	0.897	\N	2.990	\N
+414	VND	115000.000	2	57	69000.000	\N	115000.000	\N
+415	PLN	17.930	3	57	10.760	\N	17.930	\N
+416	USD	5.790	1	57	3.474	\N	5.790	\N
+417	VND	55000.000	2	58	16500.000	\N	55000.000	\N
+418	PLN	8.570	3	58	2.570	\N	8.570	\N
+419	USD	2.790	1	58	0.837	\N	2.790	\N
+420	VND	108000.000	2	59	64800.000	\N	108000.000	\N
+421	PLN	16.840	3	59	10.100	\N	16.840	\N
+422	USD	5.490	1	59	3.294	\N	5.490	\N
+423	VND	69000.000	2	60	20700.000	\N	69000.000	\N
+424	PLN	10.760	3	60	3.230	\N	10.760	\N
+425	USD	3.490	1	60	1.047	\N	3.490	\N
+426	VND	139000.000	2	61	83400.000	\N	139000.000	\N
+427	PLN	21.670	3	61	13.000	\N	21.670	\N
+428	USD	6.990	1	61	4.194	\N	6.990	\N
+429	VND	69000.000	2	62	20700.000	\N	69000.000	\N
+430	PLN	10.760	3	62	3.230	\N	10.760	\N
+431	USD	3.490	1	62	1.047	\N	3.490	\N
+432	VND	139000.000	2	63	83400.000	\N	139000.000	\N
+433	PLN	21.670	3	63	13.000	\N	21.670	\N
+434	USD	6.990	1	63	4.194	\N	6.990	\N
+435	VND	69000.000	2	64	20700.000	\N	69000.000	\N
+436	PLN	10.760	3	64	3.230	\N	10.760	\N
+437	USD	3.490	1	64	1.047	\N	3.490	\N
+438	VND	139000.000	2	65	83400.000	\N	139000.000	\N
+439	PLN	21.670	3	65	13.000	\N	21.670	\N
+440	USD	6.990	1	65	4.194	\N	6.990	\N
+441	VND	65000.000	2	66	19500.000	\N	65000.000	\N
+442	PLN	10.130	3	66	3.040	\N	10.130	\N
+443	USD	3.290	1	66	0.987	\N	3.290	\N
+444	VND	129000.000	2	67	77400.000	\N	129000.000	\N
+445	PLN	20.110	3	67	12.070	\N	20.110	\N
+446	USD	6.490	1	67	3.894	\N	6.490	\N
+447	VND	79000.000	2	68	23700.000	\N	79000.000	\N
+448	PLN	12.320	3	68	3.690	\N	12.320	\N
+449	USD	3.990	1	68	1.197	\N	3.990	\N
+450	VND	159000.000	2	69	95400.000	\N	159000.000	\N
+451	PLN	24.790	3	69	14.870	\N	24.790	\N
+452	USD	7.990	1	69	4.794	\N	7.990	\N
 \.
 
 
@@ -10167,7 +10311,7 @@ COPY public.shipping_shippingzone_channels (id, shippingzone_id, channel_id) FRO
 --
 
 COPY public.site_sitesettings (id, header_text, description, site_id, bottom_menu_id, top_menu_id, display_gross_prices, include_taxes_in_prices, charge_taxes_on_shipping, track_inventory_by_default, default_weight_unit, company_address_id, default_mail_sender_address, default_mail_sender_name, customer_set_password_url, fulfillment_allow_unpaid, fulfillment_auto_approve, gift_card_expiry_period, gift_card_expiry_period_type, gift_card_expiry_type, reserve_stock_duration_anonymous_user, reserve_stock_duration_authenticated_user, limit_quantity_per_checkout, enable_account_confirmation_by_email, metadata, private_metadata, allow_login_without_confirmation, refund_reason_reference_type_id, use_legacy_update_webhook_emission, preserve_all_address_fields, instance_id, usage_telemetry_reported_at, password_login_mode, use_legacy_shipping_zone_stock_availability, return_reason_reference_type_id, account_confirm_merge_mode, allow_storefront_traffic) FROM stdin;
-1	Test Saleor - a sample shop!		1	2	1	t	t	t	t	kg	\N	\N		\N	t	t	\N	\N	never_expire	\N	\N	50	t	{}	{}	f	\N	t	f	2c4a3eb0-d568-4b90-a6de-8e3be69d4f29	2026-10-18 13:17:31.40967+00	enabled	t	\N	merge_disabled	t
+1	Test Saleor - a sample shop!		1	2	1	t	t	t	t	kg	\N	\N		\N	t	t	\N	\N	never_expire	\N	\N	50	t	{}	{}	f	\N	t	f	2c4a3eb0-d568-4b90-a6de-8e3be69d4f29	2026-10-21 01:30:01.338401+00	enabled	t	\N	merge_disabled	t
 \.
 
 
@@ -10219,123 +10363,48 @@ COPY public.tax_taxconfigurationpercountry (id, country, charge_taxes, tax_calcu
 --
 
 COPY public.thumbnail_thumbnail (id, image, size, format, category_id, collection_id, product_media_id, user_id, app_id, app_installation_id) FROM stdin;
-212	thumbnails/products/ca27310bee7c23b4a538294b373debbf.jpg_e228dcca_thumbnail_1024.webp	1024	\N	\N	\N	71	\N	\N	\N
-213	thumbnails/products/69d7da2a49157404151637f514332377.jpg_04c552fd_thumbnail_1024.webp	1024	\N	\N	\N	74	\N	\N	\N
-183	thumbnails/products/a7598562258bd86f3b05432efdf0cbc0.jpg_c93c5b42_thumbnail_1024.webp	1024	\N	\N	\N	54	\N	\N	\N
-184	thumbnails/products/bed9d3d46ff35a6d8c9ca7294896b7f3.jpg_3465acaf_thumbnail_1024.webp	1024	\N	\N	\N	55	\N	\N	\N
-185	thumbnails/products/409018d87687c46a0a12cecf3f982283.jpg_1e65cc25_thumbnail_1024.webp	1024	\N	\N	\N	56	\N	\N	\N
-186	thumbnails/products/031bc9781c34ddb6a588cd875862460d.jpg_0c8bad27_thumbnail_1024.webp	1024	\N	\N	\N	57	\N	\N	\N
-187	thumbnails/products/185d27fe442a1668cf0196c1b82c87eb.jpg_88331813_thumbnail_1024.webp	1024	\N	\N	\N	59	\N	\N	\N
-188	thumbnails/products/b577852aa77a3d9ed41dfc62de83aeab.jpg_d6ee255c_thumbnail_1024.webp	1024	\N	\N	\N	58	\N	\N	\N
-189	thumbnails/products/0ad59d3f8246ff56495e95e767ce99f7.jpg_212cf733_thumbnail_1024.webp	1024	\N	\N	\N	60	\N	\N	\N
-190	thumbnails/products/392ad5b5f0166b04645d675fadab1f3e.jpg_fcbdca78_thumbnail_1024.webp	1024	\N	\N	\N	61	\N	\N	\N
-191	thumbnails/products/41f2139e7511de8b97a2a500032c46c9.jpg_1de58382_thumbnail_1024.webp	1024	\N	\N	\N	62	\N	\N	\N
-192	thumbnails/products/5fd464a18d6701bc4a54f276178108e2.jpg_cfa220c3_thumbnail_1024.webp	1024	\N	\N	\N	64	\N	\N	\N
-193	thumbnails/products/b7dd476560d2a2c09095516f94be51f7.jpg_392db3cc_thumbnail_1024.webp	1024	\N	\N	\N	63	\N	\N	\N
-194	thumbnails/products/185d27fe442a1668cf0196c1b82c87eb_efpnMFS.jpg_88331813_thumbnail_1024.webp	1024	webp	\N	\N	59	\N	\N	\N
-195	thumbnails/products/bed9d3d46ff35a6d8c9ca7294896b7f3_dw8Xrim.jpg_3465acaf_thumbnail_1024.webp	1024	webp	\N	\N	55	\N	\N	\N
-196	thumbnails/products/a7598562258bd86f3b05432efdf0cbc0_gGAAL3t.jpg_c93c5b42_thumbnail_1024.webp	1024	webp	\N	\N	54	\N	\N	\N
-197	thumbnails/products/409018d87687c46a0a12cecf3f982283_50B6TEm.jpg_1e65cc25_thumbnail_1024.webp	1024	webp	\N	\N	56	\N	\N	\N
-198	thumbnails/products/031bc9781c34ddb6a588cd875862460d_BiM5Auc.jpg_0c8bad27_thumbnail_1024.webp	1024	webp	\N	\N	57	\N	\N	\N
-199	thumbnails/products/b577852aa77a3d9ed41dfc62de83aeab_WzLpRwK.jpg_d6ee255c_thumbnail_1024.webp	1024	webp	\N	\N	58	\N	\N	\N
-200	thumbnails/products/5fd464a18d6701bc4a54f276178108e2_VLgofYo.jpg_cfa220c3_thumbnail_1024.webp	1024	webp	\N	\N	64	\N	\N	\N
-201	thumbnails/products/b7dd476560d2a2c09095516f94be51f7_vBoCdg6.jpg_392db3cc_thumbnail_1024.webp	1024	webp	\N	\N	63	\N	\N	\N
-202	thumbnails/products/41f2139e7511de8b97a2a500032c46c9_62LKNLv.jpg_1de58382_thumbnail_1024.webp	1024	webp	\N	\N	62	\N	\N	\N
-203	thumbnails/products/392ad5b5f0166b04645d675fadab1f3e_b6fUKQ2.jpg_fcbdca78_thumbnail_1024.webp	1024	webp	\N	\N	61	\N	\N	\N
-204	thumbnails/products/0ad59d3f8246ff56495e95e767ce99f7_ahvQq9Y.jpg_212cf733_thumbnail_1024.webp	1024	webp	\N	\N	60	\N	\N	\N
-205	thumbnails/products/bc4bccc35374232fbd50a18013c47493.jpg_dfbc347b_thumbnail_1024.webp	1024	\N	\N	\N	67	\N	\N	\N
-207	thumbnails/products/0e35dcd41f3073264f41b11274bbbe14.jpg_6631ec19_thumbnail_1024.webp	1024	\N	\N	\N	66	\N	\N	\N
-206	thumbnails/products/9c69d35b91d35c46a46bc06bf1f10fbc.jpg_04696499_thumbnail_1024.webp	1024	\N	\N	\N	65	\N	\N	\N
-208	thumbnails/products/55faa82f3e1386b8ad1d23565588bce2.jpg_0e5d8ac4_thumbnail_1024.webp	1024	\N	\N	\N	68	\N	\N	\N
-209	thumbnails/products/2500a1c5b1f5d8df6c1a46280ef76be2.jpg_2c88a425_thumbnail_1024.webp	1024	\N	\N	\N	69	\N	\N	\N
-210	thumbnails/products/cb447ee89f108a9b4b85da64bef1cd5c.jpg_e1a0b4ad_thumbnail_1024.webp	1024	\N	\N	\N	70	\N	\N	\N
-211	thumbnails/products/a0fc98b52cd5d888c6153310c918bfc9.jpg_23fb3cda_thumbnail_1024.webp	1024	\N	\N	\N	72	\N	\N	\N
-214	thumbnails/products/6df8c376b6d4fc9825ce2a8cec8079e2.jpg_87ec1598_thumbnail_1024.webp	1024	\N	\N	\N	73	\N	\N	\N
-215	thumbnails/products/1b4b4afa92ce67e948931a769c99cbc6.jpg_b020dd17_thumbnail_1024.webp	1024	\N	\N	\N	75	\N	\N	\N
-216	thumbnails/products/8e92b168c40655e1c53f2bab25d629e1.jpg_78bb84e3_thumbnail_1024.webp	1024	\N	\N	\N	76	\N	\N	\N
-217	thumbnails/products/ab4a086761b07c8bfd7c2cd735f49931.jpg_2922ca75_thumbnail_1024.webp	1024	\N	\N	\N	78	\N	\N	\N
-218	thumbnails/products/150ec31a90fd8bdfecb4489ec700e907.jpg_823336ea_thumbnail_1024.webp	1024	\N	\N	\N	77	\N	\N	\N
-219	thumbnails/products/2197a9f2aefd4dbbc8b125726bbd3429.jpg_385fac5e_thumbnail_1024.webp	1024	\N	\N	\N	79	\N	\N	\N
-220	thumbnails/products/3be221cdd7210e10180502e55238a751.jpg_784f9d0c_thumbnail_1024.webp	1024	\N	\N	\N	80	\N	\N	\N
-221	thumbnails/products/3be221cdd7210e10180502e55238a751.jpg_784f9d0c_thumbnail_128.webp	128	webp	\N	\N	80	\N	\N	\N
-223	thumbnails/products/0e35dcd41f3073264f41b11274bbbe14.jpg_6631ec19_thumbnail_128.webp	128	webp	\N	\N	66	\N	\N	\N
-222	thumbnails/products/bc4bccc35374232fbd50a18013c47493.jpg_dfbc347b_thumbnail_128.webp	128	webp	\N	\N	67	\N	\N	\N
-226	thumbnails/products/2197a9f2aefd4dbbc8b125726bbd3429.jpg_385fac5e_thumbnail_128.webp	128	webp	\N	\N	79	\N	\N	\N
-224	thumbnails/products/55faa82f3e1386b8ad1d23565588bce2.jpg_0e5d8ac4_thumbnail_128.webp	128	webp	\N	\N	68	\N	\N	\N
-225	thumbnails/products/ab4a086761b07c8bfd7c2cd735f49931.jpg_2922ca75_thumbnail_128.webp	128	webp	\N	\N	78	\N	\N	\N
-227	thumbnails/products/2500a1c5b1f5d8df6c1a46280ef76be2.jpg_2c88a425_thumbnail_128.webp	128	webp	\N	\N	69	\N	\N	\N
-228	thumbnails/products/cb447ee89f108a9b4b85da64bef1cd5c.jpg_e1a0b4ad_thumbnail_128.webp	128	webp	\N	\N	70	\N	\N	\N
-231	thumbnails/products/6df8c376b6d4fc9825ce2a8cec8079e2.jpg_87ec1598_thumbnail_128.webp	128	webp	\N	\N	73	\N	\N	\N
-230	thumbnails/products/a0fc98b52cd5d888c6153310c918bfc9.jpg_23fb3cda_thumbnail_128.webp	128	webp	\N	\N	72	\N	\N	\N
-232	thumbnails/products/8e92b168c40655e1c53f2bab25d629e1.jpg_78bb84e3_thumbnail_128.webp	128	webp	\N	\N	76	\N	\N	\N
-234	thumbnails/products/ca27310bee7c23b4a538294b373debbf.jpg_e228dcca_thumbnail_128.webp	128	webp	\N	\N	71	\N	\N	\N
-236	thumbnails/products/69d7da2a49157404151637f514332377.jpg_04c552fd_thumbnail_128.webp	128	webp	\N	\N	74	\N	\N	\N
-238	thumbnails/products/185d27fe442a1668cf0196c1b82c87eb.jpg_88331813_thumbnail_2048.webp	2048	webp	\N	\N	59	\N	\N	\N
-240	thumbnails/products/a7598562258bd86f3b05432efdf0cbc0.jpg_c93c5b42_thumbnail_2048.webp	2048	webp	\N	\N	54	\N	\N	\N
-283	thumbnails/products/3be221cdd7210e10180502e55238a751.jpg_784f9d0c_thumbnail_256.webp	256	webp	\N	\N	80	\N	\N	\N
-244	thumbnails/products/388629f80448264a556f8cac5493f9fd.png_049eeaca_thumbnail_1024.webp	1024	\N	\N	\N	83	\N	\N	\N
-246	thumbnails/products/2e0daae3f9383a3e1c5d85b1e0156953.jpg_8b2f960f_thumbnail_1024.webp	1024	\N	\N	\N	82	\N	\N	\N
-248	thumbnails/products/fb3cbce3d9acc09adfaf8ea3311e197d.png_cd54a137_thumbnail_1024.webp	1024	\N	\N	\N	85	\N	\N	\N
-250	thumbnails/products/c0c4225cbc443c182bd27fc23c143d62_aOzYsxI.png_dbc19d82_thumbnail_1024.webp	1024	webp	\N	\N	84	\N	\N	\N
-252	thumbnails/products/a7a94b1778ee336051ebfaa8dcdc19c0_sje9Gg3.png_a3bd5b84_thumbnail_1024.webp	1024	webp	\N	\N	81	\N	\N	\N
-254	thumbnails/products/a7a94b1778ee336051ebfaa8dcdc19c0.png_a3bd5b84_thumbnail_2048.webp	2048	webp	\N	\N	81	\N	\N	\N
-256	thumbnails/products/fb3cbce3d9acc09adfaf8ea3311e197d.png_cd54a137_thumbnail_2048.webp	2048	webp	\N	\N	85	\N	\N	\N
-258	thumbnails/products/388629f80448264a556f8cac5493f9fd.png_049eeaca_thumbnail_2048.webp	2048	webp	\N	\N	83	\N	\N	\N
-260	thumbnails/products/ba86524ef8ecb2480e10efd4a449d5c8.jpg_fa3795ff_thumbnail_1024.webp	1024	\N	\N	\N	88	\N	\N	\N
-262	thumbnails/products/105d0465def3d6bd1d1cd366a2a62866_1dRUsjF.jpg_4254698c_thumbnail_1024.webp	1024	webp	\N	\N	87	\N	\N	\N
-264	thumbnails/products/2e047442259c182aeea90fabb9a572e1_r4pgtAE.png_f443dacd_thumbnail_1024.webp	1024	webp	\N	\N	86	\N	\N	\N
-266	thumbnails/products/2e0daae3f9383a3e1c5d85b1e0156953.jpg_8b2f960f_thumbnail_512.webp	512	webp	\N	\N	82	\N	\N	\N
-268	thumbnails/products/105d0465def3d6bd1d1cd366a2a62866.jpg_4254698c_thumbnail_512.webp	512	webp	\N	\N	87	\N	\N	\N
-270	thumbnails/products/2197a9f2aefd4dbbc8b125726bbd3429_Y7xm9AW.jpg_385fac5e_thumbnail_1024.webp	1024	webp	\N	\N	79	\N	\N	\N
-272	thumbnails/products/0e35dcd41f3073264f41b11274bbbe14_1VUcvaj.jpg_6631ec19_thumbnail_1024.webp	1024	webp	\N	\N	66	\N	\N	\N
-274	thumbnails/products/185d27fe442a1668cf0196c1b82c87eb.jpg_88331813_thumbnail_64.webp	64	\N	\N	\N	59	\N	\N	\N
-276	thumbnails/products/ab4a086761b07c8bfd7c2cd735f49931.jpg_2922ca75_thumbnail_2048.webp	2048	webp	\N	\N	78	\N	\N	\N
-278	thumbnails/products/185d27fe442a1668cf0196c1b82c87eb.jpg_88331813_thumbnail_128.webp	128	webp	\N	\N	59	\N	\N	\N
-280	thumbnails/products/3be221cdd7210e10180502e55238a751.jpg_784f9d0c_thumbnail_64.webp	64	\N	\N	\N	80	\N	\N	\N
-281	thumbnails/products/2e0daae3f9383a3e1c5d85b1e0156953.jpg_8b2f960f_thumbnail_256.webp	256	webp	\N	\N	82	\N	\N	\N
-285	thumbnails/products/2e0daae3f9383a3e1c5d85b1e0156953.jpg_8b2f960f_thumbnail_128.webp	128	webp	\N	\N	82	\N	\N	\N
-286	thumbnails/products/bc4bccc35374232fbd50a18013c47493_JlbyF5J.jpg_dfbc347b_thumbnail_1024.webp	1024	webp	\N	\N	67	\N	\N	\N
-288	thumbnails/products/2500a1c5b1f5d8df6c1a46280ef76be2_UJHLaam.jpg_2c88a425_thumbnail_1024.webp	1024	webp	\N	\N	69	\N	\N	\N
-290	thumbnails/products/a0fc98b52cd5d888c6153310c918bfc9_Sqng2W6.jpg_23fb3cda_thumbnail_1024.webp	1024	webp	\N	\N	72	\N	\N	\N
-292	thumbnails/products/1b4b4afa92ce67e948931a769c99cbc6_YLjggjk.jpg_b020dd17_thumbnail_1024.webp	1024	webp	\N	\N	75	\N	\N	\N
-294	thumbnails/products/150ec31a90fd8bdfecb4489ec700e907_dXUQKYE.jpg_823336ea_thumbnail_1024.webp	1024	webp	\N	\N	77	\N	\N	\N
-296	thumbnails/products/9c69d35b91d35c46a46bc06bf1f10fbc_z0YgmjM.jpg_04696499_thumbnail_1024.webp	1024	webp	\N	\N	65	\N	\N	\N
-298	thumbnails/products/105d0465def3d6bd1d1cd366a2a62866.jpg_4254698c_thumbnail_2048.webp	2048	webp	\N	\N	87	\N	\N	\N
-300	thumbnails/products/2e047442259c182aeea90fabb9a572e1.png_f443dacd_thumbnail_2048.webp	2048	webp	\N	\N	86	\N	\N	\N
-229	thumbnails/products/1b4b4afa92ce67e948931a769c99cbc6.jpg_b020dd17_thumbnail_128.webp	128	webp	\N	\N	75	\N	\N	\N
-233	thumbnails/products/150ec31a90fd8bdfecb4489ec700e907.jpg_823336ea_thumbnail_128.webp	128	webp	\N	\N	77	\N	\N	\N
-235	thumbnails/products/9c69d35b91d35c46a46bc06bf1f10fbc.jpg_04696499_thumbnail_128.webp	128	webp	\N	\N	65	\N	\N	\N
-237	thumbnails/products/3be221cdd7210e10180502e55238a751.jpg_784f9d0c_thumbnail_4096.webp	4096	\N	\N	\N	80	\N	\N	\N
-239	thumbnails/products/bed9d3d46ff35a6d8c9ca7294896b7f3.jpg_3465acaf_thumbnail_2048.webp	2048	webp	\N	\N	55	\N	\N	\N
-241	thumbnails/products/031bc9781c34ddb6a588cd875862460d.jpg_0c8bad27_thumbnail_2048.webp	2048	webp	\N	\N	57	\N	\N	\N
-243	thumbnails/products/409018d87687c46a0a12cecf3f982283.jpg_1e65cc25_thumbnail_2048.webp	2048	webp	\N	\N	56	\N	\N	\N
-245	thumbnails/products/a7a94b1778ee336051ebfaa8dcdc19c0.png_a3bd5b84_thumbnail_1024.webp	1024	\N	\N	\N	81	\N	\N	\N
-247	thumbnails/products/c0c4225cbc443c182bd27fc23c143d62.png_dbc19d82_thumbnail_1024.webp	1024	\N	\N	\N	84	\N	\N	\N
-249	thumbnails/products/2e0daae3f9383a3e1c5d85b1e0156953_X9x7Wvz.jpg_8b2f960f_thumbnail_1024.webp	1024	webp	\N	\N	82	\N	\N	\N
-251	thumbnails/products/fb3cbce3d9acc09adfaf8ea3311e197d_fMZ5Ybm.png_cd54a137_thumbnail_1024.webp	1024	webp	\N	\N	85	\N	\N	\N
-253	thumbnails/products/388629f80448264a556f8cac5493f9fd_Njwmmrt.png_049eeaca_thumbnail_1024.webp	1024	webp	\N	\N	83	\N	\N	\N
-255	thumbnails/products/c0c4225cbc443c182bd27fc23c143d62.png_dbc19d82_thumbnail_2048.webp	2048	webp	\N	\N	84	\N	\N	\N
-257	thumbnails/products/2e0daae3f9383a3e1c5d85b1e0156953.jpg_8b2f960f_thumbnail_2048.webp	2048	webp	\N	\N	82	\N	\N	\N
-259	thumbnails/products/105d0465def3d6bd1d1cd366a2a62866.jpg_4254698c_thumbnail_1024.webp	1024	\N	\N	\N	87	\N	\N	\N
-261	thumbnails/products/2e047442259c182aeea90fabb9a572e1.png_f443dacd_thumbnail_1024.webp	1024	\N	\N	\N	86	\N	\N	\N
-263	thumbnails/products/ba86524ef8ecb2480e10efd4a449d5c8_MDh0mJu.jpg_fa3795ff_thumbnail_1024.webp	1024	webp	\N	\N	88	\N	\N	\N
-265	thumbnails/products/185d27fe442a1668cf0196c1b82c87eb.jpg_88331813_thumbnail_512.webp	512	webp	\N	\N	59	\N	\N	\N
-267	thumbnails/products/3be221cdd7210e10180502e55238a751.jpg_784f9d0c_thumbnail_512.webp	512	webp	\N	\N	80	\N	\N	\N
-269	thumbnails/products/3be221cdd7210e10180502e55238a751_jfgW267.jpg_784f9d0c_thumbnail_1024.webp	1024	webp	\N	\N	80	\N	\N	\N
-271	thumbnails/products/ab4a086761b07c8bfd7c2cd735f49931_59ecQxt.jpg_2922ca75_thumbnail_1024.webp	1024	webp	\N	\N	78	\N	\N	\N
-273	thumbnails/products/185d27fe442a1668cf0196c1b82c87eb.jpg_88331813_thumbnail_256.webp	256	webp	\N	\N	59	\N	\N	\N
-275	thumbnails/products/3be221cdd7210e10180502e55238a751.jpg_784f9d0c_thumbnail_2048.webp	2048	webp	\N	\N	80	\N	\N	\N
-277	thumbnails/products/2197a9f2aefd4dbbc8b125726bbd3429.jpg_385fac5e_thumbnail_2048.webp	2048	webp	\N	\N	79	\N	\N	\N
-279	thumbnails/products/185d27fe442a1668cf0196c1b82c87eb_9xWluq3.jpg_88331813_thumbnail_256.webp	256	\N	\N	\N	59	\N	\N	\N
-282	thumbnails/products/105d0465def3d6bd1d1cd366a2a62866.jpg_4254698c_thumbnail_256.webp	256	webp	\N	\N	87	\N	\N	\N
-284	thumbnails/products/2e0daae3f9383a3e1c5d85b1e0156953.jpg_8b2f960f_thumbnail_64.webp	64	\N	\N	\N	82	\N	\N	\N
-287	thumbnails/products/55faa82f3e1386b8ad1d23565588bce2_2cnYfBO.jpg_0e5d8ac4_thumbnail_1024.webp	1024	webp	\N	\N	68	\N	\N	\N
-289	thumbnails/products/cb447ee89f108a9b4b85da64bef1cd5c_VlumkWD.jpg_e1a0b4ad_thumbnail_1024.webp	1024	webp	\N	\N	70	\N	\N	\N
-291	thumbnails/products/6df8c376b6d4fc9825ce2a8cec8079e2_7a7usZc.jpg_87ec1598_thumbnail_1024.webp	1024	webp	\N	\N	73	\N	\N	\N
-293	thumbnails/products/8e92b168c40655e1c53f2bab25d629e1_5cj4ccD.jpg_78bb84e3_thumbnail_1024.webp	1024	webp	\N	\N	76	\N	\N	\N
-295	thumbnails/products/ca27310bee7c23b4a538294b373debbf_3m09FwH.jpg_e228dcca_thumbnail_1024.webp	1024	webp	\N	\N	71	\N	\N	\N
-297	thumbnails/products/69d7da2a49157404151637f514332377_8UIMqJc.jpg_04c552fd_thumbnail_1024.webp	1024	webp	\N	\N	74	\N	\N	\N
-299	thumbnails/products/ba86524ef8ecb2480e10efd4a449d5c8.jpg_fa3795ff_thumbnail_2048.webp	2048	webp	\N	\N	88	\N	\N	\N
+362	thumbnails/products/book-dac-nhan-tam-cover_thumbnail_256.jpg	256	\N	\N	\N	141	\N	\N	\N
+363	thumbnails/products/book-10-dieu-tao-nen-so-phan-cover_thumbnail_256.jpeg	256	\N	\N	\N	145	\N	\N	\N
+364	thumbnails/products/book-sapiens-luoc-su-loai-nguoi-cover_thumbnail_512.webp	512	webp	\N	\N	143	\N	\N	\N
+365	thumbnails/products/book-10-dieu-tao-nen-so-phan-cover_thumbnail_512.webp	512	webp	\N	\N	145	\N	\N	\N
+367	thumbnails/products/book-tri-tue-do-thai-cover_thumbnail_512.webp	512	webp	\N	\N	144	\N	\N	\N
+366	thumbnails/products/book-dac-nhan-tam-cover_thumbnail_512.webp	512	webp	\N	\N	141	\N	\N	\N
+368	thumbnails/products/book-bon-thoa-uoc-cover_thumbnail_512.webp	512	webp	\N	\N	142	\N	\N	\N
+369	thumbnails/products/book-dac-nhan-tam-cover_thumbnail_1024.webp	1024	webp	\N	\N	141	\N	\N	\N
+370	thumbnails/products/book-bi-mat-cua-mot-tri-nho-sieu-pham-cover_thumbnail_512.webp	512	webp	\N	\N	146	\N	\N	\N
+371	thumbnails/products/book-cay-cam-ngot-cua-toi-cover_thumbnail_512.webp	512	webp	\N	\N	148	\N	\N	\N
+372	thumbnails/products/book-cach-nghi-de-thanh-cong-cover_thumbnail_512.webp	512	webp	\N	\N	147	\N	\N	\N
+373	thumbnails/products/book-bon-thoa-uoc-cover_thumbnail_1024.webp	1024	webp	\N	\N	142	\N	\N	\N
+374	thumbnails/products/book-10-dieu-tao-nen-so-phan-cover_thumbnail_1024.webp	1024	webp	\N	\N	145	\N	\N	\N
+375	thumbnails/products/book-bi-mat-cua-mot-tri-nho-sieu-pham-cover_thumbnail_1024.webp	1024	webp	\N	\N	146	\N	\N	\N
+376	thumbnails/products/book-bon-thoa-uoc-cover_thumbnail_2048.webp	2048	webp	\N	\N	142	\N	\N	\N
+378	thumbnails/products/book-chien-tranh-tien-te-tap-3-cover_thumbnail_1024.jpeg	1024	\N	\N	\N	151	\N	\N	\N
+379	thumbnails/products/book-cay-cam-ngot-cua-toi-cover_thumbnail_1024.jpeg	1024	\N	\N	\N	148	\N	\N	\N
+381	thumbnails/products/book-tu-duy-nhanh-va-cham-cover_thumbnail_1024.jpeg	1024	\N	\N	\N	153	\N	\N	\N
+380	thumbnails/products/book-chien-tranh-tien-te-tap-1-cover_thumbnail_1024.jpeg	1024	\N	\N	\N	149	\N	\N	\N
+377	thumbnails/products/book-chien-tranh-tien-te-tap-2-cover_thumbnail_1024.jpeg	1024	\N	\N	\N	150	\N	\N	\N
+382	thumbnails/products/book-chu-nghia-khac-ky-cover_thumbnail_1024.jpeg	1024	\N	\N	\N	152	\N	\N	\N
+383	thumbnails/products/book-10-dieu-tao-nen-so-phan-cover_thumbnail_1024.jpeg	1024	\N	\N	\N	145	\N	\N	\N
+384	thumbnails/products/book-tri-tue-do-thai-cover_thumbnail_1024.jpeg	1024	\N	\N	\N	144	\N	\N	\N
+385	thumbnails/products/book-cach-nghi-de-thanh-cong-cover_thumbnail_1024.jpeg	1024	\N	\N	\N	147	\N	\N	\N
+386	thumbnails/products/book-bi-mat-cua-mot-tri-nho-sieu-pham-cover_thumbnail_1024.jpeg	1024	\N	\N	\N	146	\N	\N	\N
+387	thumbnails/products/book-sapiens-luoc-su-loai-nguoi-cover_thumbnail_1024.jpeg	1024	\N	\N	\N	143	\N	\N	\N
+388	thumbnails/products/book-bon-thoa-uoc-cover_thumbnail_1024.jpg	1024	\N	\N	\N	142	\N	\N	\N
+389	thumbnails/products/book-dac-nhan-tam-cover_thumbnail_1024.jpg	1024	\N	\N	\N	141	\N	\N	\N
+390	thumbnails/products/book-chien-tranh-tien-te-tap-3-cover_thumbnail_512.webp	512	webp	\N	\N	151	\N	\N	\N
+391	thumbnails/products/book-chien-tranh-tien-te-tap-2-cover_thumbnail_512.webp	512	webp	\N	\N	150	\N	\N	\N
+392	thumbnails/products/book-chien-tranh-tien-te-tap-1-cover_thumbnail_512.webp	512	webp	\N	\N	149	\N	\N	\N
+393	thumbnails/products/book-chu-nghia-khac-ky-cover_thumbnail_512.webp	512	webp	\N	\N	152	\N	\N	\N
+394	thumbnails/products/book-tu-duy-nhanh-va-cham-cover_thumbnail_512.webp	512	webp	\N	\N	153	\N	\N	\N
+395	thumbnails/products/book-cay-cam-ngot-cua-toi-cover_thumbnail_1024.webp	1024	webp	\N	\N	148	\N	\N	\N
+396	thumbnails/products/book-cay-cam-ngot-cua-toi-cover_thumbnail_256.jpeg	256	\N	\N	\N	148	\N	\N	\N
+397	thumbnails/products/book-cay-cam-ngot-cua-toi-cover_thumbnail_256.webp	256	webp	\N	\N	148	\N	\N	\N
+398	thumbnails/products/book-cay-cam-ngot-cua-toi-cover_thumbnail_64.jpeg	64	\N	\N	\N	148	\N	\N	\N
+399	thumbnails/products/book-10-dieu-tao-nen-so-phan-cover_thumbnail_2048.webp	2048	webp	\N	\N	145	\N	\N	\N
+400	thumbnails/products/book-10-dieu-tao-nen-so-phan-cover_thumbnail_256.webp	256	webp	\N	\N	145	\N	\N	\N
+401	thumbnails/products/book-10-dieu-tao-nen-so-phan-cover_thumbnail_64.jpeg	64	\N	\N	\N	145	\N	\N	\N
+402	thumbnails/products/book-cay-cam-ngot-cua-toi-cover_thumbnail_128.webp	128	webp	\N	\N	148	\N	\N	\N
+403	thumbnails/products/book-cay-cam-ngot-cua-toi-cover_thumbnail_2048.webp	2048	webp	\N	\N	148	\N	\N	\N
 \.
 
 
@@ -10406,11 +10475,19 @@ COPY public.warehouse_reservation (id, quantity_reserved, reserved_until, stock_
 --
 
 COPY public.warehouse_stock (id, quantity, product_variant_id, warehouse_id, quantity_allocated) FROM stdin;
-731	120	5	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-732	200	7	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-733	140	9	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-734	9999	2	7298b4a0-0518-4481-b40c-24176e0da3e4	0
-730	150	3	7298b4a0-0518-4481-b40c-24176e0da3e4	0
+752	150	45	7298b4a0-0518-4481-b40c-24176e0da3e4	0
+753	120	47	7298b4a0-0518-4481-b40c-24176e0da3e4	0
+754	200	49	7298b4a0-0518-4481-b40c-24176e0da3e4	0
+755	140	51	7298b4a0-0518-4481-b40c-24176e0da3e4	0
+756	130	53	7298b4a0-0518-4481-b40c-24176e0da3e4	0
+757	160	55	7298b4a0-0518-4481-b40c-24176e0da3e4	0
+758	180	57	7298b4a0-0518-4481-b40c-24176e0da3e4	0
+759	200	59	7298b4a0-0518-4481-b40c-24176e0da3e4	0
+760	150	61	7298b4a0-0518-4481-b40c-24176e0da3e4	0
+761	140	63	7298b4a0-0518-4481-b40c-24176e0da3e4	0
+762	140	65	7298b4a0-0518-4481-b40c-24176e0da3e4	0
+763	160	67	7298b4a0-0518-4481-b40c-24176e0da3e4	0
+764	190	69	7298b4a0-0518-4481-b40c-24176e0da3e4	0
 \.
 
 
@@ -10477,7 +10554,7 @@ COPY public.webhook_webhookevent (id, event_type, webhook_id) FROM stdin;
 -- Name: account_customerevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.account_customerevent_id_seq', 49, true);
+SELECT pg_catalog.setval('public.account_customerevent_id_seq', 50, true);
 
 
 --
@@ -10505,21 +10582,21 @@ SELECT pg_catalog.setval('public.account_group_channels_id_seq', 3, true);
 -- Name: account_serviceaccount_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.account_serviceaccount_id_seq', 3, true);
+SELECT pg_catalog.setval('public.account_serviceaccount_id_seq', 4, true);
 
 
 --
 -- Name: account_serviceaccount_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.account_serviceaccount_permissions_id_seq', 14, true);
+SELECT pg_catalog.setval('public.account_serviceaccount_permissions_id_seq', 22, true);
 
 
 --
 -- Name: account_serviceaccounttoken_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.account_serviceaccounttoken_id_seq', 1, true);
+SELECT pg_catalog.setval('public.account_serviceaccounttoken_id_seq', 4, true);
 
 
 --
@@ -10652,28 +10729,28 @@ SELECT pg_catalog.setval('public.checkout_checkout_gift_cards_id_seq', 1, false)
 -- Name: checkout_checkoutmetadata_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.checkout_checkoutmetadata_id_seq', 15, true);
+SELECT pg_catalog.setval('public.checkout_checkoutmetadata_id_seq', 17, true);
 
 
 --
 -- Name: core_eventdelivery_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.core_eventdelivery_id_seq', 1, false);
+SELECT pg_catalog.setval('public.core_eventdelivery_id_seq', 18, true);
 
 
 --
 -- Name: core_eventdeliveryattempt_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.core_eventdeliveryattempt_id_seq', 1, false);
+SELECT pg_catalog.setval('public.core_eventdeliveryattempt_id_seq', 18, true);
 
 
 --
 -- Name: core_eventpayload_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.core_eventpayload_id_seq', 1, false);
+SELECT pg_catalog.setval('public.core_eventpayload_id_seq', 18, true);
 
 
 --
@@ -10855,7 +10932,7 @@ SELECT pg_catalog.setval('public.django_site_id_seq', 1, true);
 -- Name: drm_readingprogress_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.drm_readingprogress_id_seq', 11, true);
+SELECT pg_catalog.setval('public.drm_readingprogress_id_seq', 13, true);
 
 
 --
@@ -10911,7 +10988,7 @@ SELECT pg_catalog.setval('public.menu_menu_id_seq', 2, true);
 -- Name: menu_menuitem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.menu_menuitem_id_seq', 45, true);
+SELECT pg_catalog.setval('public.menu_menuitem_id_seq', 60, true);
 
 
 --
@@ -10946,14 +11023,14 @@ SELECT pg_catalog.setval('public.order_order_gift_cards_id_seq', 1, false);
 -- Name: order_order_number_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.order_order_number_seq', 43, true);
+SELECT pg_catalog.setval('public.order_order_number_seq', 44, true);
 
 
 --
 -- Name: order_orderevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.order_orderevent_id_seq', 90, true);
+SELECT pg_catalog.setval('public.order_orderevent_id_seq', 95, true);
 
 
 --
@@ -11009,14 +11086,14 @@ SELECT pg_catalog.setval('public.payment_transaction_id_seq', 1, false);
 -- Name: payment_transactionevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.payment_transactionevent_id_seq', 39, true);
+SELECT pg_catalog.setval('public.payment_transactionevent_id_seq', 40, true);
 
 
 --
 -- Name: payment_transactionitem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.payment_transactionitem_id_seq', 39, true);
+SELECT pg_catalog.setval('public.payment_transactionitem_id_seq', 40, true);
 
 
 --
@@ -11079,14 +11156,14 @@ SELECT pg_catalog.setval('public.product_attributevariant_id_seq', 1, false);
 -- Name: product_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_category_id_seq', 46, true);
+SELECT pg_catalog.setval('public.product_category_id_seq', 93, true);
 
 
 --
 -- Name: product_categorytranslation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_categorytranslation_id_seq', 126, true);
+SELECT pg_catalog.setval('public.product_categorytranslation_id_seq', 220, true);
 
 
 --
@@ -11100,7 +11177,7 @@ SELECT pg_catalog.setval('public.product_collection_id_seq', 2, true);
 -- Name: product_collection_products_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_collection_products_id_seq', 41, true);
+SELECT pg_catalog.setval('public.product_collection_products_id_seq', 71, true);
 
 
 --
@@ -11121,7 +11198,7 @@ SELECT pg_catalog.setval('public.product_collectiontranslation_id_seq', 1, false
 -- Name: product_product_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_product_id_seq', 4, true);
+SELECT pg_catalog.setval('public.product_product_id_seq', 13, true);
 
 
 --
@@ -11142,7 +11219,7 @@ SELECT pg_catalog.setval('public.product_productattributetranslation_id_seq', 58
 -- Name: product_productchannellisting_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_productchannellisting_id_seq', 99, true);
+SELECT pg_catalog.setval('public.product_productchannellisting_id_seq', 127, true);
 
 
 --
@@ -11156,28 +11233,28 @@ SELECT pg_catalog.setval('public.product_productclass_id_seq', 2, true);
 -- Name: product_productmedia_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_productmedia_id_seq', 88, true);
+SELECT pg_catalog.setval('public.product_productmedia_id_seq', 153, true);
 
 
 --
 -- Name: product_producttranslation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_producttranslation_id_seq', 95, true);
+SELECT pg_catalog.setval('public.product_producttranslation_id_seq', 113, true);
 
 
 --
 -- Name: product_productvariant_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_productvariant_id_seq', 9, true);
+SELECT pg_catalog.setval('public.product_productvariant_id_seq', 69, true);
 
 
 --
 -- Name: product_productvariantchannellisting_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_productvariantchannellisting_id_seq', 272, true);
+SELECT pg_catalog.setval('public.product_productvariantchannellisting_id_seq', 452, true);
 
 
 --
@@ -11303,14 +11380,14 @@ SELECT pg_catalog.setval('public.tax_taxconfigurationpercountry_id_seq', 1, fals
 -- Name: thumbnail_thumbnail_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.thumbnail_thumbnail_id_seq', 300, true);
+SELECT pg_catalog.setval('public.thumbnail_thumbnail_id_seq', 403, true);
 
 
 --
 -- Name: userprofile_address_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.userprofile_address_id_seq', 63, true);
+SELECT pg_catalog.setval('public.userprofile_address_id_seq', 64, true);
 
 
 --
@@ -11373,7 +11450,7 @@ SELECT pg_catalog.setval('public.warehouse_reservation_id_seq', 1, false);
 -- Name: warehouse_stock_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.warehouse_stock_id_seq', 734, true);
+SELECT pg_catalog.setval('public.warehouse_stock_id_seq', 764, true);
 
 
 --
@@ -11394,14 +11471,14 @@ SELECT pg_catalog.setval('public.warehouse_warehouse_shipping_zones_id_seq', 32,
 -- Name: webhook_webhook_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.webhook_webhook_id_seq', 1, false);
+SELECT pg_catalog.setval('public.webhook_webhook_id_seq', 1, true);
 
 
 --
 -- Name: webhook_webhookevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.webhook_webhookevent_id_seq', 1, false);
+SELECT pg_catalog.setval('public.webhook_webhookevent_id_seq', 4, true);
 
 
 --
@@ -19210,5 +19287,5 @@ ALTER TABLE ONLY public.webhook_webhookevent
 -- PostgreSQL database dump complete
 --
 
-\unrestrict PnslLgL408HXPefgvvsWEjq0EF5oiyvwPwk5RhwelGe7LSIoBXw8KRK7K3zraui
+\unrestrict lAy11n5uGsZrlYjc7D7WKkHr7Dc64QfidY1Zr4HcchPVNTsxVXBvLthrmgEeja6
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { useTranslations } from "next-intl";
 import { ShoppingBag, BookOpen, ShieldCheck } from "lucide-react";
@@ -90,7 +90,31 @@ export function AddToCart({
 	const resolvedEpub =
 		(productSlug && defaultEpubMap[productSlug]) ||
 		(productSlug ? `/books/${productSlug}.epub` : "/books/dac-nhan-tam.epub");
-	const trialLink = `/reader/${productSlug || "sample-book"}?mode=trial&epub=${encodeURIComponent(resolvedEpub)}${productName ? `&title=${encodeURIComponent(productName)}` : ""}`;
+	const [hasPurchased, setHasPurchased] = useState<boolean>(false);
+
+	useEffect(() => {
+		let isCancelled = false;
+		async function checkPurchased() {
+			if (!productSlug) return;
+			try {
+				const res = await fetch(`/api/reviews/check-eligibility?productSlug=${encodeURIComponent(productSlug)}`);
+				if (res.ok) {
+					const data = (await res.json()) as any;
+					if (data?.hasPurchased && !isCancelled) {
+						setHasPurchased(true);
+					}
+				}
+			} catch {}
+		}
+		checkPurchased();
+		return () => {
+			isCancelled = true;
+		};
+	}, [productSlug]);
+
+	const readerLink = hasPurchased
+		? `/reader/${productSlug || "sample-book"}?epub=${encodeURIComponent(resolvedEpub)}${productName ? `&title=${encodeURIComponent(productName)}` : ""}`
+		: `/reader/${productSlug || "sample-book"}?mode=trial&epub=${encodeURIComponent(resolvedEpub)}${productName ? `&title=${encodeURIComponent(productName)}` : ""}`;
 
 	return (
 		<div className="space-y-4">
@@ -106,18 +130,28 @@ export function AddToCart({
 
 			<AddToCartButton disabled={disabled} disabledReason={disabledReason} />
 
-			{/* Reader DRM 15-Page Preview Action */}
-			<div className="flex items-center justify-between gap-3 rounded-card border border-border bg-muted/40 p-3 text-xs transition-colors hover:bg-muted/60">
+			{/* Reader DRM Preview or Full Reading Action */}
+			<div
+				className={`flex items-center justify-between gap-3 rounded-card border p-3 text-xs transition-colors ${
+					hasPurchased
+						? "border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/15"
+						: "border-border bg-muted/40 hover:bg-muted/60"
+				}`}
+			>
 				<LinkWithChannel
-					href={trialLink}
+					href={readerLink}
 					className="flex items-center gap-2 font-medium text-foreground hover:underline"
 				>
-					<BookOpen className="h-4 w-4 text-primary" />
-					<span>Đọc thử 15 trang đầu (Tài khoản đã đăng ký)</span>
+					<BookOpen className={`h-4 w-4 ${hasPurchased ? "text-emerald-600 dark:text-emerald-400" : "text-primary"}`} />
+					<span>
+						{hasPurchased
+							? "Đọc sách ngay (Đã sở hữu bản quyền)"
+							: "Đọc thử 15 trang đầu (Tài khoản đã đăng ký)"}
+					</span>
 				</LinkWithChannel>
 				<Badge variant="success" className="gap-1 text-[11px]">
 					<ShieldCheck className="h-3 w-3" />
-					<span>Bản quyền DRM</span>
+					<span>{hasPurchased ? "Đã sở hữu" : "Bản quyền DRM"}</span>
 				</Badge>
 			</div>
 

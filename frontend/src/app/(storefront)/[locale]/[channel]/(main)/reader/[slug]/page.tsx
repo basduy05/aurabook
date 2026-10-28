@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { DRMWebReader } from "@/ui/components/reader/drm-web-reader";
 import { executeAuthenticatedGraphQL } from "@/lib/graphql";
-import { CurrentUserDocument } from "@/gql/graphql";
+import { CurrentUserDocument, CurrentUserOrdersPaginatedDocument } from "@/gql/graphql";
+import { graphqlLanguageCodeVariables } from "@/lib/graphql-locale";
 
 const BOOK_CATALOG: Record<string, { title: string; epubUrl: string; author?: string }> = {
 	"dac-nhan-tam": {
@@ -110,6 +111,8 @@ export default async function ReaderPage(props: {
 	let realLicenseId = (searchParams?.license as string) || "";
 	let isAuthenticated = false;
 
+	let hasPurchased = false;
+
 	try {
 		const userRes = await executeAuthenticatedGraphQL(CurrentUserDocument, { cache: "no-cache" });
 		if (userRes.ok && userRes.data?.me) {
@@ -120,12 +123,71 @@ export default async function ReaderPage(props: {
 			realUserEmail = me.email;
 			const cleanId = me.id.replace(/[^a-zA-Z0-9]/g, "").slice(-6).toUpperCase();
 			realLicenseId = `LCP-${cleanId || "AUR"}-${slug.substring(0, 6).toUpperCase()}`;
+
+			// 1. Kiểm tra quyền sở hữu qua lịch sử đơn hàng của người dùng (Saleor GraphQL Orders)
+			try {
+				const ordersRes = await executeAuthenticatedGraphQL(CurrentUserOrdersPaginatedDocument, {
+					variables: { first: 50, after: null, ...graphqlLanguageCodeVariables(locale || "vi") },
+					cache: "no-cache",
+				});
+				if (ordersRes.ok && ordersRes.data?.me?.orders?.edges) {
+					const normTargetSlug = slug.toLowerCase().trim();
+					const normTargetTitle = bookTitle.toLowerCase().trim();
+					for (const edge of ordersRes.data.me.orders.edges) {
+						const order = edge.node;
+						if (order.status?.toLowerCase() === "canceled") continue;
+						for (const line of order.lines) {
+							const pSlug = line.variant?.product?.slug?.toLowerCase().trim() || "";
+							const pName = line.variant?.product?.name?.toLowerCase().trim() || (line as any).productName?.toLowerCase().trim() || "";
+							const pId = line.variant?.product?.id?.toLowerCase().trim() || "";
+							if (
+								pSlug === normTargetSlug ||
+								pId === normTargetSlug ||
+								(pSlug && normTargetSlug.includes(pSlug)) ||
+								(pSlug && pSlug.includes(normTargetSlug)) ||
+								(pName && normTargetTitle && normTargetTitle.includes(pName)) ||
+								(pName && normTargetTitle && pName.includes(normTargetTitle))
+							) {
+								hasPurchased = true;
+								break;
+							}
+						}
+						if (hasPurchased) break;
+					}
+				}
+			} catch (orderErr) {
+				console.warn("[ReaderPage] Could not query orders for purchase verification:", orderErr);
+			}
+
+			// 2. Kiểm tra qua cơ sở dữ liệu thư viện/tiến trình đọc nếu chưa tìm thấy trong orders
+			if (!hasPurchased && realUserEmail) {
+				try {
+					const BACKEND_INTERNAL_URL = "http://localhost:8000";
+					const progRes = await fetch(
+						`${BACKEND_INTERNAL_URL}/aurabook/reading/library?user_email=${encodeURIComponent(realUserEmail)}`,
+						{ cache: "no-store" },
+					);
+					if (progRes.ok) {
+						const progData = (await progRes.json()) as any;
+						if (Array.isArray(progData?.library)) {
+							const normTargetSlug = slug.toLowerCase().trim();
+							const inLibrary = progData.library.some((p: any) => {
+								const pid = String(p.product_id || "").toLowerCase().trim();
+								return pid === normTargetSlug || normTargetSlug.includes(pid) || pid.includes(normTargetSlug);
+							});
+							if (inLibrary) hasPurchased = true;
+						}
+					}
+				} catch {}
+			}
 		}
 	} catch (e) {
 		console.warn("[ReaderPage] Unable to fetch authenticated user on server:", e);
 	}
 
-	const isTrial = searchParams?.mode === "trial" || searchParams?.trial === "true";
+	// Người nào đã mua sách rồi nhưng nhấn đọc thử thì TUYỆT ĐỐI KHÔNG ĐƯỢC HIỆN LÀ ĐỌC THỬ NỮA
+	const requestedTrial = searchParams?.mode === "trial" || searchParams?.trial === "true";
+	const isTrial = requestedTrial && !hasPurchased;
 
 	// Revoke access on server if logged out or unauthenticated (Chỉ khách hàng đã đăng ký mới đọc thử được)
 	if (!isAuthenticated && !realUserId) {

@@ -53,7 +53,7 @@ if (-not $p5050) {
 }
 
 # 3. Kiem tra Frontend Next.js (port 3000)
-Write-Host "`n[3/4] Kiem tra Frontend Next.js (Storefront)..." -ForegroundColor Yellow
+Write-Host "`n[3/5] Kiem tra Frontend Next.js (Storefront)..." -ForegroundColor Yellow
 $p3 = netstat -ano 2>$null | Select-String ":3000 " | Select-String "LISTENING"
 if (-not $p3) {
     Write-Host "  -> Dang khoi dong Next.js dev server tren port 3000..." -ForegroundColor Cyan
@@ -68,19 +68,38 @@ if (-not $p3) {
     Write-Host "  [OK] Frontend da dang chay tren port 3000." -ForegroundColor Green
 }
 
-# 4. Thong bao san sang va mo trinh duyet
-Write-Host "`n[4/4] San sang truy cap!" -ForegroundColor Yellow
+# 4. Kiem tra Cong Quan Tri He Thong Doc Lap (port 3001)
+Write-Host "`n[4/5] Kiem tra Cong Quan Tri He Thong Doc Lap (port 3001)..." -ForegroundColor Yellow
+$ADMIN_DIR = Join-Path $ROOT "admin"
+$p3001 = netstat -ano 2>$null | Select-String ":3001 " | Select-String "LISTENING"
+if (-not $p3001) {
+    Write-Host "  -> Dang khoi dong Admin Portal tren port 3001..." -ForegroundColor Cyan
+    Start-Process powershell.exe -ArgumentList "-NoExit", "-Command", "Set-Location '$ADMIN_DIR'; pnpm dev" -WindowStyle Minimized
+    for ($i = 0; $i -lt 8; $i++) {
+        Start-Sleep -Seconds 1
+        $p3001 = netstat -ano 2>$null | Select-String ":3001 " | Select-String "LISTENING"
+        if ($p3001) { break }
+    }
+    Write-Host "  [OK] Cong Quan Tri He Thong da duoc khoi chay tren port 3001." -ForegroundColor Green
+} else {
+    Write-Host "  [OK] Cong Quan Tri He Thong da dang chay tren port 3001." -ForegroundColor Green
+}
+
+# 5. Thong bao san sang va mo trinh duyet
+Write-Host "`n[5/5] San sang truy cap!" -ForegroundColor Yellow
 Write-Host "============================================================" -ForegroundColor Green
 Write-Host "   AURABOOK DA KHOI DONG THANH CONG!" -ForegroundColor Green
 Write-Host "============================================================" -ForegroundColor Green
-Write-Host "  Storefront (Khach hang)   : http://localhost:3000" -ForegroundColor Cyan
-Write-Host "  Voice & TTS Engine (5050)  : http://localhost:5050/health" -ForegroundColor Cyan
-Write-Host "  Admin Dashboard (Quan tri): http://localhost:9000/dashboard/" -ForegroundColor Cyan
-Write-Host "  Mailpit (Hom thu test)     : http://localhost:8025" -ForegroundColor Cyan
-Write-Host "  GraphQL API Backend        : http://localhost:8000/graphql/" -ForegroundColor Cyan
+Write-Host "  Storefront (Khach hang)       : http://localhost:3000" -ForegroundColor Cyan
+Write-Host "  System Admin (Quan tri rieng) : http://localhost:3001" -ForegroundColor Yellow
+Write-Host "  Admin Dashboard (Saleor Kho)  : http://localhost:9000/dashboard/" -ForegroundColor Cyan
+Write-Host "  Voice & TTS Engine (5050)      : http://localhost:5050/health" -ForegroundColor Cyan
+Write-Host "  Mailpit (Hom thu test)         : http://localhost:8025" -ForegroundColor Cyan
+Write-Host "  GraphQL API Backend            : http://localhost:8000/graphql/" -ForegroundColor Cyan
 Write-Host "============================================================" -ForegroundColor Green
 Write-Host ""
 
 # Mo trinh duyet
 Start-Process "http://localhost:3000"
+Start-Process "http://localhost:3001"
 Start-Process "http://localhost:9000/dashboard/"

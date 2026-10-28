@@ -186,8 +186,8 @@ interface SearchApiResponse {
 						</div>
 					)}
 
-					{/* Danh sách các cuốn sách gợi ý */}
-					<div className="divide-y divide-border/40 max-h-[310px] overflow-y-auto pt-1">
+					{/* Danh sách các cuốn sách gợi ý - Tắt bỏ hoàn toàn thanh scroll */}
+					<div className="divide-y divide-border/40 max-h-[350px] overflow-y-auto pt-1 no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
 						{suggestions.map((item) => (
 							<button
 								key={item.id}

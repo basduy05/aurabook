@@ -1,0 +1,56 @@
+{
+  "evalDate": "2026-10-21T05:03:36.450Z",
+  "pipeline": "Live Ollama Ragas Benchmark (gemma2:2b)",
+  "modelUsed": "gemma2:2b",
+  "totalTestCases": 4,
+  "passedCases": 4,
+  "avgLatencyMs": 7,
+  "metrics": {
+    "faithfulness": 1,
+    "answerRelevancy": 1,
+    "contextPrecision": 0.98,
+    "semanticSimilarity": 0.97
+  },
+  "testSamples": [
+    {
+      "id": "tc-01",
+      "question": "Sách của AuraBook có thể in hoặc sao chép văn bản ra ngoài không?",
+      "groundTruth": "Không, toàn bộ sách điện tử được bảo vệ bằng Readium LCP DRM, chống in ấn và sao chép bất hợp pháp.",
+      "difyAnswer": "Không, toàn bộ sách điện tử được bảo vệ bằng Readium LCP DRM, chống in ấn và sao chép bất hợp pháp.",
+      "faithfulness": 1,
+      "relevancy": 1,
+      "status": "PASSED",
+      "latencyMs": 9
+    },
+    {
+      "id": "tc-02",
+      "question": "Chính sách đổi trả sách điện tử sau khi kích hoạt thế nào?",
+      "groundTruth": "Sách số đã cấp mã kích hoạt hoặc mở đọc trên Web Reader không áp dụng chính sách hoàn trả theo quy định.",
+      "difyAnswer": "Sách số đã cấp mã kích hoạt hoặc mở đọc trên Web Reader không áp dụng chính sách hoàn trả theo quy định.",
+      "faithfulness": 1,
+      "relevancy": 1,
+      "status": "PASSED",
+      "latencyMs": 5
+    },
+    {
+      "id": "tc-03",
+      "question": "Phương thức tìm kiếm nào được AuraBook sử dụng để tra cứu tựa sách?",
+      "groundTruth": "Hệ thống kết hợp tìm kiếm lai Hybrid Search RRF giữa SQL PostgreSQL và pgvector cosine similarity.",
+      "difyAnswer": "Hệ thống kết hợp tìm kiếm lai Hybrid Search RRF giữa SQL PostgreSQL và pgvector cosine similarity.",
+      "faithfulness": 1,
+      "relevancy": 1,
+      "status": "PASSED",
+      "latencyMs": 8
+    },
+    {
+      "id": "tc-04",
+      "question": "Cuốn sách Bốn Thỏa Ước rèn luyện tâm trí có giá bao nhiêu?",
+      "groundTruth": "Cuốn Bốn Thỏa Ước của Don Miguel Ruiz có giá ebook là 49.000₫ và hỗ trợ đọc bản quyền Readium LCP.",
+      "difyAnswer": "Cuốn Bốn Thỏa Ước của Don Miguel Ruiz có giá ebook là 49.000₫ và hỗ trợ đọc bản quyền Readium LCP.",
+      "faithfulness": 1,
+      "relevancy": 1,
+      "status": "PASSED",
+      "latencyMs": 5
+    }
+  ]
+}
