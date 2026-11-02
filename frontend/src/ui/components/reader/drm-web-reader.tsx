@@ -11,6 +11,7 @@ import {
 	Bookmark,
 	Lock,
 	ArrowLeft,
+	ArrowDown,
 	Maximize2,
 	Minimize2,
 	List,
@@ -71,6 +72,7 @@ import { Badge } from "@/ui/components/ui/badge";
 import { Input } from "@/ui/components/ui/input";
 import { CHROME_VERSION_KEY } from "@/lib/chrome-sync";
 import { Loader } from "@/ui/atoms/loader";
+import { getFixedPreviewChapterIndex } from "@/lib/fixed-preview-chapters";
 
 // Helper: Patch Range.prototype.setEnd và setStart để tự động chặn đứng lỗi IndexSizeError (There is no child at offset X)
 function patchRangePrototype(rangeProto: any) {
@@ -278,6 +280,12 @@ interface AIMessage {
 	text: string;
 	timestamp: string;
 	highlightQuote?: string;
+	isStreaming?: boolean;
+	isError?: boolean;
+	errorType?: "validation" | "network" | "timeout" | "server";
+	errorMessage?: string;
+	retryPrompt?: string;
+	retryQuote?: string;
 }
 
 interface ChatSession {
@@ -440,6 +448,10 @@ export function DRMWebReader({
 	const bookRef = useRef<Book | null>(null);
 	const renditionRef = useRef<Rendition | null>(null);
 	const aiMessagesEndRef = useRef<HTMLDivElement | null>(null);
+	const chatScrollContainerRef = useRef<HTMLDivElement | null>(null);
+	const aiInputTextareaRef = useRef<HTMLTextAreaElement | null>(null);
+	const [showScrollBottom, setShowScrollBottom] = useState<boolean>(false);
+	const userHasScrolledUpRef = useRef<boolean>(false);
 
 	// Ref to distinguish deliberate Ctrl+C / Cmd+C copy attempts from regular text selection
 	const isExplicitCopyAttempt = useRef<boolean>(false);
@@ -470,6 +482,17 @@ export function DRMWebReader({
 	const [tocList, setTocList] = useState<TocItem[]>([]);
 	const [activeChapterHref, setActiveChapterHref] = useState<string>("");
 
+	// Vị trí chương nghe thử Audio 60s ngẫu nhiên cố định cho cuốn sách
+	const previewChapterIdx = useMemo(
+		() => getFixedPreviewChapterIndex(bookSlug, tocList.length),
+		[bookSlug, tocList.length],
+	);
+
+	// Thời gian nghe thử audio tích luỹ của chương cố định (giới hạn 60 giây)
+	const [previewAudioElapsed, setPreviewAudioElapsed] = useState<number>(0);
+	const previewAudioElapsedRef = useRef<number>(0);
+	const previewAudioLastTimestampRef = useRef<number>(0);
+
 	// Reading Display Settings (Layout mode: Double / Single / Continuous Scroll)
 	const [layoutMode, setLayoutMode] = useState<PageLayoutMode>("double");
 	const [lineHeight, setLineHeight] = useState<"normal" | "relaxed">("normal");
@@ -484,6 +507,17 @@ export function DRMWebReader({
 	const [isTrialActive, setIsTrialActive] = useState<boolean>(isTrial);
 	const isTrialActiveRef = useRef<boolean>(isTrial);
 	isTrialActiveRef.current = isTrialActive;
+
+	// Kiểm tra xem độc giả có đang mở đúng chương nghe thử cố định không
+	const isViewingPreviewChapter = useMemo(() => {
+		if (!isTrialActive || tocList.length === 0) return false;
+		const target = tocList[previewChapterIdx];
+		if (!target) return false;
+		return Boolean(
+			(target.href && activeChapterHref && (activeChapterHref.includes(target.href) || target.href.includes(activeChapterHref))) ||
+			target.id === activeChapterHref
+		);
+	}, [isTrialActive, tocList, previewChapterIdx, activeChapterHref]);
 
 	const [totalPages, setTotalPages] = useState<number>(isTrial ? 15 : 150);
 	const [readPercentage, setReadPercentage] = useState<number>(1);
@@ -547,6 +581,9 @@ export function DRMWebReader({
 
 	// Text selection state & Top action bar
 	const [selectedText, setSelectedText] = useState<string>("");
+	const [pinnedQuote, setPinnedQuote] = useState<string>("");
+	const [surroundingContext, setSurroundingContext] = useState<string>("");
+	const surroundingContextRef = useRef<string>("");
 	const [selectedCfi, setSelectedCfi] = useState<string>("");
 	const [selectionCoords, setSelectionCoords] = useState<{ x: number; y: number; isTopFlipped: boolean } | null>(null);
 	const [savedQuotes, setSavedQuotes] = useState<SavedQuote[]>([]);
@@ -567,6 +604,7 @@ export function DRMWebReader({
 		},
 	]);
 	const [aiSpeedMode, setAiSpeedMode] = useState<"fast" | "deep">("fast");
+	const aiAbortControllerRef = useRef<AbortController | null>(null);
 
 	const storageKey = `aurabook_reader_progress_${bookSlug}`;
 	const exactPosStorageKey = `aurabook_reader_exact_pos_${bookSlug}`;
@@ -599,10 +637,46 @@ export function DRMWebReader({
 	const [isAudioPopoverOpen, setIsAudioPopoverOpen] = useState<boolean>(false);
 	const [isFontDropdownOpen, setIsFontDropdownOpen] = useState<boolean>(false);
 	const ttsAudioRef = useRef<HTMLAudioElement | null>(null);
+	const outroAudioRef = useRef<HTMLAudioElement | null>(null);
 	const sentenceQueueRef = useRef<{ sentences: string[]; currentIndex: number }>({ sentences: [], currentIndex: 0 });
 	const isContinuousPlayingRef = useRef<boolean>(false);
 	const audioPrefetchCache = useRef<Map<string, string>>(new Map());
 	const inFlightPrefetches = useRef<Set<string>>(new Set());
+
+	// DỪNG TOÀN BỘ ÂM THANH SÁCH NÓI & BẢN NGHE THỬ NGAY LẬP TỨC (Không bao giờ phát trong nền khi thoát trang)
+	const stopAllReaderAudio = useCallback(() => {
+		isContinuousPlayingRef.current = false;
+		setIsTtsPlaying(false);
+		if (ttsAudioRef.current) {
+			try {
+				ttsAudioRef.current.pause();
+				ttsAudioRef.current.src = "";
+				ttsAudioRef.current.currentTime = 0;
+			} catch {}
+		}
+		if (outroAudioRef.current) {
+			try {
+				outroAudioRef.current.pause();
+				outroAudioRef.current.src = "";
+				outroAudioRef.current.currentTime = 0;
+			} catch {}
+			outroAudioRef.current = null;
+		}
+		previewAudioLastTimestampRef.current = 0;
+	}, []);
+
+	// Dừng âm thanh ngay lập tức khi unmount hoặc rời trang (pagehide / beforeunload)
+	useEffect(() => {
+		const handleBeforeUnload = () => stopAllReaderAudio();
+		window.addEventListener("pagehide", handleBeforeUnload);
+		window.addEventListener("beforeunload", handleBeforeUnload);
+
+		return () => {
+			stopAllReaderAudio();
+			window.removeEventListener("pagehide", handleBeforeUnload);
+			window.removeEventListener("beforeunload", handleBeforeUnload);
+		};
+	}, [stopAllReaderAudio]);
 
 	const clickedParagraphRef = useRef<HTMLElement | null>(null);
 	const lastClickedCfiRef = useRef<string | null>(null);
@@ -950,10 +1024,39 @@ export function DRMWebReader({
 		}
 	}, [quotesStorageKey]);
 
-	// Auto scroll AI chat
+	// Smooth or instant scroll to bottom of chat
+	const scrollToBottom = useCallback((smooth = true) => {
+		const container = chatScrollContainerRef.current;
+		if (container) {
+			if (smooth) {
+				container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
+			} else {
+				container.scrollTop = container.scrollHeight;
+			}
+			userHasScrolledUpRef.current = false;
+			setShowScrollBottom(false);
+		}
+	}, []);
+
+	// Detect if user deliberately scrolled up to read earlier history
+	const handleChatScroll = useCallback(() => {
+		const container = chatScrollContainerRef.current;
+		if (!container) return;
+		const distanceFromBottom = container.scrollHeight - container.scrollTop - container.clientHeight;
+		const isScrolledUp = distanceFromBottom > 60;
+		userHasScrolledUpRef.current = isScrolledUp;
+		setShowScrollBottom(isScrolledUp);
+	}, []);
+
+	// Auto scroll AI chat: only scroll down if the user has NOT scrolled up
 	useEffect(() => {
 		if (isAiOpen && aiTab === "chat") {
-			aiMessagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+			if (!userHasScrolledUpRef.current) {
+				const container = chatScrollContainerRef.current;
+				if (container) {
+					container.scrollTop = container.scrollHeight;
+				}
+			}
 		}
 	}, [aiMessages, isAiOpen, aiTab]);
 
@@ -1964,13 +2067,52 @@ export function DRMWebReader({
 				}
 
 				audio.ontimeupdate = () => {
-					if (isTrialActiveRef.current && audio.currentTime >= 60) {
-						audio.pause();
-						isContinuousPlayingRef.current = false;
-						setIsTtsPlaying(false);
-						setIsPaywallOpen(true);
-						showToast("⏱️ Đã kết thúc 60s nghe thử miễn phí. Mua sách để nghe trọn vẹn!");
-						return;
+					if (isTrialActiveRef.current) {
+						const now = Date.now();
+						if (previewAudioLastTimestampRef.current > 0) {
+							const delta = (now - previewAudioLastTimestampRef.current) / 1000;
+							if (delta > 0 && delta < 2) {
+								previewAudioElapsedRef.current += delta;
+								setPreviewAudioElapsed(previewAudioElapsedRef.current);
+							}
+						}
+						previewAudioLastTimestampRef.current = now;
+
+						if (previewAudioElapsedRef.current >= 60) {
+							audio.pause();
+							isContinuousPlayingRef.current = false;
+							setIsTtsPlaying(false);
+							setIsPaywallOpen(true);
+							previewAudioLastTimestampRef.current = 0;
+							const chLabel = tocList[previewChapterIdx]?.label || "chương nghe thử";
+							showToast(`⏱️ Đã kết thúc 60s nghe thử miễn phí của "${chLabel}". Mua sách để nghe trọn vẹn!`);
+							// Tự động phát âm thanh thông báo kết thúc nghe thử theo yêu cầu
+							try {
+								const outroText =
+									"Đã hết phần nghe thử, để có thể có một trải nghiệm tốt hơn, kính mời anh chị tiến hành đặt hàng để có trải nghiệm nghe sách trọn vẹn!";
+								fetch("/api/ai/tts", {
+									method: "POST",
+									headers: { "Content-Type": "application/json" },
+									body: JSON.stringify({ text: outroText, speed: 1.0 }),
+								})
+									.then((r) => r.json())
+									.then((d: any) => {
+										if (d?.audioBase64) {
+											if (outroAudioRef.current) {
+												try {
+													outroAudioRef.current.pause();
+													outroAudioRef.current.src = "";
+												} catch {}
+											}
+											const outroAudio = new Audio(`data:audio/wav;base64,${d.audioBase64}`);
+											outroAudioRef.current = outroAudio;
+											outroAudio.play().catch(() => {});
+										}
+									})
+									.catch(() => {});
+							} catch {}
+							return;
+						}
 					}
 
 					// Vừa đọc vừa liên tục nạp trước các câu kế tiếp (Continuous Streaming Lookahead)
@@ -1984,6 +2126,7 @@ export function DRMWebReader({
 				};
 
 				audio.onended = () => {
+					previewAudioLastTimestampRef.current = Date.now();
 					if (isContinuousPlayingRef.current) {
 						// Chuyển sang câu tiếp theo liền mạch
 						playSentenceAtIndex(index + 1);
@@ -1991,11 +2134,13 @@ export function DRMWebReader({
 				};
 
 				audio.onerror = () => {
+					previewAudioLastTimestampRef.current = Date.now();
 					if (isContinuousPlayingRef.current) {
 						playSentenceAtIndex(index + 1);
 					}
 				};
 
+				previewAudioLastTimestampRef.current = Date.now();
 				await audio.play();
 				setIsTtsLoading(false);
 				setIsTtsPlaying(true);
@@ -2132,9 +2277,38 @@ export function DRMWebReader({
 		[getVisiblePageSentences, getUpcomingSentencesAhead, prefetchSentences, playSentenceAtIndex, showToast, selectedText, activeChapterHref, exactPosStorageKey],
 	);
 
+	// Phát 60s audio bắt đầu từ đầu chương nghe thử cố định
+	const startReadingFromBeginningOfChapter = useCallback(() => {
+		if (isTrialActiveRef.current && previewAudioElapsedRef.current >= 60) {
+			setIsPaywallOpen(true);
+			const chLabel = tocList[previewChapterIdx]?.label || "chương";
+			showToast(`⏱️ Đã kết thúc 60s nghe thử miễn phí của "${chLabel}". Mua sách để nghe trọn vẹn!`);
+			return;
+		}
+
+		let sentencesToRead: string[] = [];
+		const res = getVisiblePageSentences();
+		sentencesToRead = res.sentences;
+
+		if (sentencesToRead.length === 0) {
+			showToast("⚠️ Đang nạp nội dung trang để phát audio...");
+			return;
+		}
+
+		isContinuousPlayingRef.current = true;
+		sentenceQueueRef.current = { sentences: sentencesToRead, currentIndex: 0 };
+		const lookaheadCount = Math.max(14, Math.round(12 * ttsSpeedRef.current));
+		const upcomingAhead = getUpcomingSentencesAhead(sentencesToRead[0], lookaheadCount);
+		prefetchSentences(upcomingAhead.length > 0 ? upcomingAhead : sentencesToRead, 0, lookaheadCount);
+		previewAudioLastTimestampRef.current = Date.now();
+		playSentenceAtIndex(0);
+		showToast(`▶️ Bắt đầu 60s nghe thử audio: "${tocList[previewChapterIdx]?.label || "Chương nghe thử"}"`);
+	}, [getVisiblePageSentences, getUpcomingSentencesAhead, prefetchSentences, playSentenceAtIndex, showToast, tocList, previewChapterIdx]);
+
 	const handleToggleReadAloud = useCallback(() => {
 		if (isTtsPlaying) {
 			isContinuousPlayingRef.current = false;
+			previewAudioLastTimestampRef.current = 0;
 			if (userInactivityTimerRef.current) {
 				clearTimeout(userInactivityTimerRef.current);
 				userInactivityTimerRef.current = null;
@@ -2145,6 +2319,13 @@ export function DRMWebReader({
 			}
 			setIsTtsPlaying(false);
 			showToast("⏸️ Đã tạm dừng đọc");
+			return;
+		}
+
+		if (isTrialActiveRef.current && previewAudioElapsedRef.current >= 60) {
+			setIsPaywallOpen(true);
+			const chLabel = tocList[previewChapterIdx]?.label || "chương";
+			showToast(`⏱️ Đã kết thúc 60s nghe thử miễn phí của "${chLabel}". Vui lòng mua sách để nghe trọn vẹn!`);
 			return;
 		}
 
@@ -2213,6 +2394,7 @@ export function DRMWebReader({
 
 	const handleStopReadAloud = useCallback(() => {
 		isContinuousPlayingRef.current = false;
+		previewAudioLastTimestampRef.current = 0;
 		if (userInactivityTimerRef.current) {
 			clearTimeout(userInactivityTimerRef.current);
 		}
@@ -2849,6 +3031,21 @@ export function DRMWebReader({
 					if (items[0]?.href) {
 						setActiveChapterHref(items[0].href);
 					}
+
+					// Tự động mở chương nghe thử cố định nếu có tham số chapterPreview=1 hoặc audioPreview=1
+					if (typeof window !== "undefined" && (window.location.search.includes("chapterPreview=1") || window.location.search.includes("audioPreview=1"))) {
+						const previewIdx = getFixedPreviewChapterIndex(bookSlug, items.length);
+						const targetChapter = items[previewIdx];
+						if (targetChapter?.href) {
+							setTimeout(() => {
+								if (renditionRef.current) {
+									renditionRef.current.display(targetChapter.href).catch(() => {});
+									setActiveChapterHref(targetChapter.href);
+									showToast(`🎧 Đang mở chương nghe thử cố định: "${targetChapter.label}"!`);
+								}
+							}, 800);
+						}
+					}
 				} else {
 					// Fallback mock chapters if epub has no TOC
 					const fallbackItems = [
@@ -3138,14 +3335,68 @@ export function DRMWebReader({
 					}, 120);
 				});
 
+				// Hàm trích xuất ngữ cảnh các đoạn văn xung quanh đoạn trích (trước và sau)
+				const extractSurroundingParagraphs = (range: Range | null, doc?: Document): string => {
+					if (!range) return "";
+					try {
+						let node: Node | null = range.startContainer;
+						let blockEl: HTMLElement | null = null;
+						const blockTags = new Set(["P", "DIV", "LI", "BLOCKQUOTE", "SECTION", "ARTICLE", "H1", "H2", "H3", "H4", "H5", "H6"]);
+						while (node && node !== doc?.body && node !== doc?.documentElement) {
+							if (node.nodeType === Node.ELEMENT_NODE && blockTags.has((node as HTMLElement).tagName.toUpperCase())) {
+								blockEl = node as HTMLElement;
+								break;
+							}
+							node = node.parentElement;
+						}
+						if (!blockEl) {
+							blockEl = (range.startContainer.nodeType === Node.ELEMENT_NODE ? range.startContainer : range.startContainer.parentElement) as HTMLElement;
+						}
+						if (!blockEl) return "";
+
+						// Lấy tối đa 3 đoạn văn trước
+						const prevArr: string[] = [];
+						let prev = blockEl.previousElementSibling;
+						while (prev && prevArr.length < 3) {
+							const txt = prev.textContent?.trim();
+							if (txt && txt.length > 3) prevArr.unshift(txt);
+							prev = prev.previousElementSibling;
+						}
+
+						// Đoạn văn hiện tại
+						const currTxt = blockEl.textContent?.trim() || "";
+
+						// Lấy tối đa 3 đoạn văn sau
+						const nextArr: string[] = [];
+						let next = blockEl.nextElementSibling;
+						while (next && nextArr.length < 3) {
+							const txt = next.textContent?.trim();
+							if (txt && txt.length > 3) nextArr.push(txt);
+							next = next.nextElementSibling;
+						}
+
+						return [...prevArr, currTxt, ...nextArr].filter(Boolean).join("\n\n");
+					} catch (err) {
+						console.warn("Could not extract surrounding context:", err);
+						return "";
+					}
+				};
+
 				// Cập nhật tọa độ bôi đen chính xác khi người dùng nhả chuột
 				contents.document.addEventListener("mouseup", () => {
 					setTimeout(() => {
 						const sel = contents?.window?.getSelection();
 						const txt = sel ? sel.toString().trim() : "";
 						if (txt && txt.length > 1 && sel && sel.rangeCount > 0) {
+							setSelectedText(txt);
+							setPinnedQuote(txt);
 							try {
 								const range = sel.getRangeAt(0);
+								const ctx = extractSurroundingParagraphs(range, contents.document);
+								if (ctx) {
+									setSurroundingContext(ctx);
+									surroundingContextRef.current = ctx;
+								}
 								const rangeRect = range.getBoundingClientRect();
 								const iWin = contents?.window || contents?.document?.defaultView;
 								const iframe = (iWin?.frameElement || viewerRef.current?.querySelector("iframe")) as HTMLIFrameElement | null;
@@ -3172,10 +3423,46 @@ export function DRMWebReader({
 				const text = selection ? selection.toString().trim() : "";
 				if (text && text.length > 1) {
 					setSelectedText(text);
+					setPinnedQuote(text);
 					setSelectedCfi(cfiRange);
 					try {
 						const range = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
 						if (range) {
+							const blockTags = new Set(["P", "DIV", "LI", "BLOCKQUOTE", "SECTION", "ARTICLE", "H1", "H2", "H3", "H4", "H5", "H6"]);
+							let node: Node | null = range.startContainer;
+							let blockEl: HTMLElement | null = null;
+							while (node && node !== contents?.document?.body && node !== contents?.document?.documentElement) {
+								if (node.nodeType === Node.ELEMENT_NODE && blockTags.has((node as HTMLElement).tagName.toUpperCase())) {
+									blockEl = node as HTMLElement;
+									break;
+								}
+								node = node.parentElement;
+							}
+							if (!blockEl) {
+								blockEl = (range.startContainer.nodeType === Node.ELEMENT_NODE ? range.startContainer : range.startContainer.parentElement) as HTMLElement;
+							}
+							if (blockEl) {
+								const prevArr: string[] = [];
+								let prev = blockEl.previousElementSibling;
+								while (prev && prevArr.length < 3) {
+									const pTxt = prev.textContent?.trim();
+									if (pTxt && pTxt.length > 3) prevArr.unshift(pTxt);
+									prev = prev.previousElementSibling;
+								}
+								const currTxt = blockEl.textContent?.trim() || "";
+								const nextArr: string[] = [];
+								let next = blockEl.nextElementSibling;
+								while (next && nextArr.length < 3) {
+									const nTxt = next.textContent?.trim();
+									if (nTxt && nTxt.length > 3) nextArr.push(nTxt);
+									next = next.nextElementSibling;
+								}
+								const fullCtx = [...prevArr, currTxt, ...nextArr].filter(Boolean).join("\n\n");
+								if (fullCtx) {
+									setSurroundingContext(fullCtx);
+									surroundingContextRef.current = fullCtx;
+								}
+							}
 							const rangeRect = range.getBoundingClientRect();
 							const iWin = contents?.window || contents?.document?.defaultView;
 							const iframe = (iWin?.frameElement || viewerRef.current?.querySelector("iframe")) as HTMLIFrameElement | null;
@@ -3422,6 +3709,7 @@ export function DRMWebReader({
 
 		return () => {
 			isMounted = false;
+			stopAllReaderAudio();
 			window.removeEventListener("keydown", handleKeyDown);
 			if (bookRef.current) {
 				try {
@@ -3555,8 +3843,8 @@ export function DRMWebReader({
 	const nextPage = () => {
 		registerUserManualNavigation();
 
-		// Strict hard lock for trial: cannot read beyond 15 pages
-		if (isTrialActiveRef.current && (isTrialLockedRef.current || viewedPagesRef.current.size >= 15 || currentPageRef.current >= 15)) {
+		// Strict hard lock for trial: cannot read beyond 15 pages (trừ khi đang trong chương nghe thử Audio 60s)
+		if (isTrialActiveRef.current && !isViewingPreviewChapter && (isTrialLockedRef.current || viewedPagesRef.current.size >= 15 || currentPageRef.current >= 15)) {
 			setIsTrialLocked(true);
 			setIsPaywallOpen(true);
 			showToast("Bạn đã đọc hết 15 trang đọc thử. Vui lòng mua sách để mở khóa bản quyền.");
@@ -3614,16 +3902,19 @@ export function DRMWebReader({
 		}
 	};
 
-	// Navigate to chapter: KEEP TOC OPEN & Enforce 15-page trial limit
+	// Navigate to chapter: KEEP TOC OPEN & Enforce 15-page trial limit (Mở khoá riêng chương nghe thử Audio 60s)
 	const handleNavigateChapter = (chapter: TocItem, chIdx?: number) => {
 		registerUserManualNavigation();
 
-		if (isTrialActiveRef.current) {
-			const chapterIndex = typeof chIdx === "number"
-				? chIdx
-				: tocList.findIndex(
-						(ch) => ch.id === chapter.id || (ch.href && chapter.href && (ch.href === chapter.href || ch.href.includes(chapter.href))),
-					);
+		const chapterIndex = typeof chIdx === "number"
+			? chIdx
+			: tocList.findIndex(
+					(ch) => ch.id === chapter.id || (ch.href && chapter.href && (ch.href === chapter.href || ch.href.includes(chapter.href))),
+				);
+
+		const isPreviewAudioChapter = isTrialActive && chapterIndex === previewChapterIdx;
+
+		if (isTrialActiveRef.current && !isPreviewAudioChapter) {
 			if (isTrialLockedRef.current || viewedPagesRef.current.size >= 15 || chapterIndex > 1) {
 				setIsTrialLocked(true);
 				setIsPaywallOpen(true);
@@ -3637,6 +3928,9 @@ export function DRMWebReader({
 				.display(chapter.href)
 				.then(() => {
 					setActiveChapterHref(chapter.href);
+					if (isPreviewAudioChapter) {
+						showToast(`🎧 Đang mở "${chapter.label}" - Cho phép nghe thử Audio 60s!`);
+					}
 				})
 				.catch(() => {});
 		} else {
@@ -3733,42 +4027,96 @@ export function DRMWebReader({
 
 	// Ask AI about quote
 	const handleAskAIAboutQuote = (text: string) => {
+		setPinnedQuote(text);
 		setIsAiOpen(true);
 		setAiTab("chat");
-		handleSendAIMessage(`Hãy diễn giải ý nghĩa triết lý và bối cảnh của trích dẫn này: "${text}"`, text);
+		handleSendAIMessage(`Hãy phân tích bối cảnh, các nhân vật và ý nghĩa của trích dẫn này: "${text}"`, text);
 	};
 
 	// Ask AI about selected text
 	const handleAskAIAboutSelection = () => {
-		if (!selectedText) return;
-		const quoteText = selectedText;
-		setSelectedText("");
+		const targetQuote = (selectedText || pinnedQuote).trim();
+		if (!targetQuote) return;
+		setPinnedQuote(targetQuote);
 		setIsAiOpen(true);
 		setAiTab("chat");
-		handleSendAIMessage(`Hãy diễn giải ý nghĩa triết lý và bối cảnh của đoạn văn này: "${quoteText}"`, quoteText);
+		handleSendAIMessage("Giải thích chi tiết đoạn trích này: bối cảnh, các nhân vật xuất hiện và ý nghĩa sâu sắc của đoạn trích.", targetQuote);
 	};
+
+	// Cancel ongoing AI generation
+	const handleCancelAIResponse = useCallback(() => {
+		if (aiAbortControllerRef.current) {
+			aiAbortControllerRef.current.abort();
+			aiAbortControllerRef.current = null;
+		}
+		setIsAiThinking(false);
+		setAiMessages((prev) =>
+			prev.map((m) => (m.isStreaming ? { ...m, isStreaming: false } : m))
+		);
+		showToast("Đã dừng câu trả lời của AI.");
+	}, [showToast]);
 
 	// Send manual message to AI (connected to Dify RAG Knowledge Base & Smart literature engine)
 	const handleSendAIMessage = async (promptText?: string, quoteContext?: string) => {
-		const text = (promptText || aiInput).trim();
-		if (!text) return;
+		const text = (promptText !== undefined ? promptText : aiInput).trim();
+		const quote = (quoteContext !== undefined ? quoteContext : pinnedQuote || selectedText || "").trim();
+		const surrounding = surroundingContextRef.current || surroundingContext;
+
+		// Client-side validation: prevent submitting empty query & quote
+		if (!text && !quote) {
+			const validationMsg: AIMessage = {
+				id: `ai-val-${Date.now()}`,
+				sender: "ai",
+				text: "Vui lòng nhập câu hỏi hoặc chọn một đoạn văn bản trên trang sách để AuraBook AI phân tích.",
+				timestamp: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+				isError: true,
+				errorType: "validation",
+			};
+			setAiMessages((prev) => [...prev, validationMsg]);
+			return;
+		}
 
 		const timeStr = new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
 		const userMsg: AIMessage = {
 			id: `user-${Date.now()}`,
 			sender: "user",
-			text,
+			text: text || `Phân tích đoạn trích: "${quote.slice(0, 80)}..."`,
 			timestamp: timeStr,
-			highlightQuote: quoteContext,
+			highlightQuote: quote || undefined,
 		};
 
 		const updatedMessages = [...aiMessages, userMsg];
 		setAiMessages(updatedMessages);
 		setAiInput("");
+
+		// Tự động xóa ngay lập tức đoạn trích bôi đen & đã ghim khỏi ô typing sau khi gửi câu hỏi
+		setPinnedQuote("");
+		setSelectedText("");
+		setSurroundingContext("");
+		surroundingContextRef.current = "";
+
+		// Xóa trạng thái bôi đen vật lý trên trang sách
+		try {
+			const contentsList = (renditionRef.current as any)?.getContents?.() || [];
+			contentsList.forEach((c: any) => {
+				c?.window?.getSelection()?.removeAllRanges();
+			});
+		} catch {}
+
+		if (aiInputTextareaRef.current) {
+			aiInputTextareaRef.current.style.height = "auto";
+		}
+		userHasScrolledUpRef.current = false;
+		setShowScrollBottom(false);
 		setIsAiThinking(true);
+		setTimeout(() => {
+			scrollToBottom(true);
+		}, 30);
 
 		const aiMsgId = `ai-${Date.now()}`;
 		let streamedText = "";
+		const abortController = new AbortController();
+		aiAbortControllerRef.current = abortController;
 
 		try {
 			const res = await fetch("/api/ai/reader-chat", {
@@ -3778,15 +4126,24 @@ export function DRMWebReader({
 					query: text,
 					bookTitle,
 					bookSlug,
-					quoteContext: quoteContext || "",
+					quoteContext: quote,
+					surroundingContext: surrounding,
 					user: userProfileRef.current?.email || "reader_web",
 					stream: true,
 					aiMode: aiSpeedMode,
 				}),
+				signal: abortController.signal,
 			});
 
 			if (!res.ok) {
-				throw new Error(`HTTP ${res.status}`);
+				let errDetail = `Lỗi máy chủ HTTP ${res.status}`;
+				try {
+					const errJson = (await res.json()) as any;
+					if (errJson.error) {
+						errDetail = errJson.error + (errJson.details ? `: ${errJson.details}` : "");
+					}
+				} catch {}
+				throw new Error(errDetail);
 			}
 
 			const contentType = res.headers.get("content-type") || "";
@@ -3805,6 +4162,7 @@ export function DRMWebReader({
 						sender: "ai",
 						text: "",
 						timestamp: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+						isStreaming: true,
 					},
 				]);
 
@@ -3820,13 +4178,20 @@ export function DRMWebReader({
 						if (trimmed.startsWith("data: ") && trimmed !== "data: [DONE]") {
 							try {
 								const parsed = JSON.parse(trimmed.slice(6)) as any;
+								if (parsed.error) {
+									throw new Error(parsed.error);
+								}
 								if (parsed.chunk) {
 									streamedText += parsed.chunk;
 									setAiMessages((prev) =>
-										prev.map((m) => (m.id === aiMsgId ? { ...m, text: streamedText } : m))
+										prev.map((m) => (m.id === aiMsgId ? { ...m, text: streamedText, isStreaming: true } : m))
 									);
 								}
-							} catch (_) {}
+							} catch (chunkErr: any) {
+								if (chunkErr?.message && !chunkErr.message.includes("JSON")) {
+									throw chunkErr;
+								}
+							}
 						}
 					}
 				}
@@ -3846,9 +4211,17 @@ export function DRMWebReader({
 						} catch (_) {}
 					}
 				}
+
+				// Kết thúc stream thành công: hạ cờ isStreaming
+				setAiMessages((prev) =>
+					prev.map((m) => (m.id === aiMsgId ? { ...m, isStreaming: false } : m))
+				);
 			} else {
 				// Trường hợp 2: JSON Response thông thường
 				const data = (await res.json()) as any;
+				if (data.error) {
+					throw new Error(data.error);
+				}
 				streamedText = data.answer || data.response || data.text || "";
 				setAiMessages((prev) => [
 					...prev,
@@ -3857,6 +4230,7 @@ export function DRMWebReader({
 						sender: "ai",
 						text: streamedText || `Phân tích tác phẩm từ AuraBook AI: Tác phẩm "${bookTitle}" là một tác phẩm mang nhiều giá trị nghệ thuật và nhân văn sâu sắc.`,
 						timestamp: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+						isStreaming: false,
 					},
 				]);
 			}
@@ -3868,6 +4242,7 @@ export function DRMWebReader({
 					sender: "ai",
 					text: streamedText,
 					timestamp: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+					isStreaming: false,
 				};
 				const currentSessionMessages = [...updatedMessages, finalAiMsg];
 
@@ -3882,7 +4257,7 @@ export function DRMWebReader({
 						newSessions = [
 							{
 								id: `session_${bookSlug}_${Date.now()}`,
-								title: text.slice(0, 45) + (text.length > 45 ? "..." : ""),
+								title: (text || quote).slice(0, 45) + ((text || quote).length > 45 ? "..." : ""),
 								createdAt: new Date().toLocaleString("vi-VN"),
 								bookSlug,
 								messages: currentSessionMessages,
@@ -3896,19 +4271,36 @@ export function DRMWebReader({
 					return newSessions;
 				});
 			}
-		} catch (e) {
-			console.warn("[Reader AI] Query error:", e);
-			if (!streamedText) {
-				const fallbackMsg: AIMessage = {
-					id: `ai-${Date.now()}`,
-					sender: "ai",
-					text: `Tôi đã nhận câu hỏi của bạn về tác phẩm "${bookTitle}". Bạn có thể hỏi thêm về bối cảnh, tư tưởng tác giả hoặc chọn bất kỳ trích đoạn nào trên trang sách để cùng tôi phân tích nhé!`,
-					timestamp: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
-				};
-				setAiMessages((prev) => [...prev, fallbackMsg]);
+		} catch (e: any) {
+			if (e?.name === "AbortError") {
+				// Người dùng chủ động bấm Hủy / Dừng phản hồi
+				setAiMessages((prev) =>
+					prev.map((m) => (m.id === aiMsgId ? { ...m, isStreaming: false } : m))
+				);
+				return;
 			}
+			const errMsg = e?.message || "Không thể kết nối đến máy chủ AI";
+			console.error("[Reader AI] Query error:", e);
+
+			// Xóa bỏ tin nhắn rỗng nếu đang stream dở mà bị đứt
+			setAiMessages((prev) => prev.filter((m) => m.id !== aiMsgId || m.text.trim().length > 0));
+
+			const isValError = errMsg.includes("400") || errMsg.includes("bắt buộc");
+			const errorAiMsg: AIMessage = {
+				id: `ai-err-${Date.now()}`,
+				sender: "ai",
+				text: `⚠️ **Không thể hoàn tất phản hồi từ AI**\n\n${errMsg}. Bạn có thể nhấn **Thử lại** hoặc chọn **Tóm tắt tác phẩm** bên dưới để tiếp tục đọc sách.`,
+				timestamp: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+				isError: true,
+				errorType: isValError ? "validation" : "server",
+				errorMessage: errMsg,
+				retryPrompt: text,
+				retryQuote: quote || undefined,
+			};
+			setAiMessages((prev) => [...prev, errorAiMsg]);
 		} finally {
 			setIsAiThinking(false);
+			aiAbortControllerRef.current = null;
 		}
 	};
 
@@ -4092,6 +4484,7 @@ export function DRMWebReader({
 				<div className="flex items-center gap-2.5">
 					<LinkWithChannel
 						href={backUrl}
+						onClick={stopAllReaderAudio}
 						className={buttonClassName({
 							variant: isSepia ? "ghost" : "outline-solid",
 							size: "sm",
@@ -4737,7 +5130,8 @@ export function DRMWebReader({
 									(chapter.href && activeChapterHref.includes(chapter.href)) ||
 									(chapter.href && chapter.href.includes(activeChapterHref)) ||
 									chapter.id === activeChapterHref;
-								const isLocked = isTrialActive && chIdx > 1;
+								const isPreviewAudioChapter = isTrialActive && chIdx === previewChapterIdx;
+								const isLocked = isTrialActive && chIdx > 1 && !isPreviewAudioChapter;
 
 								return (
 									<button
@@ -4750,23 +5144,33 @@ export function DRMWebReader({
 												? isSepia
 													? "bg-[#b8860b]/15 text-[#8b5a00] font-bold border-l-4 border-[#b8860b] pl-2.5 shadow-2xs" // design-tokens-allow
 													: "bg-primary/10 text-primary font-bold border-l-4 border-primary pl-2.5 shadow-2xs"
-												: isSepia
-													? "font-medium hover:bg-[#ede2cd] active:scale-[0.99]" // design-tokens-allow
-													: "font-medium text-foreground hover:bg-muted active:scale-[0.99]"
+												: isPreviewAudioChapter
+													? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400 font-semibold shadow-2xs"
+													: isSepia
+														? "font-medium hover:bg-[#ede2cd] active:scale-[0.99]" // design-tokens-allow
+														: "font-medium text-foreground hover:bg-muted active:scale-[0.99]"
 										}`}
 									>
 										<div className="flex items-center gap-2 truncate pr-2">
-											{isLocked && <Lock className="h-3 w-3 text-muted-foreground shrink-0" />}
+											{isPreviewAudioChapter ? (
+												<Headphones className="h-3.5 w-3.5 text-emerald-500 animate-pulse shrink-0" />
+											) : isLocked ? (
+												<Lock className="h-3 w-3 text-muted-foreground shrink-0" />
+											) : null}
 											<span className="truncate group-hover:underline">
 												{chapter.label}
 											</span>
 										</div>
 										<span
 											className={`text-[10px] shrink-0 font-mono ${
-												isCurrent ? "font-bold text-primary" : "opacity-60"
+												isPreviewAudioChapter
+													? "font-bold text-emerald-600 bg-emerald-500/15 px-1.5 py-0.5 rounded-full border border-emerald-500/20"
+													: isCurrent
+														? "font-bold text-primary"
+														: "opacity-60"
 											}`}
 										>
-											{isLocked ? "Khóa" : `#${chapter.id}`}
+											{isPreviewAudioChapter ? "Audio 60s" : isLocked ? "Khóa" : `#${chapter.id}`}
 										</span>
 									</button>
 								);
@@ -4777,6 +5181,35 @@ export function DRMWebReader({
 
 				{/* CENTER READING CANVAS: ADAPTS TO SINGLE, DOUBLE, OR SCROLL LAYOUT */}
 				<main className="relative flex flex-1 items-center justify-center overflow-hidden p-3 md:p-6">
+					{/* Thanh thông báo nổi cho Chương nghe thử Audio 60s cố định */}
+					{isViewingPreviewChapter && (
+						<div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2.5 px-4 py-2 rounded-full bg-card/95 border border-emerald-500/40 text-emerald-800 dark:text-emerald-300 shadow-xl backdrop-blur-md text-xs animate-in slide-in-from-top-3">
+							<Headphones className="h-4 w-4 text-emerald-500 animate-pulse shrink-0" />
+							<span className="font-semibold truncate max-w-[200px] sm:max-w-xs">
+								{tocList[previewChapterIdx]?.label || "Chương nghe thử cố định"}
+							</span>
+							<span className="text-[11px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 shrink-0">
+								{Math.max(0, 60 - Math.floor(previewAudioElapsed))}s / 60s
+							</span>
+							{isTtsPlaying ? (
+								<button
+									onClick={handleStopReadAloud}
+									className="flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500 text-white font-medium hover:bg-amber-600 transition-all shadow-xs text-xs active:scale-95"
+								>
+									<Pause className="h-3 w-3 fill-current" />
+									<span>Tạm dừng</span>
+								</button>
+							) : (
+								<button
+									onClick={startReadingFromBeginningOfChapter}
+									className="flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-600 text-white font-medium hover:bg-emerald-700 transition-all shadow-xs text-xs active:scale-95"
+								>
+									<Play className="h-3 w-3 fill-current" />
+									<span>Nghe thử 60s</span>
+								</button>
+							)}
+						</div>
+					)}
 					{/* Loading indicator */}
 					{isLoading && (
 						<div className={`absolute inset-0 z-20 flex flex-col items-center justify-center backdrop-blur-xs ${
@@ -4938,7 +5371,7 @@ export function DRMWebReader({
 								style={{ fontFamily: "'Literata', 'Merriweather', 'Lora', Georgia, serif" }}
 								title={selectedText}
 							>
-								"{selectedText}"
+								&ldquo;{selectedText}&rdquo;
 							</span>
 
 							<Button
@@ -5113,7 +5546,7 @@ export function DRMWebReader({
 												? "bg-primary text-primary-foreground shadow-2xs"
 												: "hover:text-foreground opacity-75"
 										}`}
-										title="Tốc độ siêu nhanh 1-2s (Gemma 2 2B)"
+										title="Tốc độ siêu nhanh 1-2s (Qwen 2.5 3B)"
 									>
 										⚡ Siêu tốc
 									</button>
@@ -5125,7 +5558,7 @@ export function DRMWebReader({
 												? "bg-primary text-primary-foreground shadow-2xs"
 												: "hover:text-foreground opacity-75"
 										}`}
-										title="Phân tích văn học chuyên sâu (Gemma 3 4B)"
+										title="Phân tích văn học chuyên sâu đa chiều"
 									>
 										🧠 Chuyên sâu
 									</button>
@@ -5136,122 +5569,277 @@ export function DRMWebReader({
 						{/* TAB 1: AI DIALOGUE CHAT STREAM */}
 						{aiTab === "chat" && (
 							<>
-								<div className={`flex-1 overflow-y-auto p-3.5 space-y-3.5 text-sm ${
-									isSepia ? "bg-[#f4ebd0]/40" : "bg-muted/10" // design-tokens-allow
-								}`}>
-									{aiMessages.map((msg) => (
-										<div
-											key={msg.id}
-											className={`flex flex-col max-w-[92%] p-3 leading-relaxed rounded-xl shadow-xs ${
-												msg.sender === "user"
-													? isSepia
-														? "self-end bg-[#8b5a00] text-white rounded-br-xs" // design-tokens-allow
-														: "self-end bg-primary text-primary-foreground rounded-br-xs"
-													: `${cardItemBg} self-start rounded-bl-xs border border-inherit`
-											}`}
-										>
-											{msg.highlightQuote && (
-												<div
-													className="mb-2 rounded-md border-l-2 border-primary/60 bg-black/5 dark:bg-white/5 p-2 text-xs italic font-serif leading-relaxed"
-													style={{ fontFamily: "'Literata', 'Merriweather', 'Lora', Georgia, serif" }}
-												>
-													"{msg.highlightQuote}"
-												</div>
-											)}
-											<div className="flex items-center justify-between gap-3 text-[11px] opacity-75 mb-1">
-												<span className="font-semibold">{msg.sender === "user" ? "Bạn" : "AuraBook AI"}</span>
-												<span className="tabular-nums">{msg.timestamp}</span>
-											</div>
-											{msg.sender === "ai" ? (
-												<ReaderMarkdown content={msg.text} isSepia={isSepia} />
-											) : (
-												<div className="whitespace-pre-wrap text-[14px] leading-relaxed">
-													{msg.text}
-												</div>
-											)}
-										</div>
-									))}
-									{isAiThinking && (
-										<div className={`self-start flex items-center gap-2.5 text-xs p-3 rounded-xl border border-inherit shadow-xs ${cardItemBg}`}>
-											<Loader size="sm" />
-											<span className="animate-pulse font-medium">Trợ lý AI đang tra cứu GraphRAG & phân tích tác phẩm...</span>
-										</div>
-									)}
-									<div ref={aiMessagesEndRef} />
-								</div>
-
-								{/* Quick Reading Discussion Prompts */}
-								<div className={`border-t p-2.5 ${
-									isSepia ? "border-[#d8cbb0] bg-[#ede2cd]" : "border-border bg-muted/20" // design-tokens-allow
-								}`}>
-									<div className="mb-1.5 text-[11px] font-semibold opacity-85 flex items-center gap-1">
-										<Bot className="h-3 w-3 text-primary" />
-										<span>Phân tích & Thảo luận tác phẩm:</span>
-									</div>
-									<div className="flex flex-wrap gap-1.5">
-										<button
-											onClick={() => handleSendAIMessage("Hãy diễn giải bối cảnh lịch sử và tầng nghĩa nguyên bản của phần sách này.")}
-											className={`rounded-button border px-2 py-1 text-xs text-left transition-colors ${
-												isSepia ? "bg-[#fbf0d9] border-[#d8cbb0] hover:bg-[#f4ebd0]" : "bg-card border-border hover:bg-muted" // design-tokens-allow
-											}`}
-										>
-											📖 Bối cảnh & Ý nghĩa
-										</button>
-										<button
-											onClick={() => handleSendAIMessage("Phân tích tầng nghĩa triết lý và động cơ tâm lý học trong đoạn này.")}
-											className={`rounded-button border px-2 py-1 text-xs text-left transition-colors ${
-												isSepia ? "bg-[#fbf0d9] border-[#d8cbb0] hover:bg-[#f4ebd0]" : "bg-card border-border hover:bg-muted" // design-tokens-allow
-											}`}
-										>
-											💡 Triết lý & Tâm lý học
-										</button>
-										<button
-											onClick={() => handleSendAIMessage("Đoạn trích này có thể ứng dụng vào giao tiếp và đời sống thực tế hiện nay như thế nào?")}
-											className={`rounded-button border px-2 py-1 text-xs text-left transition-colors ${
-												isSepia ? "bg-[#fbf0d9] border-[#d8cbb0] hover:bg-[#f4ebd0]" : "bg-card border-border hover:bg-muted" // design-tokens-allow
-											}`}
-										>
-											🌿 Ứng dụng thực tế
-										</button>
-										<button
-											onClick={() => handleSendAIMessage("Hãy tóm tắt ngắn gọn các luận điểm đắt giá nhất của chương này.")}
-											className={`rounded-button border px-2 py-1 text-xs text-left transition-colors ${
-												isSepia ? "bg-[#fbf0d9] border-[#d8cbb0] hover:bg-[#f4ebd0]" : "bg-card border-border hover:bg-muted" // design-tokens-allow
-											}`}
-										>
-											🔍 Tóm tắt luận điểm
-										</button>
-									</div>
-								</div>
-
-								{/* Text Chat Input */}
-								<form
-									onSubmit={(e) => {
-										e.preventDefault();
-										handleSendAIMessage();
-									}}
-									className={`flex items-center gap-2 border-t p-3 ${
-										isSepia ? "border-[#d8cbb0] bg-[#f7efe0]" : "border-border bg-card" // design-tokens-allow
-									}`}
-								>
-									<Input
-										type="text"
-										placeholder="Hỏi AI phân tích, giải nghĩa tác phẩm..."
-										value={aiInput}
-										onChange={(e) => setAiInput(e.target.value)}
-										className={`h-9 text-sm rounded-button transition-colors ${inputBg}`}
-									/>
-									<Button
-										type="submit"
-										variant="default"
-										size="icon"
-										disabled={!aiInput.trim() || isAiThinking}
-										className="h-9 w-9 shrink-0 rounded-button"
-										title="Gửi câu hỏi"
+								<div className="relative flex-1 min-h-0 flex flex-col">
+									<div
+										ref={chatScrollContainerRef}
+										onScroll={handleChatScroll}
+										className={`flex-1 overflow-y-auto p-3.5 space-y-3.5 flex flex-col text-sm scroll-smooth ${
+											isSepia ? "bg-[#f4ebd0]/40" : "bg-muted/10" // design-tokens-allow
+										}`}
 									>
-										<Send className="h-4 w-4" />
-									</Button>
-								</form>
+										{aiMessages.map((msg) => (
+											<div
+												key={msg.id}
+												style={{ borderRadius: "14px" }}
+												className={`flex flex-col max-w-[88%] p-3.5 leading-relaxed shadow-xs transition-all ${
+													msg.sender === "user"
+														? isSepia
+															? "ml-auto mr-0 self-end bg-[#8b5a00] text-white" // design-tokens-allow
+															: "ml-auto mr-0 self-end bg-primary text-primary-foreground"
+														: msg.isError
+															? "mr-auto ml-0 self-start border border-destructive/40 bg-destructive/10 text-destructive-foreground w-full"
+															: `${cardItemBg} mr-auto ml-0 self-start border border-inherit`
+												}`}
+											>
+												{msg.highlightQuote && (
+													<div
+														className="mb-2 rounded-md border-l-2 border-primary/60 bg-black/5 dark:bg-white/5 p-2 text-xs italic font-serif leading-relaxed"
+														style={{ fontFamily: "'Literata', 'Merriweather', 'Lora', Georgia, serif" }}
+													>
+														&ldquo;{msg.highlightQuote}&rdquo;
+													</div>
+												)}
+												<div className="flex items-center justify-between gap-3 text-[11px] opacity-75 mb-1">
+													<span className="font-semibold flex items-center gap-1">
+														{msg.isError ? (
+															<>
+																<ShieldAlert className="h-3 w-3 text-destructive" />
+																<span className="text-destructive font-bold">Lỗi Phản Hồi</span>
+															</>
+														) : msg.sender === "user" ? (
+															"Bạn"
+														) : (
+															"AuraBook AI"
+														)}
+													</span>
+													<span className="tabular-nums">{msg.timestamp}</span>
+												</div>
+												{msg.isError ? (
+													<div className="space-y-2 mt-1">
+														<div className="text-xs text-foreground/90 whitespace-pre-wrap leading-relaxed">
+															{msg.text}
+														</div>
+														<div className="flex flex-wrap items-center gap-2 pt-1 border-t border-destructive/20">
+															{msg.retryPrompt !== undefined && (
+																<button
+																	type="button"
+																	onClick={() => handleSendAIMessage(msg.retryPrompt, msg.retryQuote)}
+																	className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-xs"
+																>
+																	<RotateCcw className="h-3 w-3" />
+																	<span>Thử lại</span>
+																</button>
+															)}
+															<button
+																type="button"
+																onClick={() =>
+																	handleSendAIMessage(`Hãy tóm tắt ngắn gọn các luận điểm đắt giá nhất của tác phẩm "${bookTitle}".`)
+																}
+																className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md border border-border bg-card hover:bg-muted text-foreground transition-colors"
+															>
+																<BookOpen className="h-3 w-3 text-primary" />
+																<span>Tóm tắt tác phẩm</span>
+															</button>
+														</div>
+													</div>
+												) : msg.sender === "ai" ? (
+													<div>
+														<ReaderMarkdown content={msg.text} isSepia={isSepia} />
+														{msg.isStreaming && (
+															<span className="inline-block w-1.5 h-3.5 ml-1 bg-primary animate-pulse align-middle" />
+														)}
+													</div>
+												) : (
+													<div className="whitespace-pre-wrap text-[14px] leading-relaxed">
+														{msg.text}
+													</div>
+												)}
+											</div>
+										))}
+										{isAiThinking && (
+											<div
+												style={{ borderRadius: "14px" }}
+												className={`self-start mr-auto ml-0 flex items-center gap-2.5 text-xs p-3.5 max-w-[88%] w-full border border-inherit shadow-xs ${cardItemBg}`}
+											>
+												<Loader size="sm" />
+												<span className="font-medium opacity-85">Trợ lý AI đang tra cứu & tạo phản hồi...</span>
+											</div>
+										)}
+										<div ref={aiMessagesEndRef} />
+									</div>
+
+									{/* Floating Scroll to Bottom Button */}
+									{showScrollBottom && (
+										<button
+											type="button"
+											onClick={() => scrollToBottom(true)}
+											style={{ borderRadius: "10px" }}
+											className="absolute bottom-3 right-4 z-20 flex items-center gap-1.5 px-3 py-1.5 bg-primary text-primary-foreground text-xs font-medium shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all border border-primary-foreground/20"
+											title="Cuộn xuống tin mới nhất"
+										>
+											<ArrowDown className="h-3.5 w-3.5" />
+											<span>Xuống cuối</span>
+										</button>
+									)}
+								</div>
+
+								{/* Quick Reading Discussion Prompts - Clean Floating Pills */}
+								<div className="px-3 py-1 flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink-0 text-xs bg-transparent">
+									<span className="shrink-0 text-[11px] font-semibold opacity-70 flex items-center gap-1 mr-0.5">
+										<Bot className="h-3 w-3 text-primary" />
+										Gợi ý:
+									</span>
+									<button
+										type="button"
+										onClick={() => handleSendAIMessage("Hãy diễn giải bối cảnh lịch sử và tầng nghĩa nguyên bản của phần sách này.")}
+										style={{ borderRadius: "8px" }}
+										className={`shrink-0 border px-2.5 py-1 text-[11px] font-medium transition-all hover:scale-[1.02] active:scale-95 ${
+											isSepia ? "bg-[#fbf0d9] border-[#d8cbb0] text-[#433422] hover:bg-[#f4ebd0]" : "bg-card border-border hover:bg-muted text-foreground" // design-tokens-allow
+										}`}
+									>
+										📖 Bối cảnh & Ý nghĩa
+									</button>
+									<button
+										type="button"
+										onClick={() => handleSendAIMessage("Phân tích tầng nghĩa triết lý và động cơ tâm lý học trong đoạn này.")}
+										style={{ borderRadius: "8px" }}
+										className={`shrink-0 border px-2.5 py-1 text-[11px] font-medium transition-all hover:scale-[1.02] active:scale-95 ${
+											isSepia ? "bg-[#fbf0d9] border-[#d8cbb0] text-[#433422] hover:bg-[#f4ebd0]" : "bg-card border-border hover:bg-muted text-foreground" // design-tokens-allow
+										}`}
+									>
+										💡 Triết lý & Tâm lý
+									</button>
+									<button
+										type="button"
+										onClick={() => handleSendAIMessage("Đoạn trích này có thể ứng dụng vào giao tiếp và đời sống thực tế hiện nay như thế nào?")}
+										style={{ borderRadius: "8px" }}
+										className={`shrink-0 border px-2.5 py-1 text-[11px] font-medium transition-all hover:scale-[1.02] active:scale-95 ${
+											isSepia ? "bg-[#fbf0d9] border-[#d8cbb0] text-[#433422] hover:bg-[#f4ebd0]" : "bg-card border-border hover:bg-muted text-foreground" // design-tokens-allow
+										}`}
+									>
+										🌿 Ứng dụng thực tế
+									</button>
+									<button
+										type="button"
+										onClick={() => handleSendAIMessage("Hãy tóm tắt ngắn gọn các luận điểm đắt giá nhất của chương này.")}
+										style={{ borderRadius: "8px" }}
+										className={`shrink-0 border px-2.5 py-1 text-[11px] font-medium transition-all hover:scale-[1.02] active:scale-95 ${
+											isSepia ? "bg-[#fbf0d9] border-[#d8cbb0] text-[#433422] hover:bg-[#f4ebd0]" : "bg-card border-border hover:bg-muted text-foreground" // design-tokens-allow
+										}`}
+									>
+										🔍 Tóm tắt luận điểm
+									</button>
+								</div>
+
+								{/* Selected & Pinned Quote Banner */}
+								{(pinnedQuote || selectedText) && (
+									<div
+										style={{ borderRadius: "10px" }}
+										className={`mx-3 mb-2 px-3.5 py-1.5 text-xs flex items-center justify-between gap-2 border shrink-0 transition-all shadow-2xs ${
+											isSepia ? "bg-[#fbf0d9] border-[#d8cbb0] text-[#433422]" : "bg-primary/5 border-primary/20 text-primary" // design-tokens-allow
+										}`}
+									>
+										<div className="flex items-center gap-1.5 truncate">
+											<Quote className="h-3.5 w-3.5 shrink-0 opacity-70" />
+											<span className="truncate italic font-serif">Đang ghim đoạn trích: &ldquo;{(pinnedQuote || selectedText).slice(0, 65)}...&rdquo;</span>
+										</div>
+										<button
+											type="button"
+											onClick={() => {
+												setPinnedQuote("");
+												setSelectedText("");
+												setSurroundingContext("");
+												surroundingContextRef.current = "";
+											}}
+											style={{ borderRadius: "6px" }}
+											className="p-1 hover:bg-black/10 dark:hover:bg-white/10 shrink-0 text-muted-foreground hover:text-foreground transition-colors"
+											title="Bỏ ghim trích đoạn"
+										>
+											<X className="h-3.5 w-3.5" />
+										</button>
+									</div>
+								)}
+
+								{/* Modern Card-style Chat Input */}
+								<div className="p-3 pt-1 shrink-0 bg-transparent">
+									<form
+										onSubmit={(e) => {
+											e.preventDefault();
+											handleSendAIMessage();
+										}}
+										style={{ borderRadius: "14px" }}
+										className={`relative flex items-center border transition-all shadow-xs focus-within:shadow-sm focus-within:border-primary/70 pl-3.5 pr-1.5 py-1.5 ${
+											isSepia ? "bg-[#fbf0d9] border-[#d8cbb0] focus-within:bg-white/80" : "bg-background border-border/80 focus-within:bg-background" // design-tokens-allow
+										}`}
+									>
+										<textarea
+											ref={aiInputTextareaRef}
+											rows={1}
+											placeholder="Hỏi AI về tác phẩm... (Enter để gửi)"
+											value={aiInput}
+											onChange={(e) => {
+												setAiInput(e.target.value);
+												e.target.style.height = "auto";
+												e.target.style.height = `${Math.min(e.target.scrollHeight, 100)}px`;
+											}}
+											onKeyDown={(e) => {
+												if (e.key === "Enter" && !e.shiftKey) {
+													e.preventDefault();
+													if ((aiInput.trim() || pinnedQuote.trim() || selectedText.trim()) && !isAiThinking) {
+														handleSendAIMessage();
+														if (aiInputTextareaRef.current) {
+															aiInputTextareaRef.current.style.height = "auto";
+														}
+													}
+												} else if (e.key === "Escape" && isAiThinking) {
+													e.preventDefault();
+													handleCancelAIResponse();
+												}
+											}}
+											style={{ outline: "none", border: "none", boxShadow: "none" }}
+											className="flex-1 resize-none bg-transparent pl-1 pr-2 py-1 text-xs sm:text-sm outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 border-0 focus:border-0 placeholder:text-muted-foreground/60 leading-normal max-h-24 min-h-[32px]"
+										/>
+										<div className="flex items-center gap-1 shrink-0">
+											{aiInput.trim() && !isAiThinking && (
+												<button
+													type="button"
+													onClick={() => {
+														setAiInput("");
+														if (aiInputTextareaRef.current) {
+															aiInputTextareaRef.current.style.height = "auto";
+														}
+													}}
+													style={{ borderRadius: "6px" }}
+													className="p-1.5 text-muted-foreground/60 hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+													title="Xóa nội dung"
+												>
+													<X className="h-3.5 w-3.5" />
+												</button>
+											)}
+											{isAiThinking ? (
+												<button
+													type="button"
+													onClick={handleCancelAIResponse}
+													style={{ borderRadius: "8px" }}
+													className="h-8 w-8 flex items-center justify-center shrink-0 bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 shadow-xs transition-transform active:scale-90"
+													title="Dừng tạo câu trả lời (Esc)"
+												>
+													<Square className="h-3 w-3 fill-current" />
+												</button>
+											) : (
+												<button
+													type="submit"
+													disabled={!aiInput.trim() && !pinnedQuote.trim() && !selectedText.trim()}
+													style={{ borderRadius: "8px" }}
+													className="h-8 w-8 flex items-center justify-center shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs transition-transform active:scale-95 disabled:opacity-40"
+													title="Gửi câu hỏi (Enter)"
+												>
+													<Send className="h-3.5 w-3.5" />
+												</button>
+											)}
+										</div>
+									</form>
+								</div>
 							</>
 						)}
 						{/* TAB 3: CHAT HISTORY */}
@@ -5278,12 +5866,13 @@ export function DRMWebReader({
 											{viewingSession.messages.filter((m: AIMessage) => m.text).map((msg: AIMessage, idx: number) => (
 												<div
 													key={`hist-msg-${msg.id || idx}`}
-													className={`flex flex-col p-3 rounded-xl shadow-xs text-xs ${
+													style={{ borderRadius: "16px" }}
+													className={`flex flex-col p-3 shadow-xs text-xs ${
 														msg.sender === "user"
 															? isSepia
-																? "bg-[#8b5a00] text-white ml-4 rounded-br-xs" // design-tokens-allow
-																: "bg-primary text-primary-foreground ml-4 rounded-br-xs"
-															: `${cardItemBg} mr-4 rounded-bl-xs border border-inherit`
+																? "bg-[#8b5a00] text-white ml-4" // design-tokens-allow
+																: "bg-primary text-primary-foreground ml-4"
+															: `${cardItemBg} mr-4 border border-inherit`
 													}`}
 												>
 													<div className="flex items-center justify-between gap-2 text-[10px] opacity-75 mb-1">
@@ -5325,7 +5914,7 @@ export function DRMWebReader({
 										</div>
 										<h4 className="font-semibold text-xs">Chưa có lịch sử hội thoại</h4>
 										<p className="mt-1 text-[11px] leading-relaxed max-w-[220px]">
-											Các cuộc hội thoại sẽ được lưu lại khi bạn nhấn <strong>"Hội thoại mới"</strong>.
+											Các cuộc hội thoại sẽ được lưu lại khi bạn nhấn <strong>&ldquo;Hội thoại mới&rdquo;</strong>.
 										</p>
 									</div>
 								) : (
@@ -5407,7 +5996,7 @@ export function DRMWebReader({
 										</div>
 										<h4 className="font-semibold text-xs">Chưa có trích dẫn nào</h4>
 										<p className="mt-1 text-[11px] leading-relaxed max-w-[220px]">
-											Bôi đen bất kỳ đoạn văn bản nào trong sách và chọn <strong>"Lưu trích dẫn"</strong> để lưu trữ tại đây.
+											Bôi đen bất kỳ đoạn văn bản nào trong sách và chọn <strong>&ldquo;Lưu trích dẫn&rdquo;</strong> để lưu trữ tại đây.
 										</p>
 									</div>
 								) : (
@@ -5424,7 +6013,7 @@ export function DRMWebReader({
 													className="text-xs italic font-serif leading-relaxed"
 													style={{ fontFamily: "'Literata', 'Merriweather', 'Lora', Georgia, serif" }}
 												>
-													"{q.text}"
+													&ldquo;{q.text}&rdquo;
 												</p>
 											</div>
 
@@ -5541,23 +6130,26 @@ export function DRMWebReader({
 							variant="outline-solid"
 							className="mb-2 text-xs border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300"
 						>
-							Giới hạn đọc thử 15 trang đầu
+							{previewAudioElapsed >= 60 ? "Giới hạn nghe thử Audio 60s" : "Giới hạn đọc thử 15 trang đầu"}
 						</Badge>
 
 						<h3 className="font-bold text-lg tracking-tight">
-							Bạn đã hoàn thành 15 trang đọc thử!
+							{previewAudioElapsed >= 60 ? "Bạn đã hoàn thành 60s nghe thử Audio!" : "Bạn đã hoàn thành 15 trang đọc thử!"}
 						</h3>
 						<p className="mt-1 font-medium text-xs text-primary truncate max-w-sm mx-auto">
 							{bookTitle}
 						</p>
 
 						<p className="mt-3 text-xs opacity-80 leading-relaxed text-muted-foreground">
-							Quyền lợi đọc thử miễn phí áp dụng cho 15 trang liên tiếp đầu tiên. Để tiếp tục đọc toàn bộ các chương tiếp theo, mở khóa Trợ lý AI và đồng bộ ghi chú, hãy sở hữu ngay ấn phẩm này.
+							{previewAudioElapsed >= 60
+								? `Bạn vừa trải nghiệm 60 giây sách nói của "${tocList[previewChapterIdx]?.label || "chương nghe thử cố định"}". Để thưởng thức trọn vẹn toàn bộ sách nói và các chương tiếp theo, hãy sở hữu ngay ấn phẩm này.`
+								: "Quyền lợi đọc thử miễn phí áp dụng cho 15 trang liên tiếp đầu tiên. Để tiếp tục đọc toàn bộ các chương tiếp theo, mở khóa Trợ lý AI và đồng bộ ghi chú, hãy sở hữu ngay ấn phẩm này."}
 						</p>
 
 						<div className="mt-6 flex flex-col gap-2.5">
 							<LinkWithChannel
 								href={`/products/${bookSlug}`}
+								onClick={stopAllReaderAudio}
 								className="flex items-center justify-center gap-2 rounded-button bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground shadow-md transition-transform hover:scale-[1.02] active:scale-95"
 							>
 								<span>Đặt mua sách ngay</span>

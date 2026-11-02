@@ -156,7 +156,7 @@ export function AddToCart({
 			</div>
 
 			{/* Audiobook Teaser Audio Preview (aurabook_apps.audio) */}
-			<AudioTeaserPlayer />
+			<AudioTeaserPlayer productId={productSlug} productTitle={productName} />
 
 			<div className="flex items-center justify-center gap-6 pt-2 text-xs text-muted-foreground">
 				<span className="flex items-center gap-1.5">

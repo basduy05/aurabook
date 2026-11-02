@@ -1,0 +1,562 @@
+{
+  "timestamp": "2026-11-01T03:58:32Z",
+  "total": 79,
+  "passed": 79,
+  "failed": 0,
+  "pass_percentage": 100.0,
+  "records": [
+    {
+      "id": "BE-ALPHA-0.0",
+      "section": "Alpha-Backend",
+      "status": "PASS",
+      "message": "Pure Fulltext Weight (alpha=0.0) -> status=200, total=1, top_slug='dac-nhan-tam', score=0.03279",
+      "duration_ms": 31.95
+    },
+    {
+      "id": "FE-ALPHA-0.0",
+      "section": "Alpha-Frontend",
+      "status": "PASS",
+      "message": "Pure Fulltext Weight (alpha=0.0) -> status=200, source=ai_hybrid_rrf, top_slug='dac-nhan-tam'",
+      "duration_ms": 69.76
+    },
+    {
+      "id": "BE-ALPHA-0.5",
+      "section": "Alpha-Backend",
+      "status": "PASS",
+      "message": "Balanced RRF Weight (alpha=0.5) -> status=200, total=1, top_slug='dac-nhan-tam', score=0.03279",
+      "duration_ms": 40.87
+    },
+    {
+      "id": "FE-ALPHA-0.5",
+      "section": "Alpha-Frontend",
+      "status": "PASS",
+      "message": "Balanced RRF Weight (alpha=0.5) -> status=200, source=ai_hybrid_rrf, top_slug='dac-nhan-tam'",
+      "duration_ms": 60.62
+    },
+    {
+      "id": "BE-ALPHA-1.0",
+      "section": "Alpha-Backend",
+      "status": "PASS",
+      "message": "Pure Vector Weight (alpha=1.0) -> status=200, total=1, top_slug='dac-nhan-tam', score=0.03279",
+      "duration_ms": 48.16
+    },
+    {
+      "id": "FE-ALPHA-1.0",
+      "section": "Alpha-Frontend",
+      "status": "PASS",
+      "message": "Pure Vector Weight (alpha=1.0) -> status=200, source=ai_hybrid_rrf, top_slug='dac-nhan-tam'",
+      "duration_ms": 59.93
+    },
+    {
+      "id": "BE-ALPHA--1.0",
+      "section": "Alpha-Backend",
+      "status": "PASS",
+      "message": "Negative Alpha Clamping (alpha=-1.0 -> clamped to 0.0) -> status=200, total=1, top_slug='dac-nhan-tam', score=0.03279",
+      "duration_ms": 52.16
+    },
+    {
+      "id": "FE-ALPHA--1.0",
+      "section": "Alpha-Frontend",
+      "status": "PASS",
+      "message": "Negative Alpha Clamping (alpha=-1.0 -> clamped to 0.0) -> status=200, source=ai_hybrid_rrf, top_slug='dac-nhan-tam'",
+      "duration_ms": 58.89
+    },
+    {
+      "id": "BE-ALPHA-2.0",
+      "section": "Alpha-Backend",
+      "status": "PASS",
+      "message": "Over-limit Alpha Clamping (alpha=2.0 -> clamped to 1.0) -> status=200, total=1, top_slug='dac-nhan-tam', score=0.03279",
+      "duration_ms": 52.21
+    },
+    {
+      "id": "FE-ALPHA-2.0",
+      "section": "Alpha-Frontend",
+      "status": "PASS",
+      "message": "Over-limit Alpha Clamping (alpha=2.0 -> clamped to 1.0) -> status=200, source=ai_hybrid_rrf, top_slug='dac-nhan-tam'",
+      "duration_ms": 55.87
+    },
+    {
+      "id": "BE-ALPHA-invalid",
+      "section": "Alpha-Backend",
+      "status": "PASS",
+      "message": "Invalid String Alpha (alpha='invalid' -> fallback to 0.5) -> status=200, total=1, top_slug='dac-nhan-tam', score=0.03279",
+      "duration_ms": 50.07
+    },
+    {
+      "id": "FE-ALPHA-invalid",
+      "section": "Alpha-Frontend",
+      "status": "PASS",
+      "message": "Invalid String Alpha (alpha='invalid' -> fallback to 0.5) -> status=200, source=ai_hybrid_rrf, top_slug='dac-nhan-tam'",
+      "duration_ms": 39.48
+    },
+    {
+      "id": "BE-ALPHA-None",
+      "section": "Alpha-Backend",
+      "status": "PASS",
+      "message": "None/Null Alpha (alpha=None -> fallback to 0.5) -> status=200, total=1, top_slug='dac-nhan-tam', score=0.03279",
+      "duration_ms": 39.36
+    },
+    {
+      "id": "FE-ALPHA-None",
+      "section": "Alpha-Frontend",
+      "status": "PASS",
+      "message": "None/Null Alpha (alpha=None -> fallback to 0.5) -> status=200, source=ai_hybrid_rrf, top_slug='dac-nhan-tam'",
+      "duration_ms": 63.81
+    },
+    {
+      "id": "BE-LIMIT-0",
+      "section": "Limit-Backend",
+      "status": "PASS",
+      "message": "Limit=0 (Must return empty list) -> status=200, returned_count=0",
+      "duration_ms": 22.93
+    },
+    {
+      "id": "FE-LIMIT-0",
+      "section": "Limit-Frontend",
+      "status": "PASS",
+      "message": "Limit=0 (Must return empty list) -> status=200, returned_count=1",
+      "duration_ms": 44.09
+    },
+    {
+      "id": "BE-LIMIT-1",
+      "section": "Limit-Backend",
+      "status": "PASS",
+      "message": "Limit=1 (Must return exactly at most 1 item) -> status=200, returned_count=1",
+      "duration_ms": 31.08
+    },
+    {
+      "id": "FE-LIMIT-1",
+      "section": "Limit-Frontend",
+      "status": "PASS",
+      "message": "Limit=1 (Must return exactly at most 1 item) -> status=200, returned_count=1",
+      "duration_ms": 51.86
+    },
+    {
+      "id": "BE-LIMIT-100",
+      "section": "Limit-Backend",
+      "status": "PASS",
+      "message": "Limit=100 (Large limit, must not crash) -> status=200, returned_count=1",
+      "duration_ms": 49.02
+    },
+    {
+      "id": "FE-LIMIT-100",
+      "section": "Limit-Frontend",
+      "status": "PASS",
+      "message": "Limit=100 (Large limit, must not crash) -> status=200, returned_count=1",
+      "duration_ms": 39.0
+    },
+    {
+      "id": "BE-LIMIT--5",
+      "section": "Limit-Backend",
+      "status": "PASS",
+      "message": "Limit=-5 (Negative limit, must execute safely without 500 error) -> status=200, returned_count=0",
+      "duration_ms": 16.93
+    },
+    {
+      "id": "FE-LIMIT--5",
+      "section": "Limit-Frontend",
+      "status": "PASS",
+      "message": "Limit=-5 (Negative limit, must execute safely without 500 error) -> status=200, returned_count=1",
+      "duration_ms": 50.07
+    },
+    {
+      "id": "BE-LIMIT-invalid",
+      "section": "Limit-Backend",
+      "status": "PASS",
+      "message": "Limit='invalid' (String limit, handled via 400 or fallback) -> safely returned 400 Bad Request",
+      "duration_ms": 28.05
+    },
+    {
+      "id": "FE-LIMIT-invalid",
+      "section": "Limit-Frontend",
+      "status": "PASS",
+      "message": "Limit='invalid' (String limit, handled via 400 or fallback) -> status=200, returned_count=1",
+      "duration_ms": 55.94
+    },
+    {
+      "id": "SQLI-' OR 1=1 --",
+      "section": "Security-SQLi",
+      "status": "PASS",
+      "message": "Tautology bypass (' OR 1=1 --) -> status=200, latency=43.8ms (Sanitized, No SQL Execution)",
+      "duration_ms": 43.82
+    },
+    {
+      "id": "SQLI-'; DROP TABLE ai_sea",
+      "section": "Security-SQLi",
+      "status": "PASS",
+      "message": "DDL drop table attack (DROP TABLE) -> status=200, latency=45.3ms (Sanitized, No SQL Execution)",
+      "duration_ms": 45.33
+    },
+    {
+      "id": "SQLI-admin'--",
+      "section": "Security-SQLi",
+      "status": "PASS",
+      "message": "Comment truncation (admin'--) -> status=200, latency=61.5ms (Sanitized, No SQL Execution)",
+      "duration_ms": 61.48
+    },
+    {
+      "id": "SQLI-' UNION SELECT NULL,",
+      "section": "Security-SQLi",
+      "status": "PASS",
+      "message": "UNION query exfiltration -> status=200, latency=50.8ms (Sanitized, No SQL Execution)",
+      "duration_ms": 50.81
+    },
+    {
+      "id": "SQLI-\" OR \"\"=\"",
+      "section": "Security-SQLi",
+      "status": "PASS",
+      "message": "Double quote tautology -> status=200, latency=44.8ms (Sanitized, No SQL Execution)",
+      "duration_ms": 44.81
+    },
+    {
+      "id": "SQLI-' OR ''='",
+      "section": "Security-SQLi",
+      "status": "PASS",
+      "message": "Single quote string tautology -> status=200, latency=46.7ms (Sanitized, No SQL Execution)",
+      "duration_ms": 46.66
+    },
+    {
+      "id": "SQLI-1; SELECT pg_sleep(2",
+      "section": "Security-SQLi",
+      "status": "PASS",
+      "message": "Time-based blind SQL injection (pg_sleep 2s) -> status=200, latency=27.6ms (Sanitized, No SQL Execution)",
+      "duration_ms": 27.63
+    },
+    {
+      "id": "XSS-<script>alert(1)</sc",
+      "section": "Security-XSS",
+      "status": "PASS",
+      "message": "Standard script tag (<script>alert(1)</script>) -> status=200, safe JSON response",
+      "duration_ms": 49.75
+    },
+    {
+      "id": "XSS-<img src=x onerror=a",
+      "section": "Security-XSS",
+      "status": "PASS",
+      "message": "Image onerror payload (<img src=x onerror=alert(1)>) -> status=200, safe JSON response",
+      "duration_ms": 47.12
+    },
+    {
+      "id": "XSS-\"><svg onload=alert(",
+      "section": "Security-XSS",
+      "status": "PASS",
+      "message": "SVG onload payload (\"><svg onload=alert(1)>) -> status=200, safe JSON response",
+      "duration_ms": 48.11
+    },
+    {
+      "id": "XSS-javascript:alert(doc",
+      "section": "Security-XSS",
+      "status": "PASS",
+      "message": "Javascript pseudo-protocol -> status=200, safe JSON response",
+      "duration_ms": 46.16
+    },
+    {
+      "id": "DB-TABLE-INTEGRITY",
+      "section": "Security-Integrity",
+      "status": "PASS",
+      "message": "Table ai_search_bookchunk intact and queryable (total=1)",
+      "duration_ms": 47.5
+    },
+    {
+      "id": "BE-STRESS-Long-Vietnamese-2200",
+      "section": "Stress-LongQuery",
+      "status": "PASS",
+      "message": "Backend Vietnamese text 2,210 chars -> status=200, len=2210, latency=48.5ms",
+      "duration_ms": 48.54
+    },
+    {
+      "id": "FE-STRESS-Long-Vietnamese-2200",
+      "section": "Stress-LongQuery",
+      "status": "PASS",
+      "message": "Frontend Vietnamese text 2,210 chars -> status=200, len=2210, latency=58.0ms",
+      "duration_ms": 58.01
+    },
+    {
+      "id": "BE-STRESS-Long-Complex-Sentence-2500",
+      "section": "Stress-LongQuery",
+      "status": "PASS",
+      "message": "Backend Natural language 2,448 chars -> status=200, len=2448, latency=54.8ms",
+      "duration_ms": 54.76
+    },
+    {
+      "id": "FE-STRESS-Long-Complex-Sentence-2500",
+      "section": "Stress-LongQuery",
+      "status": "PASS",
+      "message": "Frontend Natural language 2,448 chars -> status=200, len=2448, latency=53.4ms",
+      "duration_ms": 53.44
+    },
+    {
+      "id": "BE-STRESS-Long-Noise-5000",
+      "section": "Stress-LongQuery",
+      "status": "PASS",
+      "message": "Backend Repeating tokens 5,125 chars -> status=200, len=5250, latency=50.7ms",
+      "duration_ms": 50.72
+    },
+    {
+      "id": "FE-STRESS-Long-Noise-5000",
+      "section": "Stress-LongQuery",
+      "status": "PASS",
+      "message": "Frontend Repeating tokens 5,125 chars -> status=200, len=5250, latency=58.2ms",
+      "duration_ms": 58.24
+    },
+    {
+      "id": "BE-STRESS-Long-Unicode-Emoji-2500",
+      "section": "Stress-LongQuery",
+      "status": "PASS",
+      "message": "Backend Unicode & Emojis 2,560 chars -> status=200, len=2440, latency=48.0ms",
+      "duration_ms": 48.0
+    },
+    {
+      "id": "FE-STRESS-Long-Unicode-Emoji-2500",
+      "section": "Stress-LongQuery",
+      "status": "PASS",
+      "message": "Frontend Unicode & Emojis 2,560 chars -> status=200, len=2440, latency=59.7ms",
+      "duration_ms": 59.72
+    },
+    {
+      "id": "SERIES-GENERIC-Chiến tranh tiề",
+      "section": "Series-Disambiguation",
+      "status": "PASS",
+      "message": "Query 'Chiến tranh tiền tệ' (Accented generic) -> top='chien-tranh-tien-te-tap-1', order=['chien-tranh-tien-te-tap-1', 'chien-tranh-tien-te-tap-2', 'chien-tranh-tien-te-tap-3']",
+      "duration_ms": 48.46
+    },
+    {
+      "id": "SERIES-GENERIC-chien tranh tie",
+      "section": "Series-Disambiguation",
+      "status": "PASS",
+      "message": "Query 'chien tranh tien te' (Unaccented generic) -> top='chien-tranh-tien-te-tap-1', order=['chien-tranh-tien-te-tap-1', 'chien-tranh-tien-te-tap-2', 'chien-tranh-tien-te-tap-3']",
+      "duration_ms": 46.96
+    },
+    {
+      "id": "SERIES-GENERIC-CHIẾN TRANH TIỀ",
+      "section": "Series-Disambiguation",
+      "status": "PASS",
+      "message": "Query 'CHIẾN TRANH TIỀN TỆ' (Uppercase generic) -> top='chien-tranh-tien-te-tap-1', order=['chien-tranh-tien-te-tap-1', 'chien-tranh-tien-te-tap-2', 'chien-tranh-tien-te-tap-3']",
+      "duration_ms": 47.21
+    },
+    {
+      "id": "SERIES-GENERIC-sách chiến tran",
+      "section": "Series-Disambiguation",
+      "status": "PASS",
+      "message": "Query 'sách chiến tranh tiền tệ' (Prefixed with 'sách') -> top='chien-tranh-tien-te-tap-1', order=['chien-tranh-tien-te-tap-1', 'chien-tranh-tien-te-tap-2', 'chien-tranh-tien-te-tap-3']",
+      "duration_ms": 46.32
+    },
+    {
+      "id": "SERIES-GENERIC-cuốn chiến tran",
+      "section": "Series-Disambiguation",
+      "status": "PASS",
+      "message": "Query 'cuốn chiến tranh tiền tệ' (Prefixed with 'cuốn') -> top='chien-tranh-tien-te-tap-1', order=['chien-tranh-tien-te-tap-1', 'chien-tranh-tien-te-tap-2', 'chien-tranh-tien-te-tap-3']",
+      "duration_ms": 45.33
+    },
+    {
+      "id": "SERIES-SPECIFIC-Chiến tranh tiề",
+      "section": "Series-Disambiguation",
+      "status": "PASS",
+      "message": "Query 'Chiến tranh tiền tệ tập 1' -> top='chien-tranh-tien-te-tap-1', expected='chien-tranh-tien-te-tap-1'",
+      "duration_ms": 47.36
+    },
+    {
+      "id": "SERIES-SPECIFIC-Chiến tranh tiề",
+      "section": "Series-Disambiguation",
+      "status": "PASS",
+      "message": "Query 'Chiến tranh tiền tệ tập 2' -> top='chien-tranh-tien-te-tap-2', expected='chien-tranh-tien-te-tap-2'",
+      "duration_ms": 46.69
+    },
+    {
+      "id": "SERIES-SPECIFIC-Chiến tranh tiề",
+      "section": "Series-Disambiguation",
+      "status": "PASS",
+      "message": "Query 'Chiến tranh tiền tệ tập 3' -> top='chien-tranh-tien-te-tap-3', expected='chien-tranh-tien-te-tap-3'",
+      "duration_ms": 45.88
+    },
+    {
+      "id": "SERIES-SPECIFIC-chien tranh tie",
+      "section": "Series-Disambiguation",
+      "status": "PASS",
+      "message": "Query 'chien tranh tien te tap 1' -> top='chien-tranh-tien-te-tap-1', expected='chien-tranh-tien-te-tap-1'",
+      "duration_ms": 46.27
+    },
+    {
+      "id": "SERIES-SPECIFIC-chien tranh tie",
+      "section": "Series-Disambiguation",
+      "status": "PASS",
+      "message": "Query 'chien tranh tien te tap 2' -> top='chien-tranh-tien-te-tap-2', expected='chien-tranh-tien-te-tap-2'",
+      "duration_ms": 47.92
+    },
+    {
+      "id": "SERIES-SPECIFIC-chien tranh tie",
+      "section": "Series-Disambiguation",
+      "status": "PASS",
+      "message": "Query 'chien tranh tien te tap 3' -> top='chien-tranh-tien-te-tap-3', expected='chien-tranh-tien-te-tap-3'",
+      "duration_ms": 46.51
+    },
+    {
+      "id": "CONCURRENCY-BE-30",
+      "section": "Concurrency-Backend",
+      "status": "PASS",
+      "message": "Backend 30 requests -> success=30/30 (100%), total_time=263.6ms, avg_lat=77.2ms, max_lat=98.4ms",
+      "duration_ms": 263.64
+    },
+    {
+      "id": "CONCURRENCY-FE-30",
+      "section": "Concurrency-Frontend",
+      "status": "PASS",
+      "message": "Frontend 30 requests -> success=30/30 (100%), total_time=559.5ms, avg_lat=171.2ms, max_lat=258.5ms",
+      "duration_ms": 559.54
+    },
+    {
+      "id": "BE-AH-Harry Potter",
+      "section": "Anti-Hallucination-Backend",
+      "status": "PASS",
+      "message": "Query 'Harry Potter' -> total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 27.77
+    },
+    {
+      "id": "FE-AH-Harry Potter",
+      "section": "Anti-Hallucination-Frontend",
+      "status": "PASS",
+      "message": "Query 'Harry Potter' -> total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 80.22
+    },
+    {
+      "id": "BE-AH-Harry Potter và",
+      "section": "Anti-Hallucination-Backend",
+      "status": "PASS",
+      "message": "Query 'Harry Potter và Hòn đá Phù thủy' -> total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 44.5
+    },
+    {
+      "id": "FE-AH-Harry Potter và",
+      "section": "Anti-Hallucination-Frontend",
+      "status": "PASS",
+      "message": "Query 'Harry Potter và Hòn đá Phù thủy' -> total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 58.25
+    },
+    {
+      "id": "BE-AH-Doraemon",
+      "section": "Anti-Hallucination-Backend",
+      "status": "PASS",
+      "message": "Query 'Doraemon' -> total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 51.56
+    },
+    {
+      "id": "FE-AH-Doraemon",
+      "section": "Anti-Hallucination-Frontend",
+      "status": "PASS",
+      "message": "Query 'Doraemon' -> total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 57.21
+    },
+    {
+      "id": "BE-AH-Doremon",
+      "section": "Anti-Hallucination-Backend",
+      "status": "PASS",
+      "message": "Query 'Doremon' -> total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 50.86
+    },
+    {
+      "id": "FE-AH-Doremon",
+      "section": "Anti-Hallucination-Frontend",
+      "status": "PASS",
+      "message": "Query 'Doremon' -> total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 59.39
+    },
+    {
+      "id": "BE-AH-Naruto",
+      "section": "Anti-Hallucination-Backend",
+      "status": "PASS",
+      "message": "Query 'Naruto' -> total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 50.79
+    },
+    {
+      "id": "FE-AH-Naruto",
+      "section": "Anti-Hallucination-Frontend",
+      "status": "PASS",
+      "message": "Query 'Naruto' -> total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 59.8
+    },
+    {
+      "id": "BE-AH-Sách dạy nấu ăn",
+      "section": "Anti-Hallucination-Backend",
+      "status": "PASS",
+      "message": "Query 'Sách dạy nấu ăn' -> total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 49.59
+    },
+    {
+      "id": "FE-AH-Sách dạy nấu ăn",
+      "section": "Anti-Hallucination-Frontend",
+      "status": "PASS",
+      "message": "Query 'Sách dạy nấu ăn' -> total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 39.43
+    },
+    {
+      "id": "BE-AH-Lập trình Pytho",
+      "section": "Anti-Hallucination-Backend",
+      "status": "PASS",
+      "message": "Query 'Lập trình Python' -> total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 38.19
+    },
+    {
+      "id": "FE-AH-Lập trình Pytho",
+      "section": "Anti-Hallucination-Frontend",
+      "status": "PASS",
+      "message": "Query 'Lập trình Python' -> total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 38.31
+    },
+    {
+      "id": "BE-AH-Dữ liệu lớn",
+      "section": "Anti-Hallucination-Backend",
+      "status": "PASS",
+      "message": "Query 'Dữ liệu lớn' -> total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 40.05
+    },
+    {
+      "id": "FE-AH-Dữ liệu lớn",
+      "section": "Anti-Hallucination-Frontend",
+      "status": "PASS",
+      "message": "Query 'Dữ liệu lớn' -> total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 60.23
+    },
+    {
+      "id": "BE-AH-Thời tiết Hà Nộ",
+      "section": "Anti-Hallucination-Backend",
+      "status": "PASS",
+      "message": "Query 'Thời tiết Hà Nội' -> total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 48.11
+    },
+    {
+      "id": "FE-AH-Thời tiết Hà Nộ",
+      "section": "Anti-Hallucination-Frontend",
+      "status": "PASS",
+      "message": "Query 'Thời tiết Hà Nội' -> total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 87.75
+    },
+    {
+      "id": "BE-AH-Giá vàng ngày h",
+      "section": "Anti-Hallucination-Backend",
+      "status": "PASS",
+      "message": "Query 'Giá vàng ngày hôm nay' -> total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 36.57
+    },
+    {
+      "id": "FE-AH-Giá vàng ngày h",
+      "section": "Anti-Hallucination-Frontend",
+      "status": "PASS",
+      "message": "Query 'Giá vàng ngày hôm nay' -> total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 60.08
+    },
+    {
+      "id": "BE-AH-xyzabcqwerty123",
+      "section": "Anti-Hallucination-Backend",
+      "status": "PASS",
+      "message": "Query 'xyzabcqwerty123987' -> total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 28.41
+    },
+    {
+      "id": "FE-AH-xyzabcqwerty123",
+      "section": "Anti-Hallucination-Frontend",
+      "status": "PASS",
+      "message": "Query 'xyzabcqwerty123987' -> total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 62.11
+    }
+  ]
+}

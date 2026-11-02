@@ -1,0 +1,506 @@
+{
+  "timestamp": "2026-10-31T23:25:09Z",
+  "total": 71,
+  "passed": 70,
+  "failed": 1,
+  "pass_percentage": 98.6,
+  "records": [
+    {
+      "category": "Boundary-Alpha-Backend",
+      "test_name": "alpha=0.0 (Pure fulltext weight)",
+      "status": "PASS",
+      "details": "status=200, total=1, top_slug=dac-nhan-tam, score=0.03279",
+      "duration_ms": 175.25
+    },
+    {
+      "category": "Boundary-Alpha-Backend",
+      "test_name": "alpha=0.5 (Balanced RRF)",
+      "status": "PASS",
+      "details": "status=200, total=1, top_slug=dac-nhan-tam, score=0.03279",
+      "duration_ms": 188.2
+    },
+    {
+      "category": "Boundary-Alpha-Backend",
+      "test_name": "alpha=1.0 (Pure vector weight)",
+      "status": "PASS",
+      "details": "status=200, total=1, top_slug=dac-nhan-tam, score=0.03279",
+      "duration_ms": 106.36
+    },
+    {
+      "category": "Boundary-Alpha-Backend",
+      "test_name": "alpha=-1.0 (Negative alpha, should clamp to 0.0)",
+      "status": "PASS",
+      "details": "status=200, total=1, top_slug=dac-nhan-tam, score=0.03279",
+      "duration_ms": 114.66
+    },
+    {
+      "category": "Boundary-Alpha-Backend",
+      "test_name": "alpha=2.0 (Alpha > 1.0, should clamp to 1.0)",
+      "status": "PASS",
+      "details": "status=200, total=1, top_slug=dac-nhan-tam, score=0.03279",
+      "duration_ms": 143.01
+    },
+    {
+      "category": "Boundary-Alpha-Backend",
+      "test_name": "alpha='invalid' (String alpha, should fallback to 0.5)",
+      "status": "PASS",
+      "details": "status=200, total=1, top_slug=dac-nhan-tam, score=0.03279",
+      "duration_ms": 136.31
+    },
+    {
+      "category": "Boundary-Alpha-Backend",
+      "test_name": "alpha=None (Null alpha, should fallback to 0.5)",
+      "status": "PASS",
+      "details": "status=200, total=1, top_slug=dac-nhan-tam, score=0.03279",
+      "duration_ms": 128.09
+    },
+    {
+      "category": "Boundary-Limit-Backend",
+      "test_name": "limit=0 (Should return 0 items)",
+      "status": "PASS",
+      "details": "status=200, returned_count=0",
+      "duration_ms": 128.94
+    },
+    {
+      "category": "Boundary-Limit-Backend",
+      "test_name": "limit=1 (Should return at most 1 item)",
+      "status": "PASS",
+      "details": "status=200, returned_count=1",
+      "duration_ms": 119.59
+    },
+    {
+      "category": "Boundary-Limit-Backend",
+      "test_name": "limit=100 (Large limit, should succeed without crash)",
+      "status": "PASS",
+      "details": "status=200, returned_count=1",
+      "duration_ms": 103.3
+    },
+    {
+      "category": "Boundary-Limit-Backend",
+      "test_name": "limit=-5 (Negative limit, should not crash, returns safe slice)",
+      "status": "PASS",
+      "details": "status=200, returned_count=0",
+      "duration_ms": 96.43
+    },
+    {
+      "category": "Boundary-Frontend",
+      "test_name": "Frontend alpha=0.0",
+      "status": "PASS",
+      "details": "status=200, source=ai_hybrid_rrf, results_count=1",
+      "duration_ms": 180.11
+    },
+    {
+      "category": "Boundary-Frontend",
+      "test_name": "Frontend alpha=1.0",
+      "status": "PASS",
+      "details": "status=200, source=ai_hybrid_rrf, results_count=1",
+      "duration_ms": 136.57
+    },
+    {
+      "category": "Boundary-Frontend",
+      "test_name": "Frontend alpha=-1.0",
+      "status": "PASS",
+      "details": "status=200, source=ai_hybrid_rrf, results_count=1",
+      "duration_ms": 131.12
+    },
+    {
+      "category": "Boundary-Frontend",
+      "test_name": "Frontend alpha=2.5",
+      "status": "PASS",
+      "details": "status=200, source=ai_hybrid_rrf, results_count=1",
+      "duration_ms": 211.27
+    },
+    {
+      "category": "Boundary-Frontend",
+      "test_name": "Frontend alpha='invalid'",
+      "status": "PASS",
+      "details": "status=200, source=ai_hybrid_rrf, results_count=1",
+      "duration_ms": 241.69
+    },
+    {
+      "category": "Boundary-Frontend",
+      "test_name": "Frontend limit=0",
+      "status": "PASS",
+      "details": "status=200, source=ai_hybrid_rrf, results_count=1",
+      "duration_ms": 272.18
+    },
+    {
+      "category": "Boundary-Frontend",
+      "test_name": "Frontend limit=1",
+      "status": "PASS",
+      "details": "status=200, source=ai_hybrid_rrf, results_count=1",
+      "duration_ms": 176.08
+    },
+    {
+      "category": "Boundary-Frontend",
+      "test_name": "Frontend limit=100",
+      "status": "PASS",
+      "details": "status=200, source=ai_hybrid_rrf, results_count=1",
+      "duration_ms": 174.0
+    },
+    {
+      "category": "Boundary-Frontend",
+      "test_name": "Frontend limit=-5",
+      "status": "PASS",
+      "details": "status=200, source=ai_hybrid_rrf, results_count=1",
+      "duration_ms": 209.56
+    },
+    {
+      "category": "Security-SQLi-Backend",
+      "test_name": "SQLi: ' OR 1=1 --",
+      "status": "PASS",
+      "details": "status=200, total=1",
+      "duration_ms": 205.68
+    },
+    {
+      "category": "Security-SQLi-Backend",
+      "test_name": "SQLi: '; DROP TABLE ai_search_bookch",
+      "status": "PASS",
+      "details": "status=200, total=0",
+      "duration_ms": 221.63
+    },
+    {
+      "category": "Security-SQLi-Backend",
+      "test_name": "SQLi: admin'--",
+      "status": "PASS",
+      "details": "status=200, total=0",
+      "duration_ms": 144.56
+    },
+    {
+      "category": "Security-SQLi-Backend",
+      "test_name": "SQLi: ' UNION SELECT NULL, NULL, NUL",
+      "status": "PASS",
+      "details": "status=200, total=0",
+      "duration_ms": 163.78
+    },
+    {
+      "category": "Security-SQLi-Backend",
+      "test_name": "SQLi: \" OR \"\"=\"",
+      "status": "PASS",
+      "details": "status=200, total=1",
+      "duration_ms": 179.86
+    },
+    {
+      "category": "Security-SQLi-Backend",
+      "test_name": "SQLi: ' OR ''='",
+      "status": "PASS",
+      "details": "status=200, total=1",
+      "duration_ms": 138.1
+    },
+    {
+      "category": "Security-SQLi-Backend",
+      "test_name": "SQLi: 1; SELECT pg_sleep(2); --",
+      "status": "FAIL",
+      "details": "status=200, total=1",
+      "duration_ms": 169.56
+    },
+    {
+      "category": "Security-XSS-Backend",
+      "test_name": "XSS: <script>alert(1)</script>",
+      "status": "PASS",
+      "details": "status=200, returned safe response",
+      "duration_ms": 149.68
+    },
+    {
+      "category": "Security-XSS-Backend",
+      "test_name": "XSS: <img src=x onerror=alert(1)>",
+      "status": "PASS",
+      "details": "status=200, returned safe response",
+      "duration_ms": 125.39
+    },
+    {
+      "category": "Security-XSS-Backend",
+      "test_name": "XSS: \"><svg onload=alert(1)>",
+      "status": "PASS",
+      "details": "status=200, returned safe response",
+      "duration_ms": 121.85
+    },
+    {
+      "category": "Security-XSS-Backend",
+      "test_name": "XSS: javascript:alert(document.cook",
+      "status": "PASS",
+      "details": "status=200, returned safe response",
+      "duration_ms": 132.58
+    },
+    {
+      "category": "Security-XSS-Backend",
+      "test_name": "XSS: <iframe src=\"javascript:alert(",
+      "status": "PASS",
+      "details": "status=200, returned safe response",
+      "duration_ms": 132.55
+    },
+    {
+      "category": "Security-Table-Integrity",
+      "test_name": "ai_search_bookchunk integrity intact after drop attempts",
+      "status": "PASS",
+      "details": "status=200, total=1",
+      "duration_ms": 208.23
+    },
+    {
+      "category": "Stress-LongQuery-Backend",
+      "test_name": "Vietnamese text 2,200 chars",
+      "status": "PASS",
+      "details": "status=200, len=2210, latency=179.8ms, total=2",
+      "duration_ms": 179.79
+    },
+    {
+      "category": "Stress-LongQuery-Backend",
+      "test_name": "Vietnamese natural sentence 2,500 chars",
+      "status": "PASS",
+      "details": "status=200, len=2448, latency=151.1ms, total=11",
+      "duration_ms": 151.08
+    },
+    {
+      "category": "Stress-LongQuery-Backend",
+      "test_name": "Repeating noise tokens 5,000 chars",
+      "status": "PASS",
+      "details": "status=200, len=5120, latency=174.8ms, total=0",
+      "duration_ms": 174.76
+    },
+    {
+      "category": "Stress-LongQuery-Backend",
+      "test_name": "Random Unicode/Emoji stress 2,500 chars",
+      "status": "PASS",
+      "details": "status=200, len=2440, latency=228.0ms, total=6",
+      "duration_ms": 227.95
+    },
+    {
+      "category": "Stress-LongQuery-Frontend",
+      "test_name": "Vietnamese text 2,200 chars",
+      "status": "PASS",
+      "details": "status=200, len=2210, latency=214.3ms, total=2",
+      "duration_ms": 214.27
+    },
+    {
+      "category": "Stress-LongQuery-Frontend",
+      "test_name": "Vietnamese natural sentence 2,500 chars",
+      "status": "PASS",
+      "details": "status=200, len=2448, latency=193.0ms, total=11",
+      "duration_ms": 192.98
+    },
+    {
+      "category": "Stress-LongQuery-Frontend",
+      "test_name": "Repeating noise tokens 5,000 chars",
+      "status": "PASS",
+      "details": "status=200, len=5120, latency=213.4ms, total=0",
+      "duration_ms": 213.39
+    },
+    {
+      "category": "Stress-LongQuery-Frontend",
+      "test_name": "Random Unicode/Emoji stress 2,500 chars",
+      "status": "PASS",
+      "details": "status=200, len=2440, latency=207.8ms, total=6",
+      "duration_ms": 207.85
+    },
+    {
+      "category": "Series-Disambiguation-Generic",
+      "test_name": "Generic: 'Chiến tranh tiền tệ'",
+      "status": "PASS",
+      "details": "top=chien-tranh-tien-te-tap-1, order=['chien-tranh-tien-te-tap-1', 'chien-tranh-tien-te-tap-3', 'chien-tranh-tien-te-tap-2']",
+      "duration_ms": 209.51
+    },
+    {
+      "category": "Series-Disambiguation-Generic",
+      "test_name": "Generic: 'chien tranh tien te'",
+      "status": "PASS",
+      "details": "top=chien-tranh-tien-te-tap-1, order=['chien-tranh-tien-te-tap-1', 'chien-tranh-tien-te-tap-3', 'chien-tranh-tien-te-tap-2']",
+      "duration_ms": 144.55
+    },
+    {
+      "category": "Series-Disambiguation-Generic",
+      "test_name": "Generic: 'CHIẾN TRANH TIỀN TỆ'",
+      "status": "PASS",
+      "details": "top=chien-tranh-tien-te-tap-1, order=['chien-tranh-tien-te-tap-1', 'chien-tranh-tien-te-tap-3', 'chien-tranh-tien-te-tap-2']",
+      "duration_ms": 119.54
+    },
+    {
+      "category": "Series-Disambiguation-Generic",
+      "test_name": "Generic: 'sách chiến tranh tiền tệ'",
+      "status": "PASS",
+      "details": "top=chien-tranh-tien-te-tap-1, order=['chien-tranh-tien-te-tap-1', 'chien-tranh-tien-te-tap-3', 'chien-tranh-tien-te-tap-2']",
+      "duration_ms": 137.67
+    },
+    {
+      "category": "Series-Disambiguation-Generic",
+      "test_name": "Generic: 'cuốn chiến tranh tiền tệ'",
+      "status": "PASS",
+      "details": "top=chien-tranh-tien-te-tap-1, order=['chien-tranh-tien-te-tap-1', 'chien-tranh-tien-te-tap-3', 'chien-tranh-tien-te-tap-2']",
+      "duration_ms": 126.58
+    },
+    {
+      "category": "Series-Disambiguation-Specific",
+      "test_name": "Specific: 'Chiến tranh tiền tệ tập 1' -> chien-tranh-tien-te-tap-1",
+      "status": "PASS",
+      "details": "top=chien-tranh-tien-te-tap-1, expected=chien-tranh-tien-te-tap-1",
+      "duration_ms": 128.14
+    },
+    {
+      "category": "Series-Disambiguation-Specific",
+      "test_name": "Specific: 'Chiến tranh tiền tệ tập 2' -> chien-tranh-tien-te-tap-2",
+      "status": "PASS",
+      "details": "top=chien-tranh-tien-te-tap-2, expected=chien-tranh-tien-te-tap-2",
+      "duration_ms": 188.95
+    },
+    {
+      "category": "Series-Disambiguation-Specific",
+      "test_name": "Specific: 'Chiến tranh tiền tệ tập 3' -> chien-tranh-tien-te-tap-3",
+      "status": "PASS",
+      "details": "top=chien-tranh-tien-te-tap-3, expected=chien-tranh-tien-te-tap-3",
+      "duration_ms": 346.37
+    },
+    {
+      "category": "Series-Disambiguation-Specific",
+      "test_name": "Specific: 'chien tranh tien te tap 2' -> chien-tranh-tien-te-tap-2",
+      "status": "PASS",
+      "details": "top=chien-tranh-tien-te-tap-2, expected=chien-tranh-tien-te-tap-2",
+      "duration_ms": 378.37
+    },
+    {
+      "category": "Series-Disambiguation-Specific",
+      "test_name": "Specific: 'chien tranh tien te tap 3' -> chien-tranh-tien-te-tap-3",
+      "status": "PASS",
+      "details": "top=chien-tranh-tien-te-tap-3, expected=chien-tranh-tien-te-tap-3",
+      "duration_ms": 224.41
+    },
+    {
+      "category": "Concurrency-Backend",
+      "test_name": "30 concurrent requests (10 worker threads)",
+      "status": "PASS",
+      "details": "success=30/30, total_time=1587.0ms, avg_lat=488.7ms, max_lat=756.9ms",
+      "duration_ms": 1586.97
+    },
+    {
+      "category": "Concurrency-Frontend",
+      "test_name": "30 concurrent requests (10 worker threads)",
+      "status": "PASS",
+      "details": "success=30/30, total_time=2081.6ms, avg_lat=633.9ms, max_lat=985.5ms",
+      "duration_ms": 2081.55
+    },
+    {
+      "category": "Anti-Hallucination-Backend",
+      "test_name": "Out-of-catalog: 'Harry Potter'",
+      "status": "PASS",
+      "details": "status=200, total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 7.84
+    },
+    {
+      "category": "Anti-Hallucination-Backend",
+      "test_name": "Out-of-catalog: 'Naruto Shippuden'",
+      "status": "PASS",
+      "details": "status=200, total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 13.6
+    },
+    {
+      "category": "Anti-Hallucination-Backend",
+      "test_name": "Out-of-catalog: 'Truyện tranh Doraemon'",
+      "status": "PASS",
+      "details": "status=200, total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 11.01
+    },
+    {
+      "category": "Anti-Hallucination-Backend",
+      "test_name": "Out-of-catalog: 'Sách dạy nấu ăn'",
+      "status": "PASS",
+      "details": "status=200, total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 11.89
+    },
+    {
+      "category": "Anti-Hallucination-Backend",
+      "test_name": "Out-of-catalog: 'Lập trình hướng đối tượng C++'",
+      "status": "PASS",
+      "details": "status=200, total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 9.24
+    },
+    {
+      "category": "Anti-Hallucination-Backend",
+      "test_name": "Out-of-catalog: 'Dữ liệu lớn Big Data'",
+      "status": "PASS",
+      "details": "status=200, total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 9.77
+    },
+    {
+      "category": "Anti-Hallucination-Backend",
+      "test_name": "Out-of-catalog: 'xyzabcqwerty123987'",
+      "status": "PASS",
+      "details": "status=200, total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 192.09
+    },
+    {
+      "category": "Anti-Hallucination-Backend",
+      "test_name": "Out-of-catalog: 'Giá vàng ngày hôm nay'",
+      "status": "PASS",
+      "details": "status=200, total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 11.6
+    },
+    {
+      "category": "Anti-Hallucination-Backend",
+      "test_name": "Out-of-catalog: 'Thời tiết Hà Nội'",
+      "status": "PASS",
+      "details": "status=200, total=0, results=0 (Zero Hallucination)",
+      "duration_ms": 9.31
+    },
+    {
+      "category": "Anti-Hallucination-Frontend",
+      "test_name": "Frontend Out-of-catalog: 'Harry Potter'",
+      "status": "PASS",
+      "details": "status=200, total=0, results=0",
+      "duration_ms": 27.31
+    },
+    {
+      "category": "Anti-Hallucination-Frontend",
+      "test_name": "Frontend Out-of-catalog: 'Naruto Shippuden'",
+      "status": "PASS",
+      "details": "status=200, total=0, results=0",
+      "duration_ms": 26.26
+    },
+    {
+      "category": "Anti-Hallucination-Frontend",
+      "test_name": "Frontend Out-of-catalog: 'Truyện tranh Doraemon'",
+      "status": "PASS",
+      "details": "status=200, total=0, results=0",
+      "duration_ms": 44.25
+    },
+    {
+      "category": "Anti-Hallucination-Frontend",
+      "test_name": "Frontend Out-of-catalog: 'Sách dạy nấu ăn'",
+      "status": "PASS",
+      "details": "status=200, total=0, results=0",
+      "duration_ms": 26.48
+    },
+    {
+      "category": "Anti-Hallucination-Frontend",
+      "test_name": "Frontend Out-of-catalog: 'Lập trình hướng đối tượng C++'",
+      "status": "PASS",
+      "details": "status=200, total=0, results=0",
+      "duration_ms": 25.79
+    },
+    {
+      "category": "Anti-Hallucination-Frontend",
+      "test_name": "Frontend Out-of-catalog: 'Dữ liệu lớn Big Data'",
+      "status": "PASS",
+      "details": "status=200, total=0, results=0",
+      "duration_ms": 25.58
+    },
+    {
+      "category": "Anti-Hallucination-Frontend",
+      "test_name": "Frontend Out-of-catalog: 'xyzabcqwerty123987'",
+      "status": "PASS",
+      "details": "status=200, total=0, results=0",
+      "duration_ms": 175.76
+    },
+    {
+      "category": "Anti-Hallucination-Frontend",
+      "test_name": "Frontend Out-of-catalog: 'Giá vàng ngày hôm nay'",
+      "status": "PASS",
+      "details": "status=200, total=0, results=0",
+      "duration_ms": 48.36
+    },
+    {
+      "category": "Anti-Hallucination-Frontend",
+      "test_name": "Frontend Out-of-catalog: 'Thời tiết Hà Nội'",
+      "status": "PASS",
+      "details": "status=200, total=0, results=0",
+      "duration_ms": 38.13
+    }
+  ]
+}

@@ -9,6 +9,7 @@ import { speedInsightsSampleRate } from "@/lib/speed-insights";
 import { webAnalyticsEnabled } from "@/lib/analytics/web-analytics";
 import { AnalyticsMount } from "@/ui/components/analytics-mount";
 import { WebAnalytics } from "@/ui/components/web-analytics";
+import { BrowserExtensionGuard } from "@/ui/components/browser-extension-guard";
 
 const defaultHtmlLang = resolveLocaleFromSlug(getDefaultLocaleSlug()).htmlLang;
 
@@ -29,8 +30,9 @@ export default function CheckoutLayout(props: { children: ReactNode }) {
 				<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=aurabook5" />
 				<link rel="shortcut icon" href="/favicon.ico?v=aurabook5" />
 				<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=aurabook5" />
+				<BrowserExtensionGuard />
 			</head>
-			<body className="min-h-dvh font-sans">
+			<body className="min-h-dvh font-sans" suppressHydrationWarning>
 				<main className="min-h-dvh">{props.children}</main>
 				{/* Sampled — unsampled Speed Insights dominates the Vercel bill at scale. */}
 				<SpeedInsights sampleRate={speedInsightsSampleRate()} />

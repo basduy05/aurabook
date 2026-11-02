@@ -67,13 +67,52 @@ interface SearchApiResponse {
 				);
 				if (res.ok) {
 					const data = (await res.json()) as SearchApiResponse;
-					setSuggestions((data.products || []).slice(0, 4));
-					setIsGraphRAG(!!data.isGraphRAG);
-					setMatchedConcepts(data.matchedConcepts || []);
-					setIsOpen((data.products || []).length > 0);
+					const prods = data.products || [];
+					if (prods.length > 0) {
+						setSuggestions(prods.slice(0, 4));
+						setIsGraphRAG(!!data.isGraphRAG);
+						setMatchedConcepts(data.matchedConcepts || []);
+						setIsOpen(true);
+						return;
+					}
 				}
+
+				// Kết nối dự phòng với Backend AI Hybrid Search qua /api/search/ai
+				const aiRes = await fetch("/api/search/ai", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ query: q, limit: 4 }),
+				});
+				if (aiRes.ok) {
+					const aiData = await aiRes.json();
+					const aiResults = aiData.results || [];
+					if (aiResults.length > 0) {
+						setSuggestions(
+							aiResults.map((r: { product_id: string; product_slug: string; title: string }) => ({
+								id: r.product_id,
+								name: r.title,
+								slug:
+									r.product_slug === "chu-nghia-khac-ky-phong-cach-song-ban-linh-binh-than"
+										? "chu-nghia-khac-ky-phong-cach-song-ban-linh-va-binh-than"
+										: r.product_slug,
+								price: 59000,
+								image: `/products/book-${r.product_slug}-cover.jpg`,
+								category: { name: "AI Hybrid RRF" },
+							}))
+						);
+						setIsGraphRAG(false);
+						setMatchedConcepts([]);
+						setIsOpen(true);
+						return;
+					}
+				}
+
+				setSuggestions([]);
+				setIsOpen(false);
 			} catch (e) {
 				console.warn("[SearchBar] Lỗi tìm kiếm gợi ý:", e);
+				setSuggestions([]);
+				setIsOpen(false);
 			} finally {
 				setIsLoading(false);
 			}

@@ -17,13 +17,13 @@ export function ReaderMarkdown({ content, className = "", isSepia = false }: Rea
 	const flushList = (keyPrefix: string) => {
 		if (inList === "ul") {
 			elements.push(
-				<ul key={`ul-${keyPrefix}`} className="my-2 space-y-1 list-disc list-inside text-[13.5px]">
+				<ul key={`ul-${keyPrefix}`} className="my-2 space-y-1.5 list-disc list-inside pl-4 text-[13.5px]">
 					{listItems}
 				</ul>,
 			);
 		} else if (inList === "ol") {
 			elements.push(
-				<ol key={`ol-${keyPrefix}`} className="my-2 space-y-1 list-decimal list-inside text-[13.5px]">
+				<ol key={`ol-${keyPrefix}`} className="my-2 space-y-1.5 list-decimal list-inside pl-4 text-[13.5px]">
 					{listItems}
 				</ol>,
 			);
@@ -132,8 +132,9 @@ export function ReaderMarkdown({ content, className = "", isSepia = false }: Rea
 				flushList(`switch-ul-${lineIdx}`);
 				inList = "ul";
 			}
+			const isNested = line.startsWith("  ") || line.startsWith("\t");
 			listItems.push(
-				<li key={`li-${lineIdx}`} className="leading-relaxed">
+				<li key={`li-${lineIdx}`} className={`leading-relaxed ${isNested ? "ml-5 list-[circle]" : ""}`}>
 					{renderInline(trimmed.slice(2).trim())}
 				</li>,
 			);
@@ -147,18 +148,23 @@ export function ReaderMarkdown({ content, className = "", isSepia = false }: Rea
 				flushList(`switch-ol-${lineIdx}`);
 				inList = "ol";
 			}
+			const isNested = line.startsWith("  ") || line.startsWith("\t");
 			listItems.push(
-				<li key={`li-${lineIdx}`} className="leading-relaxed">
+				<li key={`li-${lineIdx}`} className={`leading-relaxed ${isNested ? "ml-5" : ""}`}>
 					{renderInline(matchOrdered[2].trim())}
 				</li>,
 			);
 			return;
 		}
 
-		// Đoạn văn bình thường
+		// Đoạn văn bình thường (Tab một khoảng thụt đầu dòng 1.75rem cho dễ nhìn)
 		flushList(`p-${lineIdx}`);
 		elements.push(
-			<p key={`p-${lineIdx}`} className="my-1.5 text-[13.5px] leading-relaxed">
+			<p
+				key={`p-${lineIdx}`}
+				style={{ textIndent: "1.75rem" }}
+				className="my-2 text-[13.5px] leading-relaxed indent-7"
+			>
 				{renderInline(trimmed)}
 			</p>,
 		);

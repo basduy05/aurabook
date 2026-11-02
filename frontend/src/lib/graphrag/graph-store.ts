@@ -8,8 +8,10 @@ import type {
 	EPUBMetadata,
 	GraphRAGQueryResult,
 } from "./types";
-import { generateSemanticVector, searchVectorChunks, SEMANTIC_KEYWORDS } from "./vector-store";
+import { generateSemanticVector, searchVectorChunks, SEMANTIC_KEYWORDS, stripVietnameseDiacritics } from "./vector-store";
 import type { ProductCardData } from "@/ui/components/plp/product-card-data";
+
+export { stripVietnameseDiacritics };
 
 function getStoreFilePath(): string {
 	const possiblePaths = [
@@ -37,6 +39,158 @@ export function slugifyVietnamese(str: string): string {
 		.replace(/[^a-z0-9]+/g, "-")
 		.replace(/^-+|-+$/g, "");
 }
+
+/**
+ * Chuẩn hóa chuỗi truy vấn: chuyển về chữ thường, bỏ dấu tiếng Việt và thu gọn khoảng trắng thừa
+ */
+export function normalizeVietnameseQuery(query: string): string {
+	if (!query) return "";
+	return stripVietnameseDiacritics(query).toLowerCase().replace(/\s+/g, " ").trim();
+}
+
+export interface BookEntityMapping {
+	slug: string;
+	title: string;
+	titleUnaccented: string;
+	slugWords: string;
+	author: string;
+	authorUnaccented: string;
+	abbreviations: string[];
+	keywords: string[];
+}
+
+export const BOOK_CATALOG_MAPPING: BookEntityMapping[] = [
+	{
+		slug: "dac-nhan-tam",
+		title: "Đắc Nhân Tâm",
+		titleUnaccented: "dac nhan tam",
+		slugWords: "dac nhan tam",
+		author: "Dale Carnegie",
+		authorUnaccented: "dale carnegie",
+		abbreviations: ["dnt", "đnt"],
+		keywords: ["giao tiep", "thu phuc long nguoi", "how to win friends"]
+	},
+	{
+		slug: "bon-thoa-uoc",
+		title: "Bốn Thỏa Ước",
+		titleUnaccented: "bon thoa uoc",
+		slugWords: "bon thoa uoc",
+		author: "Don Miguel Ruiz",
+		authorUnaccented: "don miguel ruiz",
+		abbreviations: ["btu", "4 thoa uoc"],
+		keywords: ["thoa uoc", "chua lanh", "noi tam", "toltec", "the four agreements"]
+	},
+	{
+		slug: "sapiens-luoc-su-loai-nguoi",
+		title: "Sapiens: Lược Sử Loài Người",
+		titleUnaccented: "sapiens luoc su loai nguoi",
+		slugWords: "sapiens luoc su loai nguoi",
+		author: "Yuval Noah Harari",
+		authorUnaccented: "yuval noah harari",
+		abbreviations: ["lsln", "sapiens"],
+		keywords: ["luoc su loai nguoi", "loai nguoi", "tien hoa", "harari"]
+	},
+	{
+		slug: "tri-tue-do-thai",
+		title: "Trí Tuệ Do Thái",
+		titleUnaccented: "tri tue do thai",
+		slugWords: "tri tue do thai",
+		author: "Eran Katz",
+		authorUnaccented: "eran katz",
+		abbreviations: ["ttdt"],
+		keywords: ["do thai", "tri tue do thai", "nguoi do thai", "jerome"]
+	},
+	{
+		slug: "10-dieu-tao-nen-so-phan",
+		title: "10 Điều Tạo Nên Số Phận",
+		titleUnaccented: "10 dieu tao nen so phan",
+		slugWords: "10 dieu tao nen so phan",
+		author: "David Simon, M.D",
+		authorUnaccented: "david simon",
+		abbreviations: ["10 dtnsp", "10 dieu", "muoi dieu"],
+		keywords: ["so phan", "10 dieu tao nen so phan", "dieu tao nen so phan"]
+	},
+	{
+		slug: "bi-mat-cua-mot-tri-nho-sieu-pham",
+		title: "Bí Mật Của Một Trí Nhớ Siêu Phàm",
+		titleUnaccented: "bi mat cua mot tri nho sieu pham",
+		slugWords: "bi mat cua mot tri nho sieu pham",
+		author: "Eran Katz",
+		authorUnaccented: "eran katz",
+		abbreviations: ["bmcmtnsp", "tnsp"],
+		keywords: ["tri nho sieu pham", "bi mat tri nho", "tri nho", "sieu pham", "ghi nho"]
+	},
+	{
+		slug: "cach-nghi-de-thanh-cong",
+		title: "Cách Nghĩ Để Thành Công",
+		titleUnaccented: "cach nghi de thanh cong",
+		slugWords: "cach nghi de thanh cong",
+		author: "Napoleon Hill",
+		authorUnaccented: "napoleon hill",
+		abbreviations: ["cndtc"],
+		keywords: ["cach nghi", "thanh cong", "nghi giau lam giau", "think and grow rich"]
+	},
+	{
+		slug: "cay-cam-ngot-cua-toi",
+		title: "Cây Cam Ngọt Của Tôi",
+		titleUnaccented: "cay cam ngot cua toi",
+		slugWords: "cay cam ngot cua toi",
+		author: "José Mauro de Vasconcelos",
+		authorUnaccented: "jose mauro de vasconcelos",
+		abbreviations: ["ccnct"],
+		keywords: ["cay cam ngot", "cay cam", "zeze", "vasconcelos"]
+	},
+	{
+		slug: "chien-tranh-tien-te-tap-1",
+		title: "Chiến Tranh Tiền Tệ - Tập 1",
+		titleUnaccented: "chien tranh tien te tap 1",
+		slugWords: "chien tranh tien te tap 1",
+		author: "Song Hongbing",
+		authorUnaccented: "song hongbing",
+		abbreviations: ["cttt 1", "cttt1", "cttt tap 1"],
+		keywords: ["chien tranh tien te 1", "tien te 1", "song hongbing 1"]
+	},
+	{
+		slug: "chien-tranh-tien-te-tap-2",
+		title: "Chiến Tranh Tiền Tệ - Tập 2",
+		titleUnaccented: "chien tranh tien te tap 2",
+		slugWords: "chien tranh tien te tap 2",
+		author: "Song Hongbing",
+		authorUnaccented: "song hongbing",
+		abbreviations: ["cttt 2", "cttt2", "cttt tap 2"],
+		keywords: ["chien tranh tien te 2", "tien te 2", "song hongbing 2"]
+	},
+	{
+		slug: "chien-tranh-tien-te-tap-3",
+		title: "Chiến Tranh Tiền Tệ - Tập 3",
+		titleUnaccented: "chien tranh tien te tap 3",
+		slugWords: "chien tranh tien te tap 3",
+		author: "Song Hongbing",
+		authorUnaccented: "song hongbing",
+		abbreviations: ["cttt 3", "cttt3", "cttt tap 3"],
+		keywords: ["chien tranh tien te 3", "tien te 3", "song hongbing 3"]
+	},
+	{
+		slug: "chu-nghia-khac-ky-phong-cach-song-ban-linh-binh-than",
+		title: "Chủ Nghĩa Khắc Kỷ: Phong Cách Sống Bản Lĩnh & Bình Thản",
+		titleUnaccented: "chu nghia khac ky phong cach song ban linh & binh than",
+		slugWords: "chu nghia khac ky phong cach song ban linh va binh than",
+		author: "William B. Irvine",
+		authorUnaccented: "william b irvine",
+		abbreviations: ["cnkk", "chu-nghia-khac-ky-phong-cach-song-ban-linh-va-binh-than"],
+		keywords: ["chu nghia khac ky", "khac ky", "stoicism", "william irvine", "binh than", "ban linh", "chu-nghia-khac-ky-phong-cach-song-ban-linh-va-binh-than"]
+	},
+	{
+		slug: "tu-duy-nhanh-va-cham",
+		title: "Tư Duy Nhanh Và Chậm",
+		titleUnaccented: "tu duy nhanh va cham",
+		slugWords: "tu duy nhanh va cham",
+		author: "Daniel Kahneman",
+		authorUnaccented: "daniel kahneman",
+		abbreviations: ["tdnvc"],
+		keywords: ["tu duy nhanh", "nhanh va cham", "kahneman", "thinking fast and slow"]
+	}
+];
 
 
 // Dữ liệu hạt giống mặc định (Seed Data) chuẩn xác theo hệ thống Saleor AuraBook
@@ -716,8 +870,8 @@ class AuraBookGraphRAGStore {
 				const chunkText = chap.contentText || "";
 				if (chunkText.trim().length > 30) {
 					const semanticChunks = this.splitIntoSemanticChunks(chunkText, 650, 150);
-					// Giới hạn 6 chunks tiêu biểu nhất mỗi chương
-					const selectedChunks = semanticChunks.slice(0, 6);
+					// Lưu toàn bộ semantic chunks của mỗi chương để tìm kiếm chính xác 100% mọi đoạn văn
+					const selectedChunks = semanticChunks;
 					selectedChunks.forEach((chunkContent, pIdx) => {
 						const chunkId = `chunk-${slug}-${idx + 1}-${pIdx + 1}`;
 						const embedding = generateSemanticVector(chunkContent);
@@ -786,56 +940,111 @@ class AuraBookGraphRAGStore {
 	}
 
 	/**
-	 * Tìm cuốn sách phù hợp nhất từ câu truy vấn (Hỗ trợ giải quyết Đại từ Anaphora)
+	 * Tìm cuốn sách phù hợp nhất từ câu truy vấn (Hỗ trợ tiếng Việt có dấu, không dấu, slug, từ viết tắt và Anaphora)
 	 */
 	public resolveBookEntity(query: string, activeSlug?: string): GraphNode | null {
 		const store = this.load();
-		const lower = (query || "").toLowerCase();
+		const raw = (query || "").trim();
+		if (!raw) return null;
+
+		const lower = raw.toLowerCase();
+		const unaccented = stripVietnameseDiacritics(lower).replace(/\s+/g, " ").trim();
+		const querySlug = slugifyVietnamese(lower);
 		const books = store.nodes.filter((n) => n.type === "book");
 
-		// 1. Kiểm tra nếu câu thoại chứa đại từ chỉ định thay thế ("nó", "quyển này", "cuốn này", "cuốn đó")
+		// 1. Kiểm tra Anaphora (đại từ chỉ định thay thế)
 		const isAnaphoric =
-			/^(mua nó|mua quyển này|mua cuốn này|mua cuốn đó|lấy nó|cho tôi mua nó|cho tôi mua quyển này|cho tôi mua cuốn này|mua nó bằng cách nào|mua quyển này|cuốn này giá bao nhiêu|giá nó bao nhiêu|quyển này bao nhiêu|nó có mấy bản|cuốn đó thế nào)$/i.test(
+			/^(mua nó|mua quyển này|mua cuốn này|mua cuốn đó|lấy nó|cho tôi mua nó|cho tôi mua quyển này|cuốn này giá bao nhiêu|giá nó bao nhiêu|quyển này bao nhiêu|nó có mấy bản|cuốn đó thế nào)$/i.test(
 				lower,
+			) ||
+			/^(mua no|mua quyen nay|mua cuon nay|mua cuon do|lay no|cho toi mua no|cuon nay gia bao nhieu|gia no bao nhieu|quyen nay bao nhieu)$/i.test(
+				unaccented,
 			) ||
 			lower.includes("mua nó") ||
 			lower.includes("mua quyển này") ||
-			lower.includes("mua cuốn này") ||
 			lower.includes("cuốn vừa nãy") ||
-			lower.includes("quyển vừa rồi") ||
-			lower === "mua quyển này" ||
-			lower === "mua nó bằng cách nào" ||
-			lower === "mua nó";
+			unaccented.includes("mua no") ||
+			unaccented.includes("cuon nay");
 
 		if (isAnaphoric && activeSlug) {
 			const activeBook = books.find((b) => b.properties.slug === activeSlug);
 			if (activeBook) return activeBook;
 		}
 
-		// 2. Tìm kiếm theo tên sách hoặc từ khóa đặc trưng
-		if (lower.includes("trí tuệ do thái") || lower.includes("do thái") || lower.includes("eran katz")) {
-			return books.find((b) => b.properties.slug === "tri-tue-do-thai") || null;
-		}
-		if (lower.includes("đắc nhân tâm") || (lower.includes("giao tiếp") && !lower.includes("thói quen"))) {
-			return books.find((b) => b.properties.slug === "dac-nhan-tam") || null;
-		}
-		if (lower.includes("bốn thỏa ước") || lower.includes("thỏa ước") || lower.includes("chữa lành") || lower.includes("toltec")) {
-			return books.find((b) => b.properties.slug === "bon-thoa-uoc") || null;
-		}
-		if (lower.includes("sapiens") || lower.includes("lược sử loài người") || lower.includes("loài người") || lower.includes("tiến hóa")) {
-			return books.find((b) => b.properties.slug === "sapiens-luoc-su-loai-nguoi") || null;
+		// 2. Khớp trực tiếp Slug chính xác (hỗ trợ cả slug có '-va-' và không có '-va-')
+		if (querySlug) {
+			const directSlugBook = books.find((b) => {
+				const s = b.properties.slug;
+				return (
+					s === querySlug ||
+					(querySlug === "chu-nghia-khac-ky-phong-cach-song-ban-linh-binh-than" &&
+						s === "chu-nghia-khac-ky-phong-cach-song-ban-linh-va-binh-than") ||
+					(querySlug === "chu-nghia-khac-ky-phong-cach-song-ban-linh-va-binh-than" &&
+						s === "chu-nghia-khac-ky-phong-cach-song-ban-linh-binh-than")
+				);
+			});
+			if (directSlugBook) return directSlugBook;
 		}
 
-		// 3. Quét khớp title hoặc slug trong toàn bộ nodes
+		// 3. Khớp qua Bảng Ánh Xạ Thực Thể 13 Cuốn (Từ viết tắt, Từ khóa đặc thù, Tác giả)
+		const isMatchSlug = (s1: string, s2: string) =>
+			s1 === s2 || (s1.startsWith("chu-nghia-khac-ky") && s2.startsWith("chu-nghia-khac-ky"));
+
+		for (const item of BOOK_CATALOG_MAPPING) {
+			// Kiểm tra từ viết tắt (so khớp theo biên từ để tránh nhầm lẫn từ con)
+			for (const abbr of item.abbreviations) {
+				const escapedAbbr = abbr.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+				const abbrRegex = new RegExp(`(^|[^a-zA-Z0-9_])${escapedAbbr}([^a-zA-Z0-9_]|$)`, "i");
+				if (abbrRegex.test(lower) || abbrRegex.test(unaccented)) {
+					const found = books.find((b) => isMatchSlug(b.properties.slug, item.slug));
+					if (found) return found;
+				}
+			}
+
+			// Kiểm tra tác giả
+			if (item.authorUnaccented && (unaccented.includes(item.authorUnaccented) || lower.includes(item.author.toLowerCase()))) {
+				const found = books.find((b) => isMatchSlug(b.properties.slug, item.slug));
+				if (found) return found;
+			}
+
+			// Kiểm tra từ khóa đặc trưng của tác phẩm
+			for (const kw of item.keywords) {
+				if (lower.includes(kw) || unaccented.includes(kw)) {
+					const found = books.find((b) => isMatchSlug(b.properties.slug, item.slug));
+					if (found) return found;
+				}
+			}
+		}
+
+		// Xử lý riêng trường hợp Chiến Tranh Tiền Tệ chung (nếu không chỉ rõ tập thì ưu tiên Tập 1)
+		if (unaccented.includes("chien tranh tien te") || lower.includes("chiến tranh tiền tệ")) {
+			if (unaccented.includes("tap 3") || unaccented.includes("3")) {
+				return books.find((b) => b.properties.slug === "chien-tranh-tien-te-tap-3") || null;
+			}
+			if (unaccented.includes("tap 2") || unaccented.includes("2")) {
+				return books.find((b) => b.properties.slug === "chien-tranh-tien-te-tap-2") || null;
+			}
+			return books.find((b) => b.properties.slug === "chien-tranh-tien-te-tap-1") || null;
+		}
+
+		// 4. Quét tiêu đề và slug words của toàn bộ sách trong store (hỗ trợ cả có dấu và không dấu)
 		for (const b of books) {
-			const titleLower = (b.properties.title || "").toLowerCase();
-			const slugLower = (b.properties.slug || "").toLowerCase();
-			if (lower.includes(titleLower) || lower.includes(slugLower)) {
+			const bTitle = (b.properties.title || b.label || "").toLowerCase();
+			const bTitleUnaccented = stripVietnameseDiacritics(bTitle);
+			const bSlug = (b.properties.slug || "").toLowerCase();
+			const bSlugWords = bSlug.replace(/-/g, " ");
+
+			if (
+				lower.includes(bTitle) ||
+				unaccented.includes(bTitleUnaccented) ||
+				unaccented.includes(bSlugWords) ||
+				querySlug.includes(bSlug)
+			) {
 				return b;
 			}
 		}
 
-		// 4. Nếu vẫn không thấy nhưng có activeSlug
+		// 5. Fallback về activeSlug nếu có
 		if (activeSlug) {
 			const activeBook = books.find((b) => b.properties.slug === activeSlug);
 			if (activeBook) return activeBook;
@@ -1109,6 +1318,8 @@ class AuraBookGraphRAGStore {
 	): GraphRAGSearchResult {
 		const store = this.load();
 		const cleanQuery = (query || "").trim().toLowerCase();
+		const unaccentedQuery = stripVietnameseDiacritics(cleanQuery).replace(/\s+/g, " ").trim();
+
 		if (!cleanQuery) {
 			return {
 				products: [],
@@ -1126,6 +1337,10 @@ class AuraBookGraphRAGStore {
 		const locale = options?.locale || "vi";
 		const limit = options?.limit || 12;
 
+		// 0. Phân giải thực thể trực tiếp (Direct Entity & Abbreviation Resolution)
+		const directEntity = this.resolveBookEntity(cleanQuery);
+		const directSlug = directEntity?.properties?.slug;
+
 		// 1. Sinh vector ngữ nghĩa của câu truy vấn
 		const queryVec = generateSemanticVector(cleanQuery);
 
@@ -1142,9 +1357,21 @@ class AuraBookGraphRAGStore {
 			"Phát triển nhận thức & Kỹ năng sống",
 		];
 
+		const CONCEPT_BOOK_MAP: Record<string, string[]> = {
+			"Giao tiếp & Ứng xử (Đắc Nhân Tâm)": ["dac-nhan-tam", "10-dieu-tao-nen-so-phan"],
+			"Tâm lý học & Chữa lành (Bốn Thỏa Ước)": ["bon-thoa-uoc", "tu-duy-nhanh-va-cham", "chu-nghia-khac-ky-phong-cach-song-ban-linh-va-binh-than"],
+			"Lịch sử & Tiến hóa nhân loại (Sapiens)": ["sapiens-luoc-su-loai-nguoi"],
+			"Trí tuệ & Rèn luyện trí nhớ (Trí Tuệ Do Thái)": ["tri-tue-do-thai", "bi-mat-cua-mot-tri-nho-sieu-pham"],
+			"Thói quen & Kỷ luật tinh thần (Bốn Thỏa Ước)": ["10-dieu-tao-nen-so-phan", "bon-thoa-uoc", "chu-nghia-khac-ky-phong-cach-song-ban-linh-va-binh-than"],
+			"Tư duy Logic & Học tập đỉnh cao (Trí Tuệ Do Thái)": ["tri-tue-do-thai", "tu-duy-nhanh-va-cham", "bi-mat-cua-mot-tri-nho-sieu-pham"],
+			"Kinh doanh & Phát triển bản thân": ["cach-nghi-de-thanh-cong", "dac-nhan-tam", "10-dieu-tao-nen-so-phan", "chien-tranh-tien-te-tap-1", "chien-tranh-tien-te-tap-2", "chien-tranh-tien-te-tap-3", "tri-tue-do-thai"],
+			"Phát triển nhận thức & Kỹ năng sống": ["dac-nhan-tam", "tri-tue-do-thai", "tu-duy-nhanh-va-cham", "10-dieu-tao-nen-so-phan", "cach-nghi-de-thanh-cong"],
+		};
+
 		SEMANTIC_KEYWORDS.forEach((cluster, idx) => {
 			for (const kw of cluster) {
-				if (cleanQuery.includes(kw)) {
+				const kwUnaccented = stripVietnameseDiacritics(kw);
+				if (cleanQuery.includes(kw) || unaccentedQuery.includes(kwUnaccented)) {
 					const label = conceptLabels[idx];
 					if (label && !matchedConcepts.includes(label)) {
 						matchedConcepts.push(label);
@@ -1157,97 +1384,74 @@ class AuraBookGraphRAGStore {
 		// 3. Lấy danh sách các nút sách (Book Nodes)
 		const bookNodes = [...store.nodes.filter((n) => n.type === "book")];
 
-		// Bổ sung các đầu sách tiêu chuẩn nếu chưa có trong node
-		const fallbackBooks: GraphNode[] = [
-			{
-				id: "book-dac-nhan-tam",
-				type: "book",
-				label: "Đắc Nhân Tâm",
-				properties: {
-					title: "Đắc Nhân Tâm",
-					originalTitle: "How to Win Friends and Influence People",
-					slug: "dac-nhan-tam",
-					author: "Dale Carnegie",
-					publisher: "First News & NXB Tổng Hợp TPHCM",
-					description: "Cẩm nang giao tiếp, thấu hiểu tâm lý và nghệ thuật thu phục lòng người kinh điển nhất mọi thời đại.",
-					coverImage: "/products/book-dac-nhan-tam-cover.jpg",
-					ebookPrice: "59.000₫",
-					physicalPrice: "118.000₫",
-					rating: 4.9,
-				},
-			},
-			{
-				id: "book-bon-thoa-uoc",
-				type: "book",
-				label: "Bốn Thỏa Ước",
-				properties: {
-					title: "Bốn Thỏa Ước",
-					originalTitle: "The Four Agreements",
-					slug: "bon-thoa-uoc",
-					author: "Don Miguel Ruiz",
-					publisher: "NXB Tri Thức",
-					description: "Triết lý Toltec khai sáng giúp bạn thoát khỏi những niềm tin giới hạn, chữa lành nội tâm và tìm thấy tự do đích thực.",
-					coverImage: "/products/book-bon-thoa-uoc-cover.jpg",
-					ebookPrice: "49.000₫",
-					physicalPrice: "98.000₫",
-					rating: 4.8,
-				},
-			},
-			{
-				id: "book-sapiens",
-				type: "book",
-				label: "Sapiens: Lược Sử Loài Người",
-				properties: {
-					title: "Sapiens: Lược Sử Loài Người",
-					originalTitle: "A Brief History of Humankind",
-					slug: "sapiens-luoc-su-loai-nguoi",
-					author: "Yuval Noah Harari",
-					publisher: "NXB Tri Thức & Nhã Nam",
-					description: "Hành trình vĩ đại từ loài vượn người trở thành kẻ thống trị địa cầu qua các cuộc cách mạng nhận thức, nông nghiệp và khoa học.",
-					coverImage: "/products/book-sapiens-luoc-su-loai-nguoi-cover.jpeg",
-					ebookPrice: "89.000₫",
-					physicalPrice: "189.000₫",
-					rating: 5.0,
-				},
-			},
-			{
-				id: "book-tri-tue-do-thai",
-				type: "book",
-				label: "Trí Tuệ Do Thái",
-				properties: {
-					title: "Trí Tuệ Do Thái",
-					originalTitle: "Jerome Becomes a Genius",
-					slug: "tri-tue-do-thai",
-					author: "Eran Katz",
-					publisher: "Alpha Books & NXB Lao Động - Xã Hội",
-					description: "Bí quyết rèn luyện trí nhớ phi thường, phương pháp tưởng tượng kỳ lạ và tư duy làm giàu sắc bén của người Do Thái.",
-					coverImage: "/products/book-tri-tue-do-thai-cover.jpg",
-					ebookPrice: "69.000₫",
-					physicalPrice: "135.000₫",
-					rating: 4.8,
-				},
-			},
-		];
-
-		for (const fb of fallbackBooks) {
-			if (!bookNodes.some((b) => b.properties?.slug === fb.properties.slug)) {
-				bookNodes.push(fb);
+		// Đảm bảo đủ các đầu sách trong catalog
+		for (const mapping of BOOK_CATALOG_MAPPING) {
+			if (!bookNodes.some((b) => b.properties?.slug === mapping.slug)) {
+				bookNodes.push({
+					id: `book-${mapping.slug}`,
+					type: "book",
+					label: mapping.title,
+					properties: {
+						title: mapping.title,
+						slug: mapping.slug,
+						author: mapping.author,
+						description: mapping.keywords.join(", "),
+						coverImage: `/products/book-${mapping.slug}-cover.jpg`,
+						ebookPrice: "59.000₫",
+						physicalPrice: "119.000₫",
+						rating: 4.8,
+					},
+				});
 			}
 		}
 
-		// 4. Chấm điểm từng cuốn sách dựa trên GraphRAG Chunks & Entity Properties
-		const VIETNAMESE_STOP_WORDS = new Set([
+		// 4. Chấm điểm từng cuốn sách dựa trên Tokenized Word Matching & Semantic Clusters
+		const VIETNAMESE_STOP_WORDS_LIST = [
 			"về", "của", "và", "các", "những", "trong", "cho", "với", "là", "có", "để", "được", "tôi", "bạn",
 			"ở", "ra", "lại", "lên", "xuống", "một", "này", "đó", "thì", "mà", "sao", "gì", "ai", "đâu", "nào",
-			"cuốn", "sách", "những", "các", "muốn", "tìm", "đọc", "như", "thế", "hỏi", "giúp", "với"
-		]);
+			"cuốn", "sách", "quyển", "muốn", "tìm", "đọc", "như", "thế", "hỏi", "giúp", "an", "ăn",
+			"hay", "nên", "hướng", "dẫn", "cách", "làm", "biết", "mua", "giá", "bao", "nhiêu", "chiếc",
+			"kiếm", "liên", "quan", "đến", "cần", "giới", "thiệu", "chia", "sẻ", "dạy", "viết", "nói",
+			"tác", "phẩm", "đầu", "tựa", "chuyên", "đề", "chủ", "mục", "xin", "vui", "lòng",
+			"ve", "cua", "va", "cac", "nhung", "trong", "cho", "voi", "la", "co", "de", "duoc", "toi",
+			"o", "ra", "lai", "len", "xuong", "mot", "nay", "do", "thi", "ma", "sao", "gi", "ai", "dau", "nao",
+			"cuon", "sach", "quyen", "muon", "tim", "doc", "nhu", "the", "hoi", "giup",
+			"nen", "huong", "dan", "cach", "lam", "biet", "gia", "nhieu", "chiec",
+			"kiem", "lien", "quan", "den", "can", "gioi", "thieu", "chia", "se", "day", "viet", "noi",
+			"tac", "pham", "dau", "tua", "chuyen", "de", "chu", "muc", "xin", "vui", "long"
+		];
+		const VIETNAMESE_STOP_WORDS = new Set<string>();
+		for (const w of VIETNAMESE_STOP_WORDS_LIST) {
+			VIETNAMESE_STOP_WORDS.add(w.toLowerCase().trim());
+			const stripped = stripVietnameseDiacritics(w).toLowerCase().trim();
+			// Tuyệt đối không thêm "ban" vào danh sách stop word không dấu để tránh triệt tiêu từ "bản" trong "bản thân", "bản lĩnh"
+			if (stripped !== "ban") {
+				VIETNAMESE_STOP_WORDS.add(stripped);
+			}
+		}
 
-		const rawWords = cleanQuery.split(/\s+/).filter((w) => w.length > 0);
-		const meaningfulWords = rawWords.filter((w) => w.length > 1 && !VIETNAMESE_STOP_WORDS.has(w));
-		const phrases: string[] = [];
-		for (let i = 0; i < rawWords.length - 1; i++) {
-			if (!VIETNAMESE_STOP_WORDS.has(rawWords[i]) || !VIETNAMESE_STOP_WORDS.has(rawWords[i + 1])) {
-				phrases.push(`${rawWords[i]} ${rawWords[i + 1]}`);
+		const tokenize = (text: string) =>
+			stripVietnameseDiacritics(text).toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter(Boolean);
+
+		const queryTokens = tokenize(cleanQuery);
+		const meaningfulTokens = queryTokens.filter((w, idx) => {
+			if (w.length <= 1) return false;
+			// Bảo toàn chữ "bản" khi đi cùng "thân", "lĩnh" hoặc khi câu truy vấn gốc có từ "bản"
+			if (w === "ban") {
+				const next = queryTokens[idx + 1];
+				const prev = queryTokens[idx - 1];
+				if (next === "than" || next === "linh" || prev === "trien" || cleanQuery.toLowerCase().includes("bản")) {
+					return true;
+				}
+			}
+			return !VIETNAMESE_STOP_WORDS.has(w);
+		});
+		const queryBigrams: string[] = [];
+		for (let i = 0; i < queryTokens.length - 1; i++) {
+			const isStop1 = VIETNAMESE_STOP_WORDS.has(queryTokens[i]);
+			const isStop2 = VIETNAMESE_STOP_WORDS.has(queryTokens[i + 1]);
+			if (!isStop1 || !isStop2 || (queryTokens[i] === "ban" && queryTokens[i + 1] === "than")) {
+				queryBigrams.push(`${queryTokens[i]} ${queryTokens[i + 1]}`);
 			}
 		}
 
@@ -1257,6 +1461,9 @@ class AuraBookGraphRAGStore {
 			matchReasons: string[];
 			topChunk?: VectorChunk;
 			matchedTerms: string[];
+			titleTokenHits: number;
+			hasStrongGroundingSignal?: boolean;
+			titleOverlapRatio?: number;
 		}> = [];
 
 		for (const book of bookNodes) {
@@ -1265,163 +1472,374 @@ class AuraBookGraphRAGStore {
 			const matchedTerms: string[] = [];
 			const slug = book.properties?.slug || "";
 			const title = (book.properties?.title || book.label || "").toLowerCase();
+			const titleUnaccented = stripVietnameseDiacritics(title).toLowerCase();
+			const titleTokens = tokenize(title);
+			const slugWords = slug.replace(/-/g, " ");
 			const author = (book.properties?.author || "").toLowerCase();
-			const desc = (book.properties?.description || "").toLowerCase();
-			const origTitle = (book.properties?.originalTitle || "").toLowerCase();
+			const authorUnaccented = stripVietnameseDiacritics(author).toLowerCase();
+			const authorTokens = tokenize(author);
 
-			// 4.1. Khớp cụm từ nguyên vẹn (Phrase match - Điểm số cao nhất)
-			for (const phrase of phrases) {
-				if (title.includes(phrase)) {
-					score += 1.4;
-					matchReasons.push(`Khớp cụm từ tiêu đề: "${phrase}"`);
-					matchedTerms.push(phrase);
-				} else if (desc.includes(phrase)) {
-					score += 0.9;
-					matchReasons.push(`Khớp cụm từ trong giới thiệu: "${phrase}"`);
-					matchedTerms.push(phrase);
+			const mapping = BOOK_CATALOG_MAPPING.find((m) => m.slug === slug);
+			const isDirectEntity = Boolean(directSlug && directSlug === slug);
+
+			// Kiểm tra từ viết tắt (abbreviations) trực tiếp theo ranh giới từ
+			let isAbbreviationMatch = false;
+			if (mapping?.abbreviations) {
+				for (const abbr of mapping.abbreviations) {
+					const escapedAbbr = abbr.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+					const abbrRegex = new RegExp(`(^|[^a-zA-Z0-9_])${escapedAbbr}([^a-zA-Z0-9_]|$)`, "i");
+					if (abbrRegex.test(cleanQuery) || abbrRegex.test(unaccentedQuery)) {
+						isAbbreviationMatch = true;
+						break;
+					}
 				}
 			}
 
-			// 4.2. Khớp từng từ khóa có nghĩa (Đã loại stop words)
-			let wordHits = 0;
-			for (const w of meaningfulWords) {
-				if (title.includes(w)) {
-					score += 0.7;
-					wordHits++;
-					if (!matchedTerms.includes(w)) matchedTerms.push(w);
-				} else if (desc.includes(w) || author.includes(w) || origTitle.includes(w)) {
-					score += 0.4;
-					wordHits++;
-					if (!matchedTerms.includes(w)) matchedTerms.push(w);
+			let hasIdentityMatch = isDirectEntity || isAbbreviationMatch;
+			if (hasIdentityMatch) {
+				score += 6.0;
+				matchReasons.push(`Khớp từ viết tắt / thực thể tác phẩm: "${mapping?.abbreviations?.[0] || book.properties?.title || title}"`);
+				if (!matchedTerms.includes(book.properties?.title || title)) {
+					matchedTerms.push(book.properties?.title || title);
 				}
 			}
-			if (wordHits > 0 && matchReasons.length === 0) {
-				matchReasons.push(`Khớp ${wordHits} từ khóa chủ đề`);
+
+			let hasTitleMatch = false;
+
+			// 4.1. Khớp chính xác tiêu đề hoặc slug (Ưu tiên cao nhất)
+			if (cleanQuery === title || unaccentedQuery === titleUnaccented || unaccentedQuery === slugWords) {
+				score += 5.0;
+				hasTitleMatch = true;
+				hasIdentityMatch = true;
+				matchReasons.push("Khớp chính xác tên tác phẩm");
+				matchedTerms.push(book.properties?.title || title);
+			} else if (unaccentedQuery.includes(titleUnaccented) || unaccentedQuery.includes(slugWords)) {
+				score += 3.5;
+				hasTitleMatch = true;
+				matchReasons.push(`Truy vấn chứa trọn vẹn tiêu đề: "${book.properties?.title || title}"`);
+				matchedTerms.push(book.properties?.title || title);
+			} else if (titleUnaccented.includes(unaccentedQuery) && unaccentedQuery.length >= 6) {
+				score += 3.0;
+				hasTitleMatch = true;
+				matchReasons.push(`Tiêu đề chứa cụm từ tìm kiếm`);
+				matchedTerms.push(cleanQuery);
 			}
 
-			// 4.3. Khớp cụm chuyên đề ngữ nghĩa đặc trưng (Semantic Cluster Alignment)
-			if (
-				(cleanQuery.includes("loài người") || cleanQuery.includes("tiến hóa") || cleanQuery.includes("nhân loại") || cleanQuery.includes("văn minh") || cleanQuery.includes("sapiens") || cleanQuery.includes("harari") || cleanQuery.includes("lịch sử loài người")) &&
-				slug === "sapiens-luoc-su-loai-nguoi"
-			) {
-				score += 1.6;
-				matchReasons.push("Khớp chuyên đề: Lịch sử & Tiến hóa nhân loại");
-				if (!matchedTerms.includes("loài người")) matchedTerms.push("loài người");
+			// 4.2. Khớp cụm 2 từ trong tiêu đề (Bigram matching)
+			let hasTitleBigram = false;
+			for (const bg of queryBigrams) {
+				// Guardrail: Không tính bigram "chien tranh" nếu truy vấn là "chiến tranh giữa các vì sao" / Star Wars
+				if (bg === "chien tranh" && (unaccentedQuery.includes("giua cac vi sao") || unaccentedQuery.includes("star wars") || cleanQuery.includes("vì sao"))) {
+					continue;
+				}
+				const bgRegex = new RegExp(`(^|\\s)${bg.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(\\s|$)`, "i");
+				if (bgRegex.test(titleUnaccented)) {
+					score += 2.0;
+					hasTitleBigram = true;
+					matchReasons.push(`Khớp cụm từ tiêu đề: "${bg}"`);
+					if (!matchedTerms.includes(bg)) matchedTerms.push(bg);
+				}
 			}
 
-			if (
-				(cleanQuery.includes("do thái") || cleanQuery.includes("trí nhớ") || cleanQuery.includes("ghi nhớ") || cleanQuery.includes("eran katz") || cleanQuery.includes("trí tuệ") || cleanQuery.includes("thông minh") || cleanQuery.includes("tư duy phản biện")) &&
-				slug === "tri-tue-do-thai"
-			) {
-				score += 1.6;
-				matchReasons.push("Khớp chuyên đề: Rèn luyện trí nhớ & Trí tuệ Do Thái");
-				if (!matchedTerms.includes("trí tuệ")) matchedTerms.push("trí tuệ");
+			// 4.3. Phân tích độ trùng khớp token (Algorithmic Token Overlap Guardrail)
+			const matchingTitleTokens = meaningfulTokens.filter((token) => titleTokens.includes(token));
+			const matchingAuthorTokens = meaningfulTokens.filter((token) => authorTokens.includes(token));
+			const titleTokenHits = matchingTitleTokens.length;
+			const queryTokensCount = meaningfulTokens.length;
+
+			const titleOverlapRatio = queryTokensCount > 0 ? titleTokenHits / queryTokensCount : 0;
+
+			let hasAuthorMatch = false;
+			if (authorUnaccented && (unaccentedQuery.includes(authorUnaccented) || cleanQuery.includes(author))) {
+				score += 3.0;
+				hasAuthorMatch = true;
+				matchReasons.push(`Khớp tác giả: ${book.properties?.author || author}`);
+				if (!matchedTerms.includes(book.properties?.author || author)) {
+					matchedTerms.push(book.properties?.author || author);
+				}
+			} else if (matchingAuthorTokens.length >= 2 || (authorTokens.length === 1 && matchingAuthorTokens.length === 1)) {
+				score += 2.0;
+				hasAuthorMatch = true;
+				matchReasons.push(`Khớp tác giả: ${book.properties?.author || author}`);
+				for (const at of matchingAuthorTokens) {
+					if (!matchedTerms.includes(at)) matchedTerms.push(at);
+				}
 			}
 
-			if (
-				(cleanQuery.includes("giao tiếp") || cleanQuery.includes("ứng xử") || cleanQuery.includes("đối nhân") || cleanQuery.includes("xử thế") || cleanQuery.includes("thu phục lòng người") || cleanQuery.includes("kết bạn") || cleanQuery.includes("đắc nhân tâm") || cleanQuery.includes("dale carnegie")) &&
-				slug === "dac-nhan-tam"
-			) {
-				score += 1.6;
-				matchReasons.push("Khớp chuyên đề: Giao tiếp & Thu phục lòng người");
-				if (!matchedTerms.includes("đối nhân xử thế")) matchedTerms.push("đối nhân xử thế");
+			// Token matching cho Tiêu đề:
+			// CHỈ tính điểm khi có độ trùng khớp thực chất:
+			// - Truy vấn 1 từ: từ đó phải khớp với tiêu đề.
+			// - Truy vấn >= 2 từ: phải khớp >= 2 từ HOẶC tỷ lệ trùng khớp >= 50% số từ truy vấn.
+			// Loại bỏ hoàn toàn việc 1 từ ngẫu nhiên trong câu dài tự ý kích hoạt điểm tiêu đề.
+			let hasSignificantTitleTokenOverlap = false;
+			if (queryTokensCount === 1) {
+				if (titleTokenHits === 1) {
+					score += 1.5;
+					hasSignificantTitleTokenOverlap = true;
+					matchReasons.push(`Khớp từ khóa tiêu đề: "${matchingTitleTokens[0]}"`);
+					if (!matchedTerms.includes(matchingTitleTokens[0])) matchedTerms.push(matchingTitleTokens[0]);
+				}
+			} else if (queryTokensCount >= 2) {
+				if (titleTokenHits >= 2 || titleOverlapRatio >= 0.5) {
+					score += titleTokenHits * 1.2;
+					hasSignificantTitleTokenOverlap = true;
+					matchReasons.push(`Khớp ${titleTokenHits}/${queryTokensCount} từ tiêu đề (${Math.round(titleOverlapRatio * 100)}%)`);
+					for (const token of matchingTitleTokens) {
+						if (!matchedTerms.includes(token)) matchedTerms.push(token);
+					}
+				}
 			}
 
-			if (
-				(cleanQuery.includes("bốn thỏa ước") || cleanQuery.includes("thỏa ước") || cleanQuery.includes("toltec") || cleanQuery.includes("chữa lành") || cleanQuery.includes("bình an") || cleanQuery.includes("nội tâm") || cleanQuery.includes("tự do nội tâm")) &&
-				slug === "bon-thoa-uoc"
-			) {
-				score += 1.6;
-				matchReasons.push("Khớp chuyên đề: Tâm lý học & Minh triết Toltec");
-				if (!matchedTerms.includes("chữa lành nội tâm")) matchedTerms.push("chữa lành nội tâm");
+			// 4.4. Khớp Semantic Cluster cho 13 cuốn sách (Grounding chính xác theo chuyên môn)
+			let hasClusterMatch = false;
+
+			// 4.4.1. Khớp theo Concept Mapping từ matchedConcepts
+			for (const concept of matchedConcepts) {
+				const targetBooks = CONCEPT_BOOK_MAP[concept] || [];
+				if (targetBooks.includes(slug)) {
+					score += 2.8;
+					hasClusterMatch = true;
+					matchReasons.push(`Khớp cụm chủ đề tri thức: ${concept}`);
+					if (!matchedTerms.includes(concept)) matchedTerms.push(concept);
+				}
 			}
 
-			// 4.4. Đối chiếu Vector Chunks trong kho lưu trữ
+			const clusterMatches: Record<string, string[]> = {
+				"dac-nhan-tam": [
+					"dac nhan tam", "đắc nhân tâm", "giao tiep", "giao tiếp", "ung xu", "ứng xử", "doi nhan",
+					"thu phuc long nguoi", "thu phục", "ket ban", "kết bạn", "dale carnegie", "how to win friends",
+					"phat trien ban than", "phát triển bản thân", "phat trien ca nhan", "phát triển cá nhân",
+					"phat trien", "phát triển", "ky nang", "kỹ năng", "ky nang song", "kỹ năng sống",
+					"tam ly hoc", "tâm lý học", "tam ly", "tâm lý",
+					"tam ly giao tiep", "nghe thuat thu phuc long nguoi"
+				],
+				"bon-thoa-uoc": [
+					"bon thoa uoc", "bốn thỏa ước", "thoa uoc", "thỏa ước", "toltec", "chua lanh", "chữa lành",
+					"binh an", "bình an", "noi tam", "nội tâm", "tu do noi tam", "tu do", "tự do", "don miguel ruiz", "the four agreements",
+					"tam ly hoc", "tâm lý học", "tam ly", "tâm lý", "chua lanh tam hon", "giai thoat noi tam"
+				],
+				"sapiens-luoc-su-loai-nguoi": [
+					"sapiens", "luoc su loai nguoi", "lược sử loài người", "loai nguoi", "loài người",
+					"tien hoa", "tiến hóa", "nhan loai", "văn minh", "harari", "yuval noah harari",
+					"lich su tien hoa", "lịch sử tiến hóa", "van minh nhan loai", "văn minh nhân loại",
+					"lich su", "lịch sử"
+				],
+				"tri-tue-do-thai": [
+					"tri tue do thai", "trí tuệ do thái", "do thai", "do thái", "tri nho do thai", "eran katz",
+					"can phong la ma", "jerome", "ren luyen tri nho", "rèn luyện trí nhớ", "tri nho phi thuong",
+					"trí nhớ phi thường", "ren luyen tri nho phi thuong", "kinh te", "kinh tế", "tai chinh", "tài chính",
+					"lam giau", "làm giàu", "hoc tap", "học tập", "phuong phap hoc", "phương pháp học", "hoc hoi", "học hỏi",
+					"hoc", "học", "tri tue", "trí tuệ", "thong minh", "thông minh", "ghi nho", "ghi nhớ", "ren luyen", "rèn luyện",
+					"gia tri", "giá trị", "tao ra gia tri", "tạo ra giá trị", "thang du", "thặng dư"
+				],
+				"10-dieu-tao-nen-so-phan": [
+					"10 dieu", "10 điều", "tao nen so phan", "tạo nên số phận", "so phan", "số phận",
+					"david simon", "cam ket", "ky luat", "kỷ luật", "phat trien ban than", "phát triển bản thân",
+					"phat trien ca nhan", "phát triển cá nhân", "phat trien", "phát triển", "ky nang song", "kỹ năng sống",
+					"ky nang", "kỹ năng", "thoi quen", "thói quen"
+				],
+				"bi-mat-cua-mot-tri-nho-sieu-pham": [
+					"bi mat cua mot tri nho sieu pham", "bí mật của một trí nhớ", "tri nho sieu pham",
+					"trí nhớ siêu phàm", "tri nho", "trí nhớ", "ghi nho", "ghi nhớ", "sieu pham", "chia khoa",
+					"ren luyen tri nho", "rèn luyện trí nhớ", "tri nho phi thuong", "trí nhớ phi thường",
+					"hoc tap", "học tập", "phuong phap hoc", "phương pháp học", "hoc", "học", "ren luyen", "rèn luyện"
+				],
+				"cach-nghi-de-thanh-cong": [
+					"cach nghi de thanh cong", "cách nghĩ để thành công", "cach nghi", "thanh cong", "thành công",
+					"napoleon hill", "nghi giau lam giau", "think and grow rich", "phat trien ban than",
+					"phát triển bản thân", "phat trien ca nhan", "phát triển cá nhân", "phat trien", "phát triển",
+					"self help", "self-help", "lam giau", "làm giàu", "tu duy", "tư duy",
+					"gia tri thang du", "giá trị thặng dư", "thang du", "thặng dư", "tao ra gia tri", "tạo ra giá trị", "gia tri", "giá trị"
+				],
+				"cay-cam-ngot-cua-toi": [
+					"cay cam ngot cua toi", "cây cam ngọt", "cay cam ngot", "cay cam", "cây cam",
+					"zeze", "zêzê", "vasconcelos", "tuoi tho"
+				],
+				"chien-tranh-tien-te-tap-1": [
+					"chien tranh tien te tap 1", "chiến tranh tiền tệ tập 1", "chien tranh tien te 1",
+					"dong chay cua tien ngam", "rothschild", "kinh te hoc", "kinh tế học", "kinh te", "kinh tế",
+					"tai chinh", "tài chính", "tien te", "tiền tệ", "ngan hang", "ngân hàng",
+					"gia tri thang du", "giá trị thặng dư", "thang du", "thặng dư", "gia tri", "giá trị", "tao ra gia tri", "tạo ra giá trị", "tu ban", "tư bản"
+				],
+				"chien-tranh-tien-te-tap-2": [
+					"chien tranh tien te tap 2", "chiến tranh tiền tệ tập 2", "chien tranh tien te 2",
+					"quyen luc vang", "kinh te hoc", "kinh tế học", "kinh te", "kinh tế", "tai chinh", "tài chính",
+					"gia tri thang du", "giá trị thặng dư", "thang du", "thặng dư", "gia tri", "giá trị"
+				],
+				"chien-tranh-tien-te-tap-3": [
+					"chien tranh tien te tap 3", "chiến tranh tiền tệ tập 3", "chien tranh tien te 3",
+					"rung ram tai chinh", "kinh te hoc", "kinh tế học", "kinh te", "kinh tế", "tai chinh", "tài chính",
+					"gia tri thang du", "giá trị thặng dư", "thang du", "thặng dư", "gia tri", "giá trị"
+				],
+				"chu-nghia-khac-ky-phong-cach-song-ban-linh-va-binh-than": [
+					"chu nghia khac ky", "chủ nghĩa khắc kỷ", "khac ky", "khắc kỷ", "stoicism", "william irvine",
+					"ban linh", "binh than", "bình thản", "tinh tam", "chu-nghia-khac-ky-phong-cach-song-ban-linh-binh-than",
+					"triet hoc", "triết học", "loi song", "lối sống"
+				],
+				"chu-nghia-khac-ky-phong-cach-song-ban-linh-binh-than": [
+					"chu nghia khac ky", "chủ nghĩa khắc kỷ", "khac ky", "khắc kỷ", "stoicism", "william irvine",
+					"ban linh", "binh than", "bình thản", "tinh tam", "triet hoc", "triết học", "loi song", "lối sống"
+				],
+				"tu-duy-nhanh-va-cham": [
+					"tu duy nhanh va cham", "tư duy nhanh và chậm", "tu duy nhanh", "nhanh va cham",
+					"tam ly hoc", "tâm lý học", "tam ly", "tâm lý", "tam ly hoc hanh vi", "kinh te hoc hanh vi",
+					"kinh te hoc", "kinh tế học", "kinh te", "kinh tế", "tai chinh", "tài chính",
+					"he thong 1", "he thong 2", "kahneman", "thinking fast and slow",
+					"tu duy", "tư duy", "hoc tap", "học tập", "nhan thuc", "nhận thức", "quyet dinh", "quyết định", "logic"
+				]
+			};
+
+			const targetCluster = clusterMatches[slug] || [];
+			for (const kw of targetCluster) {
+				const kwLower = kw.toLowerCase();
+				const kwUnaccented = stripVietnameseDiacritics(kw).toLowerCase();
+				if (cleanQuery.toLowerCase().includes(kwLower) || unaccentedQuery.includes(kwUnaccented)) {
+					let clusterWeight = 2.4;
+					// Điều chỉnh trọng số thông minh theo ngữ cảnh chuyên môn
+					if (kwUnaccented === "tam ly hoc" || kwLower === "tâm lý học") {
+						if (slug === "tu-duy-nhanh-va-cham") clusterWeight = 2.6;
+						else if (slug === "dac-nhan-tam") clusterWeight = 2.5;
+						else if (slug === "bon-thoa-uoc") clusterWeight = 2.4;
+					} else if (kwUnaccented === "kinh te hoc" || kwLower === "kinh tế học") {
+						if (slug.startsWith("chien-tranh-tien-te")) clusterWeight = 2.6;
+						else if (slug === "tu-duy-nhanh-va-cham") clusterWeight = 2.5;
+						else if (slug === "tri-tue-do-thai") clusterWeight = 2.4;
+					} else if (kwUnaccented.includes("tri nho phi thuong") || kwLower.includes("trí nhớ phi thường")) {
+						if (slug === "tri-tue-do-thai") clusterWeight = 2.7;
+					} else if (kwUnaccented === "phat trien ban than" || kwLower === "phát triển bản thân") {
+						if (slug === "cach-nghi-de-thanh-cong") clusterWeight = 2.5;
+						else if (slug === "dac-nhan-tam") clusterWeight = 2.4;
+						else if (slug === "10-dieu-tao-nen-so-phan") clusterWeight = 2.3;
+					}
+					score += clusterWeight;
+					hasClusterMatch = true;
+					matchReasons.push(`Khớp chủ đề chuyên biệt: "${kw}"`);
+					if (!matchedTerms.includes(kw)) matchedTerms.push(kw);
+					break;
+				}
+			}
+
+			// Xử lý bộ sách Chiến Tranh Tiền Tệ chung
+			if ((unaccentedQuery.includes("chien tranh tien te") || cleanQuery.includes("chiến tranh tiền tệ")) && slug.startsWith("chien-tranh-tien-te")) {
+				score += 2.0;
+				hasTitleMatch = true;
+				if (slug === "chien-tranh-tien-te-tap-1" && !unaccentedQuery.includes("tap 2") && !unaccentedQuery.includes("tap 3") && !unaccentedQuery.includes("2") && !unaccentedQuery.includes("3")) {
+					score += 0.5; // Ưu tiên tập 1 nếu tìm chung
+				} else if (slug === "chien-tranh-tien-te-tap-2" && (unaccentedQuery.includes("tap 2") || unaccentedQuery.includes("2"))) {
+					score += 2.5; // Ưu tiên tập 2
+				} else if (slug === "chien-tranh-tien-te-tap-3" && (unaccentedQuery.includes("tap 3") || unaccentedQuery.includes("3"))) {
+					score += 2.5; // Ưu tiên tập 3
+				}
+				matchReasons.push("Bộ sách Chiến Tranh Tiền Tệ");
+				if (!matchedTerms.includes("chiến tranh tiền tệ")) matchedTerms.push("chiến tranh tiền tệ");
+			}
+
+			// 4.5. Đối chiếu Vector Chunks trong kho lưu trữ
 			const bookChunks = store.chunks.filter((c) => c.bookSlug === slug || c.bookId === book.id);
 			let bestChunk: VectorChunk | undefined;
+			let bestChunkSim = 0;
 			if (bookChunks.length > 0) {
 				const topChunks = searchVectorChunks(cleanQuery, queryVec, bookChunks, 3, slug);
-				if (topChunks.length > 0 && topChunks[0].score > 0.28) {
+				if (topChunks.length > 0 && topChunks[0].score > 0.32) {
 					bestChunk = topChunks[0].chunk;
-					const sim = topChunks[0].score;
-					score += sim * 0.9;
-					matchReasons.push(`Độ tương đồng nội dung văn bản: ${(sim * 100).toFixed(0)}%`);
+					bestChunkSim = topChunks[0].score;
+					// Vector similarity chỉ được cộng điểm khi đã có ít nhất 1 tín hiệu định danh/từ khóa vững chắc
+					if (hasIdentityMatch || hasTitleMatch || hasAuthorMatch || hasTitleBigram || hasSignificantTitleTokenOverlap || hasClusterMatch) {
+						score += bestChunkSim * 1.0;
+						matchReasons.push(`Độ tương đồng nội dung văn bản: ${(bestChunkSim * 100).toFixed(0)}%`);
+					} else if (bestChunkSim > 0.45) {
+						score += bestChunkSim * 0.8;
+						matchReasons.push(`Tương đồng ngữ nghĩa đoạn trích: ${(bestChunkSim * 100).toFixed(0)}%`);
+					}
 				}
 			}
 
-			// 4.5. Tích hợp điểm thưởng/phạt tự học (RLHF / Active Learning Feedback)
-			const directKey = `${cleanQuery}:::${slug}`;
-			const directBonus = store.feedbackScores?.[directKey] || 0;
-			let kwBonus = 0;
-			for (const w of meaningfulWords) {
-				const kwKey = `${w}:::${slug}`;
-				if (store.feedbackScores?.[kwKey]) {
-					kwBonus += store.feedbackScores[kwKey] * 0.25;
-				}
-			}
-			const totalFeedbackBonus = directBonus * 0.8 + kwBonus;
-			score += totalFeedbackBonus;
+			// Xác định tín hiệu xác thực vững chắc (Strong Grounding Signal)
+			const hasStrongGroundingSignal =
+				hasIdentityMatch ||
+				hasTitleMatch ||
+				hasAuthorMatch ||
+				hasTitleBigram ||
+				hasSignificantTitleTokenOverlap ||
+				hasClusterMatch ||
+				(bestChunkSim > 0.45 && score >= 2.0);
 
-			// Lưu toàn bộ sách vào danh sách để phục vụ cả nhóm khớp cao và nhóm tham khảo mở rộng
-			scoredBooks.push({
-				book,
-				score: Number(score.toFixed(4)),
-				matchReasons: matchReasons.length > 0 ? matchReasons : ["Liên kết mở rộng trong đồ thị tri thức"],
-				topChunk: bestChunk,
-				matchedTerms,
-			});
+			// Chỉ ghi nhận sách có điểm liên quan thực chất VÀ có căn cứ xác thực vững chắc
+			if (hasStrongGroundingSignal && score >= 1.5) {
+				scoredBooks.push({
+					book,
+					score: Number(score.toFixed(4)),
+					matchReasons: matchReasons.length > 0 ? matchReasons : ["Khớp ngữ nghĩa chuyên mục"],
+					topChunk: bestChunk,
+					matchedTerms,
+					titleTokenHits,
+					hasStrongGroundingSignal,
+					titleOverlapRatio,
+				});
+			}
 		}
 
-		// 5. Phân tích ngữ nghĩa & kiểm tra độ khớp trực tiếp (Semantic Direct Match Check)
+		// 5. Anti-Hallucination Guardrail & Phân tích truy vấn ngoài danh mục
 		const isOutOfCatalog =
+			/(\b(ho chi minh|bac ho|nguyen ai quoc|vo nguyen giap|nau an|truyen tranh|harry potter|doremon|doraemon|conan|mon an|am thuc|pho bo|banh mi|chua te|chiec nhan|tay du ky|ton ngo khong|giai thuat|du lieu|lap trinh|thoi tiet|gia vang|xe may|naruto|star wars|vi sao|kim dung|kiem hiep|vo cong|tam quoc)\b)/i.test(unaccentedQuery) ||
 			cleanQuery.includes("hồ chí minh") ||
 			cleanQuery.includes("bác hồ") ||
 			cleanQuery.includes("nguyễn ái quốc") ||
-			cleanQuery.includes("nguyen ai quoc") ||
-			cleanQuery.includes("ho chi minh") ||
-			cleanQuery.includes("bac ho") ||
 			cleanQuery.includes("võ nguyên giáp") ||
-			cleanQuery.includes("vo nguyen giap") ||
 			cleanQuery.includes("nấu ăn") ||
-			cleanQuery.includes("truyện tranh");
+			cleanQuery.includes("truyện tranh") ||
+			cleanQuery.includes("phở bò") ||
+			cleanQuery.includes("chiếc nhẫn") ||
+			cleanQuery.includes("chúa tể") ||
+			cleanQuery.includes("chiến tranh giữa các vì sao") ||
+			cleanQuery.includes("tam quốc") ||
+			cleanQuery.includes("kim dung");
 
-		// Sắp xếp theo điểm tương đồng ngữ cảnh giảm dần
 		scoredBooks.sort((a, b) => b.score - a.score);
-
 		const topScore = scoredBooks[0]?.score || 0;
+		const topBook = scoredBooks[0];
+
+		// Điều kiện để được coi là có kết quả khớp trực tiếp (hasDirectMatch = true):
+		// 1. Không nằm trong danh sách truy vấn ngoài danh mục rõ ràng (isOutOfCatalog = false).
+		// 2. Phải có ít nhất 1 cuốn sách trong scoredBooks.
+		// 3. Cuốn sách dẫn đầu phải đạt topScore >= 2.0.
+		// 4. Cuốn sách dẫn đầu bắt buộc phải có tín hiệu grounding xác thực vững chắc (hasStrongGroundingSignal = true).
 		const hasDirectMatch =
 			!isOutOfCatalog &&
-			topScore >= 0.65 &&
-			(scoredBooks[0]?.matchedTerms?.length || 0) > 0;
+			scoredBooks.length > 0 &&
+			topScore >= 2.0 &&
+			Boolean(topBook?.hasStrongGroundingSignal);
 
-		let finalMatches = scoredBooks.filter((item) => {
-			if (hasDirectMatch) {
-				if (item.score === topScore && topScore > 0.3) return true;
-				return item.score >= 0.5 && item.score >= topScore * 0.35;
-			}
-			return false;
-		}).slice(0, limit);
+		// Nếu không có sách khớp trực tiếp, trả về rỗng ngay lập tức (KHÔNG BAO GIỜ cắt lát slice(0, 3) hay trả kết quả ảo)
+		if (!hasDirectMatch) {
+			const queryInterpretation = isOutOfCatalog
+				? `Hệ thống phân tích ngữ nghĩa nhận diện bạn đang tìm kiếm về "${query}". Rất tiếc, kho sách tuyển chọn của AuraBook hiện chưa có tác phẩm viết riêng về nhân vật / chủ đề này.`
+				: `Hệ thống phân tích câu hỏi "${query}" nhưng hiện chưa có ấn phẩm phù hợp trong danh mục 13 cuốn sách của AuraBook.`;
+			const reasoningSummary = `Kho sách AuraBook hiện chưa có tác phẩm về "${query}". Hệ thống chỉ cung cấp kết quả khi có dữ liệu xác thực, không đưa ra thông tin giả mạo.`;
 
-		// Nếu không có sách khớp trực tiếp (như tìm Hồ Chí Minh, nấu ăn...):
-		// Lấy 3 cuốn tiêu biểu trong kho sách để người dùng có thể tham khảo mở rộng
-		if (finalMatches.length === 0 && scoredBooks.length > 0) {
-			finalMatches = scoredBooks.slice(0, Math.min(3, scoredBooks.length));
+			return {
+				products: [],
+				matchedConcepts,
+				totalCount: 0,
+				reasoningSummary,
+				queryInterpretation,
+				recommendations: [],
+				supplementaryRecommendations: [],
+				hasDirectMatch: false,
+			};
 		}
 
+		// Lọc kết quả cuối cùng: Chỉ giữ lại các sách có điểm cao và bám sát cuốn dẫn đầu
+		const finalMatches = scoredBooks.filter((item) => {
+			if (item.score === topScore) return true;
+			return item.score >= 2.0 && item.score >= topScore * 0.5 && item.hasStrongGroundingSignal;
+		}).slice(0, limit);
+
 		const primaryIds = new Set(finalMatches.map((m) => m.book.id));
-		const supplementaryScored = scoredBooks.filter((m) => !primaryIds.has(m.book.id));
+		const supplementaryScored = scoredBooks.filter((m) => !primaryIds.has(m.book.id)).slice(0, 4);
 
-		// Hàm tính độ tương đồng chuẩn hóa (%) và nhãn phân loại trung thực
+		// Hàm tính độ tương đồng chuẩn hóa (%)
 		const calculateSimilarityInfo = (itemScore: number, isPrimary: boolean, rankIdx: number) => {
-			if (!hasDirectMatch) {
-				const percent = Math.max(12, 22 - rankIdx * 4);
-				return {
-					percent,
-					tier: "exploratory" as const,
-					label: "Ấn phẩm tham khảo trong kho sách (Chưa có sách khớp trực tiếp)",
-				};
-			}
-
 			let percent = 0;
 			if (isPrimary) {
 				if (rankIdx === 0) {
@@ -1455,7 +1873,6 @@ class AuraBookGraphRAGStore {
 			return { percent, tier, label };
 		};
 
-		// Lấy thống kê số lượt like / dislike của cuốn sách
 		const getBookFeedbackCounts = (bSlug: string) => {
 			const bFeedbacks = (store.feedbacks || []).filter((f) => f.bookSlug === bSlug);
 			const likesCount = bFeedbacks.filter((f) => f.type === "like").length;
@@ -1463,25 +1880,11 @@ class AuraBookGraphRAGStore {
 			return { likesCount, dislikesCount };
 		};
 
-		// 6. Chuyển đổi thành ProductCardData chuẩn và chi tiết đề xuất chuyên sâu
-		let queryInterpretation = getQueryInterpretation(cleanQuery);
-		let reasoningSummary = "";
+		const queryInterpretation = getQueryInterpretation(cleanQuery);
+		const reasoningSummary = matchedConcepts.length > 0
+			? `GraphRAG AI đã phân tích câu hỏi "${query}", ưu tiên các tác phẩm khớp cao nhất về chủ đề: ${matchedConcepts.join(", ")}.`
+			: `GraphRAG AI đã phân tích ngữ nghĩa câu hỏi "${query}" và tìm thấy ${finalMatches.length} ấn phẩm khớp trọng tâm nhất từ kho tri thức hệ thống.`;
 
-		if (!hasDirectMatch) {
-			if (isOutOfCatalog) {
-				queryInterpretation = `Hệ thống phân tích ngữ nghĩa nhận diện bạn đang tìm kiếm về "${query}". Rất tiếc, kho sách hiện tại của AuraBook chưa có tác phẩm viết riêng về nhân vật / chủ đề này.`;
-				reasoningSummary = `Kho sách AuraBook hiện chưa có ấn phẩm về "${query}". Dưới đây là các đầu sách tuyển chọn tiêu biểu trong kho sách để bạn tham khảo khám phá:`;
-			} else {
-				queryInterpretation = `Hệ thống phân tích ngữ nghĩa câu hỏi "${query}" nhưng chưa tìm thấy ấn phẩm khớp trọng tâm trực tiếp trong kho sách.`;
-				reasoningSummary = `Dưới đây là các ấn phẩm nổi bật trong kho sách AuraBook để bạn tham khảo:`;
-			}
-		} else {
-			reasoningSummary = matchedConcepts.length > 0
-				? `GraphRAG AI đã phân tích câu hỏi "${query}", ưu tiên các tác phẩm khớp cao nhất về chủ đề: ${matchedConcepts.join(", ")}.`
-				: `GraphRAG AI đã phân tích ngữ nghĩa câu hỏi "${query}" và tìm thấy ${finalMatches.length} ấn phẩm khớp trọng tâm nhất cùng ${supplementaryScored.length} tác phẩm tham khảo mở rộng.`;
-		}
-
-		// Tạo danh sách Đề xuất Trọng tâm (Primary Recommendations)
 		const recommendations: BookRecommendationDetail[] = [];
 		const products: ProductCardData[] = finalMatches.map(({ book, matchReasons, topChunk, matchedTerms, score: itemScore }, idx) => {
 			const bSlug = book.properties?.slug || "dac-nhan-tam";
@@ -1491,24 +1894,16 @@ class AuraBookGraphRAGStore {
 			const vtPriceNum = parseInt(vtPriceStr.replace(/\D/g, "")) || 118000;
 			const title = book.properties?.title || book.label;
 			const author = book.properties?.author || "AuraBook Publishing";
-			const coverImage = book.properties?.coverImage || "/products/book-dac-nhan-tam-cover.jpg";
+			const coverImage = book.properties?.coverImage || `/products/book-${bSlug}-cover.jpg`;
 			const href = `/${locale}/${channel}/products/${bSlug}`;
 
-			// Tạo lý do và điểm sáng DYNAMIC theo đúng từ khóa người dùng
-			let { reason, coreInsight } = generateDynamicRationale(
+			const { reason, coreInsight } = generateDynamicRationale(
 				book,
 				cleanQuery,
 				topChunk,
 				matchReasons,
 				matchedTerms
 			);
-
-			if (!hasDirectMatch) {
-				reason = isOutOfCatalog
-					? `Kho sách AuraBook hiện chưa có tác phẩm viết riêng về "${query}". Bạn có thể tham khảo ấn phẩm tiêu biểu "${title}" (${author}) từ kho sách hiện có của chúng tôi.`
-					: `Ấn phẩm xuất sắc thuộc kho sách tuyển chọn của AuraBook để bạn tham khảo thêm.`;
-				coreInsight = `Gợi ý tham khảo chất lượng cao từ kho tri thức AuraBook.`;
-			}
 
 			const { percent, tier, label } = calculateSimilarityInfo(itemScore, true, idx);
 			const { likesCount, dislikesCount } = getBookFeedbackCounts(bSlug);
@@ -1554,29 +1949,26 @@ class AuraBookGraphRAGStore {
 			};
 		});
 
-		// Tạo danh sách Đề xuất Tham khảo Thêm (Supplementary Recommendations)
 		const supplementaryRecommendations: BookRecommendationDetail[] = supplementaryScored.map(
 			({ book, matchReasons, topChunk, matchedTerms, score: itemScore }, idx) => {
-				const bSlug = book.properties?.slug || "dac-nhan-tam";
+				const rawSlug = book.properties?.slug || "dac-nhan-tam";
+				const bSlug = rawSlug === "chu-nghia-khac-ky-phong-cach-song-ban-linh-binh-than"
+					? "chu-nghia-khac-ky-phong-cach-song-ban-linh-va-binh-than"
+					: rawSlug;
 				const ebPriceStr = String(book.properties?.ebookPrice || "59.000₫");
 				const ebPriceNum = parseInt(ebPriceStr.replace(/\D/g, "")) || 59000;
 				const title = book.properties?.title || book.label;
 				const author = book.properties?.author || "AuraBook Publishing";
-				const coverImage = book.properties?.coverImage || "/products/book-dac-nhan-tam-cover.jpg";
+				const coverImage = book.properties?.coverImage || `/products/book-${bSlug}-cover.jpg`;
 				const href = `/${locale}/${channel}/products/${bSlug}`;
 
-				let { reason, coreInsight } = generateDynamicRationale(
+				const { reason, coreInsight } = generateDynamicRationale(
 					book,
 					cleanQuery,
 					topChunk,
 					matchReasons,
 					matchedTerms
 				);
-
-				if (!hasDirectMatch) {
-					reason = `Ấn phẩm tuyển chọn trong kho sách AuraBook để bạn tham khảo thêm.`;
-					coreInsight = `Gợi ý đọc sách mở rộng từ AuraBook.`;
-				}
 
 				const { percent, tier, label } = calculateSimilarityInfo(itemScore, false, idx);
 				const { likesCount, dislikesCount } = getBookFeedbackCounts(bSlug);

@@ -8,7 +8,7 @@ import { SearchResults } from "@/ui/components/search-results";
 import { Pagination } from "@/ui/components/pagination";
 import { ProductsGridSkeleton } from "@/ui/components/plp";
 import { SearchSort } from "./search-sort";
-import { SearchIcon } from "lucide-react";
+import { SearchIcon, Sparkles } from "lucide-react";
 import { buttonClassName } from "@/ui/components/ui/button";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { buildStorefrontPath } from "@/lib/storefront-path";
@@ -120,6 +120,8 @@ async function SearchContent({
 		hasDirectMatch?: boolean;
 	} | null = null;
 
+	let recommendedProducts: typeof products = [];
+
 	// 2. NẾU KHÔNG TÌM THẤY KẾT QUẢ THƯỜNG -> CHUYỂN NGAY LẬP TỨC SANG GRAPHRAG THEO NGỮ CẢNH
 	if (pagination.totalCount === 0 || products.length === 0) {
 		const ragResult = graphRAGStore.searchProductsByContext(query, {
@@ -128,8 +130,36 @@ async function SearchContent({
 		});
 
 		if (ragResult.products.length > 0) {
-			products = ragResult.products;
+			products = ragResult.products.map((p) => ({
+				...p,
+				slug:
+					p.slug === "chu-nghia-khac-ky-phong-cach-song-ban-linh-binh-than"
+						? "chu-nghia-khac-ky-phong-cach-song-ban-linh-va-binh-than"
+						: p.slug,
+			}));
 			pagination = { totalCount: ragResult.totalCount };
+			isGraphRAGResult = true;
+			graphRAGInfo = {
+				reasoningSummary: ragResult.reasoningSummary,
+				matchedConcepts: ragResult.matchedConcepts,
+				queryInterpretation: ragResult.queryInterpretation,
+				recommendations: ragResult.recommendations.map((r) => ({
+					...r,
+					slug:
+						r.slug === "chu-nghia-khac-ky-phong-cach-song-ban-linh-binh-than"
+							? "chu-nghia-khac-ky-phong-cach-song-ban-linh-va-binh-than"
+							: r.slug,
+					href:
+						r.slug === "chu-nghia-khac-ky-phong-cach-song-ban-linh-binh-than"
+							? `/${params.locale}/${params.channel}/products/chu-nghia-khac-ky-phong-cach-song-ban-linh-va-binh-than`
+							: r.href,
+				})),
+				supplementaryRecommendations: ragResult.supplementaryRecommendations,
+				hasDirectMatch: ragResult.hasDirectMatch,
+			};
+		} else if (ragResult.hasDirectMatch === false) {
+			// Xử lý truy vấn ngoài danh mục hoặc không có sách phù hợp:
+			// Bật isGraphRAGResult để hiển thị đầy đủ giải thích của AI và gợi ý thông minh
 			isGraphRAGResult = true;
 			graphRAGInfo = {
 				reasoningSummary: ragResult.reasoningSummary,
@@ -137,14 +167,28 @@ async function SearchContent({
 				queryInterpretation: ragResult.queryInterpretation,
 				recommendations: ragResult.recommendations,
 				supplementaryRecommendations: ragResult.supplementaryRecommendations,
-				hasDirectMatch: ragResult.hasDirectMatch,
+				hasDirectMatch: false,
 			};
+
+			// Lấy các tác phẩm tiêu biểu từ kho tuyển chọn của AuraBook để gợi ý thông minh
+			try {
+				const fallbackCatalog = await searchProducts({
+					query: "",
+					channel: params.channel,
+					locale: params.locale,
+					limit: 6,
+				});
+				recommendedProducts = fallbackCatalog.products || [];
+			} catch {
+				recommendedProducts = [];
+			}
 		}
 	}
 
 	const isFirstPage = !cursor;
 
-	if (pagination.totalCount === 0) {
+	// Chỉ hiển thị EmptyState thuần túy nếu không có kết quả VÀ không có phân tích giải thích từ AI
+	if (pagination.totalCount === 0 && !isGraphRAGResult) {
 		return (
 			<>
 				{isFirstPage && <SearchCommerceEvent channel={params.channel} zero />}
@@ -182,18 +226,94 @@ async function SearchContent({
 				<SearchSort />
 			</div>
 
-			{/* KẾT QUẢ TÌM KIẾM NGỮ CẢNH GRAPHRAG */}
+			{/* AI REASONING EXPLANATION BANNER */}
+			{isGraphRAGResult && graphRAGInfo && (
+				<div
+					className={`mb-6 rounded-2xl border p-5 sm:p-6 transition-all ${
+						graphRAGInfo.hasDirectMatch === false
+							? "border-amber-500/30 bg-amber-500/5 text-foreground"
+							: "border-primary/20 bg-primary/5 text-foreground"
+					}`}
+				>
+					<div className="flex items-start gap-3.5">
+						<div
+							className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${
+								graphRAGInfo.hasDirectMatch === false
+									? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+									: "bg-primary/10 text-primary"
+							}`}
+						>
+							<Sparkles className="h-5 w-5" />
+						</div>
+						<div className="min-w-0 flex-1 space-y-2">
+							<div className="flex items-center gap-2 flex-wrap">
+								<h3 className="font-bold text-sm sm:text-base tracking-tight text-foreground">
+									{graphRAGInfo.hasDirectMatch === false
+										? "Giải thích từ Hệ Thống AI AuraBook"
+										: "Phân tích ngữ nghĩa tìm kiếm GraphRAG AI"}
+								</h3>
+								{graphRAGInfo.hasDirectMatch === false && (
+									<span className="rounded-full bg-amber-500/15 px-2.5 py-0.5 text-xs font-semibold text-amber-700 dark:text-amber-300 border border-amber-500/20">
+										Ngoài danh mục
+									</span>
+								)}
+							</div>
+							<p className="text-sm leading-relaxed text-muted-foreground">
+								{graphRAGInfo.queryInterpretation || graphRAGInfo.reasoningSummary}
+							</p>
+							{graphRAGInfo.hasDirectMatch === false &&
+								graphRAGInfo.reasoningSummary &&
+								graphRAGInfo.reasoningSummary !== graphRAGInfo.queryInterpretation && (
+									<p className="text-xs text-muted-foreground/90 italic">
+										{graphRAGInfo.reasoningSummary}
+									</p>
+								)}
+							{graphRAGInfo.matchedConcepts?.length > 0 && (
+								<div className="flex items-center gap-1.5 flex-wrap pt-1">
+									<span className="text-xs text-muted-foreground font-medium">Chủ đề nhận diện:</span>
+									{graphRAGInfo.matchedConcepts.map((concept) => (
+										<span
+											key={concept}
+											className="rounded-md bg-secondary px-2 py-0.5 text-xs font-medium text-foreground/80 border border-border"
+										>
+											#{concept}
+										</span>
+									))}
+								</div>
+							)}
+						</div>
+					</div>
+				</div>
+			)}
+
+			{/* KẾT QUẢ TÌM KIẾM NGỮ CẢNH GRAPHRAG HOẶC GỢI Ý THAY THẾ */}
 			{isGraphRAGResult && graphRAGInfo ? (
-				<GraphRAGAnalysisSection
-					query={query}
-					totalCount={pagination.totalCount}
-					matchedConcepts={graphRAGInfo.matchedConcepts}
-					queryInterpretation={graphRAGInfo.queryInterpretation}
-					reasoningSummary={graphRAGInfo.reasoningSummary}
-					recommendations={graphRAGInfo.recommendations}
-					supplementaryRecommendations={graphRAGInfo.supplementaryRecommendations}
-					hasDirectMatch={graphRAGInfo.hasDirectMatch}
-				/>
+				graphRAGInfo.hasDirectMatch === false ? (
+					recommendedProducts.length > 0 && (
+						<section id="search-results-grid" className="scroll-mt-24 pt-4 border-t border-border/60 transition-all">
+							<div className="mb-6">
+								<h2 className="text-lg sm:text-xl font-bold text-foreground tracking-tight">
+									Ấn phẩm tri thức nổi bật tuyển chọn ({recommendedProducts.length})
+								</h2>
+								<p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+									Gợi ý các cuốn sách tiêu biểu sẵn có trên nền tảng AuraBook
+								</p>
+							</div>
+							<SearchResults products={recommendedProducts} />
+						</section>
+					)
+				) : (
+					<GraphRAGAnalysisSection
+						query={query}
+						totalCount={pagination.totalCount}
+						matchedConcepts={graphRAGInfo.matchedConcepts}
+						queryInterpretation={graphRAGInfo.queryInterpretation}
+						reasoningSummary={graphRAGInfo.reasoningSummary}
+						recommendations={graphRAGInfo.recommendations}
+						supplementaryRecommendations={graphRAGInfo.supplementaryRecommendations}
+						hasDirectMatch={graphRAGInfo.hasDirectMatch}
+					/>
+				)
 			) : (
 				<>
 					{/* Results grid thông thường cho các từ khóa tìm kiếm */}

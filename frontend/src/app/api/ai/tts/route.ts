@@ -60,7 +60,7 @@ export async function GET() {
 
 	return NextResponse.json({
 		status: "online",
-		defaultVoice: cfg?.voice?.ttsVoice || "vi_VN-hoaimy-aurabook",
+		defaultVoice: cfg?.voice?.ttsVoice || cfg?.voice?.activeVoice || cfg?.voice?.voiceId || "f5-tts-vietnamese",
 		voices: availableVoices,
 	});
 }
@@ -92,7 +92,7 @@ export async function POST(req: Request) {
 		// Luôn chuẩn hóa tốc độ về 1.0x - Trong cơ sở dữ liệu/cache chỉ lưu giọng 1x duy nhất
 		// Trình duyệt của người dùng sẽ tự điều khiển tốc độ tua nhanh/chậm (playbackRate) mà không cần tải lại
 		const speed = 1.0;
-		const voice = body.voice || body.model || cfg?.voice?.ttsVoice || "vi_VN-hoaimy-aurabook";
+		const voice = body.voice || body.model || cfg?.voice?.ttsVoice || cfg?.voice?.activeVoice || cfg?.voice?.voiceId || "f5-tts-vietnamese";
 
 		if (!text.trim() || !/[a-zA-Z0-9\u00C0-\u1EF9]/.test(text)) {
 			// Trả về khoảng lặng 0.1s cho câu không chứa từ ngữ (chỉ có dấu câu)
@@ -136,16 +136,29 @@ export async function POST(req: Request) {
 			} catch {}
 		}
 
-		const TTS_URL = process.env.PIPER_TTS_URL || "http://localhost:5050/api/tts";
+		const TTS_URL = process.env.PIPER_TTS_URL || "http://127.0.0.1:5050/api/tts";
 
 		try {
-			const res = await fetch(TTS_URL, {
+			let res = await fetch(TTS_URL, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ text, speed, voice, format: "base64" }),
-			});
+				signal: AbortSignal.timeout(25000),
+			}).catch(() => null);
 
-			if (res.ok) {
+			if (!res || !res.ok) {
+				// Fallback ngay lập tức sang giọng offline Hoài My nếu giọng yêu cầu bị chậm/lỗi
+				if (voice !== "vi_VN-hoaimy-aurabook") {
+					res = await fetch(TTS_URL, {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ text, speed, voice: "vi_VN-hoaimy-aurabook", format: "base64" }),
+						signal: AbortSignal.timeout(10000),
+					}).catch(() => null);
+				}
+			}
+
+			if (res && res.ok) {
 				const data: any = await res.json();
 				// Lưu cache bất đồng bộ để người nghe sau được thưởng thức ngay lập tức
 				if (data?.audioBase64) {

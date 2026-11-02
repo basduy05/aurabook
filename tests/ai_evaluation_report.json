@@ -1,0 +1,3115 @@
+{
+  "timestamp": "2026-11-01T14:11:18.571328",
+  "duration_seconds": 10.75,
+  "total_tests": 55,
+  "passed_tests": 55,
+  "failed_tests": 0,
+  "pass_rate_percent": 100.0,
+  "tier_breakdown": {
+    "Tier 1: Feature Coverage": {
+      "total": 20,
+      "passed": 20,
+      "failed": 0
+    },
+    "Tier 2: Boundary & Corner Cases": {
+      "total": 20,
+      "passed": 20,
+      "failed": 0
+    },
+    "Tier 3: Cross-Feature Combinations": {
+      "total": 10,
+      "passed": 10,
+      "failed": 0
+    },
+    "Tier 4: Real-World Scenarios": {
+      "total": 5,
+      "passed": 5,
+      "failed": 0
+    }
+  },
+  "feature_breakdown": {
+    "reader_chat": {
+      "total": 11,
+      "passed": 11,
+      "failed": 0
+    },
+    "ai_search": {
+      "total": 11,
+      "passed": 11,
+      "failed": 0
+    },
+    "voice_chat": {
+      "total": 11,
+      "passed": 11,
+      "failed": 0
+    },
+    "business_policy": {
+      "total": 12,
+      "passed": 12,
+      "failed": 0
+    },
+    "cross_feature": {
+      "total": 10,
+      "passed": 10,
+      "failed": 0
+    }
+  },
+  "results": [
+    {
+      "id": "TC-T1-01",
+      "tier": "Tier 1: Feature Coverage",
+      "feature": "reader_chat",
+      "name": "General Reader AI Greeting & Persona Introduction",
+      "passed": true,
+      "latency_ms": 126.33,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 126.33,
+          "threshold_ms": 10000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Content Substance & Length",
+          "passed": true,
+          "actual_length": 240,
+          "expected_min_length": 50
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: GREETING",
+          "passed": true,
+          "expected_intent": "GREETING"
+        }
+      ],
+      "grounding_source": "General conversational reading assistant persona",
+      "intent": "GREETING"
+    },
+    {
+      "id": "TC-T1-02",
+      "tier": "Tier 1: Feature Coverage",
+      "feature": "reader_chat",
+      "name": "Đắc Nhân Tâm - Core Philosophical Theme & Author Grounding",
+      "passed": true,
+      "latency_ms": 48.61,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 48.61,
+          "threshold_ms": 10000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Content Substance & Length",
+          "passed": true,
+          "actual_length": 1083,
+          "expected_min_length": 100
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: BOOK_THEME_EXPLANATION",
+          "passed": true,
+          "expected_intent": "BOOK_THEME_EXPLANATION"
+        }
+      ],
+      "grounding_source": "graphrag_store.json (book: dac-nhan-tam, author: Dale Carnegie)",
+      "intent": "BOOK_THEME_EXPLANATION"
+    },
+    {
+      "id": "TC-T1-03",
+      "tier": "Tier 1: Feature Coverage",
+      "feature": "reader_chat",
+      "name": "Bốn Thỏa Ước - First Agreement Meaning Grounding",
+      "passed": true,
+      "latency_ms": 35.38,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 35.38,
+          "threshold_ms": 10000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Content Substance & Length",
+          "passed": true,
+          "actual_length": 604,
+          "expected_min_length": 100
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: CHAPTER_CONTENT_EXPLANATION",
+          "passed": true,
+          "expected_intent": "CHAPTER_CONTENT_EXPLANATION"
+        }
+      ],
+      "grounding_source": "graphrag_store.json (book: bon-thoa-uoc, chapter: Thỏa ước thứ nhất)",
+      "intent": "CHAPTER_CONTENT_EXPLANATION"
+    },
+    {
+      "id": "TC-T1-04",
+      "tier": "Tier 1: Feature Coverage",
+      "feature": "reader_chat",
+      "name": "Sapiens - Cognitive Revolution Historical Analysis",
+      "passed": true,
+      "latency_ms": 58.43,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 58.43,
+          "threshold_ms": 10000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Content Substance & Length",
+          "passed": true,
+          "actual_length": 1262,
+          "expected_min_length": 120
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: LITERARY_CONCEPT_ANALYSIS",
+          "passed": true,
+          "expected_intent": "LITERARY_CONCEPT_ANALYSIS"
+        }
+      ],
+      "grounding_source": "graphrag_store.json (book: sapiens-luoc-su-loai-nguoi)",
+      "intent": "LITERARY_CONCEPT_ANALYSIS"
+    },
+    {
+      "id": "TC-T1-05",
+      "tier": "Tier 1: Feature Coverage",
+      "feature": "reader_chat",
+      "name": "Trí Tuệ Do Thái - Memory & Learning Principles Grounding",
+      "passed": true,
+      "latency_ms": 62.97,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 62.97,
+          "threshold_ms": 10000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Content Substance & Length",
+          "passed": true,
+          "actual_length": 1209,
+          "expected_min_length": 100
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: BOOK_THEME_EXPLANATION",
+          "passed": true,
+          "expected_intent": "BOOK_THEME_EXPLANATION"
+        }
+      ],
+      "grounding_source": "graphrag_store.json (book: tri-tue-do-thai, author: Eran Katz)",
+      "intent": "BOOK_THEME_EXPLANATION"
+    },
+    {
+      "id": "TC-T1-06",
+      "tier": "Tier 1: Feature Coverage",
+      "feature": "ai_search",
+      "name": "Accented Keyword Search for Đắc Nhân Tâm",
+      "passed": true,
+      "latency_ms": 111.64,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 111.64,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Minimum Results Count",
+          "passed": true,
+          "actual": 1,
+          "min_required": 1
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: EXACT_PRODUCT_SEARCH",
+          "passed": true,
+          "expected_intent": "EXACT_PRODUCT_SEARCH"
+        }
+      ],
+      "grounding_source": "PostgreSQL product_product & graphrag_store.json",
+      "intent": "EXACT_PRODUCT_SEARCH"
+    },
+    {
+      "id": "TC-T1-07",
+      "tier": "Tier 1: Feature Coverage",
+      "feature": "ai_search",
+      "name": "Unaccented Diacritics Normalization Search for Đắc Nhân Tâm",
+      "passed": true,
+      "latency_ms": 92.14,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 92.14,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Search Guardrail: Correct First Ranked Entity",
+          "passed": true,
+          "actual_first_slug": "dac-nhan-tam",
+          "forbidden_first": "tu-duy-nhanh-va-cham"
+        },
+        {
+          "dimension": "grounding",
+          "name": "Minimum Results Count",
+          "passed": true,
+          "actual": 1,
+          "min_required": 1
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: DIACRITICS_INSENSITIVE_SEARCH",
+          "passed": true,
+          "expected_intent": "DIACRITICS_INSENSITIVE_SEARCH"
+        }
+      ],
+      "grounding_source": "Diacritics normalization in graph-store.ts and resolveBookEntity",
+      "intent": "DIACRITICS_INSENSITIVE_SEARCH"
+    },
+    {
+      "id": "TC-T1-08",
+      "tier": "Tier 1: Feature Coverage",
+      "feature": "ai_search",
+      "name": "Author Entity Search: Yuval Noah Harari",
+      "passed": true,
+      "latency_ms": 116.21,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 116.21,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Minimum Results Count",
+          "passed": true,
+          "actual": 1,
+          "min_required": 1
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: AUTHOR_SEARCH",
+          "passed": true,
+          "expected_intent": "AUTHOR_SEARCH"
+        }
+      ],
+      "grounding_source": "GraphRAG WRITTEN_BY edge (Yuval Noah Harari -> sapiens)",
+      "intent": "AUTHOR_SEARCH"
+    },
+    {
+      "id": "TC-T1-09",
+      "tier": "Tier 1: Feature Coverage",
+      "feature": "ai_search",
+      "name": "Backend Hybrid Search RRF for Tư Duy Nhanh Và Chậm",
+      "passed": true,
+      "latency_ms": 53.92,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 53.92,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: HYBRID_RRF_SEARCH",
+          "passed": true,
+          "expected_intent": "HYBRID_RRF_SEARCH"
+        }
+      ],
+      "grounding_source": "PostgreSQL ai_search_bookchunk & hybrid_search_rrf",
+      "intent": "HYBRID_RRF_SEARCH"
+    },
+    {
+      "id": "TC-T1-10",
+      "tier": "Tier 1: Feature Coverage",
+      "feature": "ai_search",
+      "name": "Conceptual Semantic Search for Stoicism / Khắc Kỷ",
+      "passed": true,
+      "latency_ms": 71.56,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 71.56,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Minimum Results Count",
+          "passed": true,
+          "actual": 1,
+          "min_required": 1
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: CONCEPTUAL_SEARCH",
+          "passed": true,
+          "expected_intent": "CONCEPTUAL_SEARCH"
+        }
+      ],
+      "grounding_source": "graphrag_store.json concept vector & category classification",
+      "intent": "CONCEPTUAL_SEARCH"
+    },
+    {
+      "id": "TC-T1-11",
+      "tier": "Tier 1: Feature Coverage",
+      "feature": "voice_chat",
+      "name": "Voice Assistant Welcoming & Orientation",
+      "passed": true,
+      "latency_ms": 56.08,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 56.08,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Content Substance & Length",
+          "passed": true,
+          "actual_length": 568,
+          "expected_min_length": 40
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: VOICE_GREETING",
+          "passed": true,
+          "expected_intent": "VOICE_GREETING"
+        }
+      ],
+      "grounding_source": "Voice Agent System Prompt & Corpus Greetings",
+      "intent": "VOICE_GREETING"
+    },
+    {
+      "id": "TC-T1-12",
+      "tier": "Tier 1: Feature Coverage",
+      "feature": "voice_chat",
+      "name": "Voice Pricing Inquiry for Đắc Nhân Tâm",
+      "passed": true,
+      "latency_ms": 16.77,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 16.77,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Content Substance & Length",
+          "passed": true,
+          "actual_length": 597,
+          "expected_min_length": 50
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: BOOK_PRICE_INQUIRY",
+          "passed": true,
+          "expected_intent": "BOOK_PRICE_INQUIRY"
+        }
+      ],
+      "grounding_source": "PostgreSQL product_productvariantchannellisting (59k / 118k)",
+      "intent": "BOOK_PRICE_INQUIRY"
+    },
+    {
+      "id": "TC-T1-13",
+      "tier": "Tier 1: Feature Coverage",
+      "feature": "voice_chat",
+      "name": "Voice Pricing Inquiry for Bốn Thỏa Ước",
+      "passed": true,
+      "latency_ms": 45.99,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 45.99,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Content Substance & Length",
+          "passed": true,
+          "actual_length": 612,
+          "expected_min_length": 50
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: BOOK_PRICE_INQUIRY",
+          "passed": true,
+          "expected_intent": "BOOK_PRICE_INQUIRY"
+        }
+      ],
+      "grounding_source": "PostgreSQL product_productvariantchannellisting (49k / 98k)",
+      "intent": "BOOK_PRICE_INQUIRY"
+    },
+    {
+      "id": "TC-T1-14",
+      "tier": "Tier 1: Feature Coverage",
+      "feature": "voice_chat",
+      "name": "Voice Catalog Listing Inquiry",
+      "passed": true,
+      "latency_ms": 36.33,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 36.33,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Content Substance & Length",
+          "passed": true,
+          "actual_length": 1308,
+          "expected_min_length": 60
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: CATALOG_LISTING",
+          "passed": true,
+          "expected_intent": "CATALOG_LISTING"
+        }
+      ],
+      "grounding_source": "Catalog listing in CATALOG / graphrag_store.json",
+      "intent": "CATALOG_LISTING"
+    },
+    {
+      "id": "TC-T1-15",
+      "tier": "Tier 1: Feature Coverage",
+      "feature": "voice_chat",
+      "name": "Direct Piper TTS Audio Synthesis",
+      "passed": true,
+      "latency_ms": 2041.2,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 2041.2,
+          "threshold_ms": 8000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "reliability",
+          "name": "Audio Base64 Output Validity",
+          "passed": true,
+          "actual_bytes": 113824,
+          "expected_min_bytes": 1000
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: TTS_AUDIO_SYNTHESIS",
+          "passed": true,
+          "expected_intent": "TTS_AUDIO_SYNTHESIS"
+        }
+      ],
+      "grounding_source": "Piper TTS Server vi_VN-hoaimy-aurabook.onnx",
+      "intent": "TTS_AUDIO_SYNTHESIS"
+    },
+    {
+      "id": "TC-T1-16",
+      "tier": "Tier 1: Feature Coverage",
+      "feature": "business_policy",
+      "name": "Free Shipping Policy Grounding (500k Threshold)",
+      "passed": true,
+      "latency_ms": 14.22,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 14.22,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Content Substance & Length",
+          "passed": true,
+          "actual_length": 509,
+          "expected_min_length": 40
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: POLICY_SHIPPING_INQUIRY",
+          "passed": true,
+          "expected_intent": "POLICY_SHIPPING_INQUIRY"
+        }
+      ],
+      "grounding_source": "CMS Page storefront-policies & setup_vietnam_shipping_zone.py",
+      "intent": "POLICY_SHIPPING_INQUIRY"
+    },
+    {
+      "id": "TC-T1-17",
+      "tier": "Tier 1: Feature Coverage",
+      "feature": "business_policy",
+      "name": "Paper Book Return Window Policy (7 / 30 Days)",
+      "passed": true,
+      "latency_ms": 41.47,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 41.47,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Content Substance & Length",
+          "passed": true,
+          "actual_length": 501,
+          "expected_min_length": 50
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: POLICY_RETURN_INQUIRY",
+          "passed": true,
+          "expected_intent": "POLICY_RETURN_INQUIRY"
+        }
+      ],
+      "grounding_source": "CMS Page storefront-policies (returns-window-days = 30, free 7 days)",
+      "intent": "POLICY_RETURN_INQUIRY"
+    },
+    {
+      "id": "TC-T1-18",
+      "tier": "Tier 1: Feature Coverage",
+      "feature": "business_policy",
+      "name": "DRM Ebook No Refund Once Opened Policy",
+      "passed": true,
+      "latency_ms": 34.57,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 34.57,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Content Substance & Length",
+          "passed": true,
+          "actual_length": 522,
+          "expected_min_length": 40
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: POLICY_DRM_REFUND",
+          "passed": true,
+          "expected_intent": "POLICY_DRM_REFUND"
+        }
+      ],
+      "grounding_source": "DRM Readium LCP policy & CMS terms",
+      "intent": "POLICY_DRM_REFUND"
+    },
+    {
+      "id": "TC-T1-19",
+      "tier": "Tier 1: Feature Coverage",
+      "feature": "business_policy",
+      "name": "Hanoi Central Warehouse Location Grounding",
+      "passed": true,
+      "latency_ms": 22.31,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 22.31,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Content Substance & Length",
+          "passed": true,
+          "actual_length": 481,
+          "expected_min_length": 30
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: WAREHOUSE_LOCATION_INQUIRY",
+          "passed": true,
+          "expected_intent": "WAREHOUSE_LOCATION_INQUIRY"
+        }
+      ],
+      "grounding_source": "setup_hanoi_warehouse_ghn.py (12 Duy Tân, Cầu Giấy, Hà Nội)",
+      "intent": "WAREHOUSE_LOCATION_INQUIRY"
+    },
+    {
+      "id": "TC-T1-20",
+      "tier": "Tier 1: Feature Coverage",
+      "feature": "business_policy",
+      "name": "Readium LCP DRM Single-Tab & Security Rules Grounding",
+      "passed": true,
+      "latency_ms": 33.09,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 33.09,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Content Substance & Length",
+          "passed": true,
+          "actual_length": 460,
+          "expected_min_length": 40
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: POLICY_DRM_RULES",
+          "passed": true,
+          "expected_intent": "POLICY_DRM_RULES"
+        }
+      ],
+      "grounding_source": "Readium LCP DRM standard & Single Tab Lock rules",
+      "intent": "POLICY_DRM_RULES"
+    },
+    {
+      "id": "TC-T2-01",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "feature": "reader_chat",
+      "name": "Reader Chat Empty Query and Quote Handling",
+      "passed": true,
+      "latency_ms": 29.26,
+      "status_code": 400,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 400,
+          "expected": 400
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 29.26,
+          "threshold_ms": 3000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: INPUT_VALIDATION_ERROR",
+          "passed": true,
+          "expected_intent": "INPUT_VALIDATION_ERROR"
+        }
+      ],
+      "grounding_source": "Input validation guardrail in reader-chat/route.ts",
+      "intent": "INPUT_VALIDATION_ERROR"
+    },
+    {
+      "id": "TC-T2-02",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "feature": "reader_chat",
+      "name": "Reader Chat Whitespace Only Query Handling",
+      "passed": true,
+      "latency_ms": 30.02,
+      "status_code": 400,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 400,
+          "expected": 400
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 30.02,
+          "threshold_ms": 3000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: WHITESPACE_VALIDATION",
+          "passed": true,
+          "expected_intent": "WHITESPACE_VALIDATION"
+        }
+      ],
+      "grounding_source": "String trimming validation",
+      "intent": "WHITESPACE_VALIDATION"
+    },
+    {
+      "id": "TC-T2-03",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "feature": "reader_chat",
+      "name": "Reader Chat Context Stress: Large Quote (>2000 chars)",
+      "passed": true,
+      "latency_ms": 105.21,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 105.21,
+          "threshold_ms": 10000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Content Substance & Length",
+          "passed": true,
+          "actual_length": 2462,
+          "expected_min_length": 100
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: DEEP_QUOTE_ANALYSIS",
+          "passed": true,
+          "expected_intent": "DEEP_QUOTE_ANALYSIS"
+        }
+      ],
+      "grounding_source": "Context window resilience & prompt engineering",
+      "intent": "DEEP_QUOTE_ANALYSIS"
+    },
+    {
+      "id": "TC-T2-04",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "feature": "reader_chat",
+      "name": "Reader Chat with Non-Existent BookSlug Fallback",
+      "passed": true,
+      "latency_ms": 46.07,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 46.07,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: FALLBACK_LITERARY_RESPONSE",
+          "passed": true,
+          "expected_intent": "FALLBACK_LITERARY_RESPONSE"
+        }
+      ],
+      "grounding_source": "Null check in graph-store queryGraphRAG",
+      "intent": "FALLBACK_LITERARY_RESPONSE"
+    },
+    {
+      "id": "TC-T2-05",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "feature": "reader_chat",
+      "name": "Prompt Injection Resistance in Reader Chat",
+      "passed": true,
+      "latency_ms": 135.2,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 135.2,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: PROMPT_INJECTION_DEFENSE",
+          "passed": true,
+          "expected_intent": "PROMPT_INJECTION_DEFENSE"
+        }
+      ],
+      "grounding_source": "System prompt security boundaries",
+      "intent": "PROMPT_INJECTION_DEFENSE"
+    },
+    {
+      "id": "TC-T2-06",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "feature": "ai_search",
+      "name": "Empty Search Query Boundary",
+      "passed": true,
+      "latency_ms": 25.49,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 25.49,
+          "threshold_ms": 3000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: EMPTY_SEARCH",
+          "passed": true,
+          "expected_intent": "EMPTY_SEARCH"
+        }
+      ],
+      "grounding_source": "Empty input guardrail in search route",
+      "intent": "EMPTY_SEARCH"
+    },
+    {
+      "id": "TC-T2-07",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "feature": "ai_search",
+      "name": "Whitespace-Only Search Query Boundary",
+      "passed": true,
+      "latency_ms": 31.23,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 31.23,
+          "threshold_ms": 3000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: WHITESPACE_SEARCH",
+          "passed": true,
+          "expected_intent": "WHITESPACE_SEARCH"
+        }
+      ],
+      "grounding_source": "String trimming in search route",
+      "intent": "WHITESPACE_SEARCH"
+    },
+    {
+      "id": "TC-T2-08",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "feature": "ai_search",
+      "name": "Anti-Hallucination: Out-of-Catalog Book Search",
+      "passed": true,
+      "latency_ms": 99.11,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 99.11,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: OUT_OF_CATALOG_SEARCH",
+          "passed": true,
+          "expected_intent": "OUT_OF_CATALOG_SEARCH"
+        }
+      ],
+      "grounding_source": "Anti-hallucination guardrail (no random slice fallback)",
+      "intent": "OUT_OF_CATALOG_SEARCH"
+    },
+    {
+      "id": "TC-T2-09",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "feature": "ai_search",
+      "name": "Adversarial SQL & XSS Injection in Search",
+      "passed": true,
+      "latency_ms": 89.23,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 89.23,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: INJECTION_DEFENSE",
+          "passed": true,
+          "expected_intent": "INJECTION_DEFENSE"
+        }
+      ],
+      "grounding_source": "SQL escaping & sanitized queries",
+      "intent": "INJECTION_DEFENSE"
+    },
+    {
+      "id": "TC-T2-10",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "feature": "ai_search",
+      "name": "Multi-Volume Series Disambiguation: Chiến Tranh Tiền Tệ",
+      "passed": true,
+      "latency_ms": 79.1,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 79.1,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Minimum Results Count",
+          "passed": true,
+          "actual": 3,
+          "min_required": 1
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: SERIES_DISAMBIGUATION",
+          "passed": true,
+          "expected_intent": "SERIES_DISAMBIGUATION"
+        }
+      ],
+      "grounding_source": "PostgreSQL & GraphRAG nodes for volumes 1, 2, 3",
+      "intent": "SERIES_DISAMBIGUATION"
+    },
+    {
+      "id": "TC-T2-11",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "feature": "voice_chat",
+      "name": "Voice Chat Empty Query Handling",
+      "passed": true,
+      "latency_ms": 42.06,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 42.06,
+          "threshold_ms": 4000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Content Substance & Length",
+          "passed": true,
+          "actual_length": 559,
+          "expected_min_length": 20
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: EMPTY_VOICE_QUERY",
+          "passed": true,
+          "expected_intent": "EMPTY_VOICE_QUERY"
+        }
+      ],
+      "grounding_source": "Voice Chat fallback greeting on empty input",
+      "intent": "EMPTY_VOICE_QUERY"
+    },
+    {
+      "id": "TC-T2-12",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "feature": "voice_chat",
+      "name": "Voice Chat Out-of-Catalog Book Rejection",
+      "passed": true,
+      "latency_ms": 35.04,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 35.04,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: OUT_OF_CATALOG_REJECTION",
+          "passed": true,
+          "expected_intent": "OUT_OF_CATALOG_REJECTION"
+        }
+      ],
+      "grounding_source": "13 books catalog grounding with zero false acceptance",
+      "intent": "OUT_OF_CATALOG_REJECTION"
+    },
+    {
+      "id": "TC-T2-13",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "feature": "voice_chat",
+      "name": "Special Characters & Newlines in Voice Query",
+      "passed": true,
+      "latency_ms": 29.74,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 29.74,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: MALFORMED_QUERY_TOLERANCE",
+          "passed": true,
+          "expected_intent": "MALFORMED_QUERY_TOLERANCE"
+        }
+      ],
+      "grounding_source": "Query sanitization & regex normalization",
+      "intent": "MALFORMED_QUERY_TOLERANCE"
+    },
+    {
+      "id": "TC-T2-14",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "feature": "voice_chat",
+      "name": "TTS Acronym Normalization (AuraBook, DRM, GHN)",
+      "passed": true,
+      "latency_ms": 2060.16,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 2060.16,
+          "threshold_ms": 6000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: ACRONYM_PHONETIC_NORMALIZATION",
+          "passed": true,
+          "expected_intent": "ACRONYM_PHONETIC_NORMALIZATION"
+        }
+      ],
+      "grounding_source": "viet_english_normalizer.py dictionary lookup",
+      "intent": "ACRONYM_PHONETIC_NORMALIZATION"
+    },
+    {
+      "id": "TC-T2-15",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "feature": "voice_chat",
+      "name": "Empty Text Payload to Piper TTS Server",
+      "passed": true,
+      "latency_ms": 2020.19,
+      "status_code": 400,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 400,
+          "expected": 400
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 2020.19,
+          "threshold_ms": 3000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: TTS_VALIDATION_ERROR",
+          "passed": true,
+          "expected_intent": "TTS_VALIDATION_ERROR"
+        }
+      ],
+      "grounding_source": "TTS Server input validator in aurabook_piper_tts_server.py",
+      "intent": "TTS_VALIDATION_ERROR"
+    },
+    {
+      "id": "TC-T2-16",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "feature": "business_policy",
+      "name": "Non-Existent Order Tracking Number Lookup",
+      "passed": true,
+      "latency_ms": 22.88,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 22.88,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: ORDER_LOOKUP_NOT_FOUND",
+          "passed": true,
+          "expected_intent": "ORDER_LOOKUP_NOT_FOUND"
+        }
+      ],
+      "grounding_source": "frontend/data/ghn_shipments.json exact lookup",
+      "intent": "ORDER_LOOKUP_NOT_FOUND"
+    },
+    {
+      "id": "TC-T2-17",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "feature": "business_policy",
+      "name": "Shipping Threshold Boundary: 499.000₫ Under FreeShip Limit",
+      "passed": true,
+      "latency_ms": 13.8,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 13.8,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: BOUNDARY_SHIPPING_MATH",
+          "passed": true,
+          "expected_intent": "BOUNDARY_SHIPPING_MATH"
+        }
+      ],
+      "grounding_source": "Free-shipping-threshold = 500.000₫ arithmetic boundary",
+      "intent": "BOUNDARY_SHIPPING_MATH"
+    },
+    {
+      "id": "TC-T2-18",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "feature": "business_policy",
+      "name": "Expired Return Request Boundary: 45 Days Past Delivery",
+      "passed": true,
+      "latency_ms": 36.18,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 36.18,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: EXPIRED_RETURN_POLICY",
+          "passed": true,
+          "expected_intent": "EXPIRED_RETURN_POLICY"
+        }
+      ],
+      "grounding_source": "CMS Page storefront-policies returns-window-days = 30",
+      "intent": "EXPIRED_RETURN_POLICY"
+    },
+    {
+      "id": "TC-T2-19",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "feature": "business_policy",
+      "name": "Security Jailbreak Refusal: DRM Cracking Request",
+      "passed": true,
+      "latency_ms": 30.22,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 30.22,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: JAILBREAK_REFUSAL",
+          "passed": true,
+          "expected_intent": "JAILBREAK_REFUSAL"
+        }
+      ],
+      "grounding_source": "Security guardrail & Readium LCP terms",
+      "intent": "JAILBREAK_REFUSAL"
+    },
+    {
+      "id": "TC-T2-20",
+      "tier": "Tier 2: Boundary & Corner Cases",
+      "feature": "ai_search",
+      "name": "Backend Search Query Overload Resilience",
+      "passed": true,
+      "latency_ms": 33.99,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 33.99,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: OVERLOAD_RESILIENCE",
+          "passed": true,
+          "expected_intent": "OVERLOAD_RESILIENCE"
+        }
+      ],
+      "grounding_source": "Django view input sanitization & limit capping",
+      "intent": "OVERLOAD_RESILIENCE"
+    },
+    {
+      "id": "TC-T3-01",
+      "tier": "Tier 3: Cross-Feature Combinations",
+      "feature": "cross_feature",
+      "name": "Search-to-Read Transition: Bốn Thỏa Ước",
+      "passed": true,
+      "latency_ms": 113.48,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 113.48,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: SEARCH_TO_READ_PIPELINE",
+          "passed": true,
+          "expected_intent": "SEARCH_TO_READ_PIPELINE"
+        }
+      ],
+      "grounding_source": "PostgreSQL products & Next.js reader routing (/reader/bon-thoa-uoc)",
+      "intent": "SEARCH_TO_READ_PIPELINE"
+    },
+    {
+      "id": "TC-T3-02",
+      "tier": "Tier 3: Cross-Feature Combinations",
+      "feature": "cross_feature",
+      "name": "Search-to-Read Transition: Đắc Nhân Tâm Unaccented",
+      "passed": true,
+      "latency_ms": 107.82,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 107.82,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: SEARCH_TO_READ_PIPELINE",
+          "passed": true,
+          "expected_intent": "SEARCH_TO_READ_PIPELINE"
+        }
+      ],
+      "grounding_source": "Diacritics normalization & slug resolution",
+      "intent": "SEARCH_TO_READ_PIPELINE"
+    },
+    {
+      "id": "TC-T3-03",
+      "tier": "Tier 3: Cross-Feature Combinations",
+      "feature": "cross_feature",
+      "name": "Voice Assistant Cross-Query on Specific Chapter Content",
+      "passed": true,
+      "latency_ms": 37.0,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 37.0,
+          "threshold_ms": 6000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Content Substance & Length",
+          "passed": true,
+          "actual_length": 655,
+          "expected_min_length": 50
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: VOICE_CHAPTER_KNOWLEDGE",
+          "passed": true,
+          "expected_intent": "VOICE_CHAPTER_KNOWLEDGE"
+        }
+      ],
+      "grounding_source": "graphrag_store.json (chapters & agreements)",
+      "intent": "VOICE_CHAPTER_KNOWLEDGE"
+    },
+    {
+      "id": "TC-T3-04",
+      "tier": "Tier 3: Cross-Feature Combinations",
+      "feature": "cross_feature",
+      "name": "Shipping Calculation with FreeShip Rule: 600.000₫ Cart",
+      "passed": true,
+      "latency_ms": 25.44,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 25.44,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: FREESHIP_CALCULATION",
+          "passed": true,
+          "expected_intent": "FREESHIP_CALCULATION"
+        }
+      ],
+      "grounding_source": "setup_vietnam_shipping_zone.py & FreeShip policy (>= 500k)",
+      "intent": "FREESHIP_CALCULATION"
+    },
+    {
+      "id": "TC-T3-05",
+      "tier": "Tier 3: Cross-Feature Combinations",
+      "feature": "cross_feature",
+      "name": "Standard Shipping Calculation for 200.000₫ Order (Hanoi)",
+      "passed": true,
+      "latency_ms": 15.72,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 15.72,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: STANDARD_SHIPPING_CALCULATION",
+          "passed": true,
+          "expected_intent": "STANDARD_SHIPPING_CALCULATION"
+        }
+      ],
+      "grounding_source": "GHN Standard Shipping Hanoi (16.500₫)",
+      "intent": "STANDARD_SHIPPING_CALCULATION"
+    },
+    {
+      "id": "TC-T3-06",
+      "tier": "Tier 3: Cross-Feature Combinations",
+      "feature": "cross_feature",
+      "name": "Order #9 Tracking & In-Transit Cancellation Prohibition",
+      "passed": true,
+      "latency_ms": 20.32,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 20.32,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: ORDER_STATUS_AND_CANCELLATION",
+          "passed": true,
+          "expected_intent": "ORDER_STATUS_AND_CANCELLATION"
+        }
+      ],
+      "grounding_source": "frontend/data/ghn_shipments.json order #9 & Saleor Order policy",
+      "intent": "ORDER_STATUS_AND_CANCELLATION"
+    },
+    {
+      "id": "TC-T3-07",
+      "tier": "Tier 3: Cross-Feature Combinations",
+      "feature": "cross_feature",
+      "name": "Order #5 Delivered Status Verification",
+      "passed": true,
+      "latency_ms": 18.98,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 18.98,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: ORDER_TRACKING_DELIVERED",
+          "passed": true,
+          "expected_intent": "ORDER_TRACKING_DELIVERED"
+        }
+      ],
+      "grounding_source": "frontend/data/ghn_shipments.json order #5 status",
+      "intent": "ORDER_TRACKING_DELIVERED"
+    },
+    {
+      "id": "TC-T3-08",
+      "tier": "Tier 3: Cross-Feature Combinations",
+      "feature": "cross_feature",
+      "name": "Dual Edition Cart Pricing Quote (Ebook + Paper)",
+      "passed": true,
+      "latency_ms": 38.7,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 38.7,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: DUAL_VARIANT_QUOTE",
+          "passed": true,
+          "expected_intent": "DUAL_VARIANT_QUOTE"
+        }
+      ],
+      "grounding_source": "Saleor product variant pricing math",
+      "intent": "DUAL_VARIANT_QUOTE"
+    },
+    {
+      "id": "TC-T3-09",
+      "tier": "Tier 3: Cross-Feature Combinations",
+      "feature": "cross_feature",
+      "name": "Author Catalog Traversal: Eran Katz Works",
+      "passed": true,
+      "latency_ms": 15.35,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 15.35,
+          "threshold_ms": 5000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: AUTHOR_PORTFOLIO_SEARCH",
+          "passed": true,
+          "expected_intent": "AUTHOR_PORTFOLIO_SEARCH"
+        }
+      ],
+      "grounding_source": "GraphRAG author-to-book edges for Eran Katz",
+      "intent": "AUTHOR_PORTFOLIO_SEARCH"
+    },
+    {
+      "id": "TC-T3-10",
+      "tier": "Tier 3: Cross-Feature Combinations",
+      "feature": "cross_feature",
+      "name": "Speech Output Generation from Voice Chat Route",
+      "passed": true,
+      "latency_ms": 2036.12,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 2036.12,
+          "threshold_ms": 8000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "reliability",
+          "name": "Audio Base64 Output Validity",
+          "passed": true,
+          "actual_bytes": 230560,
+          "expected_min_bytes": 1000
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: VOICE_SPEECH_SYNTHESIS",
+          "passed": true,
+          "expected_intent": "VOICE_SPEECH_SYNTHESIS"
+        }
+      ],
+      "grounding_source": "Voice Chat to Piper TTS integration pipeline",
+      "intent": "VOICE_SPEECH_SYNTHESIS"
+    },
+    {
+      "id": "TC-T4-01",
+      "tier": "Tier 4: Real-World Scenarios",
+      "feature": "reader_chat",
+      "name": "In-Depth Literary Quote Context Analysis (Sapiens)",
+      "passed": true,
+      "latency_ms": 50.1,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 50.1,
+          "threshold_ms": 12000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Content Substance & Length",
+          "passed": true,
+          "actual_length": 1301,
+          "expected_min_length": 200
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: DEEP_LITERARY_ANALYSIS_3_SECTIONS",
+          "passed": true,
+          "expected_intent": "DEEP_LITERARY_ANALYSIS_3_SECTIONS"
+        }
+      ],
+      "grounding_source": "Yuval Noah Harari, Sapiens Chapter 1-2, Cognitive Revolution",
+      "intent": "DEEP_LITERARY_ANALYSIS_3_SECTIONS"
+    },
+    {
+      "id": "TC-T4-02",
+      "tier": "Tier 4: Real-World Scenarios",
+      "feature": "business_policy",
+      "name": "Customer Complaint on Damaged Delivery & Return Compensation",
+      "passed": true,
+      "latency_ms": 14.93,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 14.93,
+          "threshold_ms": 6000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Content Substance & Length",
+          "passed": true,
+          "actual_length": 610,
+          "expected_min_length": 60
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: CUSTOMER_COMPLAINT_RESOLUTION",
+          "passed": true,
+          "expected_intent": "CUSTOMER_COMPLAINT_RESOLUTION"
+        }
+      ],
+      "grounding_source": "AuraBook 7-day transit damage replacement guarantee",
+      "intent": "CUSTOMER_COMPLAINT_RESOLUTION"
+    },
+    {
+      "id": "TC-T4-03",
+      "tier": "Tier 4: Real-World Scenarios",
+      "feature": "business_policy",
+      "name": "DRM Readium LCP Multi-Tab Session Conflict Troubleshooting",
+      "passed": true,
+      "latency_ms": 29.61,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 29.61,
+          "threshold_ms": 6000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Content Substance & Length",
+          "passed": true,
+          "actual_length": 614,
+          "expected_min_length": 60
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: DRM_SESSION_TROUBLESHOOTING",
+          "passed": true,
+          "expected_intent": "DRM_SESSION_TROUBLESHOOTING"
+        }
+      ],
+      "grounding_source": "drm_reader_sessions.json & Readium LCP activeTabLock design",
+      "intent": "DRM_SESSION_TROUBLESHOOTING"
+    },
+    {
+      "id": "TC-T4-04",
+      "tier": "Tier 4: Real-World Scenarios",
+      "feature": "voice_chat",
+      "name": "Multi-Turn Consultation & Pronoun Resolution Flow",
+      "passed": true,
+      "latency_ms": 31.1,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 31.1,
+          "threshold_ms": 6000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: MULTI_TURN_DIALOGUE",
+          "passed": true,
+          "expected_intent": "MULTI_TURN_DIALOGUE"
+        }
+      ],
+      "grounding_source": "Active book context retention and multi-turn conversational memory",
+      "intent": "MULTI_TURN_DIALOGUE"
+    },
+    {
+      "id": "TC-T4-05",
+      "tier": "Tier 4: Real-World Scenarios",
+      "feature": "business_policy",
+      "name": "Bulk Order Free Shipping Math & Dispatch Verification",
+      "passed": true,
+      "latency_ms": 35.25,
+      "status_code": 200,
+      "failure_reasons": [],
+      "checks": [
+        {
+          "dimension": "reliability",
+          "name": "HTTP Status Code Match",
+          "passed": true,
+          "actual": 200,
+          "expected": 200
+        },
+        {
+          "dimension": "reliability",
+          "name": "Latency Threshold",
+          "passed": true,
+          "actual_ms": 35.25,
+          "threshold_ms": 6000
+        },
+        {
+          "dimension": "reliability",
+          "name": "Schema Keys Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Required Keywords Present",
+          "passed": true,
+          "missing": []
+        },
+        {
+          "dimension": "grounding",
+          "name": "Anti-Hallucination Forbidden Keywords Absent",
+          "passed": true,
+          "detected": []
+        },
+        {
+          "dimension": "intent",
+          "name": "Intent Resolution: BULK_ORDER_SHIPPING_MATH",
+          "passed": true,
+          "expected_intent": "BULK_ORDER_SHIPPING_MATH"
+        }
+      ],
+      "grounding_source": "567.000₫ >= 500.000₫ free shipping threshold from Hanoi warehouse",
+      "intent": "BULK_ORDER_SHIPPING_MATH"
+    }
+  ]
+}

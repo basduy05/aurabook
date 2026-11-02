@@ -330,121 +330,117 @@ function ProductRailSection({
 
 	const productCards = cards.filter((c) => c.type === "product");
 
-	// TRƯỜNG HỢP 1: DUY NHẤT 1 ĐẦU SÁCH PHÙ HỢP -> HIỂN THỊ THÔNG TIN CHI TIẾT SẢN PHẨM RIÊNG BIỆT
+	// TRƯỜNG HỢP 1: DUY NHẤT 1 ĐẦU SÁCH PHÙ HỢP -> HIỂN THỊ THÔNG TIN CHI TIẾT SẢN PHẨM RIÊNG BIỆT (TIN GỌN, KHÔNG SLOP)
 	if (productCards.length === 1 && cards.length === 1) {
 		const book: BookProductData = productCards[0].data;
-		const edition = selectedEditions[book.id] || "ebook";
-		const currentPrice = edition === "physical" ? (book.physicalPrice || "118.000₫") : (book.ebookPrice || book.price);
-		const cartKey = `${book.id}-${edition}`;
-		const isAdded = !!addedBookIds[book.id] || !!addedBookIds[cartKey];
+		const bookKey = book.slug || book.id;
+		const edition = selectedEditions[bookKey] || selectedEditions[book.id] || "ebook";
+		const ebookPrice = book.ebookPrice || book.price || "69.000₫";
+		const physicalPrice = book.physicalPrice || "135.000₫";
+		const currentPrice = edition === "physical" ? physicalPrice : ebookPrice;
+		const cartKey = `${bookKey}-${edition}`;
+		const isAdded = !!addedBookIds[book.id] || !!addedBookIds[bookKey] || !!addedBookIds[cartKey];
 
 		return (
 			<div className="w-full my-2 text-left animate-in fade-in zoom-in-95 duration-150">
 				<div className="flex items-center gap-1.5 text-[11px] font-semibold text-foreground mb-1.5 px-0.5">
 					<BookOpen className="h-3.5 w-3.5 text-primary" />
-					<span>Ấn phẩm phù hợp nhất với nhu cầu của bạn:</span>
+					<span>Ấn phẩm đề xuất cho bạn:</span>
 				</div>
 
-				<div className="rounded-xl border border-primary/30 bg-card p-3 shadow-xs space-y-2.5">
+				<div className="rounded-xl border border-border bg-card p-3 shadow-xs hover:border-primary/40 transition-colors space-y-2.5">
 					<div className="flex gap-3">
-						<div className="relative h-28 w-20 shrink-0 overflow-hidden rounded-lg border border-border bg-secondary shadow-md">
+						<div className="relative h-24 w-18 shrink-0 overflow-hidden rounded-md border border-border bg-secondary shadow-xs">
 							<img src={book.coverImage} alt={book.title} className="h-full w-full object-cover" />
 						</div>
 
-						<div className="flex flex-1 flex-col justify-between overflow-hidden">
+						<div className="flex flex-1 flex-col justify-between min-w-0">
 							<div>
-								<h5 className="font-bold text-foreground text-xs leading-snug line-clamp-2">
-									{book.title}
-								</h5>
-								<p className="text-[11px] text-muted-foreground italic truncate mt-0.5">
-									Tác giả: {book.author}
-								</p>
-								{book.originalTitle && (
-									<p className="text-[10px] text-muted-foreground/75 italic truncate">
-										Gốc: {book.originalTitle}
-									</p>
-								)}
-								<div className="flex items-center gap-1.5 mt-1.5">
+								<div className="flex items-center gap-1.5 mb-1">
 									<Badge variant="secondary" className="text-[10px] px-1.5 py-0 font-medium">
-										{book.badge}
+										{book.badge || "Sách nổi bật"}
 									</Badge>
 									<div className="flex items-center gap-0.5 text-amber-500 text-[11px] font-semibold">
 										<Star className="h-3 w-3 fill-amber-500" />
-										<span>{book.rating}</span>
+										<span>{book.rating || "4.8"}</span>
 									</div>
 								</div>
+								<h5 className="font-bold text-foreground text-xs leading-snug line-clamp-1">
+									{book.title}
+								</h5>
+								<p className="text-[11px] text-muted-foreground italic truncate">
+									Tác giả: {book.author}
+								</p>
 							</div>
 
-							<div className="flex items-baseline justify-between pt-1 border-t border-border/60">
-								<div className="flex items-baseline gap-1.5">
-									<span className="font-bold text-primary text-sm">{currentPrice}</span>
-									{book.originalPrice && edition === "ebook" && (
-										<span className="text-[10px] text-muted-foreground line-through">
-											{book.originalPrice}
-										</span>
-									)}
-								</div>
-								<span className="text-[10px] font-medium text-muted-foreground">
-									{edition === "ebook" ? "📖 Đọc DRM + Audio" : "📦 Sách in giao tận nhà"}
+							<div className="pt-1 flex items-baseline gap-2">
+								<span className="font-bold text-primary text-base">{currentPrice}</span>
+								<span className="text-[10px] text-muted-foreground font-medium">
+									{edition === "physical" ? "• Sách in giao tận nhà" : "• Đọc DRM + Audio"}
 								</span>
 							</div>
 						</div>
 					</div>
 
-					{/* Bộ chọn 2 phiên bản Sách Điện Tử & Sách Vật Lý */}
-					<div className="space-y-1">
-						<span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">
-							Chọn phiên bản phát hành:
-						</span>
-						<div className="grid grid-cols-2 gap-1.5 p-1 bg-secondary/60 rounded-lg border border-border/60">
-							<button
-								type="button"
-								onClick={() => setSelectedEditions((prev) => ({ ...prev, [book.id]: "ebook" }))}
-								className={cn(
-									"py-1 px-2 rounded-md font-medium text-[11px] transition-all flex flex-col items-center justify-center text-center gap-0.5",
-									edition === "ebook"
-										? "bg-background text-primary shadow-xs font-semibold border border-primary/30"
-										: "text-muted-foreground hover:text-foreground",
-								)}
-							>
-								<div className="flex items-center gap-1">
-									<BookOpen className="h-3 w-3 text-primary" />
-									<span>Sách Điện Tử</span>
-								</div>
-								<span className="text-[10px] font-bold text-primary">{book.ebookPrice || book.price}</span>
-							</button>
+					{/* Bộ chọn phiên bản dạng Segmented Tabs rõ ràng, 2 hàng gọn gàng không bị rớt chữ */}
+					<div className="grid grid-cols-2 gap-2 p-1.5 bg-secondary/50 rounded-lg border border-border/50">
+						<button
+							type="button"
+							onClick={() =>
+								setSelectedEditions((prev) => ({
+									...prev,
+									[bookKey]: "ebook",
+									[book.id]: "ebook",
+								}))
+							}
+							className={cn(
+								"flex flex-col items-center justify-center py-2 px-1.5 rounded-md transition-all text-center",
+								edition === "ebook"
+									? "bg-background text-primary shadow-xs font-semibold border border-primary/30 ring-1 ring-primary/20"
+									: "text-muted-foreground hover:text-foreground hover:bg-background/50",
+							)}
+						>
+							<div className="flex items-center justify-center gap-1.5 whitespace-nowrap text-xs font-medium">
+								<BookOpen className="h-3.5 w-3.5 shrink-0 text-primary" />
+								<span>Sách Điện Tử</span>
+							</div>
+							<span className="text-xs font-bold mt-1 tabular-nums text-primary">
+								{ebookPrice}
+							</span>
+						</button>
 
-							<button
-								type="button"
-								onClick={() => setSelectedEditions((prev) => ({ ...prev, [book.id]: "physical" }))}
-								className={cn(
-									"py-1 px-2 rounded-md font-medium text-[11px] transition-all flex flex-col items-center justify-center text-center gap-0.5",
-									edition === "physical"
-										? "bg-background text-emerald-600 shadow-xs font-semibold border border-emerald-500/30"
-										: "text-muted-foreground hover:text-foreground",
-								)}
-							>
-								<div className="flex items-center gap-1">
-									<Truck className="h-3 w-3 text-emerald-600" />
-									<span>Sách Vật Lý</span>
-								</div>
-								<span className="text-[10px] font-bold text-emerald-600">{book.physicalPrice || "118.000₫"}</span>
-							</button>
-						</div>
+						<button
+							type="button"
+							onClick={() =>
+								setSelectedEditions((prev) => ({
+									...prev,
+									[bookKey]: "physical",
+									[book.id]: "physical",
+								}))
+							}
+							className={cn(
+								"flex flex-col items-center justify-center py-2 px-1.5 rounded-md transition-all text-center",
+								edition === "physical"
+									? "bg-background text-emerald-600 shadow-xs font-semibold border border-emerald-500/30 ring-1 ring-emerald-500/20"
+									: "text-muted-foreground hover:text-foreground hover:bg-background/50",
+							)}
+						>
+							<div className="flex items-center justify-center gap-1.5 whitespace-nowrap text-xs font-medium">
+								<Truck className="h-3.5 w-3.5 shrink-0 text-emerald-600" />
+								<span>Sách Vật Lý</span>
+							</div>
+							<span className="text-xs font-bold mt-1 tabular-nums text-emerald-600">
+								{physicalPrice}
+							</span>
+						</button>
 					</div>
 
-					{book.description && (
-						<p className="text-[11px] leading-relaxed text-muted-foreground bg-secondary/40 p-2 rounded-md border border-border/40 line-clamp-3">
-							{book.description}
-						</p>
-					)}
-
-					<div className="flex items-center gap-1.5 pt-1 border-t border-border/60">
+					<div className="flex items-center gap-2 pt-0.5">
 						<button
 							type="button"
 							onClick={() => onAddToCart(book, edition, currentPrice)}
 							className={cn(
-								"flex-1 flex items-center justify-center gap-1.5 rounded-button py-2 text-xs font-semibold transition-all shadow-xs",
+								"flex-1 flex items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-semibold transition-all shadow-xs",
 								isAdded
 									? "bg-emerald-600 text-white"
 									: "bg-primary hover:bg-primary/90 text-primary-foreground active:scale-98",
@@ -458,14 +454,14 @@ function ProductRailSection({
 							) : (
 								<>
 									<ShoppingCart className="h-3.5 w-3.5" />
-									<span>Thêm vào giỏ ({edition === "physical" ? "Sách Giấy" : "Sách Điện Tử"})</span>
+									<span className="truncate">Thêm vào giỏ ({edition === "physical" ? "Sách Giấy" : "Ebook"})</span>
 								</>
 							)}
 						</button>
 						<button
 							type="button"
 							onClick={() => onViewDetail(book.slug)}
-							className="rounded-button border border-input bg-background hover:bg-secondary px-2.5 py-2 text-xs font-medium text-foreground flex items-center gap-1 transition-colors"
+							className="rounded-lg border border-input bg-background hover:bg-secondary px-3 py-2 text-xs font-medium text-foreground flex items-center gap-1 transition-colors"
 							title="Xem chi tiết ấn phẩm"
 						>
 							<span>Chi tiết</span>
@@ -514,13 +510,16 @@ function ProductRailSection({
 				{cards.map((card, idx) => {
 					if (card.type === "product") {
 						const book: BookProductData = card.data;
-						const edition = selectedEditions[book.id] || "ebook";
-						const currentPrice = edition === "physical" ? (book.physicalPrice || "118.000₫") : (book.ebookPrice || book.price);
-						const cartKey = `${book.id}-${edition}`;
-						const isAdded = !!addedBookIds[book.id] || !!addedBookIds[cartKey];
+						const bookKey = book.slug || book.id;
+						const edition = selectedEditions[bookKey] || selectedEditions[book.id] || "ebook";
+						const ebookPrice = book.ebookPrice || book.price || "69.000₫";
+						const physicalPrice = book.physicalPrice || "135.000₫";
+						const currentPrice = edition === "physical" ? physicalPrice : ebookPrice;
+						const cartKey = `${bookKey}-${edition}`;
+						const isAdded = !!addedBookIds[book.id] || !!addedBookIds[bookKey] || !!addedBookIds[cartKey];
 						return (
 							<div
-								key={`card-product-${book.id || book.slug || idx}-${idx}`}
+								key={`card-product-${bookKey || idx}-${idx}`}
 								className="flex w-[260px] shrink-0 flex-col rounded-card border border-border bg-card p-3 shadow-xs hover:border-primary/50 transition-colors text-left"
 							>
 								<div className="flex gap-2.5">
@@ -555,31 +554,45 @@ function ProductRailSection({
 									</div>
 								</div>
 
-								{/* Bộ chọn phiên bản nhỏ gọn */}
-								<div className="grid grid-cols-2 gap-1 my-2 p-0.5 bg-secondary/50 rounded-md text-[10px]">
+								{/* Bộ chọn phiên bản nhỏ gọn, 2 dòng rõ ràng không bị vỡ bố cục */}
+								<div className="grid grid-cols-2 gap-1 my-2 p-1 bg-secondary/50 rounded-md text-[10px]">
 									<button
 										type="button"
-										onClick={() => setSelectedEditions((prev) => ({ ...prev, [book.id]: "ebook" }))}
+										onClick={() =>
+											setSelectedEditions((prev) => ({
+												...prev,
+												[bookKey]: "ebook",
+												[book.id]: "ebook",
+											}))
+										}
 										className={cn(
-											"py-0.5 px-1 rounded font-medium transition-all text-center",
+											"py-1 px-1 rounded transition-all text-center flex flex-col items-center justify-center",
 											edition === "ebook"
-												? "bg-background text-primary shadow-xs font-semibold"
-												: "text-muted-foreground",
+												? "bg-background text-primary shadow-xs font-semibold border border-primary/30"
+												: "text-muted-foreground hover:text-foreground",
 										)}
 									>
-										Điện tử: {book.ebookPrice || book.price}
+										<span className="whitespace-nowrap font-medium">Sách Điện Tử</span>
+										<span className="font-bold tabular-nums text-primary">{ebookPrice}</span>
 									</button>
 									<button
 										type="button"
-										onClick={() => setSelectedEditions((prev) => ({ ...prev, [book.id]: "physical" }))}
+										onClick={() =>
+											setSelectedEditions((prev) => ({
+												...prev,
+												[bookKey]: "physical",
+												[book.id]: "physical",
+											}))
+										}
 										className={cn(
-											"py-0.5 px-1 rounded font-medium transition-all text-center",
+											"py-1 px-1 rounded transition-all text-center flex flex-col items-center justify-center",
 											edition === "physical"
-												? "bg-background text-emerald-600 shadow-xs font-semibold"
-												: "text-muted-foreground",
+												? "bg-background text-emerald-600 shadow-xs font-semibold border border-emerald-500/30"
+												: "text-muted-foreground hover:text-foreground",
 										)}
 									>
-										Vật lý: {book.physicalPrice || "118.000₫"}
+										<span className="whitespace-nowrap font-medium">Sách Giấy</span>
+										<span className="font-bold tabular-nums text-emerald-600">{physicalPrice}</span>
 									</button>
 								</div>
 
@@ -767,6 +780,79 @@ class HoldMusicSynth {
 	}
 }
 
+// Bộ tạo âm thanh "tinh" (Chime) hai nốt bổng vút ấm áp, trong trẻo, to rõ báo hiệu micro đã mở
+let lastChimeTime = 0;
+function playMicListeningChime() {
+	if (typeof window === "undefined") return;
+	const nowMs = Date.now();
+	if (nowMs - lastChimeTime < 400) return;
+	lastChimeTime = nowMs;
+
+	try {
+		const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+		if (!AudioCtx) return;
+		const ctx = new AudioCtx();
+		if (ctx.state === "suspended") {
+			ctx.resume().catch(() => {});
+		}
+		const now = ctx.currentTime;
+
+		// Master Gain điều chỉnh âm lượng to rõ và trong trẻo (0.35 thay vì 0.12)
+		const masterGain = ctx.createGain();
+		masterGain.gain.setValueAtTime(0.35, now);
+		masterGain.connect(ctx.destination);
+
+		// NỐT 1: G5 (783.99 Hz) - Nốt mở đầu ấm áp, thân thiện (0ms -> 100ms)
+		const osc1 = ctx.createOscillator();
+		const gain1 = ctx.createGain();
+		osc1.type = "sine";
+		osc1.frequency.setValueAtTime(783.99, now);
+
+		gain1.gain.setValueAtTime(0.001, now);
+		gain1.gain.linearRampToValueAtTime(0.7, now + 0.012);
+		gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+
+		osc1.connect(gain1);
+		gain1.connect(masterGain);
+		osc1.start(now);
+		osc1.stop(now + 0.12);
+
+		// NỐT 2: C6 (1046.50 Hz) + Hòa âm E6 (1318.51 Hz) - Nốt cao ngân vang pha lê (75ms -> 350ms)
+		const osc2 = ctx.createOscillator();
+		const osc3 = ctx.createOscillator();
+		const gain2 = ctx.createGain();
+
+		osc2.type = "sine";
+		osc2.frequency.setValueAtTime(1046.5, now + 0.075);
+		osc2.frequency.exponentialRampToValueAtTime(1052.0, now + 0.18);
+
+		osc3.type = "sine";
+		osc3.frequency.setValueAtTime(1318.51, now + 0.075);
+
+		gain2.gain.setValueAtTime(0.001, now);
+		gain2.gain.setValueAtTime(0.001, now + 0.075);
+		gain2.gain.linearRampToValueAtTime(1.0, now + 0.095);
+		gain2.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+
+		osc2.connect(gain2);
+		osc3.connect(gain2);
+		gain2.connect(masterGain);
+
+		osc2.start(now + 0.075);
+		osc3.start(now + 0.075);
+		osc2.stop(now + 0.38);
+		osc3.stop(now + 0.38);
+
+		setTimeout(() => {
+			try {
+				ctx.close().catch(() => {});
+			} catch {}
+		}, 450);
+	} catch (e) {
+		console.warn("[VoiceAgent] Mic chime error:", e);
+	}
+}
+
 export function VoiceAgentWidget() {
 	const pathname = usePathname();
 	const router = useRouter();
@@ -776,9 +862,16 @@ export function VoiceAgentWidget() {
 
 	const [isOpen, setIsOpen] = useState(false);
 	const [sessionPhase, setSessionPhase] = useState<SessionPhase>("method_select");
+	const sessionPhaseRef = useRef<SessionPhase>(sessionPhase);
+	sessionPhaseRef.current = sessionPhase;
 	const [contactMethod, setContactMethod] = useState<ContactMethod>("call");
 
-	// Xóa cache giọng cũ phía client để đảm bảo tuân thủ tuyệt đối cấu hình mặc định do Admin chỉ định
+	// Giọng đọc TTS cấu hình từ hệ thống (mặc định ưu tiên F5-TTS Vietnamese hoặc theo cấu hình Admin)
+	const [activeVoice, setActiveVoice] = useState<string>("f5-tts-vietnamese");
+	const activeVoiceRef = useRef<string>("f5-tts-vietnamese");
+	activeVoiceRef.current = activeVoice;
+
+	// Đồng bộ cấu hình giọng đọc & LLM từ Admin Config
 	useEffect(() => {
 		if (typeof window !== "undefined") {
 			try {
@@ -789,6 +882,11 @@ export function VoiceAgentWidget() {
 				.then((data: any) => {
 					if (data?.config?.voice?.llmModel) {
 						setActiveModel(data.config.voice.llmModel);
+					}
+					const voiceCfg = data?.config?.voice?.ttsVoice || data?.config?.voice?.activeVoice || data?.config?.voice?.voiceId;
+					if (voiceCfg) {
+						setActiveVoice(voiceCfg);
+						activeVoiceRef.current = voiceCfg;
 					}
 				})
 				.catch(() => {});
@@ -817,6 +915,7 @@ export function VoiceAgentWidget() {
 	const [isMuted, setIsMuted] = useState(false);
 	const [isSpeakerOn, setIsSpeakerOn] = useState(true);
 	const [agentSpeaking, setAgentSpeaking] = useState(false);
+	const [connectingStatus, setConnectingStatus] = useState<string>("Đang kết nối tổng đài AuraBook...");
 	const [callDuration, setCallDuration] = useState(0);
 	const callDurationRef = useRef<number>(0);
 	callDurationRef.current = callDuration;
@@ -836,20 +935,48 @@ export function VoiceAgentWidget() {
 
 	useEffect(() => {
 		holdMusicPlayerRef.current = new HoldMusicSynth();
+		const handlePageUnload = () => {
+			if (audioElementRef.current) {
+				try {
+					audioElementRef.current.pause();
+					audioElementRef.current.src = "";
+				} catch {}
+			}
+		};
+		window.addEventListener("pagehide", handlePageUnload);
+		window.addEventListener("beforeunload", handlePageUnload);
+
 		return () => {
 			holdMusicPlayerRef.current?.stop();
+			handlePageUnload();
+			window.removeEventListener("pagehide", handlePageUnload);
+			window.removeEventListener("beforeunload", handlePageUnload);
 		};
 	}, []);
 	const [activeModel, setActiveModel] = useState<string>("gemma2:2b");
 	const [activeBookSlug, setActiveBookSlug] = useState<string>("");
 
-	// Inactivity Timeout state & ref (tự động nhắc nhở nhẹ sau 3 phút không tương tác, KHÔNG tự động hủy cuộc gọi hay xóa hội thoại)
+	// Inactivity Timeout state & ref (tự động hỏi thăm sau 30s im lặng, nếu tiếp tục im lặng sẽ tự động kết thúc cuộc gọi)
 	const [isSessionPaused, setIsSessionPaused] = useState(false);
 	const [isWaitingInactivityPrompt, setIsWaitingInactivityPrompt] = useState(false);
+	const isWaitingInactivityPromptRef = useRef(false);
 	const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
 	const inactivityGraceTimerRef = useRef<NodeJS.Timeout | null>(null);
 	const resetInactivityTimerRef = useRef<() => void>(() => {});
-	const INACTIVITY_TIMEOUT_MS = 180 * 1000; // 3 phút để khách thoải mái đọc sách và đặt câu hỏi
+	const INACTIVITY_TIMEOUT_MS = 30 * 1000; // 30 giây im lặng sau khi Aura đọc xong -> hỏi thăm
+	const INACTIVITY_GRACE_TIMEOUT_MS = 20 * 1000; // 20 giây chờ phản hồi sau câu hỏi thăm -> tự ngắt cuộc gọi
+
+	// Đếm ngược 3s tự động quay về sau khi đánh giá xong
+	const [endedCountdown, setEndedCountdown] = useState<number>(3);
+	const endedRedirectTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+	// Lời chào tạm biệt khi tự ngắt cuộc gọi & trạng thái phát âm thanh nền
+	const farewellTextRef = useRef<string>("");
+	const setInactivityFarewellText = (txt: string) => {
+		farewellTextRef.current = txt;
+	};
+	const [isFarewellSpeaking, setIsFarewellSpeaking] = useState<boolean>(false);
+	const isFarewellSpeakingRef = useRef<boolean>(false);
 
 	// Thêm vào giỏ states
 	const [addedBookIds, setAddedBookIds] = useState<Record<string, boolean>>({});
@@ -908,6 +1035,7 @@ export function VoiceAgentWidget() {
 	agentSpeakingRef.current = agentSpeaking;
 	const contactMethodRef = useRef(contactMethod);
 	contactMethodRef.current = contactMethod;
+	const lastAgentMessageTextRef = useRef<string>("");
 
 	// Cuộn danh sách tin nhắn khi có nội dung mới
 	useEffect(() => {
@@ -1001,10 +1129,19 @@ export function VoiceAgentWidget() {
 		}
 		if (speechRecognitionRef.current) {
 			try {
+				speechRecognitionRef.current.onresult = null;
+				speechRecognitionRef.current.onend = null;
+				speechRecognitionRef.current.onerror = null;
 				speechRecognitionRef.current.abort();
 			} catch {}
+			speechRecognitionRef.current = null;
 		}
 		setLiveUserTranscript("");
+		// TẠM DỪNG / XÓA BỘ ĐẾM IM LẶNG TRONG SUỐT QUÁ TRÌNH AURA ĐANG PHÁT ÂM THANH
+		if (inactivityTimerRef.current) {
+			clearTimeout(inactivityTimerRef.current);
+			inactivityTimerRef.current = null;
+		}
 	}, []);
 
 	// Khôi phục micro sau khi loa dứt tiếng hoàn toàn (Đọc xong hết rồi mới cho phép người dùng nói)
@@ -1012,29 +1149,40 @@ export function VoiceAgentWidget() {
 		isAudioPlayingRef.current = false;
 		agentSpeakingRef.current = false;
 		setAgentSpeaking(false);
-		// Chờ 600ms sau khi âm thanh dứt hẳn để triệt tiêu toàn bộ tiếng vọng âm vang phòng (Echo cancellation)
-		ignoreSpeechUntilRef.current = Date.now() + 600;
+		// Chờ 800ms sau khi âm thanh dứt hẳn để triệt tiêu toàn bộ tiếng vọng âm vang phòng (Echo cancellation)
+		ignoreSpeechUntilRef.current = Date.now() + 800;
 		setLiveUserTranscript("");
 		if (speechDebounceRef.current) {
 			clearTimeout(speechDebounceRef.current);
 			speechDebounceRef.current = null;
 		}
-		// Đảm bảo micro chỉ được kích hoạt lại khi Aura đã đọc xong hoàn toàn
+		// Đảm bảo micro chỉ được kích hoạt lại khi Aura đã đọc xong hoàn toàn và không trong giai đoạn kết thúc
 		setTimeout(() => {
+			const isAudioStillPlaying =
+				isAudioPlayingRef.current ||
+				agentSpeakingRef.current ||
+				isWaitingResponseRef.current ||
+				isFarewellSpeakingRef.current ||
+				(audioElementRef.current && !audioElementRef.current.paused && !audioElementRef.current.ended);
+
 			if (
 				!isTerminatedRef.current &&
 				isConnectedRef.current &&
 				!isMutedRef.current &&
-				!isAudioPlayingRef.current &&
-				!agentSpeakingRef.current &&
-				!isWaitingResponseRef.current &&
+				!isAudioStillPlaying &&
 				contactMethodRef.current === "call"
 			) {
 				try {
 					startSpeechRecognitionRef.current();
+					playMicListeningChime();
 				} catch {}
+
+				// BẮT ĐẦU ĐẾM THỜI GIAN IM LẶNG (30S) TỪ ĐÚNG KHOẢNH KHẮC MICRO BẬT VÀ AURA ĐÃ ĐỌC XONG HOÀN TOÀN
+				if (!isWaitingInactivityPromptRef.current) {
+					resetInactivityTimerRef.current();
+				}
 			}
-		}, 650);
+		}, 800);
 	}, []);
 
 	// Phát âm thanh giọng Aura AI từ chuỗi Base64 (Đọc liền mạch đến hết câu, người dùng không thể ngắt ngang)
@@ -1051,6 +1199,13 @@ export function VoiceAgentWidget() {
 					audioElementRef.current = new Audio();
 				}
 				const audio = audioElementRef.current;
+				audio.onended = null;
+				audio.onerror = null;
+				try {
+					audio.pause();
+					audio.currentTime = 0;
+				} catch {}
+
 				const mime = base64Data.startsWith("UklGR") ? "audio/wav" : "audio/mpeg";
 				audio.src = `data:${mime};base64,${base64Data}`;
 				audio.playbackRate = 1.0;
@@ -1062,23 +1217,31 @@ export function VoiceAgentWidget() {
 					setAgentSpeaking(false);
 					agentSpeakingRef.current = false;
 					isAudioPlayingRef.current = false;
-					resumeSpeechRecognitionAfterAudio();
+					if (!isWaitingResponseRef.current && !isFarewellSpeakingRef.current) {
+						resumeSpeechRecognitionAfterAudio();
+					}
 					onAudioEndCallback?.();
 				};
 				audio.onerror = () => {
 					setAgentSpeaking(false);
 					agentSpeakingRef.current = false;
 					isAudioPlayingRef.current = false;
-					resumeSpeechRecognitionAfterAudio();
+					if (!isWaitingResponseRef.current && !isFarewellSpeakingRef.current) {
+						resumeSpeechRecognitionAfterAudio();
+					}
 					onAudioEndCallback?.();
 				};
 
 				audio.play().catch((e) => {
-					console.warn("[VoiceAgent] Audio autoplay bị chặn:", e);
+					if (e.name !== "AbortError") {
+						console.warn("[VoiceAgent] Audio autoplay bị chặn:", e);
+					}
 					setAgentSpeaking(false);
 					agentSpeakingRef.current = false;
 					isAudioPlayingRef.current = false;
-					resumeSpeechRecognitionAfterAudio();
+					if (!isWaitingResponseRef.current && !isFarewellSpeakingRef.current) {
+						resumeSpeechRecognitionAfterAudio();
+					}
 					onAudioEndCallback?.();
 				});
 			} catch (err) {
@@ -1086,7 +1249,9 @@ export function VoiceAgentWidget() {
 				setAgentSpeaking(false);
 				agentSpeakingRef.current = false;
 				isAudioPlayingRef.current = false;
-				resumeSpeechRecognitionAfterAudio();
+				if (!isWaitingResponseRef.current && !isFarewellSpeakingRef.current) {
+					resumeSpeechRecognitionAfterAudio();
+				}
 				onAudioEndCallback?.();
 			}
 		},
@@ -1105,7 +1270,7 @@ export function VoiceAgentWidget() {
 				const res = await fetch("/api/ai/tts", {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ text: msg.text, speed: 1.0 }),
+					body: JSON.stringify({ text: msg.text, speed: 1.0, voice: activeVoiceRef.current || "f5-tts-vietnamese" }),
 				});
 				if (res.ok && !isTerminatedRef.current) {
 					const data = (await res.json()) as any;
@@ -1125,7 +1290,7 @@ export function VoiceAgentWidget() {
 
 	// Xử lý và hiển thị ngay lập tức phản hồi của AI (Bảo toàn 100% lịch sử câu hỏi & câu trả lời)
 	const streamAiResponse = useCallback(
-		(fullText: string, cards: MessageCard[], audioBase64?: string, thinking?: string) => {
+		(fullText: string, cards: MessageCard[], audioBase64?: string, thinking?: string, isFarewell?: boolean) => {
 			if (isTerminatedRef.current) return;
 
 			if (streamIntervalRef.current) {
@@ -1165,10 +1330,140 @@ export function VoiceAgentWidget() {
 			setStreamingThinking("");
 			resetInactivityTimerRef.current();
 
+			// KHI NÓI KẾT THÚC / PHÁT HIỆN Ý ĐỊNH CHÀO TẠM BIỆT:
+			// 1. NGẮT MIC VĨNH VIỄN NGAY LẬP TỨC - KHÔNG BAO GIỜ THU LẠI
+			// 2. ẨN TOÀN BỘ CÁC NÚT VOICE CHAT VÀ CHUYỂN NGAY SANG BẢNG ĐÁNH GIÁ CHẤT LƯỢNG
+			// 3. AI PHÁT LỜI CẢM ƠN VÀ NHẮC NGƯỜI DÙNG ĐÁNH GIÁ NGAY TRÊN GIAO DIỆN ĐÁNH GIÁ
+			if (isFarewell) {
+				stopSpeechRecognition();
+				isTerminatedRef.current = true;
+				setIsConnected(false);
+
+				// Chuyển sang màn hình đánh giá ngay tức thì (Ẩn hoàn toàn các nút gọi thoại)
+				setSessionPhase("rating");
+				setInactivityFarewellText(fullText);
+
+				// Tạm dừng đếm ngược đánh giá để AI đọc xong câu chào & nhắc đánh giá
+				setIsFarewellSpeaking(true);
+				isFarewellSpeakingRef.current = true;
+				isAudioPlayingRef.current = true;
+				agentSpeakingRef.current = true;
+				setIsCountdownPaused(true);
+				isRatingPausedRef.current = true;
+
+				persistSession("completed");
+
+				const onFarewellFinished = () => {
+					setIsFarewellSpeaking(false);
+					isFarewellSpeakingRef.current = false;
+					isAudioPlayingRef.current = false;
+					agentSpeakingRef.current = false;
+					setIsCountdownPaused(false);
+					isRatingPausedRef.current = false;
+				};
+
+				if (audioBase64) {
+					if (!audioElementRef.current) {
+						audioElementRef.current = new Audio();
+					}
+					const audio = audioElementRef.current;
+					audio.onended = null;
+					audio.onerror = null;
+					try {
+						audio.pause();
+						audio.currentTime = 0;
+					} catch {}
+					const mime = audioBase64.startsWith("UklGR") ? "audio/wav" : "audio/mpeg";
+					audio.src = `data:${mime};base64,${audioBase64}`;
+					audio.playbackRate = 1.0;
+					audio.onended = onFarewellFinished;
+					audio.onerror = onFarewellFinished;
+					audio.play().catch(onFarewellFinished);
+				} else {
+					fetch("/api/ai/tts", {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ text: fullText, speed: 1.0, voice: activeVoiceRef.current || "f5-tts-vietnamese" }),
+					})
+						.then(async (ttsRes) => {
+							if (ttsRes.ok) {
+								const ttsData = (await ttsRes.json().catch(() => null)) as any;
+								if (ttsData?.audioBase64) {
+									if (!audioElementRef.current) audioElementRef.current = new Audio();
+									const audio = audioElementRef.current;
+									audio.onended = null;
+									audio.onerror = null;
+									try {
+										audio.pause();
+										audio.currentTime = 0;
+									} catch {}
+									const mime = ttsData.audioBase64.startsWith("UklGR") ? "audio/wav" : "audio/mpeg";
+									audio.src = `data:${mime};base64,${ttsData.audioBase64}`;
+									audio.playbackRate = 1.0;
+									audio.onended = onFarewellFinished;
+									audio.onerror = onFarewellFinished;
+									audio.play().catch(onFarewellFinished);
+								} else {
+									onFarewellFinished();
+								}
+							} else {
+								onFarewellFinished();
+							}
+						})
+						.catch(onFarewellFinished);
+				}
+				return;
+			}
+
+			lastAgentMessageTextRef.current = fullText;
+
 			// TUYỆT ĐỐI KHÔNG TỰ ĐỘNG ĐỌC KHI Ở CHẾ ĐỘ NHẮN TIN (CHAT).
 			// CHỈ TỰ ĐỘNG PHÁT ÂM DUY NHẤT KHI Ở CHẾ ĐỘ GỌI THOẠI (CALL).
-			if (contactMethodRef.current === "call" && audioBase64 && isSpeakerOn && !isTerminatedRef.current) {
-				playAuraAudio(audioBase64);
+			if (contactMethodRef.current === "call" && isSpeakerOn && !isTerminatedRef.current) {
+				setAgentSpeaking(true);
+				agentSpeakingRef.current = true;
+				isAudioPlayingRef.current = true;
+				stopSpeechRecognition();
+
+				if (audioBase64) {
+					playAuraAudio(audioBase64);
+				} else {
+					console.warn("[VoiceAgent] audioBase64 từ backend rỗng, kích hoạt fallback TTS tức thì...");
+					fetch("/api/ai/tts", {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ text: fullText, speed: 1.0, voice: activeVoiceRef.current || "f5-tts-vietnamese" }),
+					})
+						.then(async (ttsRes) => {
+							if (ttsRes.ok && !isTerminatedRef.current && contactMethodRef.current === "call") {
+								const ttsData = (await ttsRes.json().catch(() => null)) as any;
+								if (ttsData?.audioBase64 && !isTerminatedRef.current) {
+									playAuraAudio(ttsData.audioBase64);
+								} else {
+									setAgentSpeaking(false);
+									agentSpeakingRef.current = false;
+									isAudioPlayingRef.current = false;
+									resumeSpeechRecognitionAfterAudio();
+								}
+							} else {
+								setAgentSpeaking(false);
+								agentSpeakingRef.current = false;
+								isAudioPlayingRef.current = false;
+								resumeSpeechRecognitionAfterAudio();
+							}
+						})
+						.catch((e) => {
+							console.warn("[VoiceAgent] Fallback TTS error:", e);
+							setAgentSpeaking(false);
+							agentSpeakingRef.current = false;
+							isAudioPlayingRef.current = false;
+							resumeSpeechRecognitionAfterAudio();
+						});
+				}
+			} else {
+				setAgentSpeaking(false);
+				agentSpeakingRef.current = false;
+				isAudioPlayingRef.current = false;
 			}
 		},
 		[playAuraAudio, isSpeakerOn, persistSession],
@@ -1198,14 +1493,27 @@ export function VoiceAgentWidget() {
 
 			isWaitingResponseRef.current = true;
 			setIsWaitingResponse(true);
+			setAgentSpeaking(true);
+			agentSpeakingRef.current = true;
 
-			// Tạm ngắt nhận diện micro ngay khi bắt đầu xử lý để mic không thu đè tiếng thở/âm vang
+			// NGẮT MICRO NGAY TỨC THÌ KHI BẮT ĐẦU XỬ LÝ (KHÔNG CHO PHÉP THU MIC TRONG KHI AI SUY NGHĨ / NÓI)
+			stopSpeechRecognition();
 			if (speechDebounceRef.current) {
 				clearTimeout(speechDebounceRef.current);
 				speechDebounceRef.current = null;
 			}
 			setLiveUserTranscript("");
-			resetInactivityTimerRef.current();
+			// Hủy toàn bộ timer không tương tác trong lúc AI đang xử lý và sinh câu trả lời
+			if (inactivityTimerRef.current) {
+				clearTimeout(inactivityTimerRef.current);
+				inactivityTimerRef.current = null;
+			}
+			if (inactivityGraceTimerRef.current) {
+				clearTimeout(inactivityGraceTimerRef.current);
+				inactivityGraceTimerRef.current = null;
+			}
+			setIsWaitingInactivityPrompt(false);
+			isWaitingInactivityPromptRef.current = false;
 			setIsSessionPaused(false);
 
 			const timeStr = new Date().toLocaleTimeString("vi-VN", {
@@ -1235,15 +1543,18 @@ export function VoiceAgentWidget() {
 				return nextMessages;
 			});
 
-			// Phát câu thông báo giữ máy và bật nhạc chờ nếu là cuộc gọi thoại (Call)
-			const isSimpleFarewell = /^(kết thúc|tạm biệt|bye|hẹn gặp lại|dừng lại|thôi cảm ơn)$/i.test(cleanQuery.toLowerCase());
-			if (contactMethodRef.current === "call" && isSpeakerOn && !isSimpleFarewell) {
+			// Phát hiện ý định kết thúc cuộc gọi từ phía khách hàng
+			const isSimpleFarewell = /(kết thúc|tạm biệt|bye|hẹn gặp lại|dừng lại|thôi cảm ơn|cúp máy|ngắt máy|tắt máy|thôi nhé|thôi em|thế thôi nhé|hôm nay thế thôi|không cần nữa|cảm ơn em nhiều)/i.test(cleanQuery.toLowerCase());
+			if (isSimpleFarewell) {
+				// Ngắt micro ngay lập tức khi khách muốn kết thúc để không bị thu đè tiếng thở/tạp âm
+				stopSpeechRecognition();
+			} else if (contactMethodRef.current === "call" && isSpeakerOn) {
 				const holdPhrase = HOLD_PHRASES[Math.floor(Math.random() * HOLD_PHRASES.length)];
 				try {
 					fetch("/api/ai/tts", {
 						method: "POST",
 						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({ text: holdPhrase, speed: 1.1 }),
+						body: JSON.stringify({ text: holdPhrase, speed: 1.1, voice: activeVoiceRef.current || "f5-tts-vietnamese" }),
 					})
 						.then(async (ttsRes) => {
 							if (ttsRes.ok && isWaitingResponseRef.current && !isTerminatedRef.current) {
@@ -1288,7 +1599,9 @@ export function VoiceAgentWidget() {
 						customerGender,
 						customerAge,
 						activeBookSlug,
+						voice: activeVoiceRef.current || "f5-tts-vietnamese",
 						contactMethod: contactMethodRef.current,
+						clientFarewellIntent: /(kết thúc|tạm biệt|dừng lại|cúp máy|ngắt máy|tắt máy|thôi nhé|thôi em|thế thôi nhé|hôm nay thế thôi|không cần nữa|cảm ơn em nhiều)/i.test(cleanQuery),
 					}),
 				});
 
@@ -1313,8 +1626,9 @@ export function VoiceAgentWidget() {
 					const replyText = data.text || "Em đã nhận thông tin và đang tra cứu cho mình ạ.";
 					const replyCards = data.cards || [];
 					const replyThinking = data.thinking || undefined;
+					const isFarewell = Boolean(data.isFarewell);
 
-					streamAiResponse(replyText, replyCards, data.audioBase64, replyThinking);
+					streamAiResponse(replyText, replyCards, data.audioBase64, replyThinking, isFarewell);
 				} else {
 					isWaitingResponseRef.current = false;
 					setIsWaitingResponse(false);
@@ -1358,7 +1672,19 @@ export function VoiceAgentWidget() {
 
 	// Web Speech Recognition với Streaming Realtime
 	const startSpeechRecognition = useCallback(() => {
-		if (typeof window === "undefined" || isTerminatedRef.current) return;
+		if (
+			typeof window === "undefined" ||
+			isTerminatedRef.current ||
+			isFarewellSpeakingRef.current ||
+			isAudioPlayingRef.current ||
+			agentSpeakingRef.current ||
+			isWaitingResponseRef.current ||
+			isMutedRef.current ||
+			contactMethodRef.current !== "call" ||
+			(audioElementRef.current && !audioElementRef.current.paused && !audioElementRef.current.ended)
+		) {
+			return;
+		}
 		const SpeechRecognition =
 			(window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 		if (!SpeechRecognition) return;
@@ -1366,8 +1692,12 @@ export function VoiceAgentWidget() {
 		try {
 			if (speechRecognitionRef.current) {
 				try {
+					speechRecognitionRef.current.onresult = null;
+					speechRecognitionRef.current.onend = null;
+					speechRecognitionRef.current.onerror = null;
 					speechRecognitionRef.current.abort();
 				} catch {}
+				speechRecognitionRef.current = null;
 			}
 
 			const recognition = new SpeechRecognition();
@@ -1376,14 +1706,21 @@ export function VoiceAgentWidget() {
 			recognition.lang = "vi-VN";
 
 			recognition.onresult = (event: any) => {
-				if (
+				const isAudioPlaying =
 					isTerminatedRef.current ||
 					isAudioPlayingRef.current ||
 					agentSpeakingRef.current ||
 					isMutedRef.current ||
 					isWaitingResponseRef.current ||
-					Date.now() < ignoreSpeechUntilRef.current
-				) {
+					isFarewellSpeakingRef.current ||
+					Date.now() < ignoreSpeechUntilRef.current ||
+					(audioElementRef.current && !audioElementRef.current.paused && !audioElementRef.current.ended);
+
+				if (isAudioPlaying) {
+					try {
+						speechRecognitionRef.current?.abort();
+					} catch {}
+					setLiveUserTranscript("");
 					return;
 				}
 
@@ -1401,28 +1738,55 @@ export function VoiceAgentWidget() {
 				}
 
 				const currentLiveText = (finalTranscript || interimTranscript).trim();
+				if (!currentLiveText || isTerminatedRef.current) return;
+
+				// TRIỆT TIÊU TIẾNG VỌNG TỪ LOA AURA AI (SOFTWARE ACOUSTIC ECHO CANCELLATION):
+				// Nếu câu nhận diện được trùng hoặc là một phần của câu mà Aura AI vừa đọc -> Lập tức bỏ qua!
+				if (lastAgentMessageTextRef.current) {
+					const cleanAgent = lastAgentMessageTextRef.current.toLowerCase().replace(/[.,!?;:"'()]/g, " ");
+					const cleanUser = currentLiveText.toLowerCase().replace(/[.,!?;:"'()]/g, " ").trim();
+					if (cleanUser.length >= 4 && cleanAgent.includes(cleanUser)) {
+						console.log("[VoiceAgent] Chặn nhận diện tiếng vọng từ loa Aura:", currentLiveText);
+						setLiveUserTranscript("");
+						return;
+					}
+				}
+
 				if (currentLiveText && !isTerminatedRef.current) {
 					setLiveUserTranscript(currentLiveText);
+					// Nếu đang trong trạng thái hỏi thăm chờ phản hồi -> người dùng lên tiếng là hủy ngay lệnh tự ngắt
+					if (isWaitingInactivityPromptRef.current) {
+						isWaitingInactivityPromptRef.current = false;
+						setIsWaitingInactivityPrompt(false);
+						if (inactivityGraceTimerRef.current) {
+							clearTimeout(inactivityGraceTimerRef.current);
+							inactivityGraceTimerRef.current = null;
+						}
+					}
 					resetInactivityTimerRef.current();
 					setIsSessionPaused(false);
 
 					if (speechDebounceRef.current) {
 						clearTimeout(speechDebounceRef.current);
 					}
-					// Chỉ kích hoạt gửi khi có finalTranscript hoặc câu tạm có ít nhất 4 từ và người dùng ngừng nói ít nhất 1.4s
-					const hasEnoughWords = currentLiveText.split(/\s+/).length >= 4;
+					// Nhận diện nhanh chóng ý định kết thúc cuộc gọi hoặc câu nói hoàn chỉnh
+					const isFarewellPhrase = /(kết thúc|tạm biệt|cúp máy|ngắt máy|tắt máy|dừng lại|thôi nhé|thôi nha|thôi em|cảm ơn em|xong rồi|bye)/i.test(currentLiveText);
+					const wordCount = currentLiveText.split(/\s+/).length;
+					const hasEnoughWords = wordCount >= (isFarewellPhrase ? 1 : 2);
+
 					if (finalTranscript || hasEnoughWords) {
-						const debounceMs = finalTranscript ? 450 : 1400;
+						const debounceMs = isFarewellPhrase ? 350 : (finalTranscript ? 400 : 1000);
 						speechDebounceRef.current = setTimeout(() => {
-							if (
-								!isTerminatedRef.current &&
-								!isAudioPlayingRef.current &&
-								!agentSpeakingRef.current &&
-								!isMutedRef.current &&
-								!isWaitingResponseRef.current &&
-								Date.now() >= ignoreSpeechUntilRef.current &&
-								currentLiveText.length >= 3
-							) {
+							const isStillPlaying =
+								isTerminatedRef.current ||
+								isAudioPlayingRef.current ||
+								agentSpeakingRef.current ||
+								isMutedRef.current ||
+								isWaitingResponseRef.current ||
+								Date.now() < ignoreSpeechUntilRef.current ||
+								(audioElementRef.current && !audioElementRef.current.paused && !audioElementRef.current.ended);
+
+							if (!isStillPlaying && currentLiveText.length >= 2) {
 								handleSendMessageRef.current(currentLiveText);
 							}
 						}, debounceMs);
@@ -1441,15 +1805,18 @@ export function VoiceAgentWidget() {
 					clearTimeout(speechRestartTimerRef.current);
 					speechRestartTimerRef.current = null;
 				}
-				if (
+				const canRestart =
 					!isTerminatedRef.current &&
 					isConnectedRef.current &&
 					!isMutedRef.current &&
 					!isAudioPlayingRef.current &&
 					!agentSpeakingRef.current &&
 					!isWaitingResponseRef.current &&
-					contactMethodRef.current === "call"
-				) {
+					!isFarewellSpeakingRef.current &&
+					contactMethodRef.current === "call" &&
+					(!audioElementRef.current || audioElementRef.current.paused || audioElementRef.current.ended);
+
+				if (canRestart) {
 					speechRestartTimerRef.current = setTimeout(() => {
 						if (
 							!isTerminatedRef.current &&
@@ -1458,13 +1825,15 @@ export function VoiceAgentWidget() {
 							!isAudioPlayingRef.current &&
 							!agentSpeakingRef.current &&
 							!isWaitingResponseRef.current &&
+							!isFarewellSpeakingRef.current &&
 							Date.now() >= ignoreSpeechUntilRef.current &&
-							contactMethodRef.current === "call"
+							contactMethodRef.current === "call" &&
+							(!audioElementRef.current || audioElementRef.current.paused || audioElementRef.current.ended)
 						) {
 							try {
 								recognition.start();
 							} catch (e: any) {
-								if (e?.name !== "InvalidStateError") {
+								if (e?.name !== "InvalidStateError" && !isTerminatedRef.current && !isFarewellSpeakingRef.current) {
 									startSpeechRecognitionRef.current();
 								}
 							}
@@ -1493,6 +1862,9 @@ export function VoiceAgentWidget() {
 		}
 		if (speechRecognitionRef.current) {
 			try {
+				speechRecognitionRef.current.onresult = null;
+				speechRecognitionRef.current.onend = null;
+				speechRecognitionRef.current.onerror = null;
 				speechRecognitionRef.current.abort();
 			} catch {}
 			speechRecognitionRef.current = null;
@@ -1539,6 +1911,19 @@ export function VoiceAgentWidget() {
 		sessionStartTimeRef.current = startTime;
 
 		setSessionPhase("connecting");
+		setConnectingStatus("Đang kết nối tổng đài tư vấn AuraBook...");
+
+		setTimeout(() => {
+			if (!isTerminatedRef.current) {
+				setConnectingStatus(`Đang nạp hồ sơ ${customerGender} ${customerName || "Độc giả"} & chuyên đề tư vấn...`);
+			}
+		}, 800);
+
+		setTimeout(() => {
+			if (!isTerminatedRef.current) {
+				setConnectingStatus("Đang thiết lập kênh thoại độ trễ thấp tới chuyên viên Aura AI...");
+			}
+		}, 1600);
 
 		const name = customerName.trim();
 		let honorific: string = customerGender || "mình";
@@ -1564,6 +1949,7 @@ export function VoiceAgentWidget() {
 				body: JSON.stringify({
 					text: welcomeText,
 					speed: 1.0,
+					voice: activeVoiceRef.current || "f5-tts-vietnamese",
 				}),
 			})
 				.then((r) => (r.ok ? r.json() : null))
@@ -1613,10 +1999,14 @@ export function VoiceAgentWidget() {
 							messagesRef.current = updated;
 							return updated;
 						});
+					} else {
+						playMicListeningChime();
 					}
+				} else {
+					playMicListeningChime();
 				}
 			}
-		}, 650);
+		}, 2400);
 	};
 
 	// XÁC NHẬN KẾT THÚC HOÀN TOÀN: Hủy mọi fetch ngầm, dừng audio ngay lập tức, chuyển sang đánh giá
@@ -1634,6 +2024,7 @@ export function VoiceAgentWidget() {
 			inactivityGraceTimerRef.current = null;
 		}
 		setIsWaitingInactivityPrompt(false);
+		isWaitingInactivityPromptRef.current = false;
 		setIsSessionPaused(false);
 
 		// Hủy toàn bộ fetch ngầm
@@ -1643,15 +2034,6 @@ export function VoiceAgentWidget() {
 		}
 
 		stopSpeechRecognition();
-
-		// Tắt và hủy nguồn âm thanh phát ngay lập tức
-		if (audioElementRef.current) {
-			try {
-				audioElementRef.current.pause();
-				audioElementRef.current.src = "";
-				audioElementRef.current.currentTime = 0;
-			} catch {}
-		}
 
 		if (streamIntervalRef.current) {
 			clearInterval(streamIntervalRef.current);
@@ -1664,7 +2046,9 @@ export function VoiceAgentWidget() {
 		}
 
 		setIsConnected(false);
-		setAgentSpeaking(false);
+		if (!isAudioPlayingRef.current) {
+			setAgentSpeaking(false);
+		}
 		setLiveUserTranscript("");
 		setIsStreaming(false);
 		setStreamingText("");
@@ -1674,9 +2058,116 @@ export function VoiceAgentWidget() {
 		// TỰ ĐỘNG LƯU NGAY LẬP TỨC TRẠNG THÁI HOÀN TẤT VÀO HỆ THỐNG
 		persistSession("completed");
 
-		// Chuyển sang màn hình đánh giá chất lượng
+		// Chuyển sang màn hình đánh giá chất lượng (Âm thanh vẫn được tiếp tục đọc hết câu trả lời)
 		setSessionPhase("rating");
 	};
+
+	// XỬ LÝ KHI NGƯỜI DÙNG BẤM NÚT XÁC NHẬN KẾT THÚC:
+	// 1. NGẮT MIC VĨNH VIỄN - KHÔNG BAO GIỜ THU LẠI
+	// 2. ẨN TOÀN BỘ CÁC NÚT VOICE CHAT VÀ CHUYỂN NGAY SANG BẢNG ĐÁNH GIÁ CHẤT LƯỢNG
+	// 3. AI PHÁT LỜI CẢM ƠN VÀ NHẮC NGƯỜI DÙNG ĐÁNH GIÁ NGAY TRÊN GIAO DIỆN ĐÁNH GIÁ
+	const handleUserInitiatedEnd = useCallback(async () => {
+		setShowEndConfirm(false);
+		isTerminatedRef.current = true;
+		stopSpeechRecognition();
+		if (timerRef.current) {
+			clearInterval(timerRef.current);
+			timerRef.current = null;
+		}
+		setIsConnected(false);
+		setLiveUserTranscript("");
+		persistSession("completed");
+
+		// Chuyển sang màn hình đánh giá CSAT ngay lập tức (ẨN HOÀN TOÀN CÁC NÚT VOICE CHAT)
+		setSessionPhase("rating");
+
+		const name = customerName?.trim() || "";
+		let honorific = "anh/chị";
+		if (customerGender === "Anh") {
+			honorific = name ? `anh ${name}` : "anh";
+		} else if (customerGender === "Chị") {
+			honorific = name ? `chị ${name}` : "chị";
+		} else if (name) {
+			honorific = `anh/chị ${name}`;
+		}
+
+		const farewellText = `Dạ em cảm ơn ${honorific} rất nhiều ạ! Cuộc gọi tư vấn đã kết thúc, kính mời ${honorific} dành chút thời gian đánh giá chất lượng cuộc gọi ngay trên màn hình để Aura AI ngày càng hoàn thiện và phục vụ mình tốt hơn nhé ạ! Em xin chân thành cảm ơn.`;
+
+		setInactivityFarewellText(farewellText);
+		setIsFarewellSpeaking(true);
+		isFarewellSpeakingRef.current = true;
+		isAudioPlayingRef.current = true;
+		agentSpeakingRef.current = true;
+		setIsCountdownPaused(true);
+		isRatingPausedRef.current = true;
+
+		const timeStr = new Date().toLocaleTimeString("vi-VN", {
+			hour: "2-digit",
+			minute: "2-digit",
+		});
+		const farewellMsg: Message = {
+			id: `agent-farewell-${Date.now()}`,
+			sender: "agent",
+			text: farewellText,
+			timestamp: timeStr,
+		};
+		setMessages((prev) => {
+			const updated = [...prev, farewellMsg];
+			messagesRef.current = updated;
+			persistSession("completed", undefined, undefined, undefined, updated);
+			return updated;
+		});
+
+		const onFarewellFinished = () => {
+			setIsFarewellSpeaking(false);
+			isFarewellSpeakingRef.current = false;
+			isAudioPlayingRef.current = false;
+			agentSpeakingRef.current = false;
+			setIsCountdownPaused(false);
+			isRatingPausedRef.current = false;
+		};
+
+		try {
+			const res = await fetch("/api/ai/tts", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ text: farewellText, speed: 1.0, voice: activeVoiceRef.current || "f5-tts-vietnamese" }),
+			});
+			if (res.ok) {
+				const data = (await res.json()) as { audioBase64?: string };
+				if (data.audioBase64) {
+					if (!audioElementRef.current) {
+						audioElementRef.current = new Audio();
+					}
+					const audio = audioElementRef.current;
+					audio.onended = null;
+					audio.onerror = null;
+					try {
+						audio.pause();
+						audio.currentTime = 0;
+					} catch {}
+					const mime = data.audioBase64.startsWith("UklGR") ? "audio/wav" : "audio/mpeg";
+					audio.src = `data:${mime};base64,${data.audioBase64}`;
+					audio.playbackRate = 1.0;
+					audio.onended = onFarewellFinished;
+					audio.onerror = onFarewellFinished;
+					audio.play().catch((e) => {
+						if (e.name !== "AbortError") {
+							console.warn("[VoiceAgent] Farewell autoplay caught:", e);
+						}
+						onFarewellFinished();
+					});
+				} else {
+					onFarewellFinished();
+				}
+			} else {
+				onFarewellFinished();
+			}
+		} catch (e) {
+			console.warn("[VoiceAgent End Audio Error]:", e);
+			onFarewellFinished();
+		}
+	}, [customerName, customerGender, stopSpeechRecognition, persistSession]);
 
 	// Xử lý nộp đánh giá chất lượng
 	const handleSubmitRating = async () => {
@@ -1691,6 +2182,14 @@ export function VoiceAgentWidget() {
 		if (resumeCountdownTimerRef.current) {
 			clearTimeout(resumeCountdownTimerRef.current);
 			resumeCountdownTimerRef.current = null;
+		}
+
+		// Giữ nguyên âm thanh nếu Aura AI đang nói lời chào nền
+		if (!isFarewellSpeakingRef.current && !isAudioPlayingRef.current && audioElementRef.current) {
+			try {
+				audioElementRef.current.pause();
+				audioElementRef.current.src = "";
+			} catch {}
 		}
 
 		await persistSession("completed", ratingStars, selectedTags, feedbackComment);
@@ -1772,10 +2271,225 @@ export function VoiceAgentWidget() {
 	}, [sessionPhase]);
 
 	// ======================================================================
-	// TỰ ĐỘNG HỎI THĂM KHI NGƯỜI DÙNG KHÔNG TƯƠNG TÁC (KHÔNG TỰ ĐỘNG HỦY CUỘC GỌI)
+	// TỰ ĐỘNG QUAY VỀ GIAO DIỆN CHỌN CUỘC TRÒ CHUYỆN MỚI SAU 3S ĐÁNH GIÁ XONG
+	// ======================================================================
+	useEffect(() => {
+		if (sessionPhase !== "ended") {
+			if (endedRedirectTimerRef.current) {
+				clearInterval(endedRedirectTimerRef.current);
+				endedRedirectTimerRef.current = null;
+			}
+			return;
+		}
+
+		setEndedCountdown(3);
+		endedRedirectTimerRef.current = setInterval(() => {
+			setEndedCountdown((prev) => {
+				// TUYỆT ĐỐI KHÔNG CHUYỂN TRANG NẾU AURA AI ĐANG ĐỌC LỜI CHÀO NỀN
+				if (isFarewellSpeakingRef.current || isAudioPlayingRef.current) {
+					return 3;
+				}
+				if (prev <= 1) {
+					if (endedRedirectTimerRef.current) {
+						clearInterval(endedRedirectTimerRef.current);
+						endedRedirectTimerRef.current = null;
+					}
+					resetToNewSession();
+					return 0;
+				}
+				return prev - 1;
+			});
+		}, 1000);
+
+		return () => {
+			if (endedRedirectTimerRef.current) {
+				clearInterval(endedRedirectTimerRef.current);
+				endedRedirectTimerRef.current = null;
+			}
+		};
+	}, [sessionPhase]);
+
+	// ======================================================================
+	// TỰ ĐỘNG KẾT THÚC DO KHÔNG TƯƠNG TÁC (CHUYỂN SANG BẢNG ĐÁNH GIÁ & NÓI LỜI CHÀO NỀN)
+	// ======================================================================
+	const terminateWithInactivityFarewell = useCallback(async () => {
+		if (isTerminatedRef.current) return;
+		isTerminatedRef.current = true;
+		isWaitingResponseRef.current = false;
+		holdMusicPlayerRef.current?.stop();
+
+		if (inactivityTimerRef.current) {
+			clearTimeout(inactivityTimerRef.current);
+			inactivityTimerRef.current = null;
+		}
+		if (inactivityGraceTimerRef.current) {
+			clearTimeout(inactivityGraceTimerRef.current);
+			inactivityGraceTimerRef.current = null;
+		}
+		setIsWaitingInactivityPrompt(false);
+		isWaitingInactivityPromptRef.current = false;
+		setIsSessionPaused(false);
+
+		// Hủy toàn bộ fetch ngầm
+		if (abortControllerRef.current) {
+			abortControllerRef.current.abort();
+			abortControllerRef.current = null;
+		}
+
+		stopSpeechRecognition();
+
+		if (streamIntervalRef.current) {
+			clearInterval(streamIntervalRef.current);
+			streamIntervalRef.current = null;
+		}
+
+		if (timerRef.current) {
+			clearInterval(timerRef.current);
+			timerRef.current = null;
+		}
+
+		setIsConnected(false);
+		setAgentSpeaking(false);
+		setLiveUserTranscript("");
+		setIsStreaming(false);
+		setStreamingText("");
+		setIsWaitingResponse(false);
+		setStreamingThinking("");
+
+		// TỰ ĐỘNG LƯU TRẠNG THÁI HOÀN TẤT VÀO HỆ THỐNG
+		persistSession("completed");
+
+		// Chuyển sang màn hình đánh giá chất lượng NGAY LẬP TỨC
+		setSessionPhase("rating");
+
+		// Xây dựng câu chào kết thúc chuẩn xác theo yêu cầu người dùng
+		const name = customerName?.trim() || "";
+		let honorific = "anh/chị";
+		let genderTitle = "anh/chị";
+		if (customerGender === "Anh") {
+			genderTitle = "anh";
+			honorific = name ? `anh ${name}` : "anh";
+		} else if (customerGender === "Chị") {
+			genderTitle = "chị";
+			honorific = name ? `chị ${name}` : "chị";
+		} else if (name) {
+			honorific = `anh/chị ${name}`;
+		}
+
+		const farewellText = `Vì không thấy sự tương tác của ${honorific}, nên em xin phép kết thúc cuộc gọi tại đây. Kính mời ${genderTitle} dành chút thời gian đánh giá chất lượng cuộc gọi ngay trên màn hình để Aura AI ngày càng hoàn thiện và phục vụ mình tốt hơn nhé ạ! Em xin chân thành cảm ơn.`;
+
+		// CẬP NHẬT NGAY LẬP TỨC CHO GIAO DIỆN HIỂN THỊ KHÔNG ĐỢI TTS
+		setInactivityFarewellText(farewellText);
+		setIsFarewellSpeaking(true);
+		isFarewellSpeakingRef.current = true;
+		isAudioPlayingRef.current = true;
+		agentSpeakingRef.current = true;
+
+		// Tạm dừng bộ đếm ngược nộp đánh giá trong lúc đang đọc lời chào
+		setIsCountdownPaused(true);
+		isRatingPausedRef.current = true;
+
+		// Lưu câu chào vào lịch sử tin nhắn
+		const timeStr = new Date().toLocaleTimeString("vi-VN", {
+			hour: "2-digit",
+			minute: "2-digit",
+		});
+		const farewellMsg: Message = {
+			id: `agent-farewell-${Date.now()}`,
+			sender: "agent",
+			text: farewellText,
+			timestamp: timeStr,
+		};
+
+		setMessages((prev) => {
+			const updated = [...prev, farewellMsg];
+			messagesRef.current = updated;
+			persistSession("completed", undefined, undefined, undefined, updated);
+			return updated;
+		});
+
+		// Phát giọng nói chạy nền trong lúc giao diện hiển thị bảng đánh giá (không ngắt âm thanh)
+		try {
+			const res = await fetch("/api/ai/tts", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ text: farewellText, speed: 1.0, voice: activeVoiceRef.current || "f5-tts-vietnamese" }),
+			});
+			if (res.ok) {
+				const data = (await res.json()) as { audioBase64?: string };
+				if (data.audioBase64) {
+					if (!audioElementRef.current) {
+						audioElementRef.current = new Audio();
+					}
+					const audio = audioElementRef.current;
+					audio.onended = null;
+					audio.onerror = null;
+					try {
+						audio.pause();
+						audio.currentTime = 0;
+					} catch {}
+
+					const mime = data.audioBase64.startsWith("UklGR") ? "audio/wav" : "audio/mpeg";
+					audio.src = `data:${mime};base64,${data.audioBase64}`;
+					audio.playbackRate = 1.0;
+
+					const onFarewellFinished = () => {
+						setIsFarewellSpeaking(false);
+						isFarewellSpeakingRef.current = false;
+						isAudioPlayingRef.current = false;
+						agentSpeakingRef.current = false;
+						setIsCountdownPaused(false);
+						isRatingPausedRef.current = false;
+					};
+
+					audio.onended = onFarewellFinished;
+					audio.onerror = onFarewellFinished;
+
+					audio.play().catch((e) => {
+						if (e.name !== "AbortError") {
+							console.warn("[VoiceAgent] Farewell autoplay caught:", e);
+						}
+						onFarewellFinished();
+					});
+				} else {
+					setIsFarewellSpeaking(false);
+					isFarewellSpeakingRef.current = false;
+					isAudioPlayingRef.current = false;
+					agentSpeakingRef.current = false;
+					setIsCountdownPaused(false);
+					isRatingPausedRef.current = false;
+				}
+			} else {
+				setIsFarewellSpeaking(false);
+				isFarewellSpeakingRef.current = false;
+				isAudioPlayingRef.current = false;
+				agentSpeakingRef.current = false;
+				setIsCountdownPaused(false);
+				isRatingPausedRef.current = false;
+			}
+		} catch (e) {
+			console.warn("[VoiceAgent Farewell TTS Error]:", e);
+			setIsFarewellSpeaking(false);
+			isFarewellSpeakingRef.current = false;
+			isAudioPlayingRef.current = false;
+			agentSpeakingRef.current = false;
+			setIsCountdownPaused(false);
+			isRatingPausedRef.current = false;
+		}
+	}, [customerName, customerGender, stopSpeechRecognition, persistSession]);
+
+	// ======================================================================
+	// TỰ ĐỘNG HỎI THĂM KHI NGƯỜI DÙNG KHÔNG TƯƠNG TÁC
 	// ======================================================================
 	const handleInactivityTimeout = useCallback(async () => {
-		if (isTerminatedRef.current || isAudioPlayingRef.current || agentSpeakingRef.current || isWaitingResponseRef.current) {
+		if (
+			isTerminatedRef.current ||
+			isFarewellSpeakingRef.current ||
+			sessionPhaseRef.current !== "active" ||
+			isAudioPlayingRef.current ||
+			agentSpeakingRef.current ||
+			isWaitingResponseRef.current
+		) {
 			return;
 		}
 
@@ -1810,25 +2524,65 @@ export function VoiceAgentWidget() {
 		});
 
 		setIsWaitingInactivityPrompt(true);
+		isWaitingInactivityPromptRef.current = true;
 
 		if (contactMethodRef.current === "call" && isSpeakerOn && !isTerminatedRef.current) {
 			try {
 				const res = await fetch("/api/ai/tts", {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ text: inquiryText, speed: 1.0 }),
+					body: JSON.stringify({ text: inquiryText, speed: 1.0, voice: activeVoiceRef.current || "f5-tts-vietnamese" }),
 				});
 				if (res.ok && !isTerminatedRef.current) {
 					const data = (await res.json()) as { audioBase64?: string };
 					if (data.audioBase64 && !isTerminatedRef.current) {
-						playAuraAudio(data.audioBase64);
+						playAuraAudio(data.audioBase64, () => {
+							// CHỈ BẮT ĐẦU ĐẾM 20S CHỜ PHẢN HỒI SAU KHI AURA NÓI XONG CÂU HỎI THĂM!
+							if (!isTerminatedRef.current && contactMethodRef.current === "call" && isWaitingInactivityPromptRef.current) {
+								if (inactivityGraceTimerRef.current) clearTimeout(inactivityGraceTimerRef.current);
+								inactivityGraceTimerRef.current = setTimeout(() => {
+									if (!isTerminatedRef.current && contactMethodRef.current === "call" && isWaitingInactivityPromptRef.current) {
+										console.log("[VoiceAgent] Khách hàng im lặng quá lâu sau khi nhắc nhở -> Tự động kết thúc cuộc gọi & chạy lời chào nền.");
+										terminateWithInactivityFarewell();
+									}
+								}, INACTIVITY_GRACE_TIMEOUT_MS);
+							}
+						});
+					} else {
+						// Nếu không có audio, bắt đầu đếm 20s fallback
+						if (inactivityGraceTimerRef.current) clearTimeout(inactivityGraceTimerRef.current);
+						inactivityGraceTimerRef.current = setTimeout(() => {
+							if (!isTerminatedRef.current && contactMethodRef.current === "call" && isWaitingInactivityPromptRef.current) {
+								terminateWithInactivityFarewell();
+							}
+						}, INACTIVITY_GRACE_TIMEOUT_MS);
 					}
+				} else {
+					if (inactivityGraceTimerRef.current) clearTimeout(inactivityGraceTimerRef.current);
+					inactivityGraceTimerRef.current = setTimeout(() => {
+						if (!isTerminatedRef.current && contactMethodRef.current === "call" && isWaitingInactivityPromptRef.current) {
+							terminateWithInactivityFarewell();
+						}
+					}, INACTIVITY_GRACE_TIMEOUT_MS);
 				}
 			} catch (e) {
 				console.warn("[VoiceAgent Inquiry TTS Error]:", e);
+				if (inactivityGraceTimerRef.current) clearTimeout(inactivityGraceTimerRef.current);
+				inactivityGraceTimerRef.current = setTimeout(() => {
+					if (!isTerminatedRef.current && contactMethodRef.current === "call" && isWaitingInactivityPromptRef.current) {
+						terminateWithInactivityFarewell();
+					}
+				}, INACTIVITY_GRACE_TIMEOUT_MS);
 			}
+		} else if (contactMethodRef.current === "call") {
+			if (inactivityGraceTimerRef.current) clearTimeout(inactivityGraceTimerRef.current);
+			inactivityGraceTimerRef.current = setTimeout(() => {
+				if (!isTerminatedRef.current && contactMethodRef.current === "call" && isWaitingInactivityPromptRef.current) {
+					terminateWithInactivityFarewell();
+				}
+			}, INACTIVITY_GRACE_TIMEOUT_MS);
 		}
-	}, [customerName, customerGender, playAuraAudio, isSpeakerOn, persistSession]);
+	}, [customerName, customerGender, playAuraAudio, isSpeakerOn, persistSession, terminateWithInactivityFarewell]);
 
 	const resetInactivityTimer = useCallback(() => {
 		if (inactivityTimerRef.current) {
@@ -1840,8 +2594,20 @@ export function VoiceAgentWidget() {
 			inactivityGraceTimerRef.current = null;
 		}
 		setIsWaitingInactivityPrompt(false);
+		isWaitingInactivityPromptRef.current = false;
 
-		if (isTerminatedRef.current) return;
+		// KHÔNG đặt timer nếu phiên đã dừng, hoặc Aura đang nói, hoặc đang chờ AI trả lời
+		if (
+			isTerminatedRef.current ||
+			isFarewellSpeakingRef.current ||
+			!isConnectedRef.current ||
+			sessionPhaseRef.current !== "active" ||
+			isAudioPlayingRef.current ||
+			agentSpeakingRef.current ||
+			isWaitingResponseRef.current
+		) {
+			return;
+		}
 
 		inactivityTimerRef.current = setTimeout(() => {
 			handleInactivityTimeout();
@@ -1855,6 +2621,7 @@ export function VoiceAgentWidget() {
 		resetInactivityTimer();
 		if (contactMethodRef.current === "call") {
 			startSpeechRecognition();
+			playMicListeningChime();
 		}
 	}, [resetInactivityTimer, startSpeechRecognition]);
 
@@ -1865,6 +2632,7 @@ export function VoiceAgentWidget() {
 			stopSpeechRecognition();
 		} else {
 			startSpeechRecognition();
+			playMicListeningChime();
 		}
 	};
 
@@ -1877,8 +2645,16 @@ export function VoiceAgentWidget() {
 	};
 
 	const resetToNewSession = () => {
+		// Tuyệt đối không reset và chuyển về method_select khi Aura AI vẫn đang đọc lời chào nền
+		if (isFarewellSpeakingRef.current || isAudioPlayingRef.current) {
+			console.log("[VoiceAgent] Aura AI đang đọc lời chào nền, hoãn reset phiên mới...");
+			return;
+		}
 		executeHardTermination();
 		setSessionPhase("method_select");
+		setInactivityFarewellText("");
+		setIsFarewellSpeaking(false);
+		isFarewellSpeakingRef.current = false;
 		setInputText("");
 		setFeedbackComment("");
 		setCustomerName("");
@@ -1895,25 +2671,51 @@ export function VoiceAgentWidget() {
 
 	resetToNewSessionRef.current = resetToNewSession;
 
-	// Xử lý Thêm vào giỏ hàng (hỗ trợ cả phiên bản Sách Điện Tử & Sách Vật Lý)
-	const handleAddToCart = (book: BookProductData, edition?: "ebook" | "physical", price?: string) => {
-		const cartKey = `${book.id}-${edition || "ebook"}`;
-		setAddedBookIds((prev) => ({ ...prev, [book.id]: true, [cartKey]: true }));
-		if (typeof window !== "undefined") {
-			window.dispatchEvent(
-				new CustomEvent("aurabook:cart-updated", {
-					detail: {
-						bookId: book.id,
-						title: book.title,
-						edition: edition === "physical" ? "Bản Sách Giấy (Sách Vật Lý)" : "Bản Ebook (Sách Điện Tử)",
-						price: price || (edition === "physical" ? book.physicalPrice : book.ebookPrice) || book.price,
-					},
+	// Xử lý Thêm vào giỏ hàng (kết nối trực tiếp API giỏ hàng Saleor, hỗ trợ cả Sách Điện Tử & Sách Vật Lý)
+	const handleAddToCart = async (book: BookProductData, edition?: "ebook" | "physical", price?: string) => {
+		const chosenEdition = edition || "ebook";
+		const bookKey = book.slug || book.id;
+		const cartKey = `${bookKey}-${chosenEdition}`;
+
+		// Hiển thị trạng thái đang thêm
+		setAddedBookIds((prev) => ({ ...prev, [book.id]: true, [bookKey]: true, [cartKey]: true }));
+
+		try {
+			const res = await fetch("/api/cart/add-line", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					bookSlug: bookKey,
+					edition: chosenEdition,
 				}),
-			);
+			});
+
+			if (res.ok) {
+				if (typeof window !== "undefined") {
+					window.dispatchEvent(
+						new CustomEvent("aurabook:cart-updated", {
+							detail: {
+								bookId: book.id,
+								slug: book.slug,
+								title: book.title,
+								edition: chosenEdition === "physical" ? "Bản Sách Giấy (Sách Vật Lý)" : "Bản Ebook (Sách Điện Tử)",
+								price: price || (chosenEdition === "physical" ? book.physicalPrice : book.ebookPrice) || book.price,
+							},
+						}),
+					);
+				}
+				// Refresh Next.js server components để cập nhật ngay số lượng trên biểu tượng giỏ hàng navbar
+				router.refresh();
+			} else {
+				console.error("[VoiceAgent] Lỗi khi thêm vào giỏ:", await res.text());
+			}
+		} catch (err) {
+			console.error("[VoiceAgent] Exception khi thêm giỏ:", err);
+		} finally {
+			setTimeout(() => {
+				setAddedBookIds((prev) => ({ ...prev, [book.id]: false, [bookKey]: false, [cartKey]: false }));
+			}, 3000);
 		}
-		setTimeout(() => {
-			setAddedBookIds((prev) => ({ ...prev, [book.id]: false, [cartKey]: false }));
-		}, 3000);
 	};
 
 	// Ẩn hoàn toàn trong Reader view
@@ -1980,15 +2782,6 @@ export function VoiceAgentWidget() {
 						</div>
 
 						<div className="flex items-center gap-1">
-							{sessionPhase === "active" && (
-								<button
-									onClick={() => setShowEndConfirm(true)}
-									className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-destructive transition-colors"
-									title="Kết thúc cuộc trò chuyện"
-								>
-									<PhoneOff className="h-4 w-4" />
-								</button>
-							)}
 							<button
 								onClick={() => setIsOpen(false)}
 								className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
@@ -2025,8 +2818,7 @@ export function VoiceAgentWidget() {
 										variant="destructive"
 										size="sm"
 										onClick={() => {
-											setShowEndConfirm(false);
-											executeHardTermination();
+											handleUserInitiatedEnd();
 										}}
 										className="flex-1 h-9 rounded-button text-xs font-semibold"
 									>
@@ -2264,32 +3056,36 @@ export function VoiceAgentWidget() {
 					)}
 
 					{/* ============================================================== */}
-					{/* BƯỚC 3: LOADING HÌNH THANG */}
+					{/* BƯỚC 3: LOADING KẾT NỐI CUỘC GỌI */}
 					{/* ============================================================== */}
 					{sessionPhase === "connecting" && (
-						<div className="flex flex-1 flex-col items-center justify-center p-6 text-center bg-card space-y-4">
-							<div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-border bg-background p-2 shadow-xs">
+						<div className="flex flex-1 flex-col items-center justify-center p-6 text-center bg-card space-y-4 animate-in fade-in duration-300">
+							<div className="relative flex h-18 w-18 items-center justify-center rounded-3xl border border-primary/25 bg-background p-3 shadow-md">
 								<img
 									src="/android-chrome-192x192.png"
 									alt="AuraBook"
-									className="h-full w-full object-contain"
+									className="h-full w-full object-contain animate-pulse"
 								/>
+								<span className="absolute -bottom-1 -right-1 flex h-4 w-4">
+									<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+									<span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-background" />
+								</span>
 							</div>
 
-							<div className="space-y-1">
+							<div className="space-y-1.5 max-w-xs">
 								<h4 className="text-base font-bold text-foreground">
-									Đang kết nối tới chuyên viên Aura AI...
+									Đang kết nối cuộc gọi thoại...
 								</h4>
 								<p className="text-xs text-muted-foreground">
 									Đang nạp hồ sơ: <span className="font-semibold text-foreground">{customerGender} {customerName || "Độc giả"}</span> ({customerAge})
 								</p>
-								<p className="text-xs text-muted-foreground italic">
-									Chủ đề: {selectedTopic}
+								<p className="text-xs text-muted-foreground italic truncate">
+									Chuyên đề: {selectedTopic}
 								</p>
 							</div>
 
 							<div className="pt-2">
-								<Loader text="Đang thiết lập kênh thoại studio..." size="md" />
+								<Loader text={connectingStatus} size="md" />
 							</div>
 						</div>
 					)}
@@ -2304,7 +3100,7 @@ export function VoiceAgentWidget() {
 									<div className="flex items-center gap-1.5 text-muted-foreground">
 										<Mic className={cn("h-3.5 w-3.5", agentSpeaking ? "text-amber-500 animate-pulse" : "text-emerald-500 animate-pulse")} />
 										<span className={cn(agentSpeaking ? "font-semibold text-amber-600 dark:text-amber-400" : "")}>
-											{agentSpeaking ? "Aura AI đang nói (Vui lòng đợi Aura đọc xong)..." : "🎧 Đang lắng nghe bạn..."}
+											{agentSpeaking ? "Aura AI đang nói (Vui lòng đợi Aura đọc xong)..." : "Đang lắng nghe bạn..."}
 										</span>
 									</div>
 									<span className="font-mono text-foreground font-semibold">
@@ -2850,7 +3646,7 @@ export function VoiceAgentWidget() {
 								<Check className="h-8 w-8" />
 							</div>
 
-							<div className="space-y-1">
+							<div className="space-y-1.5">
 								<h4 className="text-base font-bold text-foreground">Cảm ơn bạn đã trò chuyện!</h4>
 								<p className="text-xs text-muted-foreground max-w-xs mx-auto">
 									Đánh giá của bạn đã được ghi nhận vào hệ thống giám sát chất lượng AuraBook. Toàn bộ lịch sử tư vấn và sách gợi ý vẫn được lưu giữ trọn vẹn.
@@ -2860,11 +3656,30 @@ export function VoiceAgentWidget() {
 										<Star key={`star-ended-${starNum}`} className="h-4 w-4 fill-amber-400 text-amber-400" />
 									))}
 								</div>
+								<div className="pt-1">
+									{isFarewellSpeaking ? (
+										<span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20 animate-pulse">
+											<Volume2 className="h-3 w-3" />
+											<span>Aura AI đang hoàn tất lời chào tạm biệt...</span>
+										</span>
+									) : (
+										<span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20 animate-pulse">
+											<RotateCcw className="h-3 w-3" />
+											<span>Tự động quay về chọn cuộc trò chuyện mới sau {endedCountdown}s...</span>
+										</span>
+									)}
+								</div>
 							</div>
 
 							<div className="flex flex-col gap-2 w-full max-w-xs pt-2">
 								<Button
-									onClick={() => setSessionPhase("active")}
+									onClick={() => {
+										if (endedRedirectTimerRef.current) {
+											clearInterval(endedRedirectTimerRef.current);
+											endedRedirectTimerRef.current = null;
+										}
+										setSessionPhase("active");
+									}}
 									className="w-full h-10 rounded-button text-xs font-semibold shadow-xs"
 								>
 									<BookOpen className="h-3.5 w-3.5 mr-1.5" />

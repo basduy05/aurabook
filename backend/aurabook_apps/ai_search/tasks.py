@@ -63,15 +63,12 @@ def vectorize_book(self, product_id: str, product_slug: str, full_text: str) -> 
         created = 0
         for idx, chunk_text in enumerate(chunks):
             embedding = get_text_embedding(chunk_text)
-            # Store embedding as binary (will be pgvector in production)
-            import struct
-            embedding_bytes = struct.pack(f"{len(embedding)}f", *embedding)
             BookChunk.objects.create(
                 product_id=product_id,
                 product_slug=product_slug,
                 chunk_index=idx,
                 chunk_text=chunk_text,
-                embedding=embedding_bytes,
+                embedding=embedding,
                 token_count=len(chunk_text) // 4,
             )
             created += 1

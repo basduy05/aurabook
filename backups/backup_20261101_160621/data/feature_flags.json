@@ -1,0 +1,10 @@
+{
+  "enableVoiceAgentWidget": false,
+  "enableGuestReadingTrial": true,
+  "enablePublicReviews": true,
+  "enableOfflineDrm": true,
+  "enableSimulatedPayments": true,
+  "maxOfflineDays": 7,
+  "maxDrmDevices": 1,
+  "updatedAt": "2026-10-21T05:41:48.221Z"
+}

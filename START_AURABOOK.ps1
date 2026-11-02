@@ -40,7 +40,7 @@ if ($backendReady) {
 }
 
 # 2. Khoi dong AuraBook Piper TTS Engine (MC Hoai My 1000-Epoch - Port 5050)
-Write-Host "`n[2/4] Kiem tra AuraBook Piper TTS Engine (Port 5050)..." -ForegroundColor Yellow
+Write-Host "`n[2/5] Kiem tra AuraBook Piper TTS Engine (Port 5050)..." -ForegroundColor Yellow
 $p5050 = netstat -ano 2>$null | Select-String ":5050 " | Select-String "LISTENING"
 if (-not $p5050) {
     Write-Host "  -> Dang khoi dong Piper TTS (vi_VN-hoaimy-aurabook.onnx)..." -ForegroundColor Cyan
@@ -52,8 +52,25 @@ if (-not $p5050) {
     Write-Host "  [OK] Piper TTS Server da dang hoat dong tren port 5050." -ForegroundColor Green
 }
 
-# 3. Kiem tra Frontend Next.js (port 3000)
-Write-Host "`n[3/5] Kiem tra Frontend Next.js (Storefront)..." -ForegroundColor Yellow
+# 3. Kiem tra & Khoi dong Ollama Local LLM (Port 11434)
+Write-Host "`n[3/5] Kiem tra Ollama Local AI Server (Port 11434)..." -ForegroundColor Yellow
+$p11434 = netstat -ano 2>$null | Select-String ":11434 " | Select-String "LISTENING"
+if (-not $p11434) {
+    Write-Host "  -> Dang khoi dong Ollama Local AI server tren port 11434..." -ForegroundColor Cyan
+    $ollamaExe = "$env:LOCALAPPDATA\Programs\Ollama\ollama.exe"
+    if (Test-Path $ollamaExe) {
+        Start-Process $ollamaExe -ArgumentList "serve" -WindowStyle Minimized
+        Start-Sleep -Seconds 2
+        Write-Host "  [OK] Ollama Local AI Server da duoc khoi chay tai http://127.0.0.1:11434" -ForegroundColor Green
+    } else {
+        Write-Host "  [!] Khong tim thay ollama.exe tai $ollamaExe" -ForegroundColor Yellow
+    }
+} else {
+    Write-Host "  [OK] Ollama Local AI Server da dang chay tren port 11434." -ForegroundColor Green
+}
+
+# 4. Kiem tra Frontend Next.js (port 3000)
+Write-Host "`n[4/5] Kiem tra Frontend Next.js (Storefront)..." -ForegroundColor Yellow
 $p3 = netstat -ano 2>$null | Select-String ":3000 " | Select-String "LISTENING"
 if (-not $p3) {
     Write-Host "  -> Dang khoi dong Next.js dev server tren port 3000..." -ForegroundColor Cyan
@@ -68,8 +85,8 @@ if (-not $p3) {
     Write-Host "  [OK] Frontend da dang chay tren port 3000." -ForegroundColor Green
 }
 
-# 4. Kiem tra Cong Quan Tri He Thong Doc Lap (port 3001)
-Write-Host "`n[4/5] Kiem tra Cong Quan Tri He Thong Doc Lap (port 3001)..." -ForegroundColor Yellow
+# 5. Kiem tra Cong Quan Tri He Thong Doc Lap (port 3001)
+Write-Host "`n[5/5] Kiem tra Cong Quan Tri He Thong Doc Lap (port 3001)..." -ForegroundColor Yellow
 $ADMIN_DIR = Join-Path $ROOT "admin"
 $p3001 = netstat -ano 2>$null | Select-String ":3001 " | Select-String "LISTENING"
 if (-not $p3001) {

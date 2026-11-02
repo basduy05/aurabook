@@ -1,0 +1,464 @@
+{
+  "timestamp": "2026-11-01T03:57:39Z",
+  "total": 65,
+  "passed": 65,
+  "failed": 0,
+  "pass_percentage": 100.0,
+  "records": [
+    {
+      "id": "ALPHA-0.0-BE-dac nhan tam",
+      "category": "Score-Leakage-Check",
+      "status": "PASS",
+      "message": "alpha=0.0 -> count=1, zero_score_count=0, top_score=0.03279, min_score=0.03279",
+      "duration_ms": 31.65
+    },
+    {
+      "id": "ALPHA-0.0-BE-tu duy nhanh va",
+      "category": "Score-Leakage-Check",
+      "status": "PASS",
+      "message": "alpha=0.0 -> count=1, zero_score_count=0, top_score=0.03279, min_score=0.03279",
+      "duration_ms": 27.82
+    },
+    {
+      "id": "ALPHA-0.0-BE-chien tranh tie",
+      "category": "Score-Leakage-Check",
+      "status": "PASS",
+      "message": "alpha=0.0 -> count=3, zero_score_count=0, top_score=0.03294, min_score=0.03284",
+      "duration_ms": 39.5
+    },
+    {
+      "id": "ALPHA-0.0-BE-sapiens luoc su",
+      "category": "Score-Leakage-Check",
+      "status": "PASS",
+      "message": "alpha=0.0 -> count=1, zero_score_count=0, top_score=0.03279, min_score=0.03279",
+      "duration_ms": 28.46
+    },
+    {
+      "id": "ALPHA-0.0-BE-chu nghia khac ",
+      "category": "Score-Leakage-Check",
+      "status": "PASS",
+      "message": "alpha=0.0 -> count=1, zero_score_count=0, top_score=0.03279, min_score=0.03279",
+      "duration_ms": 49.79
+    },
+    {
+      "id": "ALPHA-0.0-BE-tam ly hoc",
+      "category": "Score-Leakage-Check",
+      "status": "PASS",
+      "message": "alpha=0.0 -> count=1, zero_score_count=0, top_score=0.03279, min_score=0.03279",
+      "duration_ms": 47.55
+    },
+    {
+      "id": "ALPHA-0.0-BE-nghe thuat giao",
+      "category": "Score-Leakage-Check",
+      "status": "PASS",
+      "message": "alpha=0.0 -> count=0, zero_score_count=0",
+      "duration_ms": 47.81
+    },
+    {
+      "id": "ALPHA-0.0-BE-cay cam ngot cu",
+      "category": "Score-Leakage-Check",
+      "status": "PASS",
+      "message": "alpha=0.0 -> count=1, zero_score_count=0, top_score=0.03279, min_score=0.03279",
+      "duration_ms": 47.53
+    },
+    {
+      "id": "ALPHA-0.0-BE-Harry Potter",
+      "category": "Score-Leakage-Check",
+      "status": "PASS",
+      "message": "alpha=0.0 -> count=0, zero_score_count=0",
+      "duration_ms": 28.3
+    },
+    {
+      "id": "ALPHA-0.0-BE-Chúa tể những c",
+      "category": "Score-Leakage-Check",
+      "status": "PASS",
+      "message": "alpha=0.0 -> count=0, zero_score_count=0",
+      "duration_ms": 47.03
+    },
+    {
+      "id": "ALPHA-1.0-BE-dac nhan tam",
+      "category": "Score-Leakage-Check",
+      "status": "PASS",
+      "message": "alpha=1.0 -> count=1, zero_score_count=0, top_score=0.03279, min_score=0.03279",
+      "duration_ms": 46.38
+    },
+    {
+      "id": "ALPHA-1.0-BE-tu duy nhanh va",
+      "category": "Score-Leakage-Check",
+      "status": "PASS",
+      "message": "alpha=1.0 -> count=0, zero_score_count=0",
+      "duration_ms": 47.14
+    },
+    {
+      "id": "ALPHA-1.0-BE-chien tranh tie",
+      "category": "Score-Leakage-Check",
+      "status": "PASS",
+      "message": "alpha=1.0 -> count=0, zero_score_count=0",
+      "duration_ms": 29.02
+    },
+    {
+      "id": "ALPHA-1.0-BE-sapiens luoc su",
+      "category": "Score-Leakage-Check",
+      "status": "PASS",
+      "message": "alpha=1.0 -> count=1, zero_score_count=0, top_score=0.03279, min_score=0.03279",
+      "duration_ms": 49.66
+    },
+    {
+      "id": "ALPHA-1.0-BE-chu nghia khac ",
+      "category": "Score-Leakage-Check",
+      "status": "PASS",
+      "message": "alpha=1.0 -> count=1, zero_score_count=0, top_score=0.03279, min_score=0.03279",
+      "duration_ms": 47.47
+    },
+    {
+      "id": "ALPHA-1.0-BE-tam ly hoc",
+      "category": "Score-Leakage-Check",
+      "status": "PASS",
+      "message": "alpha=1.0 -> count=1, zero_score_count=0, top_score=0.03279, min_score=0.03279",
+      "duration_ms": 69.3
+    },
+    {
+      "id": "ALPHA-1.0-BE-nghe thuat giao",
+      "category": "Score-Leakage-Check",
+      "status": "PASS",
+      "message": "alpha=1.0 -> count=1, zero_score_count=0, top_score=0.03279, min_score=0.03279",
+      "duration_ms": 39.31
+    },
+    {
+      "id": "ALPHA-1.0-BE-cay cam ngot cu",
+      "category": "Score-Leakage-Check",
+      "status": "PASS",
+      "message": "alpha=1.0 -> count=1, zero_score_count=0, top_score=0.03279, min_score=0.03279",
+      "duration_ms": 47.78
+    },
+    {
+      "id": "ALPHA-1.0-BE-Harry Potter",
+      "category": "Score-Leakage-Check",
+      "status": "PASS",
+      "message": "alpha=1.0 -> count=0, zero_score_count=0",
+      "duration_ms": 47.06
+    },
+    {
+      "id": "ALPHA-1.0-BE-Chúa tể những c",
+      "category": "Score-Leakage-Check",
+      "status": "PASS",
+      "message": "alpha=1.0 -> count=0, zero_score_count=0",
+      "duration_ms": 60.46
+    },
+    {
+      "id": "ALPHA-0.0-FE",
+      "category": "Score-Leakage-Check",
+      "status": "PASS",
+      "message": "FE alpha=0.0 -> count=1, zero_scores=0",
+      "duration_ms": 41.67
+    },
+    {
+      "id": "ALPHA-1.0-FE",
+      "category": "Score-Leakage-Check",
+      "status": "PASS",
+      "message": "FE alpha=1.0 -> count=1, zero_scores=0",
+      "duration_ms": 37.75
+    },
+    {
+      "id": "BE-OOB-ALPHA--5",
+      "category": "Alpha-Boundary",
+      "status": "PASS",
+      "message": "Backend Negative Alpha (-5) -> clamped to 0.0 -> status=200, results=1, top=dac-nhan-tam, score=0.03279",
+      "duration_ms": 48.05
+    },
+    {
+      "id": "FE-OOB-ALPHA--5",
+      "category": "Alpha-Boundary",
+      "status": "PASS",
+      "message": "Frontend Negative Alpha (-5) -> clamped to 0.0 -> status=200, results=1, top=dac-nhan-tam",
+      "duration_ms": 57.98
+    },
+    {
+      "id": "BE-OOB-ALPHA-10",
+      "category": "Alpha-Boundary",
+      "status": "PASS",
+      "message": "Backend Positive Over-limit Alpha (10) -> clamped to 1.0 -> status=200, results=1, top=dac-nhan-tam, score=0.03279",
+      "duration_ms": 51.27
+    },
+    {
+      "id": "FE-OOB-ALPHA-10",
+      "category": "Alpha-Boundary",
+      "status": "PASS",
+      "message": "Frontend Positive Over-limit Alpha (10) -> clamped to 1.0 -> status=200, results=1, top=dac-nhan-tam",
+      "duration_ms": 57.86
+    },
+    {
+      "id": "BE-OOB-ALPHA--100.5",
+      "category": "Alpha-Boundary",
+      "status": "PASS",
+      "message": "Backend Extreme Negative Alpha (-100.5) -> clamped to 0.0 -> status=200, results=1, top=dac-nhan-tam, score=0.03279",
+      "duration_ms": 50.71
+    },
+    {
+      "id": "FE-OOB-ALPHA--100.5",
+      "category": "Alpha-Boundary",
+      "status": "PASS",
+      "message": "Frontend Extreme Negative Alpha (-100.5) -> clamped to 0.0 -> status=200, results=1, top=dac-nhan-tam",
+      "duration_ms": 78.26
+    },
+    {
+      "id": "BE-OOB-ALPHA-999.99",
+      "category": "Alpha-Boundary",
+      "status": "PASS",
+      "message": "Backend Extreme Positive Alpha (999.99) -> clamped to 1.0 -> status=200, results=1, top=dac-nhan-tam, score=0.03279",
+      "duration_ms": 45.82
+    },
+    {
+      "id": "FE-OOB-ALPHA-999.99",
+      "category": "Alpha-Boundary",
+      "status": "PASS",
+      "message": "Frontend Extreme Positive Alpha (999.99) -> clamped to 1.0 -> status=200, results=1, top=dac-nhan-tam",
+      "duration_ms": 58.67
+    },
+    {
+      "id": "BE-OOB-ALPHA-invalid",
+      "category": "Alpha-Boundary",
+      "status": "PASS",
+      "message": "Backend String 'invalid' -> fallback to 0.5 -> status=200, results=1, top=dac-nhan-tam, score=0.03279",
+      "duration_ms": 50.5
+    },
+    {
+      "id": "FE-OOB-ALPHA-invalid",
+      "category": "Alpha-Boundary",
+      "status": "PASS",
+      "message": "Frontend String 'invalid' -> fallback to 0.5 -> status=200, results=1, top=dac-nhan-tam",
+      "duration_ms": 59.24
+    },
+    {
+      "id": "BE-OOB-ALPHA-not_a_number",
+      "category": "Alpha-Boundary",
+      "status": "PASS",
+      "message": "Backend String 'not_a_number' -> fallback to 0.5 -> status=200, results=1, top=dac-nhan-tam, score=0.03279",
+      "duration_ms": 50.5
+    },
+    {
+      "id": "FE-OOB-ALPHA-not_a_number",
+      "category": "Alpha-Boundary",
+      "status": "PASS",
+      "message": "Frontend String 'not_a_number' -> fallback to 0.5 -> status=200, results=1, top=dac-nhan-tam",
+      "duration_ms": 60.11
+    },
+    {
+      "id": "BE-OOB-ALPHA-",
+      "category": "Alpha-Boundary",
+      "status": "PASS",
+      "message": "Backend Empty string alpha -> fallback to 0.5 -> status=200, results=1, top=dac-nhan-tam, score=0.03279",
+      "duration_ms": 77.27
+    },
+    {
+      "id": "FE-OOB-ALPHA-",
+      "category": "Alpha-Boundary",
+      "status": "PASS",
+      "message": "Frontend Empty string alpha -> fallback to 0.5 -> status=200, results=1, top=dac-nhan-tam",
+      "duration_ms": 63.24
+    },
+    {
+      "id": "BE-OOB-ALPHA-None",
+      "category": "Alpha-Boundary",
+      "status": "PASS",
+      "message": "Backend None/Null alpha -> fallback to 0.5 -> status=200, results=1, top=dac-nhan-tam, score=0.03279",
+      "duration_ms": 49.62
+    },
+    {
+      "id": "FE-OOB-ALPHA-None",
+      "category": "Alpha-Boundary",
+      "status": "PASS",
+      "message": "Frontend None/Null alpha -> fallback to 0.5 -> status=200, results=1, top=dac-nhan-tam",
+      "duration_ms": 40.65
+    },
+    {
+      "id": "SERIES-ORDER-Chiến tranh tiền t",
+      "category": "Series-Disambiguation",
+      "status": "PASS",
+      "message": "Query 'Chiến tranh tiền tệ' -> order=['chien-tranh-tien-te-tap-1', 'chien-tranh-tien-te-tap-2', 'chien-tranh-tien-te-tap-3'], scores=[0.01654, 0.01649, 0.01644], Tập 1 is #1",
+      "duration_ms": 52.05
+    },
+    {
+      "id": "SERIES-ORDER-chien tranh tien t",
+      "category": "Series-Disambiguation",
+      "status": "PASS",
+      "message": "Query 'chien tranh tien te' -> order=['chien-tranh-tien-te-tap-1', 'chien-tranh-tien-te-tap-2', 'chien-tranh-tien-te-tap-3'], scores=[0.01654, 0.01649, 0.01644], Tập 1 is #1",
+      "duration_ms": 46.57
+    },
+    {
+      "id": "SERIES-ORDER-CHIẾN TRANH TIỀN T",
+      "category": "Series-Disambiguation",
+      "status": "PASS",
+      "message": "Query 'CHIẾN TRANH TIỀN TỆ' -> order=['chien-tranh-tien-te-tap-1', 'chien-tranh-tien-te-tap-2', 'chien-tranh-tien-te-tap-3'], scores=[0.01654, 0.01649, 0.01644], Tập 1 is #1",
+      "duration_ms": 47.29
+    },
+    {
+      "id": "SERIES-ORDER-Sách Chiến Tranh T",
+      "category": "Series-Disambiguation",
+      "status": "PASS",
+      "message": "Query 'Sách Chiến Tranh Tiền Tệ' -> order=['chien-tranh-tien-te-tap-1', 'chien-tranh-tien-te-tap-2', 'chien-tranh-tien-te-tap-3'], scores=[0.01654, 0.01649, 0.01644], Tập 1 is #1",
+      "duration_ms": 61.39
+    },
+    {
+      "id": "SERIES-ORDER-cuốn chiến tranh t",
+      "category": "Series-Disambiguation",
+      "status": "PASS",
+      "message": "Query 'cuốn chiến tranh tiền tệ' -> order=['chien-tranh-tien-te-tap-1', 'chien-tranh-tien-te-tap-2', 'chien-tranh-tien-te-tap-3'], scores=[0.01654, 0.01649, 0.01644], Tập 1 is #1",
+      "duration_ms": 52.71
+    },
+    {
+      "id": "SERIES-ORDER-Tìm sách chiến tra",
+      "category": "Series-Disambiguation",
+      "status": "PASS",
+      "message": "Query 'Tìm sách chiến tranh tiền tệ' -> order=['chien-tranh-tien-te-tap-1', 'chien-tranh-tien-te-tap-2', 'chien-tranh-tien-te-tap-3'], scores=[0.01654, 0.01649, 0.01644], Tập 1 is #1",
+      "duration_ms": 44.53
+    },
+    {
+      "id": "SERIES-EXACT-Chiến tranh tiền tệ tậ",
+      "category": "Series-Disambiguation",
+      "status": "PASS",
+      "message": "Query 'Chiến tranh tiền tệ tập 1' -> top='chien-tranh-tien-te-tap-1', expected='chien-tranh-tien-te-tap-1'",
+      "duration_ms": 44.64
+    },
+    {
+      "id": "SERIES-EXACT-Chiến tranh tiền tệ tậ",
+      "category": "Series-Disambiguation",
+      "status": "PASS",
+      "message": "Query 'Chiến tranh tiền tệ tập 2' -> top='chien-tranh-tien-te-tap-2', expected='chien-tranh-tien-te-tap-2'",
+      "duration_ms": 46.61
+    },
+    {
+      "id": "SERIES-EXACT-Chiến tranh tiền tệ tậ",
+      "category": "Series-Disambiguation",
+      "status": "PASS",
+      "message": "Query 'Chiến tranh tiền tệ tập 3' -> top='chien-tranh-tien-te-tap-3', expected='chien-tranh-tien-te-tap-3'",
+      "duration_ms": 47.45
+    },
+    {
+      "id": "SERIES-EXACT-chien tranh tien te ta",
+      "category": "Series-Disambiguation",
+      "status": "PASS",
+      "message": "Query 'chien tranh tien te tap 1' -> top='chien-tranh-tien-te-tap-1', expected='chien-tranh-tien-te-tap-1'",
+      "duration_ms": 47.64
+    },
+    {
+      "id": "SERIES-EXACT-chien tranh tien te ta",
+      "category": "Series-Disambiguation",
+      "status": "PASS",
+      "message": "Query 'chien tranh tien te tap 2' -> top='chien-tranh-tien-te-tap-2', expected='chien-tranh-tien-te-tap-2'",
+      "duration_ms": 46.44
+    },
+    {
+      "id": "SERIES-EXACT-chien tranh tien te ta",
+      "category": "Series-Disambiguation",
+      "status": "PASS",
+      "message": "Query 'chien tranh tien te tap 3' -> top='chien-tranh-tien-te-tap-3', expected='chien-tranh-tien-te-tap-3'",
+      "duration_ms": 46.1
+    },
+    {
+      "id": "CONCURRENCY-BE-50",
+      "category": "Concurrency-Backend",
+      "status": "PASS",
+      "message": "Backend 50 concurrent: success=50/50 (100%), total_time=432.7ms, avg_lat=126.8ms, max_lat=194.7ms",
+      "duration_ms": 432.71
+    },
+    {
+      "id": "CONCURRENCY-FE-50",
+      "category": "Concurrency-Frontend",
+      "status": "PASS",
+      "message": "Frontend 50 concurrent: success=50/50 (100%), total_time=899.9ms, avg_lat=271.9ms, max_lat=434.3ms",
+      "duration_ms": 899.87
+    },
+    {
+      "id": "CATALOG-BOOK-dac-nhan-tam",
+      "category": "Catalog-Integrity",
+      "status": "PASS",
+      "message": "Book 'dac-nhan-tam' queried with 'dac nhan tam' -> top='dac-nhan-tam', score=0.03279",
+      "duration_ms": 63.67
+    },
+    {
+      "id": "CATALOG-BOOK-tu-duy-nhanh-va-ch",
+      "category": "Catalog-Integrity",
+      "status": "PASS",
+      "message": "Book 'tu-duy-nhanh-va-cham' queried with 'tu duy nhanh va cham' -> top='tu-duy-nhanh-va-cham', score=0.01639",
+      "duration_ms": 49.61
+    },
+    {
+      "id": "CATALOG-BOOK-chien-tranh-tien-t",
+      "category": "Catalog-Integrity",
+      "status": "PASS",
+      "message": "Book 'chien-tranh-tien-te-tap-1' queried with 'chien tranh tien te tap 1' -> top='chien-tranh-tien-te-tap-1', score=0.03779",
+      "duration_ms": 47.56
+    },
+    {
+      "id": "CATALOG-BOOK-chien-tranh-tien-t",
+      "category": "Catalog-Integrity",
+      "status": "PASS",
+      "message": "Book 'chien-tranh-tien-te-tap-2' queried with 'chien tranh tien te tap 2' -> top='chien-tranh-tien-te-tap-2', score=0.02113",
+      "duration_ms": 28.71
+    },
+    {
+      "id": "CATALOG-BOOK-chien-tranh-tien-t",
+      "category": "Catalog-Integrity",
+      "status": "PASS",
+      "message": "Book 'chien-tranh-tien-te-tap-3' queried with 'chien tranh tien te tap 3' -> top='chien-tranh-tien-te-tap-3', score=0.02087",
+      "duration_ms": 48.92
+    },
+    {
+      "id": "CATALOG-BOOK-chu-nghia-khac-ky-",
+      "category": "Catalog-Integrity",
+      "status": "PASS",
+      "message": "Book 'chu-nghia-khac-ky-phong-cach-song-ban-linh-va-binh-than' queried with 'chu nghia khac ky' -> top='chu-nghia-khac-ky-phong-cach-song-ban-linh-va-binh-than', score=0.03279",
+      "duration_ms": 47.24
+    },
+    {
+      "id": "CATALOG-BOOK-sapiens-luoc-su-lo",
+      "category": "Catalog-Integrity",
+      "status": "PASS",
+      "message": "Book 'sapiens-luoc-su-loai-nguoi' queried with 'sapiens luoc su loai nguoi' -> top='sapiens-luoc-su-loai-nguoi', score=0.03279",
+      "duration_ms": 45.99
+    },
+    {
+      "id": "CATALOG-BOOK-cay-cam-ngot-cua-t",
+      "category": "Catalog-Integrity",
+      "status": "PASS",
+      "message": "Book 'cay-cam-ngot-cua-toi' queried with 'cay cam ngot cua toi' -> top='cay-cam-ngot-cua-toi', score=0.03279",
+      "duration_ms": 45.51
+    },
+    {
+      "id": "CATALOG-BOOK-bon-thoa-uoc",
+      "category": "Catalog-Integrity",
+      "status": "PASS",
+      "message": "Book 'bon-thoa-uoc' queried with 'bon thoa uoc' -> top='bon-thoa-uoc', score=0.03279",
+      "duration_ms": 47.23
+    },
+    {
+      "id": "CATALOG-BOOK-tri-tue-do-thai",
+      "category": "Catalog-Integrity",
+      "status": "PASS",
+      "message": "Book 'tri-tue-do-thai' queried with 'tri tue do thai' -> top='tri-tue-do-thai', score=0.03279",
+      "duration_ms": 46.73
+    },
+    {
+      "id": "CATALOG-BOOK-bi-mat-cua-mot-tri",
+      "category": "Catalog-Integrity",
+      "status": "PASS",
+      "message": "Book 'bi-mat-cua-mot-tri-nho-sieu-pham' queried with 'bi mat cua mot tri nho sieu pham' -> top='bi-mat-cua-mot-tri-nho-sieu-pham', score=0.03279",
+      "duration_ms": 49.34
+    },
+    {
+      "id": "CATALOG-BOOK-10-dieu-tao-nen-so",
+      "category": "Catalog-Integrity",
+      "status": "PASS",
+      "message": "Book '10-dieu-tao-nen-so-phan' queried with '10 dieu tao nen so phan' -> top='10-dieu-tao-nen-so-phan', score=0.01639",
+      "duration_ms": 46.6
+    },
+    {
+      "id": "CATALOG-BOOK-cach-nghi-de-thanh",
+      "category": "Catalog-Integrity",
+      "status": "PASS",
+      "message": "Book 'cach-nghi-de-thanh-cong' queried with 'cach nghi de thanh cong' -> top='cach-nghi-de-thanh-cong', score=0.03279",
+      "duration_ms": 31.77
+    }
+  ]
+}

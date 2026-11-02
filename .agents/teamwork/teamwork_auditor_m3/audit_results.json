@@ -1,0 +1,205 @@
+{
+  "Alpha Weighting Responsiveness": {
+    "passed": true,
+    "details": {
+      "alpha_1.0_scores": [
+        0.03279,
+        0.03226,
+        0.03175
+      ],
+      "alpha_0.0_scores": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "alpha_0.5_scores": [
+        0.01639,
+        0.01613,
+        0.01587
+      ]
+    }
+  },
+  "Alpha Clamping & Sanitization": {
+    "passed": true,
+    "details": {
+      "alpha_-5_total": 1,
+      "alpha_10_total": 1,
+      "alpha_invalid_total": 1
+    }
+  },
+  "Series Disambiguation (Vol 1 vs Vol 2 vs Vol 3)": {
+    "passed": true,
+    "details": {
+      "generic_first": "chien-tranh-tien-te-tap-1",
+      "tap_2_first": "chien-tranh-tien-te-tap-2",
+      "tap_3_first": "chien-tranh-tien-te-tap-3"
+    }
+  },
+  "Unseen Out-Of-Catalog Queries (Algorithmic Zero-Hallucination)": {
+    "passed": false,
+    "details": {
+      "Sherlock Holmes Arthur Conan Doyle": {
+        "total": 0,
+        "results_count": 0,
+        "top_matches": []
+      },
+      "Game of Thrones George R R Martin": {
+        "total": 0,
+        "results_count": 0,
+        "top_matches": []
+      },
+      "Romeo and Juliet William Shakespeare": {
+        "total": 0,
+        "results_count": 0,
+        "top_matches": []
+      },
+      "Kỹ thuật trồng cây thanh long ruột đỏ": {
+        "total": 2,
+        "results_count": 2,
+        "top_matches": [
+          "dac-nhan-tam",
+          "sapiens-luoc-su-loai-nguoi"
+        ]
+      },
+      "Lịch sử kiến trúc Gothic châu Âu": {
+        "total": 2,
+        "results_count": 2,
+        "top_matches": [
+          "sapiens-luoc-su-loai-nguoi",
+          "chien-tranh-tien-te-tap-1"
+        ]
+      },
+      "Vật lý hạt nhân và cơ học lượng tử": {
+        "total": 11,
+        "results_count": 11,
+        "top_matches": [
+          "tu-duy-nhanh-va-cham",
+          "cach-nghi-de-thanh-cong"
+        ]
+      },
+      "Công thức pha chế cocktail margarita": {
+        "total": 0,
+        "results_count": 0,
+        "top_matches": []
+      },
+      "Kinh tế vĩ mô Hoa Kỳ thế kỷ 19": {
+        "total": 4,
+        "results_count": 4,
+        "top_matches": [
+          "chu-nghia-khac-ky-phong-cach-song-ban-linh-va-binh-than",
+          "chien-tranh-tien-te-tap-2"
+        ]
+      },
+      "Tiểu thuyết trinh thám Agatha Christie": {
+        "total": 1,
+        "results_count": 1,
+        "top_matches": [
+          "dac-nhan-tam"
+        ]
+      }
+    }
+  },
+  "Blind In-Catalog Conceptual Queries Retrieval": {
+    "passed": false,
+    "details": {
+      "nghệ thuật thu phục lòng người và lắng nghe": {
+        "expected": "dac-nhan-tam",
+        "top_slug": "dac-nhan-tam",
+        "matched_top_3": true
+      },
+      "chú bé zeze và tình yêu thương tuổi thơ": {
+        "expected": "cay-cam-ngot-cua-toi",
+        "top_slug": "cay-cam-ngot-cua-toi",
+        "matched_top_3": true
+      },
+      "tư duy hệ thống 1 và hệ thống 2 thiên kiến": {
+        "expected": "tu-duy-nhanh-va-cham",
+        "top_slug": "tu-duy-nhanh-va-cham",
+        "matched_top_3": true
+      },
+      "tiền tệ dòng chảy ngầm gia tộc rothschild": {
+        "expected": "chien-tranh-tien-te-tap-1",
+        "top_slug": "chien-tranh-tien-te-tap-1",
+        "matched_top_3": true
+      },
+      "triết lý sống bình thản và khắc kỷ": {
+        "expected": "chu-nghia-khac-ky",
+        "top_slug": "chu-nghia-khac-ky-phong-cach-song-ban-linh-va-binh-than",
+        "matched_top_3": false
+      },
+      "tiến hóa và cách mạng nhận thức loài người": {
+        "expected": "sapiens-luoc-su-loai-nguoi",
+        "top_slug": "sapiens-luoc-su-loai-nguoi",
+        "matched_top_3": true
+      },
+      "rèn luyện trí nhớ phương pháp phòng La Mã": {
+        "expected": "tri-tue-do-thai",
+        "top_slug": "bi-mat-cua-mot-tri-nho-sieu-pham",
+        "matched_top_3": true
+      },
+      "nghĩ giàu làm giàu kiên trì khát vọng": {
+        "expected": "cach-nghi-de-thanh-cong",
+        "top_slug": "cach-nghi-de-thanh-cong",
+        "matched_top_3": true
+      },
+      "thực hành 4 thỏa ước bình an nội tâm": {
+        "expected": "bon-thoa-uoc",
+        "top_slug": "bon-thoa-uoc",
+        "matched_top_3": true
+      }
+    }
+  },
+  "Frontend /api/search/ai Response Contract": {
+    "passed": true,
+    "details": {
+      "normal_source": "ai_hybrid_rrf",
+      "normal_results_count": 1,
+      "empty_source": "empty_query",
+      "whitespace_source": "empty_query",
+      "out_of_catalog_total": 0
+    }
+  },
+  "GraphRAG Self-Development Query ('tìm sách về phát triển bản thân')": {
+    "passed": true,
+    "details": {
+      "returned_slugs": [
+        "cach-nghi-de-thanh-cong",
+        "dac-nhan-tam",
+        "chu-nghia-khac-ky-phong-cach-song-ban-linh-binh-than",
+        "10-dieu-tao-nen-so-phan"
+      ],
+      "hasDirectMatch": null,
+      "totalCount": 4
+    }
+  },
+  "GraphRAG Out-Of-Catalog Honest Refusal ('Sherlock Holmes')": {
+    "passed": false,
+    "details": {
+      "products_count": 0,
+      "totalCount": 0,
+      "hasDirectMatch": null,
+      "reasoningSummary": "Kho sách AuraBook hiện chưa có tác phẩm về \"Sherlock Holmes Arthur Conan Doyle\". Hệ thống chỉ cung cấp kết quả khi có dữ liệu xác thực, không đưa ra thông tin giả mạo."
+    }
+  },
+  "GraphRAG Case & Diacritics Invariance": {
+    "passed": false,
+    "details": {
+      "dAc NhAn TaM": {
+        "expected": "dac-nhan-tam",
+        "top_slug": "dac-nhan-tam"
+      },
+      "Sapiens luoc su loai nguoi": {
+        "expected": "sapiens-luoc-su-loai-nguoi",
+        "top_slug": "sapiens-luoc-su-loai-nguoi"
+      },
+      "tu duy nhanh va cham": {
+        "expected": "tu-duy-nhanh-va-cham",
+        "top_slug": "tu-duy-nhanh-va-cham"
+      },
+      "chu nghia khac ky": {
+        "expected": "chu-nghia-khac-ky",
+        "top_slug": "chu-nghia-khac-ky-phong-cach-song-ban-linh-binh-than"
+      }
+    }
+  }
+}

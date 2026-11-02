@@ -31,8 +31,25 @@ Write-Host "`n[2/5] Khởi động AI Platform (LiveKit Server 7880, DRM Reader 
 docker compose -f "$AI_SERVICES" up -d
 
 # 3. Khởi động Core RAG (Dify Knowledge Base 8080)
-Write-Host "`n[3/5] Khởi động Core RAG (Dify Knowledge Base trên port 8080)..." -ForegroundColor Yellow
+Write-Host "`n[3/6] Khởi động Core RAG (Dify Knowledge Base trên port 8080)..." -ForegroundColor Yellow
 docker compose -f "$DIFY_COMPOSE" up -d
+
+# 3.1 Khởi động Ollama Local AI Engine (Port 11434)
+Write-Host "`n  -> Kiểm tra Ollama Local AI Engine (Port 11434)..." -ForegroundColor Cyan
+$pOllama = netstat -ano 2>$null | Select-String ":11434 " | Select-String "LISTENING"
+if (-not $pOllama) {
+    Write-Host "  -> Đang khởi động Ollama server trên port 11434..." -ForegroundColor Cyan
+    $ollamaExe = "$env:LOCALAPPDATA\Programs\Ollama\ollama.exe"
+    if (Test-Path $ollamaExe) {
+        Start-Process $ollamaExe -ArgumentList "serve" -WindowStyle Minimized
+        Start-Sleep -Seconds 2
+        Write-Host "  [OK] Ollama Local AI Server đã sẵn sàng tại http://127.0.0.1:11434" -ForegroundColor Green
+    } else {
+        Write-Host "  [!] Không tìm thấy ollama.exe tại $ollamaExe" -ForegroundColor Yellow
+    }
+} else {
+    Write-Host "  [OK] Ollama Local AI Server đang chạy trên port 11434." -ForegroundColor Green
+}
 
 # Chờ Backend Saleor (8000) và LiveKit (7880) sẵn sàng
 Write-Host "`n  -> Đang kiểm tra trạng thái các dịch vụ kết nối..." -ForegroundColor Cyan

@@ -21,15 +21,31 @@ class HybridSearchView(View):
     def post(self, request):
         try:
             body = json.loads(request.body)
-            query = body.get("query", "").strip()
-            limit = int(body.get("limit", 20))
-        except (json.JSONDecodeError, ValueError):
+            if not isinstance(body, dict):
+                return JsonResponse({"error": "Invalid request"}, status=400)
+            raw_limit = body.get("limit", 20)
+            limit = int(raw_limit) if raw_limit is not None else 20
+            raw_alpha = body.get("alpha", 0.5)
+            try:
+                alpha = float(raw_alpha) if raw_alpha is not None else 0.5
+                alpha = max(0.0, min(1.0, alpha))
+            except (ValueError, TypeError):
+                alpha = 0.5
+        except (json.JSONDecodeError, ValueError, TypeError):
             return JsonResponse({"error": "Invalid request"}, status=400)
 
-        if not query:
-            return JsonResponse({"error": "query is required"}, status=400)
+        if "query" not in body:
+            return JsonResponse({"error": "query is required", "results": [], "total": 0}, status=400)
 
-        results = hybrid_search_rrf(query, limit=limit)
+        raw_query = body["query"]
+        if raw_query is None or not isinstance(raw_query, str):
+            return JsonResponse({"error": "Query must be a non-empty string", "results": [], "total": 0}, status=400)
+
+        query = raw_query.strip()[:500]
+        if not query:
+            return JsonResponse({"error": "query is required", "results": [], "total": 0}, status=400)
+
+        results = hybrid_search_rrf(query, limit=limit, alpha=alpha)
         return JsonResponse({
             "query": query,
             "total": len(results),
@@ -44,13 +60,25 @@ class RAGQueryView(View):
     def post(self, request):
         try:
             body = json.loads(request.body)
-            query = body.get("query", "").strip()
-            product_id = body.get("product_id")
-        except (json.JSONDecodeError, KeyError):
+            if not isinstance(body, dict):
+                return JsonResponse({"error": "Invalid request"}, status=400)
+        except (json.JSONDecodeError, ValueError, TypeError):
             return JsonResponse({"error": "Invalid request"}, status=400)
 
+        if "query" not in body:
+            return JsonResponse({"error": "query is required"}, status=400)
+
+        raw_query = body["query"]
+        if raw_query is None or not isinstance(raw_query, str):
+            return JsonResponse({"error": "Query must be a non-empty string"}, status=400)
+
+        query = raw_query.strip()[:500]
         if not query:
             return JsonResponse({"error": "query is required"}, status=400)
+
+        product_id = body.get("product_id")
+        if product_id is not None and not isinstance(product_id, str):
+            product_id = str(product_id)
 
         # Lấy relevant chunks
         if product_id:

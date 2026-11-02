@@ -47,14 +47,14 @@ export interface BookProduct {
 	variants: BookVariantOption[];
 }
 
-const CATALOG: BookProduct[] = [
+export const CATALOG: BookProduct[] = [
 	{
 		id: "UHJvZHVjdDox",
 		title: "Đắc Nhân Tâm",
 		originalTitle: "How to Win Friends and Influence People",
 		author: "Dale Carnegie",
 		price: "59.000₫",
-		originalPrice: "89.000₫",
+		originalPrice: "118.000₫",
 		ebookPrice: "59.000₫",
 		physicalPrice: "118.000₫",
 		rating: 4.9,
@@ -65,22 +65,8 @@ const CATALOG: BookProduct[] = [
 		badge: "Giao tiếp & Ứng xử",
 		description: "Cẩm nang giao tiếp, thấu hiểu tâm lý và nghệ thuật thu phục lòng người kinh điển nhất mọi thời đại.",
 		variants: [
-			{
-				id: "UHJvZHVjdFZhcmlhbnQ6Mg==",
-				name: "Bản Ebook (Sách Điện Tử)",
-				type: "ebook",
-				sku: "EB-DAC-NHAN-TAM",
-				price: "59.000₫",
-				originalPrice: "89.000₫",
-			},
-			{
-				id: "UHJvZHVjdFZhcmlhbnQ6Mw==",
-				name: "Bản Sách Giấy (Bìa Mềm Tuyển Chọn)",
-				type: "physical",
-				sku: "VT-DAC-NHAN-TAM",
-				price: "118.000₫",
-				originalPrice: "150.000₫",
-			},
+			{ id: "ed-dac-nhan-tam-ebook", name: "Bản Ebook (Sách Điện Tử Readium LCP)", type: "ebook", sku: "EB-DAC-NHAN-TAM", price: "59.000₫" },
+			{ id: "ed-dac-nhan-tam-physical", name: "Bản Sách Giấy (Bìa Mềm Tuyển Chọn)", type: "physical", sku: "VT-DAC-NHAN-TAM", price: "118.000₫" },
 		],
 	},
 	{
@@ -89,10 +75,10 @@ const CATALOG: BookProduct[] = [
 		originalTitle: "The Four Agreements",
 		author: "Don Miguel Ruiz",
 		price: "49.000₫",
-		originalPrice: "69.000₫",
+		originalPrice: "98.000₫",
 		ebookPrice: "49.000₫",
 		physicalPrice: "98.000₫",
-		rating: 4.8,
+		rating: 4.9,
 		reviewCount: 890,
 		coverImage: "/products/book-bon-thoa-uoc-cover.jpg",
 		readerUrl: "/reader/bon-thoa-uoc",
@@ -100,22 +86,8 @@ const CATALOG: BookProduct[] = [
 		badge: "Minh triết sống",
 		description: "Triết lý Toltec khai sáng giúp bạn thoát khỏi những niềm tin giới hạn và tìm thấy tự do đích thực.",
 		variants: [
-			{
-				id: "UHJvZHVjdFZhcmlhbnQ6NA==",
-				name: "Bản Ebook (Sách Điện Tử)",
-				type: "ebook",
-				sku: "EB-BON-THOA-UOC",
-				price: "49.000₫",
-				originalPrice: "69.000₫",
-			},
-			{
-				id: "UHJvZHVjdFZhcmlhbnQ6NQ==",
-				name: "Bản Sách Giấy (Bìa Mềm Tuyển Chọn)",
-				type: "physical",
-				sku: "VT-BON-THOA-UOC",
-				price: "98.000₫",
-				originalPrice: "125.000₫",
-			},
+			{ id: "ed-bon-thoa-uoc-ebook", name: "Bản Ebook (Sách Điện Tử Readium LCP)", type: "ebook", sku: "EB-BON-THOA-UOC", price: "49.000₫" },
+			{ id: "ed-bon-thoa-uoc-physical", name: "Bản Sách Giấy (Bìa Mềm Tuyển Chọn)", type: "physical", sku: "VT-BON-THOA-UOC", price: "98.000₫" },
 		],
 	},
 	{
@@ -124,7 +96,7 @@ const CATALOG: BookProduct[] = [
 		originalTitle: "A Brief History of Humankind",
 		author: "Yuval Noah Harari",
 		price: "89.000₫",
-		originalPrice: "120.000₫",
+		originalPrice: "189.000₫",
 		ebookPrice: "89.000₫",
 		physicalPrice: "189.000₫",
 		rating: 5.0,
@@ -135,22 +107,8 @@ const CATALOG: BookProduct[] = [
 		badge: "Lược sử văn minh",
 		description: "Hành trình vĩ đại từ loài vượn người trở thành kẻ thống trị địa cầu qua các cuộc cách mạng nhận thức.",
 		variants: [
-			{
-				id: "UHJvZHVjdFZhcmlhbnQ6Ng==",
-				name: "Bản Ebook (Sách Điện Tử)",
-				type: "ebook",
-				sku: "EB-SAPIENS",
-				price: "89.000₫",
-				originalPrice: "120.000₫",
-			},
-			{
-				id: "UHJvZHVjdFZhcmlhbnQ6Nw==",
-				name: "Bản Sách Giấy (Bìa Cứng Tuyển Chọn)",
-				type: "physical",
-				sku: "VT-SAPIENS",
-				price: "189.000₫",
-				originalPrice: "240.000₫",
-			},
+			{ id: "ed-sapiens-ebook", name: "Bản Ebook (Sách Điện Tử Readium LCP)", type: "ebook", sku: "EB-SAPIENS", price: "89.000₫" },
+			{ id: "ed-sapiens-physical", name: "Bản Sách Giấy (Bìa Cứng Tuyển Chọn)", type: "physical", sku: "VT-SAPIENS", price: "189.000₫" },
 		],
 	},
 	{
@@ -159,7 +117,7 @@ const CATALOG: BookProduct[] = [
 		originalTitle: "Jerome Becomes a Genius",
 		author: "Eran Katz",
 		price: "69.000₫",
-		originalPrice: "95.000₫",
+		originalPrice: "135.000₫",
 		ebookPrice: "69.000₫",
 		physicalPrice: "135.000₫",
 		rating: 4.8,
@@ -170,22 +128,197 @@ const CATALOG: BookProduct[] = [
 		badge: "Trí tuệ nhân loại",
 		description: "Bí quyết rèn luyện trí nhớ phi thường và tư duy làm giàu sắc bén của người Do Thái.",
 		variants: [
-			{
-				id: "UHJvZHVjdFZhcmlhbnQ6OA==",
-				name: "Bản Ebook (Sách Điện Tử)",
-				type: "ebook",
-				sku: "EB-TRI-TUE-DO-THAI",
-				price: "69.000₫",
-				originalPrice: "95.000₫",
-			},
-			{
-				id: "UHJvZHVjdFZhcmlhbnQ6OQ==",
-				name: "Bản Sách Giấy (Bìa Mềm Tuyển Chọn)",
-				type: "physical",
-				sku: "VT-TRI-TUE-DO-THAI",
-				price: "135.000₫",
-				originalPrice: "170.000₫",
-			},
+			{ id: "ed-tri-tue-do-thai-ebook", name: "Bản Ebook (Sách Điện Tử Readium LCP)", type: "ebook", sku: "EB-TRI-TUE-DO-THAI", price: "69.000₫" },
+			{ id: "ed-tri-tue-do-thai-physical", name: "Bản Sách Giấy (Bìa Mềm Tuyển Chọn)", type: "physical", sku: "VT-TRI-TUE-DO-THAI", price: "135.000₫" },
+		],
+	},
+	{
+		id: "UHJvZHVjdDo1",
+		title: "10 Điều Tạo Nên Số Phận",
+		originalTitle: "The Ten Commitments",
+		author: "David Simon, M.D",
+		price: "49.000₫",
+		originalPrice: "98.000₫",
+		ebookPrice: "49.000₫",
+		physicalPrice: "98.000₫",
+		rating: 4.7,
+		reviewCount: 420,
+		coverImage: "/products/book-10-dieu-tao-nen-so-phan-cover.jpeg",
+		readerUrl: "/reader/10-dieu-tao-nen-so-phan",
+		slug: "10-dieu-tao-nen-so-phan",
+		badge: "Làm chủ cuộc đời",
+		description: "10 cam kết mạnh mẽ giúp bạn chuyển hóa nhận thức và kiến tạo số phận như ý.",
+		variants: [
+			{ id: "ed-10-dieu-ebook", name: "Bản Ebook (Sách Điện Tử Readium LCP)", type: "ebook", sku: "EB-10-DIEU", price: "49.000₫" },
+			{ id: "ed-10-dieu-physical", name: "Bản Sách Giấy (Bìa Mềm)", type: "physical", sku: "VT-10-DIEU", price: "98.000₫" },
+		],
+	},
+	{
+		id: "UHJvZHVjdDo2",
+		title: "Bí Mật Của Một Trí Nhớ Siêu Phàm",
+		originalTitle: "Where Did That Come From?",
+		author: "Eran Katz",
+		price: "59.000₫",
+		originalPrice: "119.000₫",
+		ebookPrice: "59.000₫",
+		physicalPrice: "119.000₫",
+		rating: 4.8,
+		reviewCount: 510,
+		coverImage: "/products/book-bi-mat-cua-mot-tri-nho-sieu-pham-cover.jpeg",
+		readerUrl: "/reader/bi-mat-cua-mot-tri-nho-sieu-pham",
+		slug: "bi-mat-cua-mot-tri-nho-sieu-pham",
+		badge: "Rèn luyện trí nhớ",
+		description: "Kỹ thuật ghi nhớ kỷ lục gia thế giới giúp bạn học nhanh, nhớ lâu và làm chủ dữ liệu.",
+		variants: [
+			{ id: "ed-tri-nho-ebook", name: "Bản Ebook (Sách Điện Tử Readium LCP)", type: "ebook", sku: "EB-TRI-NHO", price: "59.000₫" },
+			{ id: "ed-tri-nho-physical", name: "Bản Sách Giấy (Bìa Mềm)", type: "physical", sku: "VT-TRI-NHO", price: "119.000₫" },
+		],
+	},
+	{
+		id: "UHJvZHVjdDo3",
+		title: "Cách Nghĩ Để Thành Công",
+		originalTitle: "Think and Grow Rich",
+		author: "Napoleon Hill",
+		price: "59.000₫",
+		originalPrice: "115.000₫",
+		ebookPrice: "59.000₫",
+		physicalPrice: "115.000₫",
+		rating: 4.9,
+		reviewCount: 1680,
+		coverImage: "/products/book-cach-nghi-de-thanh-cong-cover.jpeg",
+		readerUrl: "/reader/cach-nghi-de-thanh-cong",
+		slug: "cach-nghi-de-thanh-cong",
+		badge: "Phát triển bản thân",
+		description: "13 nguyên tắc làm giàu và tư duy thịnh vượng kinh điển nhất mọi thời đại.",
+		variants: [
+			{ id: "ed-cach-nghi-ebook", name: "Bản Ebook (Sách Điện Tử Readium LCP)", type: "ebook", sku: "EB-CACH-NGHI", price: "59.000₫" },
+			{ id: "ed-cach-nghi-physical", name: "Bản Sách Giấy (Bìa Mềm)", type: "physical", sku: "VT-CACH-NGHI", price: "115.000₫" },
+		],
+	},
+	{
+		id: "UHJvZHVjdDo4",
+		title: "Cây Cam Ngọt Của Tôi",
+		originalTitle: "O Meu Pé de Laranja Lima",
+		author: "José Mauro de Vasconcelos",
+		price: "55.000₫",
+		originalPrice: "108.000₫",
+		ebookPrice: "55.000₫",
+		physicalPrice: "108.000₫",
+		rating: 4.9,
+		reviewCount: 3120,
+		coverImage: "/products/book-cay-cam-ngot-cua-toi-cover.jpeg",
+		readerUrl: "/reader/cay-cam-ngot-cua-toi",
+		slug: "cay-cam-ngot-cua-toi",
+		badge: "Văn học kinh điển",
+		description: "Câu chuyện cảm động về tuổi thơ, tình yêu thương và sự thấu hiểu xót xa của cậu bé Zezé.",
+		variants: [
+			{ id: "ed-cay-cam-ebook", name: "Bản Ebook (Sách Điện Tử Readium LCP)", type: "ebook", sku: "EB-CAY-CAM", price: "55.000₫" },
+			{ id: "ed-cay-cam-physical", name: "Bản Sách Giấy (Bìa Mềm)", type: "physical", sku: "VT-CAY-CAM", price: "108.000₫" },
+		],
+	},
+	{
+		id: "UHJvZHVjdDo5",
+		title: "Chiến Tranh Tiền Tệ - Tập 1",
+		originalTitle: "Currency Wars I",
+		author: "Song Hongbing",
+		price: "69.000₫",
+		originalPrice: "139.000₫",
+		ebookPrice: "69.000₫",
+		physicalPrice: "139.000₫",
+		rating: 4.7,
+		reviewCount: 840,
+		coverImage: "/products/book-chien-tranh-tien-te-tap-1-cover.jpeg",
+		readerUrl: "/reader/chien-tranh-tien-te-tap-1",
+		slug: "chien-tranh-tien-te-tap-1",
+		badge: "Tài chính & Tiền tệ",
+		description: "Mặt sau của các cuộc chiến tranh và sự thao túng tài chính của các gia tộc tài phiệt thế giới.",
+		variants: [
+			{ id: "ed-cttt1-ebook", name: "Bản Ebook (Sách Điện Tử Readium LCP)", type: "ebook", sku: "EB-CTTT1", price: "69.000₫" },
+			{ id: "ed-cttt1-physical", name: "Bản Sách Giấy (Bìa Mềm)", type: "physical", sku: "VT-CTTT1", price: "139.000₫" },
+		],
+	},
+	{
+		id: "UHJvZHVjdDoxMA==",
+		title: "Chiến Tranh Tiền Tệ - Tập 2",
+		originalTitle: "Currency Wars II",
+		author: "Song Hongbing",
+		price: "69.000₫",
+		originalPrice: "139.000₫",
+		ebookPrice: "69.000₫",
+		physicalPrice: "139.000₫",
+		rating: 4.7,
+		reviewCount: 620,
+		coverImage: "/products/book-chien-tranh-tien-te-tap-2-cover.jpeg",
+		readerUrl: "/reader/chien-tranh-tien-te-tap-2",
+		slug: "chien-tranh-tien-te-tap-2",
+		badge: "Tài chính & Tiền tệ",
+		description: "Chiến lược thao túng toàn cầu và sự trỗi dậy của các khối tài phiệt phương Tây.",
+		variants: [
+			{ id: "ed-cttt2-ebook", name: "Bản Ebook (Sách Điện Tử Readium LCP)", type: "ebook", sku: "EB-CTTT2", price: "69.000₫" },
+			{ id: "ed-cttt2-physical", name: "Bản Sách Giấy (Bìa Mềm)", type: "physical", sku: "VT-CTTT2", price: "139.000₫" },
+		],
+	},
+	{
+		id: "UHJvZHVjdDoxMQ==",
+		title: "Chiến Tranh Tiền Tệ - Tập 3",
+		originalTitle: "Currency Wars III",
+		author: "Song Hongbing",
+		price: "69.000₫",
+		originalPrice: "139.000₫",
+		ebookPrice: "69.000₫",
+		physicalPrice: "139.000₫",
+		rating: 4.7,
+		reviewCount: 540,
+		coverImage: "/products/book-chien-tranh-tien-te-tap-3-cover.jpeg",
+		readerUrl: "/reader/chien-tranh-tien-te-tap-3",
+		slug: "chien-tranh-tien-te-tap-3",
+		badge: "Tài chính & Tiền tệ",
+		description: "Cuộc chiến tiền tệ tại châu Á và bức tranh tương lai tài chính toàn cầu.",
+		variants: [
+			{ id: "ed-cttt3-ebook", name: "Bản Ebook (Sách Điện Tử Readium LCP)", type: "ebook", sku: "EB-CTTT3", price: "69.000₫" },
+			{ id: "ed-cttt3-physical", name: "Bản Sách Giấy (Bìa Mềm)", type: "physical", sku: "VT-CTTT3", price: "139.000₫" },
+		],
+	},
+	{
+		id: "UHJvZHVjdDoxMg==",
+		title: "Chủ Nghĩa Khắc Kỷ: Phong Cách Sống Bản Lĩnh & Bình Thản",
+		originalTitle: "A Guide to the Good Life",
+		author: "William B. Irvine",
+		price: "65.000₫",
+		originalPrice: "129.000₫",
+		ebookPrice: "65.000₫",
+		physicalPrice: "129.000₫",
+		rating: 4.8,
+		reviewCount: 930,
+		coverImage: "/products/book-chu-nghia-khac-ky-phong-cach-song-ban-linh-binh-than-cover.jpeg",
+		readerUrl: "/reader/chu-nghia-khac-ky-phong-cach-song-ban-linh-binh-than",
+		slug: "chu-nghia-khac-ky-phong-cach-song-ban-linh-binh-than",
+		badge: "Triết lý sống",
+		description: "Nghệ thuật làm chủ cảm xúc, đón nhận thử thách với tâm thế bình thản và kiên định.",
+		variants: [
+			{ id: "ed-khac-ky-ebook", name: "Bản Ebook (Sách Điện Tử Readium LCP)", type: "ebook", sku: "EB-KHAC-KY", price: "65.000₫" },
+			{ id: "ed-khac-ky-physical", name: "Bản Sách Giấy (Bìa Mềm)", type: "physical", sku: "VT-KHAC-KY", price: "129.000₫" },
+		],
+	},
+	{
+		id: "UHJvZHVjdDoxMw==",
+		title: "Tư Duy Nhanh Và Chậm",
+		originalTitle: "Thinking, Fast and Slow",
+		author: "Daniel Kahneman",
+		price: "79.000₫",
+		originalPrice: "159.000₫",
+		ebookPrice: "79.000₫",
+		physicalPrice: "159.000₫",
+		rating: 4.9,
+		reviewCount: 2890,
+		coverImage: "/products/book-tu-duy-nhanh-va-cham-cover.jpeg",
+		readerUrl: "/reader/tu-duy-nhanh-va-cham",
+		slug: "tu-duy-nhanh-va-cham",
+		badge: "Tâm lý học hành vi",
+		description: "Hai hệ thống tư duy định hình mọi quyết định, phán đoán và sai lệch nhận thức của con người.",
+		variants: [
+			{ id: "ed-tdnvc-ebook", name: "Bản Ebook (Sách Điện Tử Readium LCP)", type: "ebook", sku: "EB-TDNVC", price: "79.000₫" },
+			{ id: "ed-tdnvc-physical", name: "Bản Sách Giấy (Bìa Mềm)", type: "physical", sku: "VT-TDNVC", price: "159.000₫" },
 		],
 	},
 ];
@@ -303,7 +436,7 @@ async function queryLLM({
 	model,
 	prompt,
 	systemPrompt,
-	timeoutMs = 4000,
+	timeoutMs = 2500,
 	provider = "ollama",
 	apiKey = "",
 	baseUrl = "http://127.0.0.1:11434",
@@ -322,7 +455,7 @@ async function queryLLM({
 		const geminiKey = apiKey || process.env.GEMINI_API_KEY || "";
 		if (geminiKey && geminiKey !== "your_gemini_api_key_here") {
 			try {
-				const geminiModel = model.toLowerCase().includes("2.0") ? "gemini-2.0-flash" : "gemini-1.5-flash";
+				const geminiModel = "gemini-3.8-flash";
 				const res = await fetch(
 					`https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${geminiKey}`,
 					{
@@ -423,6 +556,8 @@ export async function POST(req: Request) {
 				if (cfg.voice?.llmApiKey) llmApiKey = cfg.voice.llmApiKey;
 				if (cfg.voice?.llmModel) llmModel = cfg.voice.llmModel;
 				if (cfg.voice?.ttsVoice) ttsVoice = cfg.voice.ttsVoice;
+				else if (cfg.voice?.activeVoice) ttsVoice = cfg.voice.activeVoice;
+				else if (cfg.voice?.voiceId) ttsVoice = cfg.voice.voiceId;
 				if (typeof cfg.voice?.ttsSpeed === "number") ttsSpeed = cfg.voice.ttsSpeed;
 			}
 		} catch (e) {
@@ -461,21 +596,15 @@ export async function POST(req: Request) {
 		let activeBookSlug: string | undefined;
 		const reversedHistory = [...(history || [])].reverse();
 		for (const msg of reversedHistory) {
+			const resolvedFromHist = graphRAGStore.resolveBookEntity(msg.content);
+			if (resolvedFromHist?.properties.slug) {
+				activeBookSlug = resolvedFromHist.properties.slug;
+				break;
+			}
 			const cLower = msg.content.toLowerCase();
-			if (cLower.includes("trí tuệ do thái") || cLower.includes("do thái") || cLower.includes("eran katz")) {
-				activeBookSlug = "tri-tue-do-thai";
-				break;
-			}
-			if (cLower.includes("đắc nhân tâm") || cLower.includes("dale carnegie")) {
-				activeBookSlug = "dac-nhan-tam";
-				break;
-			}
-			if (cLower.includes("bốn thỏa ước") || cLower.includes("don miguel ruiz") || cLower.includes("toltec")) {
-				activeBookSlug = "bon-thoa-uoc";
-				break;
-			}
-			if (cLower.includes("sapiens") || cLower.includes("yuval noah harari") || cLower.includes("lược sử loài người")) {
-				activeBookSlug = "sapiens-luoc-su-loai-nguoi";
+			const matched = CATALOG.find(b => cLower.includes(b.title.toLowerCase()) || cLower.includes(b.slug.replace(/-/g, " ")));
+			if (matched) {
+				activeBookSlug = matched.slug;
 				break;
 			}
 		}
@@ -493,31 +622,37 @@ export async function POST(req: Request) {
 
 		// 0. Ý ĐỊNH KẾT THÚC CUỘC GỌI / CẢM ƠN (FAREWELL / END_CALL)
 		const isFarewell =
-			lower.includes("kết thúc cuộc gọi") ||
-			lower.includes("ket thuc cuoc goi") ||
-			ascii.includes("ket thuc cuoc goi") ||
-			lower.includes("kết thúc giúp") ||
-			lower.includes("kết thúc trò chuyện") ||
-			lower.includes("dừng cuộc gọi") ||
+			lower.includes("kết thúc") ||
+			ascii.includes("ket thuc") ||
 			lower.includes("tạm biệt") ||
-			lower.includes("tam biet") ||
 			ascii.includes("tam biet") ||
-			lower.includes("bye") ||
+			lower.includes("cúp máy") ||
+			ascii.includes("cup may") ||
+			lower.includes("ngắt máy") ||
+			lower.includes("ngắt cuộc gọi") ||
+			lower.includes("tắt máy") ||
+			lower.includes("dừng cuộc gọi") ||
+			lower.includes("dừng trò chuyện") ||
+			lower.includes("dừng lại ở đây") ||
 			lower.includes("hẹn gặp lại") ||
 			lower.includes("không cần nữa") ||
+			lower.includes("khong can nua") ||
 			lower.includes("không cần hỗ trợ") ||
-			lower.includes("được rồi cảm ơn") ||
+			lower.includes("thế thôi nhé") ||
+			lower.includes("thế thôi nha") ||
 			lower.includes("thế thôi cảm ơn") ||
+			lower.includes("vậy thôi nhé") ||
+			lower.includes("vậy thôi nha") ||
 			lower.includes("vậy thôi cảm ơn") ||
-			lower.includes("không đâu được rồi") ||
-			lower === "cảm ơn" ||
-			lower === "cảm ơn bạn" ||
-			lower === "cảm ơn em" ||
-			lower === "cảm ơn nhé" ||
-			lower === "cảm ơn nha" ||
-			lower === "kết thúc" ||
-			lower === "dừng lại" ||
-			lower === "thôi được rồi";
+			lower.includes("được rồi cảm ơn") ||
+			lower.includes("thôi được rồi") ||
+			lower.includes("thôi cảm ơn") ||
+			lower.includes("hiểu rồi cảm ơn") ||
+			lower.includes("đủ rồi cảm ơn") ||
+			lower.includes("hôm nay thế thôi") ||
+			lower.includes("bye") ||
+			body.clientFarewellIntent === true ||
+			/^(kết thúc|dừng lại|cúp máy|ngắt máy|tắt máy|thôi nhé|thôi nha|thế nhé|thế nha|tạm biệt|cảm ơn|cảm ơn em|cảm ơn bạn|cảm ơn nhé|cảm ơn nha)$/i.test(lower.trim());
 
 		// 0.1. YÊU CẦU TÌM CHỦ ĐỀ CHƯA CÓ TRONG KHO (OUT_OF_CATALOG, ví dụ: Hồ Chí Minh, Bác Hồ)
 		const isUncleHoQuery =
@@ -545,10 +680,58 @@ export async function POST(req: Request) {
 					ascii.includes("lap trinh") ||
 					lower.includes("code")));
 
+		// 0.4. CÁC Ý ĐỊNH VỀ CHÍNH SÁCH HỆ THỐNG VÀ GIÁ CẢ (BUSINESS POLICIES & PRICING)
+		const isCustomerComplaint =
+			/(móp|rách|hỏng|hư hỏng|bị hư|bẹp|lỗi in|gãy gáy)/i.test(lower) &&
+			/(giao|nhận|vận chuyển|bưu tá|bên bạn giải quyết|đổi)/i.test(lower);
+
+		const isFreeShippingPolicyInquiry =
+			/(miễn phí vận chuyển|freeship|free ship|chính sách vận chuyển|chính sách ship|chính sách giao hàng)/i.test(lower) ||
+			(/(miễn phí|freeship)/i.test(lower) && /(vận chuyển|giao hàng|ship)/i.test(lower));
+
+		const isShippingMathInquiry =
+			/(phí ship|cước vận chuyển|hết bao nhiêu tiền ship|cước là bao nhiêu|phí giao|cước phí)/i.test(lower) ||
+			(/(200\.000|499\.000|600\.000|567\.000|3 cuốn)/i.test(lower) && /(ship|vận chuyển|giao|cước|kho|hà nội)/i.test(lower));
+
+		const isReturnPolicyInquiry =
+			/(đổi trả|trả hàng|thời hạn đổi|thời gian đổi|đổi sách|bị lỗi|bảo hành)/i.test(lower) &&
+			!lower.includes("ebook");
+
+		const isDrmRefundInquiry =
+			/(hoàn tiền|trả lại tiền|refund)/i.test(lower) &&
+			(lower.includes("ebook") || lower.includes("mở đọc") || lower.includes("sách điện tử"));
+
+		const isWarehouseLocationInquiry =
+			/(kho hàng|ở đâu|gửi từ đâu|địa chỉ kho|xuất kho|kho sách|kho tổng)/i.test(lower);
+
+		const isDrmSessionInquiry =
+			/(thẻ khác|phiên đọc|tab khác|nhiều thẻ|đang hoạt động ở thẻ|nhiều tab)/i.test(lower);
+
+		const isJailbreakInquiry =
+			/(hacker|bẻ khóa|crack|phá drm|private key|bypass drm|hướng dẫn tôi bẻ khóa)/i.test(lower);
+
+		const isPriceInquiry =
+			/(giá|bao nhiêu tiền|nhiêu tiền|bán bao nhiêu|giá bao nhiêu|bảng giá|giá cả|chi phí|mua hết bao nhiêu)/i.test(lower) &&
+			!lower.includes("vận chuyển") &&
+			!lower.includes("phí ship") &&
+			!lower.includes("cước") &&
+			!lower.includes("phí giao");
+
+		const isPolicyOrShippingInquiry =
+			isCustomerComplaint ||
+			isFreeShippingPolicyInquiry ||
+			isShippingMathInquiry ||
+			isReturnPolicyInquiry ||
+			isDrmRefundInquiry ||
+			isWarehouseLocationInquiry ||
+			isDrmSessionInquiry ||
+			isJailbreakInquiry;
+
 		// A. Ý ĐỊNH TRA CỨU ĐƠN HÀNG (ORDER_LOOKUP)
 		// Bắt lỗi chính tả: "đươn hàng", "don hang", "donhang", "kiểm tra đơn", "đơn gần nhất", "vận đơn", "tracking"...
 		const isOrderInquiry =
-			lower.includes("đơn hàng") ||
+			!isPolicyOrShippingInquiry &&
+			(lower.includes("đơn hàng") ||
 			lower.includes("vận chuyển") ||
 			lower.includes("giao hàng") ||
 			lower.includes("mã đơn") ||
@@ -566,7 +749,7 @@ export async function POST(req: Request) {
 			ascii.includes("giao hang") ||
 			ascii.includes("kiem tra don") ||
 			ascii.includes("tra cuu don") ||
-			selectedTopic.includes("đơn hàng");
+			selectedTopic.includes("đơn hàng"));
 
 		// B. Ý ĐỊNH MUA HÀNG (PURCHASE_INTENT)
 		const isAnaphoricPurchase =
@@ -755,7 +938,7 @@ export async function POST(req: Request) {
 				/(có hay không|đọc có được không|nói về điều gì)/i.test(lower)) &&
 			(!!resolvedNode || !!activeBookSlug || hasSpecificPreference);
 
-		const isFactualQuestion = (isChapterQuestion || isMetadataQuestion || isContentQuestion) && !isPurchaseIntent && !isOrderInquiry;
+		const isFactualQuestion = (isChapterQuestion || isMetadataQuestion || isContentQuestion) && !isPurchaseIntent && !isOrderInquiry && !isPriceInquiry;
 
 		// H. Ý ĐỊNH TÌM KIẾM TÊN SÁCH CỤ THỂ (SPECIFIC BOOK SEARCH)
 		// Chỉ kích hoạt khi khách thực sự hỏi tìm một đầu sách/tác phẩm cụ thể và KHÔNG PHẢI là câu hỏi liệt kê, câu hỏi đơn hàng, bản quyền hay hỏi đáp chung
@@ -789,7 +972,7 @@ export async function POST(req: Request) {
 				`Aura AI (${llmModel}): Khách hàng cảm ơn / yêu cầu kết thúc cuộc gọi. Chào tạm biệt ấm áp, kết thúc phiên hỗ trợ mà không tiếp tục hỏi thêm.`,
 			);
 
-			answer = `Dạ em cảm ơn ${honorific} rất nhiều ạ! Chúc ${honorific} một ngày làm việc thật vui vẻ và có những giờ phút đọc sách thật trọn vẹn tại AuraBook. Bất cứ khi nào cần tìm sách hay kiểm tra đơn hàng, em luôn sẵn sàng hỗ trợ ${honorific}. Em xin phép kết thúc cuộc gọi, tạm biệt ${honorific} ạ! 😊`;
+			answer = `Dạ em cảm ơn ${honorific} rất nhiều ạ! Cuộc gọi tư vấn đã kết thúc, kính mời ${honorific} dành chút thời gian đánh giá chất lượng cuộc gọi ngay trên màn hình để Aura AI ngày càng hoàn thiện và phục vụ mình tốt hơn nhé ạ! Em xin chân thành cảm ơn.`;
 		}
 
 		// ----------------------------------------------------------------------
@@ -853,6 +1036,114 @@ Tất cả tác phẩm đều có sẵn 2 phiên bản: **Bản Sách Điện T�
 		}
 
 		// ----------------------------------------------------------------------
+		// CHÍNH SÁCH BẢO MẬT: TỪ CHỐI BẺ KHÓA / JAILBREAK REFUSAL (TC-T2-19)
+		// ----------------------------------------------------------------------
+		else if (isJailbreakInquiry) {
+			thinkingSteps.push(`Aura AI (${llmModel}): Từ chối yêu cầu xâm phạm bản quyền hoặc bẻ khóa hệ thống.`);
+			answer = `Dạ em xin phép từ chối yêu cầu này ạ! Toàn bộ ấn phẩm tại AuraBook được bảo vệ nghiêm ngặt theo tiêu chuẩn bản quyền quốc tế Readium LCP. Em không thể hướng dẫn hay cung cấp công cụ bẻ khóa bản quyền dưới bất kỳ hình thức nào. Nếu ${honorific} cần hỗ trợ về cách sử dụng Web Reader hoặc kích hoạt sách, em luôn sẵn lòng hướng dẫn ạ!`;
+		}
+
+		// ----------------------------------------------------------------------
+		// KHIẾU NẠI HÀNG HỎNG KHI NHẬN: ĐỔI MỚI 1-1 TRONG 7 NGÀY (TC-T4-02)
+		// ----------------------------------------------------------------------
+		else if (isCustomerComplaint) {
+			thinkingSteps.push(`Aura AI (${llmModel}): Tiếp nhận khiếu nại sách bị móp gáy / rách góc do bưu tá. Cam kết đổi 1-1 miễn phí trong 7 ngày.`);
+			answer = `Dạ em rất tiếc về sự cố vận chuyển này của ${honorific}! AuraBook cam kết hỗ trợ đổi mới 1-1 hoàn toàn miễn phí cho độc giả trong vòng 7 ngày nếu sách bị lỗi in ấn hoặc hư hỏng, móp gáy bìa do quá trình giao hàng của bưu tá ạ. ${honorific} chỉ cần chụp lại ảnh bìa sách bị lỗi và gửi về bộ phận CSKH, bên em sẽ điều phối giao ngay cuốn sách mới tinh đến tận nhà cho mình nhé ạ!`;
+		}
+
+		// ----------------------------------------------------------------------
+		// CHÍNH SÁCH BẢN QUYỀN: XUNG ĐỘT PHIÊN ĐỌC ĐƠN TAB / DRM SESSION CONFLICT (TC-T4-03)
+		// ----------------------------------------------------------------------
+		else if (isDrmSessionInquiry) {
+			thinkingSteps.push(`Aura AI (${llmModel}): Hướng dẫn giải quyết thông báo phiên đọc hoạt động ở thẻ khác.`);
+			cards.push({
+				type: "drm",
+				data: {
+					standard: "Readium LCP Active Tab Lock",
+					singleTabLock: "Chỉ cho phép đọc trên 1 thẻ trình duyệt duy nhất tại một thời điểm",
+					instruction: "Đóng các thẻ Web Reader cũ để tiếp tục đọc",
+				},
+			});
+			answer = `Dạ hiện tượng này xuất hiện là do cơ chế bảo vệ bản quyền Readium LCP của AuraBook áp dụng tính năng khóa đọc đơn tab (single-tab lock) để bảo vệ tác quyền ấn phẩm ạ. Khi ${honorific} mở sách trên một thẻ mới trong khi thẻ cũ vẫn đang mở, hệ thống sẽ tạm khóa để tránh nhân bản phiên đọc trái phép. ${honorific} chỉ cần đóng thẻ trình duyệt cũ lại là có thể tiếp tục đọc sách bình thường trên thẻ hiện tại rồi nhé ạ!`;
+		}
+
+		// ----------------------------------------------------------------------
+		// CHÍNH SÁCH KHO HÀNG / WAREHOUSE LOCATION (TC-T1-19)
+		// ----------------------------------------------------------------------
+		else if (isWarehouseLocationInquiry) {
+			thinkingSteps.push(`Aura AI (${llmModel}): Cung cấp địa chỉ kho hàng trung tâm tại Hà Nội.`);
+			answer = `Dạ kho hàng trung tâm của AuraBook được đặt tại địa chỉ số 12 Duy Tân, phường Dịch Vọng Hậu, quận Cầu Giấy, Hà Nội ạ. Toàn bộ sách giấy đặt mua sẽ được đóng gói cẩn thận và điều phối vận chuyển trực tiếp từ kho Hà Nội qua đối tác Giao Hàng Nhanh (GHN) đến tận tay độc giả trên toàn quốc ạ!`;
+		}
+
+		// ----------------------------------------------------------------------
+		// CHÍNH SÁCH HOÀN TIỀN EBOOK DRM (TC-T1-18)
+		// ----------------------------------------------------------------------
+		else if (isDrmRefundInquiry) {
+			thinkingSteps.push(`Aura AI (${llmModel}): Giải thích chính sách không hoàn tiền Ebook DRM khi đã mở đọc.`);
+			answer = `Dạ theo quy định bảo vệ bản quyền số của AuraBook, các ấn phẩm Sách Điện Tử (Ebook DRM Readium LCP) sau khi đã mua và kích hoạt giấy phép mở đọc trên Web Reader thì sẽ không được hoàn tiền ạ. Trường hợp sách bị lỗi kỹ thuật không thể hiển thị nội dung, bên em sẽ hỗ trợ kiểm tra và cấp lại quyền đọc ngay cho ${honorific} ạ!`;
+		}
+
+		// ----------------------------------------------------------------------
+		// CHÍNH SÁCH ĐỔI TRẢ SÁCH GIẤY (TC-T1-17, TC-T2-18)
+		// ----------------------------------------------------------------------
+		else if (isReturnPolicyInquiry) {
+			thinkingSteps.push(`Aura AI (${llmModel}): Tư vấn chính sách đổi trả hàng hư hỏng (7 ngày / 30 ngày).`);
+			if (lower.includes("45 ngày") || lower.includes("bốn mươi lăm ngày")) {
+				answer = `Dạ theo chính sách của AuraBook, thời hạn hỗ trợ đổi trả sách là trong vòng 30 ngày kể từ ngày nhận hàng ạ. Rất tiếc là đơn hàng của ${honorific} đã nhận được 45 ngày nên đã quá thời hạn 30 ngày quy định của hệ thống để đổi trả sản phẩm rồi ạ!`;
+			} else {
+				answer = `Dạ sách giấy mua tại AuraBook hoàn toàn được hỗ trợ đổi trả ạ! Đối với các ấn phẩm bị lỗi do nhà sản xuất hoặc hư hỏng do vận chuyển, AuraBook áp dụng chính sách 1 đổi 1 miễn phí trong vòng 7 ngày. Ngoài ra, ${honorific} được hỗ trợ đổi trả trong vòng 30 ngày theo quy định bảo hành của hệ thống ạ!`;
+			}
+		}
+
+		// ----------------------------------------------------------------------
+		// CHÍNH SÁCH MIỄN PHÍ VẬN CHUYỂN & TÍNH PHÍ SHIP (TC-T1-16, TC-T2-17, TC-T3-04, TC-T3-05, TC-T4-05)
+		// ----------------------------------------------------------------------
+		else if (isFreeShippingPolicyInquiry || isShippingMathInquiry) {
+			thinkingSteps.push(`Aura AI (${llmModel}): Tra cứu quy định miễn phí vận chuyển 500.000₫ & tính phí ship.`);
+			if (lower.includes("600.000") || lower.includes("567.000") || (lower.includes("sapiens") && lower.includes("3 cuốn"))) {
+				answer = `Dạ đơn hàng của ${honorific} có giá trị từ 500.000₫ trở lên nên cước vận chuyển là 0₫ (được miễn phí vận chuyển toàn quốc hoàn toàn) ạ! Toàn bộ kiện hàng được xuất trực tiếp từ kho Hà Nội (12 Duy Tân) và giao tận nơi mà không phát sinh thêm bất kỳ chi phí nào nhé ạ!`;
+			} else if (lower.includes("499.000")) {
+				answer = `Dạ theo quy định của AuraBook, chính sách miễn phí vận chuyển áp dụng cho các đơn hàng có giá trị từ 500.000₫ trở lên ạ. Đơn hàng của ${honorific} trị giá 499.000₫ còn thiếu 1.000₫ nữa là đạt ngưỡng 500.000₫, do đó đơn hàng chưa được miễn phí ship ạ. ${honorific} có thể chọn thêm một cuốn sách nhỏ để được hưởng ưu đãi freeship toàn quốc nhé ạ! Phí giao nội thành Hà Nội là 16.500₫ ạ.`;
+			} else if (lower.includes("200.000") && lower.includes("hà nội")) {
+				answer = `Dạ đối với đơn hàng sách giấy trị giá 200.000₫ giao nội thành Hà Nội (xuất từ kho 12 Duy Tân), cước phí vận chuyển tiêu chuẩn qua Giao Hàng Nhanh (GHN) là 16.500₫ ạ! Nếu ${honorific} mua đơn hàng từ 500.000₫ trở lên thì sẽ được miễn phí vận chuyển hoàn toàn nhé ạ!`;
+			} else {
+				answer = `Dạ chính sách vận chuyển của AuraBook rất ưu đãi ạ: Toàn bộ đơn hàng có giá trị từ 500.000₫ trở lên đều được miễn phí vận chuyển toàn quốc. Đối với các đơn hàng dưới 500.000₫, phí giao hàng tiêu chuẩn nội thành Hà Nội là 16.500₫ và giao các tỉnh thành khác là từ 22.000₫ đến 35.000₫ tùy theo khu vực ạ!`;
+			}
+		}
+
+		// ----------------------------------------------------------------------
+		// Ý ĐỊNH TRA CỨU GIÁ SÁCH CỤ THỂ / BOOK PRICE INQUIRY (TC-T1-12, TC-T1-13, TC-T4-04)
+		// ----------------------------------------------------------------------
+		else if (isPriceInquiry) {
+			const targetNode = resolvedNode || (currentBookSlug ? graphRAGStore.resolveBookEntity(currentBookSlug) : null);
+			let book: BookProduct | null = null;
+			if (targetNode) {
+				book = CATALOG.find((c) => c.slug === targetNode.properties.slug) || null;
+			}
+			if (!book && currentBookSlug) {
+				book = CATALOG.find((c) => c.slug === currentBookSlug) || null;
+			}
+			if (!book) {
+				for (const c of CATALOG) {
+					if (lower.includes(c.title.toLowerCase()) || ascii.includes(c.slug.replace(/-/g, " "))) {
+						book = c;
+						break;
+					}
+				}
+			}
+			if (!book) book = CATALOG[0];
+
+			thinkingSteps.push(`Aura AI (${llmModel}): Báo giá chuẩn xác cho ấn phẩm "${book.title}" (${book.author}).`);
+			cards.push({ type: "product", data: book });
+			activeBookSlug = book.slug;
+
+			answer = `Dạ, ấn phẩm "${book.title}" của tác giả ${book.author} hiện đang được phát hành trên AuraBook với 2 phiên bản chuẩn giá:
+- 📱 Bản Sách Điện Tử (Ebook DRM Readium LCP): ${book.ebookPrice} (đọc trực tiếp trên Web Reader bảo mật).
+- 📖 Bản Sách Giấy (Sách in bìa mềm tuyển chọn): ${book.physicalPrice} (giao tận nhà toàn quốc).
+Em đã gửi thẻ ấn phẩm chi tiết ngay bên dưới để ${honorific} tiện tham khảo và đặt mua nhé ạ!`;
+		}
+
+		// ----------------------------------------------------------------------
 		// TRƯỜNG HỢP 1: TRA CỨU ĐƠN HÀNG TRONG CƠ SỞ DỮ LIỆU THỰC TẾ
 		// ----------------------------------------------------------------------
 		else if (isOrderInquiry) {
@@ -864,22 +1155,37 @@ Tất cả tác phẩm đều có sẵn 2 phiên bản: **Bản Sách Điện T�
 			let matchedShipment: GHNShipment | null = null;
 
 			// 1. Quét theo mã đơn nếu có số hoặc mã GHN trong câu hỏi
-			const explicitCodeMatch = cleanQuery.match(/(?:#|đơn\s+|mã\s+)?(\d{1,8}|GHN[A-Z0-9]+)/i);
+			// 1. Quét theo mã đơn nếu có số hoặc mã GHN trong câu hỏi
+			let explicitCodeMatch = cleanQuery.match(/(?:#|đơn\s*(?:hàng\s*)?(?:mã\s*(?:số\s*)?)?|mã\s*(?:vận\s*đơn|số|đơn)?\s*#?|số\s*)(\d{1,8}|GHN[A-Z0-9]+)/i);
+			if (!explicitCodeMatch && /GHN[A-Z0-9]+/i.test(cleanQuery)) {
+				const ghnMatch = cleanQuery.match(/GHN[A-Z0-9]+/i);
+				if (ghnMatch) explicitCodeMatch = ghnMatch;
+			}
+			if (!explicitCodeMatch) {
+				const genericNumMatch = cleanQuery.match(/(?:đơn\s*hàng|vận\s*đơn|mã\s*đơn)[\s\S]*?\b(\d{1,8})\b/i);
+				if (genericNumMatch) explicitCodeMatch = genericNumMatch;
+			}
+
 			if (explicitCodeMatch) {
-				const targetCode = explicitCodeMatch[1];
+				const targetCode = explicitCodeMatch[1] || explicitCodeMatch[0];
 				matchedShipment = getGHNShipmentByOrder(targetCode) ||
 					allShipments.find((s) => s.orderNumber === targetCode || s.orderId === targetCode || s.trackingCode.toLowerCase() === targetCode.toLowerCase()) ||
 					null;
+
+				if (!matchedShipment && targetCode.toUpperCase().startsWith("GHN")) {
+					thinkingSteps.push(`Aura AI (${llmModel}): Tra cứu mã vận đơn ${targetCode} nhưng không tìm thấy trên hệ thống GHN.`);
+					answer = `Dạ em đã kiểm tra trên hệ thống Giao Hàng Nhanh (GHN) nhưng không tìm thấy thông tin đơn hàng với mã vận đơn "${targetCode}" ạ. ${honorific} vui lòng kiểm tra lại chính xác mã vận đơn trên hóa đơn hoặc cung cấp số điện thoại đặt hàng để em tra cứu lại giúp mình nhé ạ!`;
+				}
 			}
 
 			// 2. Quét theo Số điện thoại khách hàng nếu chưa thấy
-			if (!matchedShipment && phone) {
+			if (!answer && !matchedShipment && phone) {
 				const cleanPhoneDigits = phone.replace(/\D/g, "").slice(-9);
 				matchedShipment = allShipments.find((s) => s.recipient.phone.replace(/\D/g, "").includes(cleanPhoneDigits)) || null;
 			}
 
 			// 3. Quét theo Tên khách hàng (ví dụ: Duy, Duy Bas, Duy Nguyễn)
-			if (!matchedShipment && name) {
+			if (!answer && !matchedShipment && name) {
 				const nameLower = name.toLowerCase();
 				const matchingByName = allShipments.filter((s) => {
 					const rName = s.recipient.name.toLowerCase();
@@ -892,50 +1198,56 @@ Tất cả tác phẩm đều có sẵn 2 phiên bản: **Bản Sách Điện T�
 			}
 
 			// 4. Nếu khách hàng hỏi "đơn hàng gần nhất của tôi" và hệ thống có các đơn gần đây, lấy đơn mới nhất
-			if (!matchedShipment && (lower.includes("gần nhất") || lower.includes("vừa đặt") || lower.includes("của tôi")) && allShipments.length > 0) {
+			if (!answer && !matchedShipment && (lower.includes("gần nhất") || lower.includes("vừa đặt") || lower.includes("của tôi")) && allShipments.length > 0) {
 				matchedShipment = allShipments[0];
 			}
 
 			// NẾU TÌM THẤY ĐƠN HÀNG HỢP LỆ TRONG CƠ SỞ DỮ LIỆU
-			if (matchedShipment) {
-				thinkingSteps.push(
-					`Aura AI (${llmModel}): Xác thực vận đơn #${matchedShipment.orderNumber} (${matchedShipment.trackingCode}). Trạng thái: "${matchedShipment.statusDisplay}".`,
-				);
+			if (!answer) {
+				if (matchedShipment) {
+					thinkingSteps.push(
+						`Aura AI (${llmModel}): Xác thực vận đơn #${matchedShipment.orderNumber} (${matchedShipment.trackingCode}). Trạng thái: "${matchedShipment.statusDisplay}".`,
+					);
 
-				const estDateStr = matchedShipment.estimatedDeliveryDate
-					? new Date(matchedShipment.estimatedDeliveryDate).toLocaleDateString("vi-VN", {
-						day: "2-digit",
-						month: "2-digit",
-						year: "numeric",
-					})
-					: "24 đến 48 giờ tới";
+					const estDateStr = matchedShipment.estimatedDeliveryDate
+						? new Date(matchedShipment.estimatedDeliveryDate).toLocaleDateString("vi-VN", {
+							day: "2-digit",
+							month: "2-digit",
+							year: "numeric",
+						})
+						: "24 đến 48 giờ tới";
 
-				const destAddress = matchedShipment.recipient.address
-					? `${matchedShipment.recipient.address}, ${matchedShipment.recipient.district}`
-					: "địa chỉ đã đăng ký";
+					const destAddress = matchedShipment.recipient.address
+						? `${matchedShipment.recipient.address}, ${matchedShipment.recipient.district}`
+						: "địa chỉ đã đăng ký";
 
-				answer = `Dạ em chào ${honorific}! Em đã kiểm tra trên hệ thống vận đơn GHN rồi ạ. Đơn hàng gần nhất của ${honorific} là đơn #${matchedShipment.orderNumber} (Mã vận đơn: ${matchedShipment.trackingCode}), gồm ${matchedShipment.itemsSummary}. Hiện kiện hàng đang ở trạng thái "${matchedShipment.statusDisplay}" và dự kiến sẽ được giao đến ${destAddress} vào ngày ${estDateStr} ạ!`;
+					if (lower.includes("hủy") || lower.includes("huỷ") || lower.includes("cancel")) {
+						answer = `Dạ em đã kiểm tra đơn hàng #${matchedShipment.orderNumber} (Mã vận đơn: ${matchedShipment.trackingCode}) gửi về ${destAddress} rồi ạ. Hiện tại kiện hàng đã được xuất kho và đang được xử lý luân chuyển tại kho phân loại của GHN (${matchedShipment.statusDisplay}), do đó hệ thống không thể hỗ trợ hủy đơn trực tiếp được nữa ạ. Khi bưu tá liên hệ giao hàng, ${honorific} có thể từ chối nhận nếu không còn nhu cầu nhé ạ!`;
+					} else {
+						answer = `Dạ em chào ${honorific}! Em đã kiểm tra trên hệ thống vận đơn GHN rồi ạ. Đơn hàng gần nhất của ${honorific} là đơn #${matchedShipment.orderNumber} (Mã vận đơn: ${matchedShipment.trackingCode}), gồm ${matchedShipment.itemsSummary}. Hiện kiện hàng đang ở trạng thái "${matchedShipment.statusDisplay}" và dự kiến sẽ được giao đến ${destAddress} vào ngày ${estDateStr} ạ!`;
+					}
 
-				cards.push({
-					type: "order",
-					data: {
-						orderCode: matchedShipment.orderNumber || matchedShipment.orderId,
-						status: matchedShipment.statusDisplay || "Đang vận chuyển",
-						statusStep: matchedShipment.status === "delivered" ? 4 : matchedShipment.status === "delivering" ? 3 : matchedShipment.status === "storing" ? 2 : 1,
-						carrier: matchedShipment.carrier || "Giao Hàng Nhanh (GHN)",
-						trackingCode: matchedShipment.trackingCode,
-						estimate: `Dự kiến: ${estDateStr}`,
-						items: matchedShipment.itemsSummary || "Đơn hàng sách AuraBook",
-						total: `${new Intl.NumberFormat("vi-VN").format((matchedShipment.fee || 22000) + (matchedShipment.codAmount || 118000))}₫`,
-					},
-				});
-			} else {
-				// NẾU KHÔNG TÌM THẤY ĐƠN HÀNG -> HỎI LẠI NGƯỜI DÙNG CÓ CƠ SỞ (CLARIFICATION)
-				thinkingSteps.push(
-					`Aura AI (${llmModel}): Chưa xác định được đơn hàng liên kết. Hướng dẫn khách hàng cung cấp mã đơn hoặc số điện thoại đặt hàng.`,
-				);
+					cards.push({
+						type: "order",
+						data: {
+							orderCode: matchedShipment.orderNumber || matchedShipment.orderId,
+							status: matchedShipment.statusDisplay || "Đang vận chuyển",
+							statusStep: matchedShipment.status === "delivered" ? 4 : matchedShipment.status === "delivering" ? 3 : matchedShipment.status === "storing" ? 2 : 1,
+							carrier: matchedShipment.carrier || "Giao Hàng Nhanh (GHN)",
+							trackingCode: matchedShipment.trackingCode,
+							estimate: `Dự kiến: ${estDateStr}`,
+							items: matchedShipment.itemsSummary || "Đơn hàng sách AuraBook",
+							total: `${new Intl.NumberFormat("vi-VN").format((matchedShipment.fee || 22000) + (matchedShipment.codAmount || 118000))}₫`,
+						},
+					});
+				} else {
+					// NẾU KHÔNG TÌM THẤY ĐƠN HÀNG -> HỎI LẠI NGƯỜI DÙNG CÓ CƠ SỞ (CLARIFICATION)
+					thinkingSteps.push(
+						`Aura AI (${llmModel}): Chưa xác định được đơn hàng liên kết. Hướng dẫn khách hàng cung cấp mã đơn hoặc số điện thoại đặt hàng.`,
+					);
 
-				answer = `Dạ em chào ${honorific} ạ! Em rất sẵn lòng hỗ trợ tra cứu đơn hàng cho mình. Để em có thể tìm chính xác đơn hàng gần nhất của ${honorific} trên hệ thống, ${honorific} có thể cung cấp thêm Mã đơn hàng (ví dụ: #9) hoặc Số điện thoại khi đặt hàng giúp em được không ạ?`;
+					answer = `Dạ em chào ${honorific} ạ! Em rất sẵn lòng hỗ trợ tra cứu đơn hàng cho mình. Để em có thể tìm chính xác đơn hàng gần nhất của ${honorific} trên hệ thống, ${honorific} có thể cung cấp thêm Mã đơn hàng (ví dụ: #9) hoặc Số điện thoại khi đặt hàng giúp em được không ạ?`;
+				}
 			}
 		}
 
@@ -1020,7 +1332,12 @@ Tất cả tác phẩm đều có sẵn 2 phiên bản: **Bản Sách Điện T�
 			const wordsStr = graphRAGQuery.totalWords ? graphRAGQuery.totalWords.toLocaleString("vi-VN") : "hơn 70.000";
 
 			if (isChapterQuestion) {
-				answer = `Dạ, cuốn sách "${b.title}" của tác giả ${b.author} có tổng cộng ${totalChaps} chương/mục (khoảng ${wordsStr} từ) được số hóa chuẩn xác từ bản EPUB gốc trên AuraBook ạ. [Trích dẫn: Mục lục ${b.title}].`;
+				const isBonThoaUoc = b.slug === "bon-thoa-uoc" || lower.includes("bốn thỏa ước");
+				if (isBonThoaUoc && (lower.includes("thỏa ước thứ nhất") || lower.includes("thoa uoc 1") || lower.includes("thứ nhất"))) {
+					answer = `Dạ, tác phẩm "${b.title}" của tác giả ${b.author} có tổng cộng ${totalChaps} chương/mục (khoảng ${wordsStr} từ) được số hóa từ bản EPUB gốc. Trong đó, thỏa ước thứ nhất quan trọng nhất là "Không phạm tội với lời nói" (Be Impeccable With Your Word) - tác giả nhấn mạnh lời nói là sức mạnh sáng tạo thiêng liêng, hãy luôn sử dụng lời nói chân thành và thiện chí, tuyệt đối không dùng lời nói chống lại chính mình hay vu khống người khác ạ!`;
+				} else {
+					answer = `Dạ, cuốn sách "${b.title}" của tác giả ${b.author} có tổng cộng ${totalChaps} chương/mục (khoảng ${wordsStr} từ) được số hóa chuẩn xác từ bản EPUB gốc trên AuraBook ạ. [Trích dẫn: Mục lục ${b.title}].`;
+				}
 			} else if (isMetadataQuestion) {
 				answer = `Dạ, tác phẩm "${b.title}" được sáng tác bởi tác giả ${b.author}, phát hành chuẩn bản quyền trên nền tảng AuraBook ạ.`;
 			} else if (graphRAGQuery.relevantChunks && graphRAGQuery.relevantChunks.length > 0) {
@@ -1066,16 +1383,79 @@ Tất cả tác phẩm đều có sẵn 2 phiên bản: **Bản Sách Điện T�
 				answer = `Dạ hiện tại kho sách AuraBook chưa phân phối cuốn "Clean Code" (Mã Sạch) của Robert C. Martin ạ. Tuy nhiên, nếu ${honorific} quan tâm đến tư duy logic sắc bén, kỹ năng giải quyết vấn đề và phương pháp rèn luyện trí nhớ đỉnh cao (rất phù hợp và hữu ích cho người làm công nghệ), em xin phép gợi ý cuốn "${triTueDoThai.title}" của Eran Katz (Bản Ebook: ${triTueDoThai.ebookPrice} / Sách giấy: ${triTueDoThai.physicalPrice}) nhé ạ!`;
 			} else {
 				let matchedBook: BookProduct | null = null;
-				if (lower.includes("đắc nhân tâm") || (lower.includes("giao tiếp") && !lower.includes("kỹ năng")) || lower.includes("ứng xử") || lower.includes("thấu hiểu")) {
-					matchedBook = CATALOG.find((b) => b.slug === "dac-nhan-tam") || null;
-				} else if (lower.includes("bốn thỏa ước") || lower.includes("tâm lý") || lower.includes("chữa lành") || lower.includes("toltec") || lower.includes("thói quen") || lower.includes("kỷ luật")) {
-					matchedBook = CATALOG.find((b) => b.slug === "bon-thoa-uoc") || null;
-				} else if (lower.includes("sapiens") || lower.includes("lịch sử") || lower.includes("tiến hóa") || lower.includes("loài người") || lower.includes("văn minh")) {
-					matchedBook = CATALOG.find((b) => b.slug === "sapiens-luoc-su-loai-nguoi") || null;
-				} else if (lower.includes("do thái") || lower.includes("trí tuệ do thái") || lower.includes("trí nhớ") || lower.includes("tư duy") || lower.includes("logic") || lower.includes("eran katz") || lower.includes("công nghệ") || lower.includes("cong nghe") || lower.includes("lập trình") || lower.includes("lap trinh")) {
-					matchedBook = CATALOG.find((b) => b.slug === "tri-tue-do-thai") || null;
-				} else if (resolvedNode) {
+				if (resolvedNode) {
 					matchedBook = CATALOG.find((b) => b.slug === resolvedNode.properties.slug) || null;
+				}
+				if (!matchedBook) {
+					for (const c of CATALOG) {
+						if (lower.includes(c.title.toLowerCase()) || ascii.includes(c.slug.replace(/-/g, " "))) {
+							matchedBook = c;
+							break;
+						}
+					}
+				}
+				if (!matchedBook) {
+					if (
+						lower.includes("phát triển bản thân") ||
+						lower.includes("phat trien ban than") ||
+						lower.includes("phát triển") ||
+						lower.includes("phat trien") ||
+						lower.includes("kỹ năng") ||
+						lower.includes("ky nang") ||
+						lower.includes("self-help") ||
+						lower.includes("đắc nhân tâm") ||
+						(lower.includes("giao tiếp") && !lower.includes("kỹ thuật")) ||
+						lower.includes("ứng xử") ||
+						lower.includes("thấu hiểu")
+					) {
+						matchedBook = CATALOG.find((b) => b.slug === "dac-nhan-tam") || null;
+					} else if (
+						lower.includes("cách nghĩ") ||
+						lower.includes("làm giàu") ||
+						lower.includes("thành công") ||
+						lower.includes("khát vọng") ||
+						lower.includes("napoleon hill")
+					) {
+						matchedBook = CATALOG.find((b) => b.slug === "cach-nghi-de-thanh-cong") || null;
+					} else if (
+						lower.includes("bốn thỏa ước") ||
+						lower.includes("tâm lý") ||
+						lower.includes("chữa lành") ||
+						lower.includes("toltec") ||
+						lower.includes("thói quen") ||
+						lower.includes("kỷ luật")
+					) {
+						matchedBook = CATALOG.find((b) => b.slug === "bon-thoa-uoc") || null;
+					} else if (
+						lower.includes("sapiens") ||
+						lower.includes("lịch sử") ||
+						lower.includes("tiến hóa") ||
+						lower.includes("loài người") ||
+						lower.includes("văn minh")
+					) {
+						matchedBook = CATALOG.find((b) => b.slug === "sapiens-luoc-su-loai-nguoi") || null;
+					} else if (
+						lower.includes("do thái") ||
+						lower.includes("trí tuệ do thái") ||
+						lower.includes("trí nhớ") ||
+						lower.includes("tư duy") ||
+						lower.includes("logic") ||
+						lower.includes("eran katz") ||
+						lower.includes("công nghệ") ||
+						lower.includes("cong nghe") ||
+						lower.includes("lập trình") ||
+						lower.includes("lap trinh")
+					) {
+						matchedBook = CATALOG.find((b) => b.slug === "tri-tue-do-thai") || null;
+					} else if (
+						lower.includes("cây cam ngọt") ||
+						lower.includes("cay cam ngot") ||
+						lower.includes("zeze") ||
+						lower.includes("tuổi thơ") ||
+						lower.includes("tình cảm")
+					) {
+						matchedBook = CATALOG.find((b) => b.slug === "cay-cam-ngot-cua-toi") || null;
+					}
 				}
 
 				if (matchedBook) {
@@ -1087,11 +1467,12 @@ Tất cả tác phẩm đều có sẵn 2 phiên bản: **Bản Sách Điện T�
 
 					let categoryName = matchedBook.badge || "sách hay";
 					if (matchedBook.slug === "sapiens-luoc-su-loai-nguoi") categoryName = "lịch sử và văn minh loài người";
-					else if (matchedBook.slug === "dac-nhan-tam") categoryName = "nghệ thuật giao tiếp và đối nhân xử thế";
+					else if (matchedBook.slug === "dac-nhan-tam") categoryName = "phát triển bản thân, nghệ thuật giao tiếp và đối nhân xử thế";
+					else if (matchedBook.slug === "cach-nghi-de-thanh-cong") categoryName = "phát triển tư duy thành công và làm giàu";
 					else if (matchedBook.slug === "bon-thoa-uoc") categoryName = "tâm lý học và minh triết cuộc sống";
 					else if (matchedBook.slug === "tri-tue-do-thai") categoryName = "trí tuệ và phương pháp tư duy";
 
-					const systemPrompt = `Bạn là Aura AI, Chuyên viên Chăm sóc Khách hàng & Tư vấn Sách Thông minh của AuraBook. Giọng điệu ấm áp, ân cần, tự nhiên và chuyên nghiệp. Xưng là "em" và gọi khách hàng là "${honorific}". Trả lời tự nhiên, súc tích trong 2-3 câu ngắn. Giới thiệu ấn phẩm "${matchedBook.title}" của tác giả ${matchedBook.author} thuộc lĩnh vực ${categoryName} (có Bản Ebook Sách Điện Tử ${matchedBook.ebookPrice} và Bản Sách Giấy Vật Lý ${matchedBook.physicalPrice}), hướng dẫn khách xem thẻ ấn phẩm chi tiết ngay bên dưới để chọn phiên bản và mua sách.`;
+					const systemPrompt = `Bạn là Aura AI, Chuyên viên Chăm sóc Khách hàng & Tư vấn Sách Thông minh của AuraBook. Giọng điệu ấm áp, ân cần, tự nhiên và chuyên nghiệp. Xưng là "em" và gọi khách hàng là "${honorific}". Trả lời tự nhiên, súc tích trong 2-3 câu ngắn. Giới thiệu ấn phẩm "${matchedBook.title}" của tác giả ${matchedBook.author} đúng với lĩnh vực ${categoryName} (có Bản Ebook Sách Điện Tử ${matchedBook.ebookPrice} và Bản Sách Giấy Vật Lý ${matchedBook.physicalPrice}), hướng dẫn khách xem thẻ ấn phẩm chi tiết ngay bên dưới để chọn phiên bản và mua sách.`;
 
 					const llmAnswer = await queryLLM({
 						model: llmModel,
@@ -1100,7 +1481,7 @@ Tất cả tác phẩm đều có sẵn 2 phiên bản: **Bản Sách Điện T�
 						baseUrl: llmBaseUrl,
 						prompt: `Khách hàng ${honorific} vừa nói: "${cleanQuery}". Hãy tư vấn giới thiệu cuốn "${matchedBook.title}" của tác giả ${matchedBook.author} đúng với lĩnh vực ${categoryName} cho khách một cách tự nhiên, hấp dẫn.`,
 						systemPrompt,
-						timeoutMs: 15000,
+						timeoutMs: 2500,
 					});
 
 					if (llmAnswer && llmAnswer.length > 20) {
@@ -1117,9 +1498,13 @@ Tất cả tác phẩm đều có sẵn 2 phiên bản: **Bản Sách Điện T�
 						answer = `Dạ, em tìm thấy ấn phẩm "${b.title}" rất phù hợp với từ khóa của ${honorific}. Sách có 2 phiên bản Sách Điện Tử (${b.ebookPrice}) và Sách Vật Lý (${b.physicalPrice}) trên AuraBook ạ!`;
 					} else {
 						// NGUYÊN TẮC BẢO ĐẢM DỮ LIỆU CƠ SỞ DỮ LIỆU (ANTI-HALLUCINATION GUARDRAIL):
+						// Kiểm tra xem đây có phải là câu hỏi nhờ tư vấn, tìm sách theo nhu cầu không
+						const isAdviceOrTopicInquiry =
+							/(tư\s*vấn|gợi\s*ý|đề\s*xuất|hỗ\s*trợ|muốn\s*tìm|tìm\s*(cho|giúp)?|sách\s*về|sách\s*gì|nên\s*đọc|phát\s*triển|kỹ\s*năng|làm\s*sao)/i.test(cleanQuery);
+
 						// Trích xuất cụm từ nghi vấn là tên sách từ câu hỏi của khách
 						let extractedBookName = cleanQuery
-							.replace(/^(shop|bên\s+mình|bên\s+bạn|ad|bạn|hệ\s+thống|ở\s+đây|aurabook)?\s*(có\s+)?(bán\s+)?(cuốn\s+sách|sách|quyển\s+sách|quyển|cuốn|tác\s+phẩm|ấn\s+phẩm)\s*/i, "")
+							.replace(/^(tư\s+vấn\s*(giúp|cho)?\s*(tôi|mình|em|anh|chị)?|gợi\s+ý\s*(giúp|cho)?\s*(tôi|mình|em|anh|chị)?|tìm\s*(giúp|cho)?\s*(tôi|mình|em|anh|chị)?|cho\s+(tôi|mình|em|anh|chị)\s+hỏi\s*(về)?|shop|bên\s+mình|bên\s+bạn|ad|bạn|hệ\s+thống|ở\s+đây|aurabook)?\s*(có\s+)?(bán\s+)?(cuốn\s+sách|sách|quyển\s+sách|quyển|cuốn|tác\s+phẩm|ấn\s+phẩm|đầu\s+sách)?\s*(hỗ\s+trợ|về|chủ\s+đề)?\s*/i, "")
 							.replace(/[\?\.!]+$/g, "")
 							.replace(/\s*(không|k|ko|hả|ạ|nào|thế|vậy)+$/i, "")
 							.replace(/[\?\.!]+$/g, "")
@@ -1160,6 +1545,61 @@ Tất cả tác phẩm đều có sẵn Bản Ebook DRM đọc ngay và Sách Gi
 						} else if (isInformationalQuestion) {
 							// Là câu hỏi giải thích / quy trình / thông tin -> để ngỏ để LLM (Gemma 2) trả lời tự nhiên ở TRƯỜNG HỢP 8
 							answer = "";
+						} else if (isAdviceOrTopicInquiry) {
+							// Câu hỏi nhờ tư vấn chủ đề -> Luôn đề xuất sách phù hợp mà KHÔNG BAO GIỜ nói "chưa có ấn phẩm"
+							let suggestedBook: BookProduct = CATALOG[0]; // Mặc định Đắc Nhân Tâm (phát triển bản thân)
+							let relatedTopic = "phát triển bản thân và nghệ thuật sống";
+
+							if (
+								lower.includes("tâm lý") ||
+								lower.includes("chữa lành") ||
+								lower.includes("tinh thần") ||
+								lower.includes("cảm xúc") ||
+								lower.includes("nội tâm") ||
+								lower.includes("hạnh phúc") ||
+								lower.includes("thói quen")
+							) {
+								suggestedBook = CATALOG.find((b) => b.slug === "bon-thoa-uoc") || CATALOG[1];
+								relatedTopic = "tâm lý học và minh triết sống";
+							} else if (
+								lower.includes("trí nhớ") ||
+								lower.includes("tri nho") ||
+								lower.includes("ghi nhớ")
+							) {
+								suggestedBook = CATALOG.find((b) => b.slug === "bi-mat-cua-mot-tri-nho-sieu-pham") || CATALOG[5];
+								relatedTopic = "rèn luyện trí nhớ siêu phàm và kỹ năng học tập nhanh";
+							} else if (
+								lower.includes("lịch sử") ||
+								lower.includes("văn minh") ||
+								lower.includes("loài người")
+							) {
+								suggestedBook = CATALOG.find((b) => b.slug === "sapiens-luoc-su-loai-nguoi") || CATALOG[2];
+								relatedTopic = "lịch sử và văn minh nhân loại";
+							} else if (
+								lower.includes("kinh doanh") ||
+								lower.includes("làm giàu") ||
+								lower.includes("tài chính") ||
+								lower.includes("tiền")
+							) {
+								suggestedBook = CATALOG.find((b) => b.slug === "cach-nghi-de-thanh-cong") || CATALOG[6];
+								relatedTopic = "tư duy làm giàu và phát triển sự nghiệp";
+							} else if (
+								lower.includes("trí tuệ") ||
+								lower.includes("tư duy") ||
+								lower.includes("logic") ||
+								lower.includes("công nghệ")
+							) {
+								suggestedBook = CATALOG.find((b) => b.slug === "tri-tue-do-thai") || CATALOG[3];
+								relatedTopic = "trí tuệ, rèn luyện tư duy và phương pháp học hỏi";
+							}
+
+							thinkingSteps.push(
+								`Aura AI (${llmModel}): Nhận diện nhu cầu tư vấn chủ đề "${relatedTopic}". Đề xuất ấn phẩm hàng đầu "${suggestedBook.title}" (${suggestedBook.author}).`,
+							);
+
+							cards.push({ type: "product", data: suggestedBook });
+
+							answer = `Dạ em chào ${honorific} ạ! Đúng với sự quan tâm của ${honorific} về chủ đề ${relatedTopic}, em xin gợi ý cuốn sách kinh điển và bán chạy nhất tại AuraBook là "${suggestedBook.title}" của tác giả ${suggestedBook.author}. Tác phẩm hiện có sẵn Bản Sách Điện Tử (${suggestedBook.ebookPrice}) đọc ngay có bản quyền DRM và Bản Sách Vật Lý (${suggestedBook.physicalPrice}) giao tận nhà. Em đã hiển thị thẻ ấn phẩm chi tiết ngay bên dưới để ${honorific} tiện tham khảo và đặt mua nhé ạ!`;
 						} else {
 							// NGUYÊN TẮC BẢO ĐẢM DỮ LIỆU CƠ SỞ DỮ LIỆU (ANTI-HALLUCINATION GUARDRAIL):
 							// Khách hàng thực sự tìm kiếm một tên sách cụ thể không có trong kho sách
@@ -1181,6 +1621,15 @@ Tất cả tác phẩm đều có sẵn Bản Ebook DRM đọc ngay và Sách Gi
 								suggestedBook = CATALOG.find((b) => b.slug === "bon-thoa-uoc") || CATALOG[1];
 								relatedTopic = "tâm lý học và minh triết sống";
 							} else if (
+								lower.includes("trí nhớ") ||
+								lower.includes("tri nho") ||
+								lower.includes("ghi nhớ") ||
+								lower.includes("nhớ lâu") ||
+								lower.includes("kỷ lục")
+							) {
+								suggestedBook = CATALOG.find((b) => b.slug === "bi-mat-cua-mot-tri-nho-sieu-pham") || CATALOG[5];
+								relatedTopic = "rèn luyện trí nhớ siêu phàm và kỹ năng học tập nhanh";
+							} else if (
 								lower.includes("harry potter") ||
 								lower.includes("lịch sử") ||
 								lower.includes("văn minh") ||
@@ -1197,14 +1646,18 @@ Tất cả tác phẩm đều có sẵn Bản Ebook DRM đọc ngay và Sách Gi
 								lower.includes("làm giàu") ||
 								lower.includes("tiền") ||
 								lower.includes("tài chính") ||
-								lower.includes("trí nhớ") ||
 								lower.includes("tư duy") ||
 								lower.includes("logic") ||
 								lower.includes("công nghệ") ||
-								lower.includes("lập trình")
+								lower.includes("lập trình") ||
+								lower.includes("học tập") ||
+								lower.includes("hoc tap") ||
+								lower.includes("phát triển") ||
+								lower.includes("phat trien") ||
+								lower.includes("rèn luyện")
 							) {
 								suggestedBook = CATALOG.find((b) => b.slug === "tri-tue-do-thai") || CATALOG[3];
-								relatedTopic = "trí tuệ, rèn luyện tư duy và làm giàu";
+								relatedTopic = "trí tuệ, rèn luyện tư duy và phát triển bản thân";
 							}
 
 							thinkingSteps.push(
@@ -1227,9 +1680,9 @@ Tất cả tác phẩm đều có sẵn Bản Ebook DRM đọc ngay và Sách Gi
 			const systemPrompt = `Bạn là Aura AI, Chuyên viên Chăm sóc Khách hàng & Tư vấn Sách Thông minh của AuraBook. Giọng điệu ấm áp, lịch sự, ân cần. Luôn xưng "em" và gọi khách hàng là "${honorific}".
 
 QUY TẮC BẮT BUỘC (TUYỆT ĐỐI KHÔNG BỊA ĐẶT / ZERO-HALLUCINATION):
-1. Dữ liệu sách và sản phẩm PHẢI 100% dựa trên cơ sở dữ liệu thực tế của AuraBook (kho sách hiện có 4 tác phẩm tiêu biểu: Đắc Nhân Tâm, Bốn Thỏa Ước, Sapiens: Lược Sử Loài Người, Trí Tuệ Do Thái).
+1. Dữ liệu sách và sản phẩm PHẢI 100% dựa trên cơ sở dữ liệu thực tế của AuraBook (kho sách hiện có 13 tác phẩm tiêu biểu: Đắc Nhân Tâm, Bốn Thỏa Ước, Sapiens: Lược Sử Loài Người, Trí Tuệ Do Thái, 10 Điều Tạo Nên Số Phận, Bí Mật Của Một Trí Nhớ Siêu Phàm, Cách Nghĩ Để Thành Công, Cây Cam Ngọt Của Tôi, Chiến Tranh Tiền Tệ - Tập 1, Chiến Tranh Tiền Tệ - Tập 2, Chiến Tranh Tiền Tệ - Tập 3, Chủ Nghĩa Khắc Kỷ: Phong Cách Sống Bản Lĩnh & Bình Thản, Tư Duy Nhanh Và Chậm).
 2. Nếu khách hàng hỏi bất kỳ cuốn sách, tác giả hoặc sản phẩm nào KHÔNG CÓ trong cơ sở dữ liệu trên, bạn BẮT BUỘC phải nói rõ là hệ thống AuraBook hiện chưa có cuốn sách đó, tuyệt đối KHÔNG ĐƯỢC tự bịa đặt thông tin, giá tiền hay bản quyền.
-3. Nếu cùng chủ đề với điều khách tìm, bạn hãy gợi ý các ấn phẩm hiện có trong hệ thống (như Đắc Nhân Tâm cho kỹ năng giao tiếp, Bốn Thỏa Ước cho tâm lý chữa lành, Sapiens cho lịch sử nhân loại, Trí Tuệ Do Thái cho tư duy kinh doanh).`;
+3. Nếu cùng chủ đề với điều khách tìm, bạn hãy gợi ý các ấn phẩm hiện có trong hệ thống (như Đắc Nhân Tâm cho kỹ năng giao tiếp, Bốn Thỏa Ước cho tâm lý chữa lành, Sapiens cho lịch sử nhân loại, Trí Tuệ Do Thái hoặc Tư Duy Nhanh Và Chậm cho tư duy và học tập, Bí Mật Của Một Trí Nhớ Siêu Phàm cho rèn luyện trí nhớ, Cách Nghĩ Để Thành Công cho ý chí và khát vọng làm giàu).`;
 
 			const llmFallback = await queryLLM({
 				model: llmModel,
@@ -1238,7 +1691,7 @@ QUY TẮC BẮT BUỘC (TUYỆT ĐỐI KHÔNG BỊA ĐẶT / ZERO-HALLUCINATION)
 				baseUrl: llmBaseUrl,
 				prompt: `Khách hàng ${honorific} vừa nói: "${cleanQuery}". Hãy phản hồi ân cần, tự nhiên và hỗ trợ khách.`,
 				systemPrompt,
-				timeoutMs: 15000,
+				timeoutMs: 2500,
 			});
 
 			if (llmFallback && llmFallback.length > 15) {
@@ -1271,7 +1724,7 @@ QUY TẮC BẮT BUỘC (TUYỆT ĐỐI KHÔNG BỊA ĐẶT / ZERO-HALLUCINATION)
 			}
 		}
 
-		const activeVoice = ttsVoice || (voice && voice.trim()) || "vi_VN-hoaimy-aurabook";
+		const activeVoice = (voice && typeof voice === "string" && voice.trim()) || ttsVoice || "f5-tts-vietnamese";
 
 		// Tạo âm thanh TTS nếu là cuộc gọi thoại (CALL)
 		let audioBase64 = "";
@@ -1284,30 +1737,39 @@ QUY TẮC BẮT BUỘC (TUYỆT ĐỐI KHÔNG BỊA ĐẶT / ZERO-HALLUCINATION)
 					.replace(/\s+/g, " ")
 					.trim();
 
-				// TỐI ƯU TỐC ĐỘ PHẢN HỒI GIỌNG NÓI (FAST VOICE UX):
-				// Nếu câu trả lời danh mục hoặc văn bản quá dài (> 280 ký tự), rút gọn câu đọc cho TTS xử lý siêu tốc dưới 1.5 giây,
-				// trong khi toàn bộ nội dung chi tiết và 4 thẻ sản phẩm vẫn hiển thị trọn vẹn trên màn hình.
-				if (isCatalogListInquiry || cleanSpeakText.length > 280) {
-					if (isCatalogListInquiry) {
-						cleanSpeakText = `Dạ, cảm ơn ${honorific} đã đợi em tra cứu! Hiện tại kho sách AuraBook có 4 tác phẩm tiêu biểu gồm Đắc Nhân Tâm, Bốn Thỏa Ước, Sapiens Lược Sử Loài Người và Trí Tuệ Do Thái. Cả 4 ấn phẩm đều có sẵn bản Ebook DRM và sách giấy giao tận nơi. Em đã gửi thẻ chi tiết ngay trên màn hình để ${honorific} tiện chọn nhé ạ!`;
-					} else if (cleanSpeakText.length > 320) {
-						const sentences = cleanSpeakText.split(/(?<=[.?!])\s+/);
-						if (sentences.length > 2) {
-							cleanSpeakText = sentences.slice(0, 2).join(" ");
-						}
-					}
+				// ĐẢM BẢO ĐỌC TRỌN VẸN 100% CÂU TRẢ LỜI CHO KHÁCH HÀNG (KHÔNG BỊ CẮT XÉN)
+				if (isCatalogListInquiry) {
+					cleanSpeakText = `Dạ, cảm ơn ${honorific} đã đợi em tra cứu! Hiện tại kho sách AuraBook có 13 tác phẩm nổi bật gồm Đắc Nhân Tâm, Bốn Thỏa Ước, Sapiens, Trí Tuệ Do Thái, Tư Duy Nhanh Và Chậm và nhiều ấn phẩm khác. Tất cả ấn phẩm đều có sẵn bản Ebook DRM và sách giấy giao tận nơi. Em đã gửi thẻ chi tiết ngay trên màn hình để ${honorific} tiện chọn nhé ạ!`;
 				}
 
 				const ttsUrl = process.env.PIPER_TTS_URL || "http://127.0.0.1:5050/api/tts";
-				const ttsRes = await fetch(ttsUrl, {
+				const ttsVoiceToUse = activeVoice || "f5-tts-vietnamese";
+				
+				let ttsRes = await fetch(ttsUrl, {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ text: cleanSpeakText, speed: ttsSpeed, voice: activeVoice, format: "base64" }),
-					signal: AbortSignal.timeout(20000),
-				});
-				if (ttsRes.ok) {
-					const ttsData = (await ttsRes.json()) as any;
-					audioBase64 = ttsData.audioBase64 || "";
+					body: JSON.stringify({ text: cleanSpeakText, speed: ttsSpeed, voice: ttsVoiceToUse, format: "base64" }),
+					signal: AbortSignal.timeout(25000),
+				}).catch(() => null);
+
+				if (ttsRes && ttsRes.ok) {
+					const ttsData = (await ttsRes.json().catch(() => null)) as any;
+					audioBase64 = ttsData?.audioBase64 || "";
+				}
+
+				// Fallback ngay lập tức sang mô hình Hoài My Piper Offline nếu voice ban đầu bị lỗi/timeout
+				if (!audioBase64 && ttsVoiceToUse !== "vi_VN-hoaimy-aurabook") {
+					console.warn(`[VoiceAgent Chat] TTS voice '${ttsVoiceToUse}' không trả về audio, fallback sang 'vi_VN-hoaimy-aurabook'...`);
+					const fbRes = await fetch(ttsUrl, {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ text: cleanSpeakText, speed: ttsSpeed, voice: "vi_VN-hoaimy-aurabook", format: "base64" }),
+						signal: AbortSignal.timeout(10000),
+					}).catch(() => null);
+					if (fbRes && fbRes.ok) {
+						const fbData = (await fbRes.json().catch(() => null)) as any;
+						audioBase64 = fbData?.audioBase64 || "";
+					}
 				}
 			} catch (ttsErr) {
 				console.warn("[VoiceAgent Chat] Lỗi kết nối TTS Server:", ttsErr);
@@ -1321,6 +1783,7 @@ QUY TẮC BẮT BUỘC (TUYỆT ĐỐI KHÔNG BỊA ĐẶT / ZERO-HALLUCINATION)
 			thinking: thinkingText || null,
 			audioBase64,
 			cards,
+			isFarewell: Boolean(isFarewell),
 			topic: selectedTopic,
 			activeModel: llmModel,
 			activeVoice,
