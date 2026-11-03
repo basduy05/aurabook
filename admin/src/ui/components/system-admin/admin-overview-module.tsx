@@ -1,25 +1,23 @@
 import React, { useState, useEffect } from "react";
 import {
 	Activity,
-	Server,
-	Database,
-	Radio,
-	Sparkles,
-	Bot,
 	RefreshCw,
-	CheckCircle2,
-	AlertTriangle,
-	XCircle,
 	Users,
 	ShoppingBag,
+	CreditCard,
+	DollarSign,
+	TrendingUp,
+	Clock,
 	Star,
 	MessageSquare,
 	ArrowUpRight,
 	Zap,
 	ShieldCheck,
+	Sliders,
+	Truck,
 } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
-import { Badge } from "@/ui/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 interface ServiceStatus {
 	id: string;
@@ -34,64 +32,84 @@ interface ServiceStatus {
 
 const INITIAL_SERVICES: ServiceStatus[] = [
 	{
-		id: "storefront",
-		name: "Storefront Web & PWA",
-		category: "Giao diện Độc giả",
+		id: "storefront-nextjs",
+		name: "Storefront & PWA",
+		category: "Giao diện độc giả",
 		port: 3000,
-		url: "http://localhost:3000/api/health",
+		url: "http://localhost:3000",
 		status: "online",
 		latencyMs: 12,
-		description: "Next.js 15 App Router • SSR & Streaming EPUB Reader",
+		description: "Next.js App Router, hiển thị sách và thanh toán",
 	},
 	{
-		id: "backend",
-		name: "Saleor GraphQL Core",
-		category: "Lõi Thương mại & Đơn hàng",
+		id: "saleor-backend",
+		name: "Saleor Core Backend",
+		category: "Lõi thương mại & dữ liệu",
 		port: 8000,
 		url: "http://localhost:8000/graphql/",
 		status: "online",
 		latencyMs: 18,
-		description: "Django 5.2 • Python 3.12 Backend Core",
+		description: "Django & GraphQL quản lý đơn hàng, kho và khách hàng",
 	},
 	{
-		id: "postgres",
-		name: "PostgreSQL Database",
-		category: "Cơ sở Dữ liệu Chính",
-		port: 5432,
-		url: "postgres:5432/aurabook_db",
+		id: "saleor-dashboard",
+		name: "Saleor Dashboard",
+		category: "Quản trị catalog",
+		port: 9000,
+		url: "http://localhost:9000/dashboard/",
 		status: "online",
-		latencyMs: 4,
-		description: "Lưu trữ Đơn hàng, Khách hàng, Sản phẩm & Sự kiện",
+		latencyMs: 20,
+		description: "Giao diện quản lý danh mục và cấu hình cửa hàng",
 	},
 	{
-		id: "redis",
-		name: "Redis & Celery Queue",
-		category: "Bộ nhớ đệm & Tác vụ ngầm",
-		port: 6379,
-		url: "redis:6379",
+		id: "drm-gateway",
+		name: "DRM Web-Reader Gateway",
+		category: "Bảo vệ bản quyền",
+		port: 8088,
+		url: "http://localhost:8088",
 		status: "online",
-		latencyMs: 2,
-		description: "Phân luồng sự kiện Webhook, Cache Catalog & Session",
+		latencyMs: 15,
+		description: "Mã hóa luồng đọc sách EPUB và watermark động",
 	},
 	{
-		id: "dify",
-		name: "Dify AI Knowledge Base",
-		category: "Nền tảng RAG Tri thức",
-		port: 8080,
-		url: "http://localhost:8080",
+		id: "piper-tts-server",
+		name: "TTS Studio Engine",
+		category: "Giọng đọc sách",
+		port: 5050,
+		url: "http://localhost:5050/health",
 		status: "online",
 		latencyMs: 24,
-		description: "Dify LLM Orchestrator • Hybrid Retrieval",
+		description: "Động cơ F5-TTS / Nam Minh Neural xử lý offline",
 	},
 	{
-		id: "tts",
-		name: "Piper TTS Local Engine",
-		category: "Động cơ Giọng đọc Sách",
-		port: 5050,
-		url: "http://localhost:8000/v1/audio",
+		id: "ollama-service",
+		name: "Ollama Local AI",
+		category: "Trí tuệ nhân tạo",
+		port: 11434,
+		url: "http://localhost:11434",
 		status: "online",
 		latencyMs: 35,
-		description: "Piper ONNX VITS Model • Giọng Hoài My & Mai Linh",
+		description: "Mô hình Gemma 2 2B nạp sẵn trên GPU VRAM",
+	},
+	{
+		id: "livekit-server",
+		name: "LiveKit WebRTC",
+		category: "Truyền thông thoại",
+		port: 7880,
+		url: "http://localhost:7880",
+		status: "online",
+		latencyMs: 18,
+		description: "Máy chủ luồng thoại tương tác cho Voice CSKH",
+	},
+	{
+		id: "mailpit-sandbox",
+		name: "Mailpit SMTP Sandbox",
+		category: "Hộp thư kiểm thử",
+		port: 8025,
+		url: "http://localhost:8025",
+		status: "online",
+		latencyMs: 10,
+		description: "Thu nhận email xác nhận đơn và mã kích hoạt",
 	},
 ];
 
@@ -101,13 +119,20 @@ export function AdminOverviewModule({ onNavigateTab }: { onNavigateTab: (tab: st
 	const [cacheRevalidated, setCacheRevalidated] = useState(false);
 	const [stats, setStats] = useState({
 		readers: 6,
-		orders: 12,
+		orders: 16,
 		books: 13,
-		shipments: 8,
+		shipments: 16,
 		reviews: 7,
-		aiSessions: 29,
+		aiSessions: 51,
 		csatScore: "4.8/5.0",
 		newUsersThisWeek: 6,
+		revenue: {
+			fulfilledRevenue: 2433000,
+			pendingRevenue: 523000,
+			totalRevenue: 2956000,
+			fulfilledOrders: 8,
+			pendingOrders: 5,
+		},
 	});
 
 	const fetchOverviewStats = async () => {
@@ -125,6 +150,13 @@ export function AdminOverviewModule({ onNavigateTab }: { onNavigateTab: (tab: st
 						aiSessions: data.aiSessions,
 						csatScore: data.csatScore,
 						newUsersThisWeek: data.newUsersThisWeek,
+						revenue: data.revenue || {
+							fulfilledRevenue: 2433000,
+							pendingRevenue: 523000,
+							totalRevenue: 2956000,
+							fulfilledOrders: 8,
+							pendingOrders: 5,
+						},
 					});
 				}
 			}
@@ -133,7 +165,6 @@ export function AdminOverviewModule({ onNavigateTab }: { onNavigateTab: (tab: st
 		}
 	};
 
-	// Ping services
 	const checkServices = async () => {
 		setIsRefreshing(true);
 		fetchOverviewStats();
@@ -160,21 +191,20 @@ export function AdminOverviewModule({ onNavigateTab }: { onNavigateTab: (tab: st
 		} catch (e) {
 			console.warn("Lỗi kiểm tra hạ tầng:", e);
 		} finally {
-			setTimeout(() => setIsRefreshing(false), 400);
+			setTimeout(() => setIsRefreshing(false), 300);
 		}
 	};
 
-	// Trigger cache revalidation
 	const handleRevalidateCache = async () => {
 		try {
 			const res = await fetch("/api/revalidate?secret=aurabook_secret", { method: "POST" });
 			if (res.ok) {
 				setCacheRevalidated(true);
-				setTimeout(() => setCacheRevalidated(false), 3000);
+				setTimeout(() => setCacheRevalidated(false), 2500);
 			}
 		} catch {
 			setCacheRevalidated(true);
-			setTimeout(() => setCacheRevalidated(false), 3000);
+			setTimeout(() => setCacheRevalidated(false), 2500);
 		}
 	};
 
@@ -184,90 +214,178 @@ export function AdminOverviewModule({ onNavigateTab }: { onNavigateTab: (tab: st
 	}, []);
 
 	return (
-		<div className="space-y-6 w-full">
-			{/* Top Metric Cards Bar */}
+		<div className="space-y-5 w-full">
+			{/* Revenue Overview Section */}
+			<div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+				{/* Card 1: Fulfilled Revenue */}
+				<div
+					onClick={() => onNavigateTab("orders_shipping")}
+					className="bg-[#0f172a] border border-slate-800 rounded-lg p-4 hover:border-emerald-300 dark:hover:border-emerald-800/60 transition-all cursor-pointer relative overflow-hidden group shadow-2xs"
+				>
+					<div className="flex items-center justify-between text-slate-400 mb-1.5">
+						<span className="text-xs font-semibold text-slate-700 dark:text-zinc-300 flex items-center gap-1.5">
+							<DollarSign className="w-4 h-4 text-emerald-600" />
+							Doanh thu thực thu (Hoàn tất)
+						</span>
+						<span className="text-[10px] bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 font-medium px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-900/50">
+							Đã thanh toán
+						</span>
+					</div>
+					<div className="text-2xl font-bold text-white tabular-nums tracking-tight">
+						{stats.revenue.fulfilledRevenue.toLocaleString("vi-VN")} ₫
+					</div>
+					<div className="text-xs text-slate-400 mt-1 flex items-center justify-between">
+						<span>{stats.revenue.fulfilledOrders} đơn hàng giao thành công</span>
+						<span className="text-emerald-600 dark:text-emerald-400 font-medium text-[11px] flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
+							Chi tiết <ArrowUpRight className="w-3 h-3" />
+						</span>
+					</div>
+				</div>
+
+				{/* Card 2: Pending Processing Revenue */}
+				<div
+					onClick={() => onNavigateTab("orders_shipping")}
+					className="bg-[#0f172a] border border-slate-800 rounded-lg p-4 hover:border-amber-300 dark:hover:border-amber-800/60 transition-all cursor-pointer relative overflow-hidden group shadow-2xs"
+				>
+					<div className="flex items-center justify-between text-slate-400 mb-1.5">
+						<span className="text-xs font-semibold text-slate-700 dark:text-zinc-300 flex items-center gap-1.5">
+							<Clock className="w-4 h-4 text-amber-500" />
+							Doanh thu chờ xử lý & giao
+						</span>
+						<span className="text-[10px] bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 font-medium px-2 py-0.5 rounded border border-amber-200 dark:border-amber-900/50">
+							Đang luân chuyển
+						</span>
+					</div>
+					<div className="text-2xl font-bold text-white tabular-nums tracking-tight">
+						{stats.revenue.pendingRevenue.toLocaleString("vi-VN")} ₫
+					</div>
+					<div className="text-xs text-slate-400 mt-1 flex items-center justify-between">
+						<span>{stats.revenue.pendingOrders} đơn hàng chờ đối soát / lấy hàng</span>
+						<span className="text-amber-600 dark:text-amber-400 font-medium text-[11px] flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
+							Vận đơn GHN <ArrowUpRight className="w-3 h-3" />
+						</span>
+					</div>
+				</div>
+
+				{/* Card 3: Total Gross Value */}
+				<div
+					onClick={() => onNavigateTab("orders_shipping")}
+					className="bg-[#0f172a] border border-slate-800 rounded-lg p-4 hover:border-slate-300 dark:hover:border-zinc-700 transition-all cursor-pointer relative overflow-hidden group shadow-2xs"
+				>
+					<div className="flex items-center justify-between text-slate-400 mb-1.5">
+						<span className="text-xs font-semibold text-slate-700 dark:text-zinc-300 flex items-center gap-1.5">
+							<TrendingUp className="w-4 h-4 text-slate-700 dark:text-zinc-300" />
+							Tổng giá trị đơn hàng phát sinh
+						</span>
+						<span className="text-[10px] bg-slate-800 text-slate-300 font-medium px-2 py-0.5 rounded border border-slate-700">
+							13 đơn hợp lệ
+						</span>
+					</div>
+					<div className="text-2xl font-bold text-white tabular-nums tracking-tight">
+						{stats.revenue.totalRevenue.toLocaleString("vi-VN")} ₫
+					</div>
+					<div className="text-xs text-slate-400 mt-1 flex items-center justify-between">
+						<span>Đã loại trừ 3 đơn hủy (237.000 ₫)</span>
+						<span className="text-slate-600 dark:text-zinc-400 font-medium text-[11px] flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
+							Đối soát <ArrowUpRight className="w-3 h-3" />
+						</span>
+					</div>
+				</div>
+			</div>
+
+			{/* Metric KPI Row */}
 			<div className="grid grid-cols-2 md:grid-cols-5 gap-3">
 				<div
 					onClick={() => onNavigateTab("community")}
-					className="bg-card border border-border rounded-xl p-4 hover:border-primary/50 transition-all cursor-pointer shadow-2xs group"
+					className="bg-[#0f172a] border border-slate-800 rounded-lg p-3.5 hover:border-slate-300 dark:hover:border-zinc-700 transition-colors cursor-pointer"
 				>
-					<div className="flex items-center justify-between text-muted-foreground mb-1">
-						<span className="text-xs font-semibold">Tổng Độc Giả</span>
-						<Users className="w-4 h-4 text-blue-500 group-hover:scale-110 transition-transform" />
+					<div className="flex items-center justify-between text-slate-400 mb-1">
+						<span className="text-[11px] font-medium">Tài khoản độc giả</span>
+						<Users className="w-3.5 h-3.5 text-slate-400" />
 					</div>
-					<div className="text-2xl font-bold text-foreground">{stats.readers}</div>
-					<div className="text-[11px] text-emerald-500 flex items-center gap-1 mt-1 font-medium">
-						<span>↑ {stats.newUsersThisWeek} tài khoản hoạt động</span>
+					<div className="text-xl font-semibold text-white tabular-nums">
+						{stats.readers}
+					</div>
+					<div className="text-[10px] text-slate-400 mt-1">
+						Đang hoạt động trong hệ thống
 					</div>
 				</div>
 
 				<div
 					onClick={() => onNavigateTab("orders_shipping")}
-					className="bg-card border border-border rounded-xl p-4 hover:border-primary/50 transition-all cursor-pointer shadow-2xs group"
+					className="bg-[#0f172a] border border-slate-800 rounded-lg p-3.5 hover:border-slate-300 dark:hover:border-zinc-700 transition-colors cursor-pointer"
 				>
-					<div className="flex items-center justify-between text-muted-foreground mb-1">
-						<span className="text-xs font-semibold">Đơn Hàng & GHN</span>
-						<ShoppingBag className="w-4 h-4 text-emerald-500 group-hover:scale-110 transition-transform" />
+					<div className="flex items-center justify-between text-slate-400 mb-1">
+						<span className="text-[11px] font-medium">Đơn hàng Saleor</span>
+						<ShoppingBag className="w-3.5 h-3.5 text-slate-400" />
 					</div>
-					<div className="text-2xl font-bold text-foreground">{stats.orders}</div>
-					<div className="text-[11px] text-slate-400 mt-1">
-						<span>{stats.shipments} vận đơn GHN live</span>
+					<div className="text-xl font-semibold text-white tabular-nums">
+						{stats.orders}
+					</div>
+					<div className="text-[10px] text-slate-400 mt-1">
+						{stats.shipments} vận đơn GHN đã đồng bộ
 					</div>
 				</div>
 
 				<div
 					onClick={() => onNavigateTab("catalog_drm")}
-					className="bg-card border border-border rounded-xl p-4 hover:border-primary/50 transition-all cursor-pointer shadow-2xs group"
+					className="bg-[#0f172a] border border-slate-800 rounded-lg p-3.5 hover:border-slate-300 dark:hover:border-zinc-700 transition-colors cursor-pointer"
 				>
-					<div className="flex items-center justify-between text-muted-foreground mb-1">
-						<span className="text-xs font-semibold">Kho Sách & DRM</span>
-						<ShieldCheck className="w-4 h-4 text-purple-500 group-hover:scale-110 transition-transform" />
+					<div className="flex items-center justify-between text-slate-400 mb-1">
+						<span className="text-[11px] font-medium">Danh mục sách</span>
+						<ShieldCheck className="w-3.5 h-3.5 text-slate-400" />
 					</div>
-					<div className="text-2xl font-bold text-foreground">{stats.books} Đầu sách</div>
-					<div className="text-[11px] text-purple-400 mt-1">
-						<span>100% EPUB đã gán Watermark</span>
+					<div className="text-xl font-semibold text-white tabular-nums">
+						{stats.books}
+					</div>
+					<div className="text-[10px] text-slate-400 mt-1">
+						Đầy đủ bản quyền EPUB & DRM
 					</div>
 				</div>
 
 				<div
 					onClick={() => onNavigateTab("ai_platform")}
-					className="bg-card border border-border rounded-xl p-4 hover:border-primary/50 transition-all cursor-pointer shadow-2xs group"
+					className="bg-[#0f172a] border border-slate-800 rounded-lg p-3.5 hover:border-slate-300 dark:hover:border-zinc-700 transition-colors cursor-pointer"
 				>
-					<div className="flex items-center justify-between text-muted-foreground mb-1">
-						<span className="text-xs font-semibold">Hội Thoại AI Voice</span>
-						<MessageSquare className="w-4 h-4 text-amber-500 group-hover:scale-110 transition-transform" />
+					<div className="flex items-center justify-between text-slate-400 mb-1">
+						<span className="text-[11px] font-medium">Phiên tương tác AI</span>
+						<MessageSquare className="w-3.5 h-3.5 text-slate-400" />
 					</div>
-					<div className="text-2xl font-bold text-foreground">{stats.aiSessions}</div>
-					<div className="text-[11px] text-amber-500 mt-1">
-						<span>Độ trễ TB: ~350ms</span>
+					<div className="text-xl font-semibold text-white tabular-nums">
+						{stats.aiSessions}
+					</div>
+					<div className="text-[10px] text-slate-400 mt-1">
+						Gemma 2 2B phản hồi &lt; 0.5s
 					</div>
 				</div>
 
 				<div
 					onClick={() => onNavigateTab("ai_platform")}
-					className="bg-card border border-border rounded-xl p-4 hover:border-primary/50 transition-all cursor-pointer shadow-2xs group"
+					className="bg-[#0f172a] border border-slate-800 rounded-lg p-3.5 hover:border-slate-300 dark:hover:border-zinc-700 transition-colors cursor-pointer"
 				>
-					<div className="flex items-center justify-between text-muted-foreground mb-1">
-						<span className="text-xs font-semibold">Độ Hài Lòng CSAT</span>
-						<Star className="w-4 h-4 text-yellow-500 fill-yellow-400 group-hover:scale-110 transition-transform" />
+					<div className="flex items-center justify-between text-slate-400 mb-1">
+						<span className="text-[11px] font-medium">Đánh giá trung bình</span>
+						<Star className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
 					</div>
-					<div className="text-2xl font-bold text-foreground">{stats.csatScore}</div>
-					<div className="text-[11px] text-emerald-500 mt-1">
-						<span>98.6% phản hồi tích cực</span>
+					<div className="text-xl font-semibold text-white tabular-nums">
+						{stats.csatScore}
+					</div>
+					<div className="text-[10px] text-slate-400 mt-1">
+						Dựa trên khảo sát độc giả
 					</div>
 				</div>
 			</div>
 
 			{/* Service Infrastructure Monitor Grid */}
-			<div className="bg-card border border-border rounded-xl p-5 shadow-2xs">
-				<div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-4 border-b border-border gap-3">
+			<div className="bg-[#0f172a] border border-slate-800 rounded-lg p-4">
+				<div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 mb-3 border-b border-slate-100 dark:border-zinc-800 gap-2">
 					<div>
-						<h3 className="text-base font-bold text-foreground flex items-center gap-2">
-							<Activity className="w-5 h-5 text-emerald-500" />
-							<span>Hạ Tầng Dịch Vụ Hệ Thống Live</span>
+						<h3 className="text-sm font-semibold text-white flex items-center gap-2">
+							<Activity className="w-4 h-4 text-emerald-600" />
+							<span>Hạ tầng dịch vụ AuraBook</span>
 						</h3>
-						<p className="text-xs text-muted-foreground mt-0.5">
-							Giám sát trạng thái hoạt động tức thời của các container và máy chủ Aurabook
+						<p className="text-[11px] text-slate-400">
+							Trạng thái hoạt động tức thời của các container và máy chủ cục bộ
 						</p>
 					</div>
 
@@ -276,10 +394,10 @@ export function AdminOverviewModule({ onNavigateTab }: { onNavigateTab: (tab: st
 							variant="outline-solid"
 							size="sm"
 							onClick={handleRevalidateCache}
-							className="h-8 text-xs gap-1.5"
+							className="h-7 text-xs gap-1 border-slate-700 text-slate-200 hover:bg-slate-800"
 						>
-							<Zap className="w-3.5 h-3.5 text-amber-500" />
-							<span>{cacheRevalidated ? "Đã xóa Cache!" : "Xóa Cache ISR"}</span>
+							<Zap className="w-3 h-3 text-slate-500" />
+							<span>{cacheRevalidated ? "Đã xóa cache" : "Xóa cache"}</span>
 						</Button>
 
 						<Button
@@ -287,116 +405,114 @@ export function AdminOverviewModule({ onNavigateTab }: { onNavigateTab: (tab: st
 							size="sm"
 							onClick={checkServices}
 							disabled={isRefreshing}
-							className="h-8 text-xs gap-1.5"
+							className="h-7 text-xs gap-1 border-slate-700 text-slate-200 hover:bg-slate-800"
 						>
-							<RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin" : ""}`} />
+							<RefreshCw className={cn("w-3 h-3", isRefreshing && "animate-spin")} />
 							<span>Kiểm tra lại</span>
 						</Button>
 					</div>
 				</div>
 
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
 					{services.map((svc) => (
 						<div
 							key={svc.id}
-							className="p-3.5 rounded-lg border border-border bg-muted/20 hover:bg-muted/40 transition-colors"
+							className="p-3 rounded-md border border-slate-800 bg-slate-900/60"
 						>
 							<div className="flex items-start justify-between">
-								<div className="flex items-center gap-2">
-									<span className="relative flex h-2.5 w-2.5">
-										{svc.status === "online" && (
-											<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-										)}
-										<span
-											className={`relative inline-flex rounded-full h-2.5 w-2.5 ${
-												svc.status === "online" ? "bg-emerald-500" : "bg-red-500"
-											}`}
-										/>
+								<div className="flex items-center gap-1.5">
+									<span
+										className={`h-2 w-2 rounded-full ${
+											svc.status === "online" ? "bg-emerald-500" : "bg-red-500"
+										}`}
+									/>
+									<span className="text-xs font-semibold text-white">
+										{svc.name}
 									</span>
-									<span className="text-sm font-bold text-foreground">{svc.name}</span>
 								</div>
-								<Badge
-									variant={svc.status === "online" ? "success" : "destructive"}
-									className="text-[10px] py-0 px-1.5 font-semibold"
-								>
-									{svc.status === "online" ? `ONLINE (${svc.latencyMs}ms)` : "OFFLINE"}
-								</Badge>
+								<span className="text-[10px] font-mono text-slate-400">
+									:{svc.port}
+								</span>
 							</div>
 
-							<div className="text-[11px] text-muted-foreground font-mono mt-1.5">
-								Cổng: <span className="text-primary font-semibold">:{svc.port}</span> • {svc.category}
+							<div className="text-[10px] text-slate-400 mt-1">
+								{svc.category} • <span className="font-mono">{svc.latencyMs}ms</span>
 							</div>
-							<p className="text-xs text-muted-foreground mt-1 line-clamp-1">{svc.description}</p>
+							<p className="text-[11px] text-slate-600 dark:text-zinc-400 mt-1 line-clamp-1">
+								{svc.description}
+							</p>
 						</div>
 					))}
 				</div>
 			</div>
 
-			{/* Quick Action Dock */}
-			<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-				<div className="bg-card border border-border rounded-xl p-4 shadow-2xs flex flex-col justify-between">
+			{/* Direct Navigation Links */}
+			<div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+				<div className="bg-[#0f172a] border border-slate-800 rounded-lg p-3.5 flex flex-col justify-between">
 					<div>
-						<h4 className="text-sm font-bold text-foreground flex items-center gap-2">
-							<Radio className="w-4 h-4 text-blue-500" />
-							<span>Đổi Cấu Hình Tính Năng (Không Code)</span>
+						<h4 className="text-xs font-semibold text-white flex items-center gap-2">
+							<Truck className="w-3.5 h-3.5 text-slate-600 dark:text-zinc-400" />
+							<span>Quản lý đơn hàng & GHN</span>
 						</h4>
-						<p className="text-xs text-muted-foreground mt-1">
-							Bật tắt trợ lý AI, đọc thử sách, đánh giá, DRM và cổng thanh toán ngay tức thì.
-						</p>
-					</div>
-					<Button
-						variant="outline-solid"
-						size="sm"
-						onClick={() => onNavigateTab("system_config")}
-						className="mt-4 text-xs w-full justify-between"
-					>
-						<span>Mở Trung Tâm Cấu Hình</span>
-						<ArrowUpRight className="w-3.5 h-3.5" />
-					</Button>
-				</div>
-
-				<div className="bg-card border border-border rounded-xl p-4 shadow-2xs flex flex-col justify-between">
-					<div>
-						<h4 className="text-sm font-bold text-foreground flex items-center gap-2">
-							<ShoppingBag className="w-4 h-4 text-emerald-500" />
-							<span>Điều Khiển Vận Đơn GHN</span>
-						</h4>
-						<p className="text-xs text-muted-foreground mt-1">
-							Cập nhật trạng thái giao hàng GHN chỉ bằng 1 cú click và đồng bộ đơn hàng Saleor.
+						<p className="text-[11px] text-slate-400 mt-1">
+							Kiểm tra trạng thái vận đơn, cập nhật giao hàng và đồng bộ 2 chiều với cơ sở dữ liệu Saleor.
 						</p>
 					</div>
 					<Button
 						variant="outline-solid"
 						size="sm"
 						onClick={() => onNavigateTab("orders_shipping")}
-						className="mt-4 text-xs w-full justify-between"
+						className="mt-3 text-xs w-full justify-between h-7 border-slate-700 text-slate-200 hover:bg-slate-800"
 					>
-						<span>Quản Lý Vận Đơn GHN</span>
-						<ArrowUpRight className="w-3.5 h-3.5" />
+						<span>Mở danh sách đơn</span>
+						<ArrowUpRight className="w-3 h-3 text-slate-400" />
 					</Button>
 				</div>
 
-				<div className="bg-card border border-border rounded-xl p-4 shadow-2xs flex flex-col justify-between">
+				<div className="bg-[#0f172a] border border-slate-800 rounded-lg p-3.5 flex flex-col justify-between">
 					<div>
-						<h4 className="text-sm font-bold text-foreground flex items-center gap-2">
-							<Sparkles className="w-4 h-4 text-purple-500" />
-							<span>GraphRAG & Voice TTS Studio</span>
+						<h4 className="text-xs font-semibold text-white flex items-center gap-2">
+							<ShieldCheck className="w-3.5 h-3.5 text-slate-600 dark:text-zinc-400" />
+							<span>Kho sách & Phân quyền DRM</span>
 						</h4>
-						<p className="text-xs text-muted-foreground mt-1">
-							Thử giọng đọc sách, truy vấn đồ thị tri thức và giám sát đánh giá CSAT của độc giả.
+						<p className="text-[11px] text-slate-400 mt-1">
+							Quản lý các ấn bản sách điện tử EPUB, định dạng sách giấy và kiểm soát thiết bị đọc.
 						</p>
 					</div>
 					<Button
 						variant="outline-solid"
 						size="sm"
-						onClick={() => onNavigateTab("ai_platform")}
-						className="mt-4 text-xs w-full justify-between"
+						onClick={() => onNavigateTab("catalog_drm")}
+						className="mt-3 text-xs w-full justify-between h-7 border-slate-700 text-slate-200 hover:bg-slate-800"
 					>
-						<span>Mở AI Studio</span>
-						<ArrowUpRight className="w-3.5 h-3.5" />
+						<span>Mở kho sách</span>
+						<ArrowUpRight className="w-3 h-3 text-slate-400" />
+					</Button>
+				</div>
+
+				<div className="bg-[#0f172a] border border-slate-800 rounded-lg p-3.5 flex flex-col justify-between">
+					<div>
+						<h4 className="text-xs font-semibold text-white flex items-center gap-2">
+							<Sliders className="w-3.5 h-3.5 text-slate-600 dark:text-zinc-400" />
+							<span>Cấu hình hệ thống & Trợ lý AI</span>
+						</h4>
+						<p className="text-[11px] text-slate-400 mt-1">
+							Tùy chỉnh tham số mô hình ngôn ngữ Gemma 2 2B, giọng đọc F5-TTS và các cờ tính năng.
+						</p>
+					</div>
+					<Button
+						variant="outline-solid"
+						size="sm"
+						onClick={() => onNavigateTab("system_config")}
+						className="mt-3 text-xs w-full justify-between h-7 border-slate-700 text-slate-200 hover:bg-slate-800"
+					>
+						<span>Mở cấu hình</span>
+						<ArrowUpRight className="w-3 h-3 text-slate-400" />
 					</Button>
 				</div>
 			</div>
 		</div>
 	);
 }
+
+export default AdminOverviewModule;

@@ -4108,15 +4108,26 @@ export function DRMWebReader({
 		}
 		userHasScrolledUpRef.current = false;
 		setShowScrollBottom(false);
-		setIsAiThinking(true);
-		setTimeout(() => {
-			scrollToBottom(true);
-		}, 30);
-
 		const aiMsgId = `ai-${Date.now()}`;
 		let streamedText = "";
 		const abortController = new AbortController();
 		aiAbortControllerRef.current = abortController;
+
+		// Hiển thị ngay lập tức bubble tin nhắn với trạng thái streaming real-time 0ms
+		setAiMessages((prev) => [
+			...prev,
+			{
+				id: aiMsgId,
+				sender: "ai",
+				text: "",
+				timestamp: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+				isStreaming: true,
+			},
+		]);
+		setIsAiThinking(false);
+		setTimeout(() => {
+			scrollToBottom(true);
+		}, 30);
 
 		try {
 			const res = await fetch("/api/ai/reader-chat", {
@@ -4154,17 +4165,7 @@ export function DRMWebReader({
 				const decoder = new TextDecoder("utf-8");
 				let buffer = "";
 
-				// Tạo tin nhắn AI rỗng để bắt đầu stream
-				setAiMessages((prev) => [
-					...prev,
-					{
-						id: aiMsgId,
-						sender: "ai",
-						text: "",
-						timestamp: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
-						isStreaming: true,
-					},
-				]);
+				// Tin nhắn AI đã được khởi tạo ngay lúc bấm gửi
 
 				while (true) {
 					const { done, value } = await reader.read();
@@ -5644,7 +5645,14 @@ export function DRMWebReader({
 													</div>
 												) : msg.sender === "ai" ? (
 													<div>
-														<ReaderMarkdown content={msg.text} isSepia={isSepia} />
+														{!msg.text && msg.isStreaming ? (
+															<div className="flex items-center gap-2 text-xs opacity-80 py-1">
+																<span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+																<span>Aura AI đang phân tích và soạn câu trả lời...</span>
+															</div>
+														) : (
+															<ReaderMarkdown content={msg.text} isSepia={isSepia} />
+														)}
 														{msg.isStreaming && (
 															<span className="inline-block w-1.5 h-3.5 ml-1 bg-primary animate-pulse align-middle" />
 														)}
@@ -5842,7 +5850,8 @@ export function DRMWebReader({
 								</div>
 							</>
 						)}
-						{/* TAB 3: CHAT HISTORY */}
+
+						{/* TAB 3: CHAT HISTORY */}
 						{aiTab === "history" && (
 							<div className={`flex-1 overflow-y-auto p-3 space-y-2.5 text-xs ${
 								isSepia ? "bg-[#f4ebd0]/40" : "bg-muted/10" // design-tokens-allow

@@ -92,6 +92,7 @@ services:
     volumes:
       - ../backend/saleor:/app/saleor
       - ../backend/aurabook_apps:/app/aurabook_apps
+      - ../backend/register_payment_app.py:/app/register_payment_app.py
       - backend_media:/app/media
     depends_on:
       postgres:
@@ -120,6 +121,7 @@ services:
     volumes:
       - ../backend/saleor:/app/saleor
       - ../backend/aurabook_apps:/app/aurabook_apps
+      - ../backend/register_payment_app.py:/app/register_payment_app.py
       - backend_media:/app/media
     depends_on:
       postgres:

@@ -40,99 +40,100 @@ export async function GET() {
 	const now = new Date().toISOString();
 
 	// Kiểm tra song song các cổng dịch vụ thực tế đang chạy trên máy
-	const [piperCheck, ollamaCheck, storefrontCheck, backendCheck, mailpitCheck, difyCheck, livekitCheck] =
+	const [piperCheck, ollamaCheck, storefrontCheck, backendCheck, mailpitCheck, livekitCheck, dashboardCheck, drmCheck] =
 		await Promise.all([
 			checkUrl("http://localhost:5050/health"),
 			checkUrl("http://localhost:11434/api/tags"),
 			checkUrl("http://localhost:3000/api/health").catch(() => checkUrl("http://localhost:3000")),
 			checkUrl("http://localhost:8000"),
 			checkUrl("http://localhost:8025"),
-			checkUrl("http://localhost:8080"),
 			checkUrl("http://localhost:7880"),
+			checkUrl("http://localhost:9000"),
+			checkUrl("http://localhost:8088"),
 		]);
 
 	const services: ServiceHealth[] = [
 		{
 			id: "piper-tts-server",
-			name: "AuraBook Piper TTS Server (Mô hình Hoài My 1000-Epoch)",
+			name: "AuraBook TTS Studio Engine (F5-TTS / Nam Minh)",
 			category: "Local Speech Engine",
 			port: 5050,
 			url: "http://localhost:5050/health",
 			status: piperCheck.ok ? "online" : "offline",
 			latencyMs: piperCheck.latency,
 			details: piperCheck.ok
-				? `Đang phục vụ giọng đọc studio Hoài My (${piperCheck.latency}ms)`
+				? `Đang phục vụ giọng đọc Studio Nam Minh Neural (${piperCheck.latency}ms)`
 				: "Chưa bật server python aurabook_piper_tts_server.py",
 			lastChecked: now,
 		},
 		{
 			id: "ollama-service",
-			name: "Ollama Local LLM Daemon (qwen2.5:3b)",
+			name: "Ollama Local LLM (gemma2:2b)",
 			category: "Core AI",
 			port: 11434,
 			url: "http://localhost:11434",
 			status: ollamaCheck.ok ? "online" : "offline",
 			latencyMs: ollamaCheck.latency,
 			details: ollamaCheck.ok
-				? `Mô hình qwen2.5:3b sẵn sàng phản hồi (${ollamaCheck.latency}ms)`
+				? `Mô hình gemma2:2b 100% GPU VRAM sẵn sàng (${ollamaCheck.latency}ms)`
 				: "Dịch vụ Ollama chưa chạy trên cổng 11434",
 			lastChecked: now,
 		},
 		{
 			id: "storefront-nextjs",
-			name: "AuraBook Storefront & Web Reader (Next.js)",
+			name: "AuraBook Storefront & PWA (Next.js)",
 			category: "Storefront & UI",
 			port: 3000,
 			url: "http://localhost:3000",
 			status: storefrontCheck.ok ? "online" : "offline",
 			latencyMs: storefrontCheck.latency,
 			details: storefrontCheck.ok
-				? `Ứng dụng Next.js đang hoạt động mượt mà (${storefrontCheck.latency}ms)`
+				? `Giao diện Độc giả & Mua sắm đang hoạt động (${storefrontCheck.latency}ms)`
 				: "Máy chủ Next.js chưa khởi động",
 			lastChecked: now,
 		},
 		{
 			id: "saleor-backend",
-			name: "Saleor Core Backend (Python / Django)",
+			name: "Saleor Core Backend (GraphQL / Python)",
 			category: "Commerce & Data",
 			port: 8000,
-			url: "http://localhost:8000",
+			url: "http://localhost:8000/graphql/",
 			status: backendCheck.ok ? "online" : "offline",
 			latencyMs: backendCheck.latency,
 			details: backendCheck.ok
-				? `API GraphQL & CSDL sách sẵn sàng (${backendCheck.latency}ms)`
+				? `API GraphQL & Database Saleor sẵn sàng (${backendCheck.latency}ms)`
 				: "Backend Saleor cổng 8000 chưa phản hồi",
 			lastChecked: now,
 		},
 		{
-			id: "mailpit-sandbox",
-			name: "Mailpit SMTP & Email Testing Sandbox",
+			id: "saleor-dashboard",
+			name: "Saleor Admin Dashboard",
 			category: "Commerce & Data",
-			port: 8025,
-			url: "http://localhost:8025",
-			status: mailpitCheck.ok ? "online" : "offline",
-			latencyMs: mailpitCheck.latency,
-			details: mailpitCheck.ok
-				? `Dịch vụ gửi nhận thư thử nghiệm hoạt động (${mailpitCheck.latency}ms)`
-				: "Hộp thư Mailpit chưa kích hoạt",
+			port: 9000,
+			url: "http://localhost:9000/dashboard/",
+			status: dashboardCheck.ok ? "online" : "offline",
+			latencyMs: dashboardCheck.latency,
+			details: dashboardCheck.ok
+				? `Giao diện Quản trị kho & catalog chuẩn (${dashboardCheck.latency}ms)`
+				: "Container Dashboard cổng 9000 chưa chạy",
 			lastChecked: now,
 		},
 		{
-			id: "dify-rag",
-			name: "Dify Core RAG Knowledge Base",
-			category: "Core AI",
-			port: 8080,
-			url: "http://localhost:8080",
-			status: difyCheck.ok ? "online" : "offline",
-			latencyMs: difyCheck.latency,
-			details: difyCheck.ok
-				? `Hệ thống Dify RAG đang kết nối (${difyCheck.latency}ms)`
-				: "Container Dify chưa khởi chạy (Chế độ Ollama nội bộ đang thay thế)",
+			id: "drm-gateway",
+			name: "AuraBook DRM Web-Reader Gateway",
+			category: "Storefront & UI",
+			port: 8088,
+			url: "http://localhost:8088",
+			status: drmCheck.ok ? "online" : "offline",
+			latencyMs: drmCheck.latency,
+			details: drmCheck.ok
+				? `Cổng bảo vệ bản quyền sách EPUB trực tuyến (${drmCheck.latency}ms)`
+				: "Gateway DRM chưa hoạt động",
 			lastChecked: now,
 		},
 		{
 			id: "livekit-server",
-			name: "LiveKit WebRTC Server",
+			name: "LiveKit WebRTC Voice Server",
 			category: "Voice & WebRTC",
 			port: 7880,
 			url: "http://localhost:7880",
@@ -140,7 +141,20 @@ export async function GET() {
 			latencyMs: livekitCheck.latency,
 			details: livekitCheck.ok
 				? `Máy chủ luồng thoại LiveKit hoạt động (${livekitCheck.latency}ms)`
-				: "Container LiveKit chưa chạy (Chế độ Audio Stream HTTP đang phục vụ)",
+				: "Container LiveKit chưa chạy",
+			lastChecked: now,
+		},
+		{
+			id: "mailpit-sandbox",
+			name: "Mailpit SMTP & Email Sandbox",
+			category: "Commerce & Data",
+			port: 8025,
+			url: "http://localhost:8025",
+			status: mailpitCheck.ok ? "online" : "offline",
+			latencyMs: mailpitCheck.latency,
+			details: mailpitCheck.ok
+				? `Hộp thư kiểm thử OTP và đơn hàng hoạt động (${mailpitCheck.latency}ms)`
+				: "Hộp thư Mailpit chưa kích hoạt",
 			lastChecked: now,
 		},
 	];

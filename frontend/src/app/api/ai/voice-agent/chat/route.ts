@@ -436,7 +436,7 @@ async function queryLLM({
 	model,
 	prompt,
 	systemPrompt,
-	timeoutMs = 2500,
+	timeoutMs = 25000,
 	provider = "ollama",
 	apiKey = "",
 	baseUrl = "http://127.0.0.1:11434",
@@ -485,7 +485,8 @@ async function queryLLM({
 
 	// 2. Ollama Local (Chạy hoàn toàn trên Gemma 2 2B của Google: 100% GPU, phản hồi siêu tốc dưới 1 giây)
 	const targetBase = (baseUrl || "http://127.0.0.1:11434").replace(/\/v1\/?$/, "");
-	const ollamaModelsToTry = ["gemma2:2b", "gemma3:4b"];
+	const candidateModels = ["gemma2:2b"];
+	const ollamaModelsToTry = candidateModels;
 
 	for (const curModel of ollamaModelsToTry) {
 		try {
@@ -499,10 +500,10 @@ async function queryLLM({
 						{ role: "user", content: prompt },
 					],
 					stream: false,
-					keep_alive: "1h",
+					keep_alive: "24h",
 					options: {
-						temperature: 0.25,
-						num_predict: 200,
+						temperature: 0.2,
+						num_predict: 280,
 					},
 				}),
 				signal: AbortSignal.timeout(timeoutMs),
@@ -510,7 +511,19 @@ async function queryLLM({
 			if (res.ok) {
 				const data = (await res.json()) as any;
 				const text = data.message?.content?.trim();
-				if (text) return text.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+				if (text) {
+					let cleaned = text.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+					// If the response ends abruptly without sentence-closing punctuation, clean trailing fragment
+					const lastPunctuation = Math.max(
+						cleaned.lastIndexOf("."),
+						cleaned.lastIndexOf("!"),
+						cleaned.lastIndexOf("?")
+					);
+					if (lastPunctuation > 40 && cleaned.length - lastPunctuation > 15) {
+						cleaned = cleaned.substring(0, lastPunctuation + 1).trim();
+					}
+					return cleaned;
+				}
 			} else {
 				console.warn(`[VoiceAgent Chat] Model ${curModel} returned HTTP ${res.status}, trying next model.`);
 			}
@@ -519,6 +532,128 @@ async function queryLLM({
 		}
 	}
 	return null;
+}
+
+interface SaleorOrderNode {
+	id: string;
+	number: string;
+	status: string;
+	created: string;
+	userEmail: string;
+	total: {
+		gross: {
+			amount: number;
+			currency: string;
+		};
+	};
+	lines: Array<{
+		productName: string;
+		quantity: number;
+	}>;
+	shippingAddress?: {
+		firstName?: string;
+		lastName?: string;
+		streetAddress1?: string;
+		city?: string;
+		phone?: string;
+	} | null;
+}
+
+async function fetchSaleorOrders(): Promise<SaleorOrderNode[]> {
+	try {
+		const token = process.env.SALEOR_APP_TOKEN || "rMzfSy3fOblvdjuw0jcbmJ2pXfYWNU";
+		const apiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL || "http://localhost:8000/graphql/";
+		const res = await fetch(apiUrl, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify({
+				query: `
+				query {
+					orders(first: 20, sortBy: { field: CREATION_DATE, direction: DESC }) {
+						edges {
+							node {
+								id
+								number
+								status
+								created
+								userEmail
+								total {
+									gross {
+										amount
+										currency
+									}
+								}
+								lines {
+									productName
+									quantity
+								}
+								shippingAddress {
+									firstName
+									lastName
+									streetAddress1
+									city
+									phone
+								}
+							}
+						}
+					}
+				}
+				`,
+			}),
+			cache: "no-cache",
+		});
+		if (!res.ok) return [];
+		const data = (await res.json()) as any;
+		return (data?.data?.orders?.edges?.map((e: any) => e.node) || []) as SaleorOrderNode[];
+	} catch (err) {
+		console.warn("[VoiceAgent] Error querying Saleor orders:", err);
+		return [];
+	}
+}
+
+async function cancelSaleorOrder(orderId: string): Promise<{ ok: boolean; order?: any; errors?: any[] }> {
+	try {
+		const token = process.env.SALEOR_APP_TOKEN || "rMzfSy3fOblvdjuw0jcbmJ2pXfYWNU";
+		const apiUrl = process.env.NEXT_PUBLIC_SALEOR_API_URL || "http://localhost:8000/graphql/";
+		const res = await fetch(apiUrl, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+			body: JSON.stringify({
+				query: `
+				mutation CancelOrder($id: ID!) {
+					orderCancel(id: $id) {
+						order {
+							id
+							number
+							status
+						}
+						errors {
+							field
+							message
+							code
+						}
+					}
+				}
+				`,
+				variables: { id: orderId },
+			}),
+			cache: "no-cache",
+		});
+		if (!res.ok) return { ok: false, errors: [{ message: `HTTP ${res.status}` }] };
+		const data = (await res.json()) as any;
+		const errors = data?.data?.orderCancel?.errors || [];
+		const updatedOrder = data?.data?.orderCancel?.order;
+		return { ok: errors.length === 0, order: updatedOrder, errors };
+	} catch (err) {
+		console.warn("[VoiceAgent] Error executing orderCancel mutation:", err);
+		return { ok: false, errors: [{ message: String(err) }] };
+	}
 }
 
 export async function POST(req: Request) {
@@ -544,7 +679,7 @@ export async function POST(req: Request) {
 		let llmModel = "gemma2:2b";
 		let llmBaseUrl = "http://localhost:11434";
 		let llmApiKey = "";
-		let ttsVoice = "vi_VN-hoaimy-aurabook";
+		let ttsVoice = "f5-tts-vietnamese";
 		let ttsSpeed = 1.0;
 
 		try {
@@ -615,6 +750,21 @@ export async function POST(req: Request) {
 		if (resolvedNode?.properties.slug) {
 			activeBookSlug = resolvedNode.properties.slug;
 		}
+
+		// 1.3. Trích xuất danh sách sách đã được đề xuất trước đó trong lịch sử (để loại trừ khi khách hỏi 'còn tác phẩm khác không')
+		const seenBookSlugs = new Set<string>();
+		for (const msg of history || []) {
+			const textLower = (msg.content || "").toLowerCase();
+			for (const b of CATALOG) {
+				if (textLower.includes(b.title.toLowerCase()) || textLower.includes(b.slug.replace(/-/g, " "))) {
+					seenBookSlugs.add(b.slug);
+				}
+			}
+		}
+		if (activeBookSlug) seenBookSlugs.add(activeBookSlug);
+
+		const isAskingAlternativeBook =
+			/(còn\s+(sách|tác phẩm|quyển|cuốn|ấn phẩm|gì)?\s*khác\s*(không|ko|k|chưa|hả)?|gợi ý\s*(cuốn|quyển|sách|tác phẩm)?\s*khác|sách khác|cuốn khác|tác phẩm khác|đổi cuốn khác|chưa ưng|không thích cuốn này|xem thêm cuốn khác|còn cuốn nào nữa không|có quyển nào khác không|tác phẩm khác)/i.test(cleanQuery);
 
 		// ======================================================================
 		// 2. PHÂN LOẠI Ý ĐỊNH CHÍNH XÁC (SEMANTIC INTENT CLASSIFICATION)
@@ -727,8 +877,8 @@ export async function POST(req: Request) {
 			isDrmSessionInquiry ||
 			isJailbreakInquiry;
 
-		// A. Ý ĐỊNH TRA CỨU ĐƠN HÀNG (ORDER_LOOKUP)
-		// Bắt lỗi chính tả: "đươn hàng", "don hang", "donhang", "kiểm tra đơn", "đơn gần nhất", "vận đơn", "tracking"...
+		// A. Ý ĐỊNH TRA CỨU ĐƠN HÀNG (ORDER_LOOKUP) HOẶC HỦY ĐƠN HÀNG (ORDER_CANCEL)
+		// Bắt lỗi chính tả: "đươn hàng", "don hang", "donhang", "kiểm tra đơn", "đơn gần nhất", "vận đơn", "tracking", "huỷ đơn"...
 		const isOrderInquiry =
 			!isPolicyOrShippingInquiry &&
 			(lower.includes("đơn hàng") ||
@@ -742,13 +892,25 @@ export async function POST(req: Request) {
 			lower.includes("đơn của tôi") ||
 			lower.includes("đơn gần nhất") ||
 			lower.includes("đơn đã đặt") ||
+			lower.includes("đơn vừa đặt") ||
+			lower.includes("đơn mới đặt") ||
+			lower.includes("đơn mới") ||
 			lower.includes("khi nào nhận") ||
 			lower.includes("kiện hàng") ||
+			lower.includes("huỷ đơn") ||
+			lower.includes("hủy đơn") ||
+			lower.includes("huỷ hàng") ||
+			lower.includes("hủy hàng") ||
+			lower.includes("huỷ") ||
+			lower.includes("hủy") ||
+			lower.includes("cancel") ||
 			ascii.includes("don hang") ||
 			ascii.includes("van chuyen") ||
 			ascii.includes("giao hang") ||
 			ascii.includes("kiem tra don") ||
 			ascii.includes("tra cuu don") ||
+			ascii.includes("huy don") ||
+			ascii.includes("huy don hang") ||
 			selectedTopic.includes("đơn hàng"));
 
 		// B. Ý ĐỊNH MUA HÀNG (PURCHASE_INTENT)
@@ -857,8 +1019,26 @@ export async function POST(req: Request) {
 			/(có|bán|gồm)\s*(những|các)?\s*(sách|tác phẩm|đầu sách|ấn phẩm|cuốn|tựa sách)\s*(gì|nào|đang bán|hiện có|trong hệ thống)/i.test(lower) ||
 			/^(có những sách gì|có những tác phẩm gì|có sách gì|có tác phẩm gì|danh sách sách|các sách hiện có|sách hiện có|các tác phẩm hiện có|tác phẩm hiện có)$/i.test(lower);
 
-		// D. Ý ĐỊNH TƯ VẤN SÁCH CHUNG (GENERAL_CONSULTATION - Chưa rõ gu đọc)
+		// C.2: Ý ĐỊNH HỎI GỢI Ý SÁCH BÁN CHẠY / SÁCH BẤT KỲ / NỔI BẬT (BESTSELLER / ANY BOOK)
+		const isBestsellerOrAnyBookInquiry =
+			lower.includes("bán chạy") ||
+			lower.includes("ban chay") ||
+			lower.includes("bất kỳ") ||
+			lower.includes("bat ky") ||
+			lower.includes("sách hot") ||
+			lower.includes("sách nổi bật") ||
+			lower.includes("sách hay") ||
+			lower.includes("tiêu biểu") ||
+			lower.includes("nổi tiếng") ||
+			lower.includes("cuốn nào hay") ||
+			lower.includes("quyển nào hay") ||
+			lower.includes("cuốn sách nào hay") ||
+			/gợi ý.*(vài|một vài|mấy|những|cuốn|quyển).*sách/i.test(lower) ||
+			/sách.*(nào|gì).*(bán chạy|hay|hot|nổi bật)/i.test(lower);
+
+		// D. Ý ĐỊNH TƯ VẤN SÁCH CHUNG (GENERAL_CONSULTATION - Chỉ khi không hỏi sách bán chạy / bất kỳ)
 		const isGeneralConsultation =
+			!isBestsellerOrAnyBookInquiry && (
 			/^(tư vấn|gợi ý|tìm|chọn|mua|giới thiệu)\s*(sách|cuốn sách|sản phẩm|đầu sách)?/i.test(lower) ||
 			lower.includes("tư vấn sản phẩm") ||
 			lower.includes("tư vấn sách") ||
@@ -871,7 +1051,8 @@ export async function POST(req: Request) {
 			lower === "tư vấn cho tôi" ||
 			lower === "tư vấn sách cho tôi" ||
 			lower === "tư vấn sách giúp mình" ||
-			lower === "gợi ý sách cho tôi";
+			lower === "gợi ý sách cho tôi"
+		);
 
 		// E. CÓ SỞ THÍCH / CHỦ ĐỀ CỤ THỂ
 		const hasSpecificPreference =
@@ -909,7 +1090,22 @@ export async function POST(req: Request) {
 			lower.includes("bốn thỏa ước") ||
 			lower.includes("sapiens") ||
 			lower.includes("atomic habits") ||
-			lower.includes("clean code");
+			lower.includes("clean code") ||
+			lower.includes("học tập") ||
+			lower.includes("hoc tap") ||
+			lower.includes("học") ||
+			lower.includes("kinh tế") ||
+			lower.includes("kinh te") ||
+			lower.includes("tài chính") ||
+			lower.includes("tai chinh") ||
+			lower.includes("tiền tệ") ||
+			lower.includes("tien te") ||
+			lower.includes("đầu tư") ||
+			lower.includes("dau tu") ||
+			lower.includes("triết lý") ||
+			lower.includes("sách liên quan") ||
+			lower.includes("sách về") ||
+			lower.includes("sách gì");
 
 		// F. CÂU HỎI VỀ BẢN QUYỀN DRM READIUM LCP
 		const isDrmInquiry =
@@ -1014,9 +1210,9 @@ Em đã hiển thị thẻ chi tiết của cả 2 cuốn sách ngay bên dướ
 		}
 
 		// ----------------------------------------------------------------------
-		// TRƯỜNG HỢP 0.3: LIỆT KÊ TOÀN BỘ DANH MỤC CÁC TÁC PHẨM HIỆN CÓ (CATALOG_LISTING)
+		// TRƯỜNG HỢP 0.3: LIỆT KÊ TÁC PHẨM BÁN CHẠY / DANH MỤC TIÊU BIỂU (CATALOG_LISTING / BESTSELLER)
 		// ----------------------------------------------------------------------
-		else if (isCatalogListInquiry) {
+		else if (isCatalogListInquiry || isBestsellerOrAnyBookInquiry) {
 			thinkingSteps.push(
 				`Aura AI (${llmModel}): Nhận diện câu hỏi tổng quan yêu cầu liệt kê các tác phẩm hiện có trong kho sách AuraBook (CATALOG_OVERVIEW).`,
 			);
@@ -1144,18 +1340,19 @@ Em đã gửi thẻ ấn phẩm chi tiết ngay bên dưới để ${honorific} 
 		}
 
 		// ----------------------------------------------------------------------
-		// TRƯỜNG HỢP 1: TRA CỨU ĐƠN HÀNG TRONG CƠ SỞ DỮ LIỆU THỰC TẾ
+		// TRƯỜNG HỢP 1: TRA CỨU HOẶC HỦY ĐƠN HÀNG TRONG CƠ SỞ DỮ LIỆU THỰC TẾ (SALEOR & GHN)
 		// ----------------------------------------------------------------------
 		else if (isOrderInquiry) {
+			const isCancelIntent = /(huỷ|hủy|cancel)/i.test(lower);
 			thinkingSteps.push(
-				`Aura AI (${llmModel}): Tra cứu tiến độ vận chuyển / đơn hàng (ORDER_LOOKUP) cho khách hàng ${honorific}.`,
+				`Aura AI (${llmModel}): ${isCancelIntent ? "Yêu cầu hủy đơn hàng (ORDER_CANCEL)" : "Tra cứu tiến độ đơn hàng / vận chuyển (ORDER_LOOKUP)"} cho khách hàng ${honorific}.`,
 			);
 
-			const allShipments = getAllGHNShipments();
-			let matchedShipment: GHNShipment | null = null;
+			// 1. Quét tìm kiếm trong danh sách đơn hàng thực tế của hệ thống Saleor
+			const saleorOrders = await fetchSaleorOrders();
+			let matchedSaleorOrder: SaleorOrderNode | null = null;
 
-			// 1. Quét theo mã đơn nếu có số hoặc mã GHN trong câu hỏi
-			// 1. Quét theo mã đơn nếu có số hoặc mã GHN trong câu hỏi
+			// Quét theo mã đơn nếu có số trong câu hỏi (ví dụ: #45, đơn 45, #9...)
 			let explicitCodeMatch = cleanQuery.match(/(?:#|đơn\s*(?:hàng\s*)?(?:mã\s*(?:số\s*)?)?|mã\s*(?:vận\s*đơn|số|đơn)?\s*#?|số\s*)(\d{1,8}|GHN[A-Z0-9]+)/i);
 			if (!explicitCodeMatch && /GHN[A-Z0-9]+/i.test(cleanQuery)) {
 				const ghnMatch = cleanQuery.match(/GHN[A-Z0-9]+/i);
@@ -1166,87 +1363,218 @@ Em đã gửi thẻ ấn phẩm chi tiết ngay bên dưới để ${honorific} 
 				if (genericNumMatch) explicitCodeMatch = genericNumMatch;
 			}
 
-			if (explicitCodeMatch) {
-				const targetCode = explicitCodeMatch[1] || explicitCodeMatch[0];
-				matchedShipment = getGHNShipmentByOrder(targetCode) ||
-					allShipments.find((s) => s.orderNumber === targetCode || s.orderId === targetCode || s.trackingCode.toLowerCase() === targetCode.toLowerCase()) ||
-					null;
+			if (explicitCodeMatch && !explicitCodeMatch[0].toUpperCase().startsWith("GHN")) {
+				const targetNum = explicitCodeMatch[1] || explicitCodeMatch[0];
+				matchedSaleorOrder = saleorOrders.find((o) => o.number === targetNum || o.id === targetNum) || null;
+			}
 
-				if (!matchedShipment && targetCode.toUpperCase().startsWith("GHN")) {
-					thinkingSteps.push(`Aura AI (${llmModel}): Tra cứu mã vận đơn ${targetCode} nhưng không tìm thấy trên hệ thống GHN.`);
-					answer = `Dạ em đã kiểm tra trên hệ thống Giao Hàng Nhanh (GHN) nhưng không tìm thấy thông tin đơn hàng với mã vận đơn "${targetCode}" ạ. ${honorific} vui lòng kiểm tra lại chính xác mã vận đơn trên hóa đơn hoặc cung cấp số điện thoại đặt hàng để em tra cứu lại giúp mình nhé ạ!`;
+			// Nếu khách không chỉ định mã số cụ thể nhưng hỏi "đơn vừa đặt", "đơn mới đặt", "đơn gần nhất", "huỷ đơn", "đơn của tôi"
+			if (!matchedSaleorOrder && saleorOrders.length > 0) {
+				const isRecentOrderQuery =
+					lower.includes("vừa đặt") ||
+					lower.includes("mới đặt") ||
+					lower.includes("gần nhất") ||
+					lower.includes("mới nhất") ||
+					lower.includes("của tôi") ||
+					lower.includes("huỷ đơn") ||
+					lower.includes("hủy đơn") ||
+					lower.includes("hủy") ||
+					lower.includes("huỷ") ||
+					lower === "huỷ đơn hàng" ||
+					lower === "hủy đơn hàng" ||
+					lower === "tra cứu đơn hàng" ||
+					!explicitCodeMatch;
+
+				if (isRecentOrderQuery) {
+					// Nếu có thông tin người dùng (tên/sđt) khớp thì ưu tiên
+					if (phone) {
+						const cleanPhoneDigits = phone.replace(/\D/g, "").slice(-9);
+						matchedSaleorOrder = saleorOrders.find((o) => o.shippingAddress?.phone?.replace(/\D/g, "").includes(cleanPhoneDigits)) || null;
+					}
+					if (!matchedSaleorOrder && name) {
+						const nameLower = name.toLowerCase();
+						matchedSaleorOrder = saleorOrders.find((o) => {
+							const fullName = `${o.shippingAddress?.firstName || ""} ${o.shippingAddress?.lastName || ""}`.toLowerCase();
+							return fullName.includes(nameLower) || nameLower.split(/\s+/).some((part) => part.length >= 2 && fullName.includes(part));
+						}) || null;
+					}
+					// Mặc định lấy đơn hàng mới nhất vừa đặt
+					if (!matchedSaleorOrder) {
+						matchedSaleorOrder = saleorOrders[0];
+					}
 				}
 			}
 
-			// 2. Quét theo Số điện thoại khách hàng nếu chưa thấy
-			if (!answer && !matchedShipment && phone) {
-				const cleanPhoneDigits = phone.replace(/\D/g, "").slice(-9);
-				matchedShipment = allShipments.find((s) => s.recipient.phone.replace(/\D/g, "").includes(cleanPhoneDigits)) || null;
-			}
+			// XỬ LÝ KHI TÌM THẤY ĐƠN HÀNG TRÊN SALEOR
+			if (matchedSaleorOrder) {
+				const orderNum = matchedSaleorOrder.number;
+				const itemsSummary = matchedSaleorOrder.lines && matchedSaleorOrder.lines.length > 0
+					? matchedSaleorOrder.lines.map((l) => `${l.productName} (x${l.quantity})`).join(", ")
+					: "Sách AuraBook";
+				const totalStr = `${new Intl.NumberFormat("vi-VN").format(matchedSaleorOrder.total.gross.amount)}₫`;
 
-			// 3. Quét theo Tên khách hàng (ví dụ: Duy, Duy Bas, Duy Nguyễn)
-			if (!answer && !matchedShipment && name) {
-				const nameLower = name.toLowerCase();
-				const matchingByName = allShipments.filter((s) => {
-					const rName = s.recipient.name.toLowerCase();
-					return rName.includes(nameLower) || nameLower.split(/\s+/).some((part: string) => part.length >= 2 && rName.includes(part));
-				});
-				if (matchingByName.length > 0) {
-					// Lấy đơn hàng mới nhất
-					matchedShipment = matchingByName[0];
-				}
-			}
+				if (isCancelIntent) {
+					// Kiểm tra cú pháp xác nhận lệnh hủy đơn hàng tường minh (Strict Command Guardrail)
+					const isStrictCancelConfirmation =
+						/(?:tôi\s*)?(?:xác\s*nhận|xac\s*nhan)\s*(?:hủy|huỷ|huy)\s*(?:đơn|don)(?:\s*hàng|\s*hang)?/i.test(lower) ||
+						/(?:confirm\s*cancel|xác\s*nhận\s*hủy)/i.test(lower);
 
-			// 4. Nếu khách hàng hỏi "đơn hàng gần nhất của tôi" và hệ thống có các đơn gần đây, lấy đơn mới nhất
-			if (!answer && !matchedShipment && (lower.includes("gần nhất") || lower.includes("vừa đặt") || lower.includes("của tôi")) && allShipments.length > 0) {
-				matchedShipment = allShipments[0];
-			}
+					if (matchedSaleorOrder.status === "CANCELED") {
+						thinkingSteps.push(`Aura AI (${llmModel}): Đơn hàng #${orderNum} đã ở trạng thái CANCELED.`);
+						answer = `Dạ đơn hàng #${orderNum} (${itemsSummary}) của ${honorific} đã được hủy trước đó rồi ạ. Trạng thái hiện tại trên hệ thống là "Đã hủy" (Canceled).`;
+					} else if (matchedSaleorOrder.status === "UNFULFILLED") {
+						if (isStrictCancelConfirmation) {
+							// Người dùng đã nói/nhập đúng câu lệnh xác nhận hủy
+							thinkingSteps.push(`Aura AI (${llmModel}): Khách hàng đã nói đúng câu lệnh xác nhận hủy đơn #${orderNum}. Tiến hành gọi mutation orderCancel.`);
+							const cancelRes = await cancelSaleorOrder(matchedSaleorOrder.id);
+							if (cancelRes.ok) {
+								answer = `Dạ em đã thực hiện hủy thành công đơn hàng #${orderNum} (${itemsSummary}) với tổng giá trị ${totalStr} cho ${honorific} theo đúng câu lệnh xác nhận rồi ạ! Trạng thái đơn hàng trên hệ thống AuraBook hiện đã được cập nhật thành "Đã hủy" (CANCELED). ${honorific} hoàn toàn có thể yên tâm nhé ạ!`;
+								matchedSaleorOrder.status = "CANCELED";
+							} else {
+								thinkingSteps.push(`Aura AI (${llmModel}): Lỗi khi gọi orderCancel: ${JSON.stringify(cancelRes.errors)}`);
+								answer = `Dạ em đã ghi nhận lệnh xác nhận hủy đơn hàng #${orderNum} (${itemsSummary}) của ${honorific}. Hệ thống đang chuyển thông tin cho chuyên viên quản trị kho để hoàn tất thủ tục hủy đơn và hoàn tiền (nếu có) ngay cho mình nhé ạ!`;
+							}
+						} else {
+							// Người dùng mới chỉ yêu cầu hủy hoặc hỏi hủy nhưng CHƯA nói đúng câu lệnh xác nhận
+							thinkingSteps.push(`Aura AI (${llmModel}): Khách hàng có ý định hủy đơn #${orderNum} nhưng chưa dùng câu lệnh xác nhận tường minh. Yêu cầu nhập đúng cú pháp.`);
+							answer = `Dạ em đã tìm thấy đơn hàng #${orderNum} (${itemsSummary}) với tổng giá trị ${totalStr} đang ở trạng thái Chờ xuất kho. Để đảm bảo an toàn tuyệt đối và tránh thao tác nhầm, ${honorific} vui lòng nói hoặc nhập chính xác câu lệnh: "XÁC NHẬN HỦY ĐƠN #${orderNum}" (hoặc "Tôi xác nhận hủy đơn #${orderNum}") để em tiến hành hủy đơn ngay cho mình nhé ạ!`;
+						}
+					} else {
+						// Đơn hàng đã xuất kho hoặc hoàn tất
+						thinkingSteps.push(`Aura AI (${llmModel}): Đơn hàng #${orderNum} có trạng thái ${matchedSaleorOrder.status}, không thể hủy tự động.`);
+						answer = `Dạ em đã kiểm tra đơn hàng #${orderNum} (${itemsSummary}) của ${honorific}. Hiện tại đơn hàng đã được xuất kho và đang trong quy trình vận chuyển (${matchedSaleorOrder.status}), do đó hệ thống không thể tự động hủy trực tiếp được nữa ạ. Khi bưu tá liên hệ giao hàng, ${honorific} có thể từ chối nhận hàng hoặc sử dụng chính sách đổi trả trong vòng 30 ngày của AuraBook nhé ạ!`;
+					}
 
-			// NẾU TÌM THẤY ĐƠN HÀNG HỢP LỆ TRONG CƠ SỞ DỮ LIỆU
-			if (!answer) {
-				if (matchedShipment) {
+					const statusLabel = matchedSaleorOrder.status === "CANCELED"
+						? "Đã hủy (Canceled)"
+						: isStrictCancelConfirmation
+							? "Đang xử lý hủy"
+							: "Chờ lệnh xác nhận hủy";
+					cards.push({
+						type: "order",
+						data: {
+							orderCode: orderNum,
+							status: statusLabel,
+							statusStep: 1,
+							carrier: "AuraBook Order Management",
+							trackingCode: `AUR-#${orderNum}`,
+							estimate: "Đã hủy theo yêu cầu",
+							items: itemsSummary,
+							total: totalStr,
+						},
+					});
+				} else {
+					// Tra cứu thông tin đơn hàng bình thường
+					const statusMap: Record<string, string> = {
+						UNFULFILLED: "Đang xử lý / Chờ xuất kho",
+						FULFILLED: "Đã đóng gói & Xuất kho",
+						CANCELED: "Đã hủy",
+						PARTIALLY_FULFILLED: "Đang giao một phần",
+					};
+					const displayStatus = statusMap[matchedSaleorOrder.status] || matchedSaleorOrder.status;
+
 					thinkingSteps.push(
-						`Aura AI (${llmModel}): Xác thực vận đơn #${matchedShipment.orderNumber} (${matchedShipment.trackingCode}). Trạng thái: "${matchedShipment.statusDisplay}".`,
+						`Aura AI (${llmModel}): Xác thực đơn hàng #${orderNum} trên Saleor. Trạng thái: "${displayStatus}".`,
 					);
 
-					const estDateStr = matchedShipment.estimatedDeliveryDate
-						? new Date(matchedShipment.estimatedDeliveryDate).toLocaleDateString("vi-VN", {
-							day: "2-digit",
-							month: "2-digit",
-							year: "numeric",
-						})
-						: "24 đến 48 giờ tới";
-
-					const destAddress = matchedShipment.recipient.address
-						? `${matchedShipment.recipient.address}, ${matchedShipment.recipient.district}`
-						: "địa chỉ đã đăng ký";
-
-					if (lower.includes("hủy") || lower.includes("huỷ") || lower.includes("cancel")) {
-						answer = `Dạ em đã kiểm tra đơn hàng #${matchedShipment.orderNumber} (Mã vận đơn: ${matchedShipment.trackingCode}) gửi về ${destAddress} rồi ạ. Hiện tại kiện hàng đã được xuất kho và đang được xử lý luân chuyển tại kho phân loại của GHN (${matchedShipment.statusDisplay}), do đó hệ thống không thể hỗ trợ hủy đơn trực tiếp được nữa ạ. Khi bưu tá liên hệ giao hàng, ${honorific} có thể từ chối nhận nếu không còn nhu cầu nhé ạ!`;
-					} else {
-						answer = `Dạ em chào ${honorific}! Em đã kiểm tra trên hệ thống vận đơn GHN rồi ạ. Đơn hàng gần nhất của ${honorific} là đơn #${matchedShipment.orderNumber} (Mã vận đơn: ${matchedShipment.trackingCode}), gồm ${matchedShipment.itemsSummary}. Hiện kiện hàng đang ở trạng thái "${matchedShipment.statusDisplay}" và dự kiến sẽ được giao đến ${destAddress} vào ngày ${estDateStr} ạ!`;
-					}
+					answer = `Dạ em đã tra cứu thông tin đơn hàng #${orderNum} của ${honorific} trên hệ thống AuraBook rồi ạ! Đơn gồm: ${itemsSummary}, tổng thanh toán là ${totalStr}. Hiện tại đơn hàng đang ở trạng thái "${displayStatus}" và đang được đội ngũ kho AuraBook chuẩn bị gửi đến ${honorific} ạ!`;
 
 					cards.push({
 						type: "order",
 						data: {
-							orderCode: matchedShipment.orderNumber || matchedShipment.orderId,
-							status: matchedShipment.statusDisplay || "Đang vận chuyển",
-							statusStep: matchedShipment.status === "delivered" ? 4 : matchedShipment.status === "delivering" ? 3 : matchedShipment.status === "storing" ? 2 : 1,
-							carrier: matchedShipment.carrier || "Giao Hàng Nhanh (GHN)",
-							trackingCode: matchedShipment.trackingCode,
-							estimate: `Dự kiến: ${estDateStr}`,
-							items: matchedShipment.itemsSummary || "Đơn hàng sách AuraBook",
-							total: `${new Intl.NumberFormat("vi-VN").format((matchedShipment.fee || 22000) + (matchedShipment.codAmount || 118000))}₫`,
+							orderCode: orderNum,
+							status: displayStatus,
+							statusStep: matchedSaleorOrder.status === "FULFILLED" ? 3 : matchedSaleorOrder.status === "CANCELED" ? 1 : 2,
+							carrier: "Giao Hàng Nhanh (GHN) / Kho AuraBook",
+							trackingCode: `AUR-#${orderNum}`,
+							estimate: "Dự kiến 24 - 48 giờ tới",
+							items: itemsSummary,
+							total: totalStr,
 						},
 					});
-				} else {
-					// NẾU KHÔNG TÌM THẤY ĐƠN HÀNG -> HỎI LẠI NGƯỜI DÙNG CÓ CƠ SỞ (CLARIFICATION)
-					thinkingSteps.push(
-						`Aura AI (${llmModel}): Chưa xác định được đơn hàng liên kết. Hướng dẫn khách hàng cung cấp mã đơn hoặc số điện thoại đặt hàng.`,
-					);
+				}
+			} else {
+				// 2. Nếu không tìm thấy trong Saleor, đối soát tiếp với GHN shipments (Mô phỏng vận đơn bưu cục)
+				const allShipments = getAllGHNShipments();
+				let matchedShipment: GHNShipment | null = null;
 
-					answer = `Dạ em chào ${honorific} ạ! Em rất sẵn lòng hỗ trợ tra cứu đơn hàng cho mình. Để em có thể tìm chính xác đơn hàng gần nhất của ${honorific} trên hệ thống, ${honorific} có thể cung cấp thêm Mã đơn hàng (ví dụ: #9) hoặc Số điện thoại khi đặt hàng giúp em được không ạ?`;
+				if (explicitCodeMatch) {
+					const targetCode = explicitCodeMatch[1] || explicitCodeMatch[0];
+					matchedShipment = getGHNShipmentByOrder(targetCode) ||
+						allShipments.find((s) => s.orderNumber === targetCode || s.orderId === targetCode || s.trackingCode.toLowerCase() === targetCode.toLowerCase()) ||
+						null;
+
+					if (!matchedShipment && targetCode.toUpperCase().startsWith("GHN")) {
+						thinkingSteps.push(`Aura AI (${llmModel}): Tra cứu mã vận đơn ${targetCode} nhưng không tìm thấy trên hệ thống GHN.`);
+						answer = `Dạ em đã kiểm tra trên hệ thống Giao Hàng Nhanh (GHN) nhưng không tìm thấy thông tin đơn hàng với mã vận đơn "${targetCode}" ạ. ${honorific} vui lòng kiểm tra lại chính xác mã vận đơn trên hóa đơn hoặc cung cấp số điện thoại đặt hàng để em tra cứu lại giúp mình nhé ạ!`;
+					}
+				}
+
+				if (!answer && !matchedShipment && phone) {
+					const cleanPhoneDigits = phone.replace(/\D/g, "").slice(-9);
+					matchedShipment = allShipments.find((s) => s.recipient.phone.replace(/\D/g, "").includes(cleanPhoneDigits)) || null;
+				}
+
+				if (!answer && !matchedShipment && name) {
+					const nameLower = name.toLowerCase();
+					const matchingByName = allShipments.filter((s) => {
+						const rName = s.recipient.name.toLowerCase();
+						return rName.includes(nameLower) || nameLower.split(/\s+/).some((part: string) => part.length >= 2 && rName.includes(part));
+					});
+					if (matchingByName.length > 0) {
+						matchedShipment = matchingByName[0];
+					}
+				}
+
+				if (!answer && !matchedShipment && (lower.includes("gần nhất") || lower.includes("vừa đặt") || lower.includes("của tôi")) && allShipments.length > 0) {
+					matchedShipment = allShipments[0];
+				}
+
+				if (!answer) {
+					if (matchedShipment) {
+						thinkingSteps.push(
+							`Aura AI (${llmModel}): Xác thực vận đơn #${matchedShipment.orderNumber} (${matchedShipment.trackingCode}). Trạng thái: "${matchedShipment.statusDisplay}".`,
+						);
+
+						const estDateStr = matchedShipment.estimatedDeliveryDate
+							? new Date(matchedShipment.estimatedDeliveryDate).toLocaleDateString("vi-VN", {
+								day: "2-digit",
+								month: "2-digit",
+								year: "numeric",
+							})
+							: "24 đến 48 giờ tới";
+
+						const destAddress = matchedShipment.recipient.address
+							? `${matchedShipment.recipient.address}, ${matchedShipment.recipient.district}`
+							: "địa chỉ đã đăng ký";
+
+						if (isCancelIntent) {
+							answer = `Dạ em đã kiểm tra đơn hàng #${matchedShipment.orderNumber} (Mã vận đơn: ${matchedShipment.trackingCode}) gửi về ${destAddress} rồi ạ. Hiện tại kiện hàng đã được xuất kho và đang được xử lý luân chuyển tại kho phân loại của GHN (${matchedShipment.statusDisplay}), do đó hệ thống không thể hỗ trợ hủy đơn trực tiếp được nữa ạ. Khi bưu tá liên hệ giao hàng, ${honorific} có thể từ chối nhận nếu không còn nhu cầu nhé ạ!`;
+						} else {
+							answer = `Dạ em chào ${honorific}! Em đã kiểm tra trên hệ thống vận đơn GHN rồi ạ. Đơn hàng gần nhất của ${honorific} là đơn #${matchedShipment.orderNumber} (Mã vận đơn: ${matchedShipment.trackingCode}), gồm ${matchedShipment.itemsSummary}. Hiện kiện hàng đang ở trạng thái "${matchedShipment.statusDisplay}" và dự kiến sẽ được giao đến ${destAddress} vào ngày ${estDateStr} ạ!`;
+						}
+
+						cards.push({
+							type: "order",
+							data: {
+								orderCode: matchedShipment.orderNumber || matchedShipment.orderId,
+								status: matchedShipment.statusDisplay || "Đang vận chuyển",
+								statusStep: matchedShipment.status === "delivered" ? 4 : matchedShipment.status === "delivering" ? 3 : matchedShipment.status === "storing" ? 2 : 1,
+								carrier: matchedShipment.carrier || "Giao Hàng Nhanh (GHN)",
+								trackingCode: matchedShipment.trackingCode,
+								estimate: `Dự kiến: ${estDateStr}`,
+								items: matchedShipment.itemsSummary || "Đơn hàng sách AuraBook",
+								total: `${new Intl.NumberFormat("vi-VN").format((matchedShipment.fee || 22000) + (matchedShipment.codAmount || 118000))}₫`,
+							},
+						});
+					} else {
+						// NẾU KHÔNG TÌM THẤY ĐƠN HÀNG
+						thinkingSteps.push(
+							`Aura AI (${llmModel}): Chưa xác định được đơn hàng liên kết. Hướng dẫn khách hàng cung cấp mã đơn hoặc số điện thoại đặt hàng.`,
+						);
+
+						answer = `Dạ em chào ${honorific} ạ! Em rất sẵn lòng hỗ trợ tra cứu đơn hàng cho mình. Để em có thể tìm chính xác đơn hàng gần nhất của ${honorific} trên hệ thống, ${honorific} có thể cung cấp thêm Mã đơn hàng (ví dụ: #45) hoặc Số điện thoại khi đặt hàng giúp em được không ạ?`;
+					}
 				}
 			}
 		}
@@ -1383,10 +1711,13 @@ Em đã gửi thẻ ấn phẩm chi tiết ngay bên dưới để ${honorific} 
 				answer = `Dạ hiện tại kho sách AuraBook chưa phân phối cuốn "Clean Code" (Mã Sạch) của Robert C. Martin ạ. Tuy nhiên, nếu ${honorific} quan tâm đến tư duy logic sắc bén, kỹ năng giải quyết vấn đề và phương pháp rèn luyện trí nhớ đỉnh cao (rất phù hợp và hữu ích cho người làm công nghệ), em xin phép gợi ý cuốn "${triTueDoThai.title}" của Eran Katz (Bản Ebook: ${triTueDoThai.ebookPrice} / Sách giấy: ${triTueDoThai.physicalPrice}) nhé ạ!`;
 			} else {
 				let matchedBook: BookProduct | null = null;
-				if (resolvedNode) {
+				if (isAskingAlternativeBook) {
+					// Khách hàng hỏi 'còn tác phẩm khác không' -> Không chọn lại tác phẩm cũ
+					matchedBook = null;
+				} else if (resolvedNode) {
 					matchedBook = CATALOG.find((b) => b.slug === resolvedNode.properties.slug) || null;
 				}
-				if (!matchedBook) {
+				if (!matchedBook && !isAskingAlternativeBook) {
 					for (const c of CATALOG) {
 						if (lower.includes(c.title.toLowerCase()) || ascii.includes(c.slug.replace(/-/g, " "))) {
 							matchedBook = c;
@@ -1395,20 +1726,48 @@ Em đã gửi thẻ ấn phẩm chi tiết ngay bên dưới để ${honorific} 
 					}
 				}
 				if (!matchedBook) {
+					// Check specific titles/keywords first
 					if (
-						lower.includes("phát triển bản thân") ||
-						lower.includes("phat trien ban than") ||
-						lower.includes("phát triển") ||
-						lower.includes("phat trien") ||
-						lower.includes("kỹ năng") ||
-						lower.includes("ky nang") ||
-						lower.includes("self-help") ||
 						lower.includes("đắc nhân tâm") ||
+						lower.includes("dac nhan tam") ||
+						lower.includes("dale carnegie") ||
 						(lower.includes("giao tiếp") && !lower.includes("kỹ thuật")) ||
 						lower.includes("ứng xử") ||
-						lower.includes("thấu hiểu")
+						lower.includes("thấu hiểu lòng người")
 					) {
 						matchedBook = CATALOG.find((b) => b.slug === "dac-nhan-tam") || null;
+					} else if (
+						lower.includes("bốn thỏa ước") ||
+						lower.includes("bon thoa uoc") ||
+						lower.includes("don miguel ruiz") ||
+						lower.includes("toltec") ||
+						lower.includes("chữa lành") ||
+						lower.includes("bình an nội tâm")
+					) {
+						matchedBook = CATALOG.find((b) => b.slug === "bon-thoa-uoc") || null;
+					} else if (
+						lower.includes("phát triển bản thân") ||
+						lower.includes("phat trien ban than") ||
+						lower.includes("hoàn thiện bản thân") ||
+						lower.includes("kỹ năng sống") ||
+						lower.includes("self-help")
+					) {
+						// For general self-development inquiry: Recommend both "Bốn Thỏa Ước" and "Đắc Nhân Tâm"
+						const bonThoaUoc = CATALOG.find((b) => b.slug === "bon-thoa-uoc") || CATALOG[1];
+						const dacNhanTam = CATALOG.find((b) => b.slug === "dac-nhan-tam") || CATALOG[0];
+						
+						thinkingSteps.push(
+							`Aura AI (${llmModel}): Tư vấn toàn diện chuyên đề Phát triển bản thân với 2 ấn phẩm bổ trợ: "${bonThoaUoc.title}" (nội tâm) và "${dacNhanTam.title}" (đối nhân xử thế).`,
+						);
+
+						cards.push({ type: "product", data: bonThoaUoc });
+						cards.push({ type: "product", data: dacNhanTam });
+
+						answer = `Dạ em chào ${honorific} ạ! Trong dòng sách phát triển bản thân và hoàn thiện cuộc sống, AuraBook trân trọng gợi ý đến ${honorific} hai tác phẩm nổi bật:
+1. 🌿 **Bốn Thỏa Ước** của Don Miguel Ruiz (Bản Ebook: ${bonThoaUoc.ebookPrice} / Sách giấy: ${bonThoaUoc.physicalPrice}) - Minh triết sống Toltec giúp giải phóng những niềm tin giới hạn, làm chủ cảm xúc và đạt tự do nội tâm.
+2. 📖 **Đắc Nhân Tâm** của Dale Carnegie (Bản Ebook: ${dacNhanTam.ebookPrice} / Sách giấy: ${dacNhanTam.physicalPrice}) - Cẩm nang kinh điển về nghệ thuật giao tiếp, thấu hiểu tâm lý và thu phục lòng người.
+
+Cả hai tác phẩm đều có sẵn Bản Sách Điện Tử (Ebook DRM) và Bản Sách Giấy. Em đã hiển thị thẻ ấn phẩm của cả 2 cuốn sách ngay bên dưới để ${honorific} tiện tham khảo và đặt mua nhé ạ!`;
 					} else if (
 						lower.includes("cách nghĩ") ||
 						lower.includes("làm giàu") ||
@@ -1458,7 +1817,61 @@ Em đã gửi thẻ ấn phẩm chi tiết ngay bên dưới để ${honorific} 
 					}
 				}
 
-				if (matchedBook) {
+				if (isAskingAlternativeBook) {
+					// Lọc danh sách tác phẩm còn lại chưa từng đề xuất trong hội thoại
+					const remainingBooks = CATALOG.filter((b) => !seenBookSlugs.has(b.slug));
+					const candidates = remainingBooks.length > 0 ? remainingBooks : CATALOG;
+
+					const candidatesSummary = candidates
+						.map((b, i) => `${i + 1}. "${b.title}" - Tác giả: ${b.author} | Thể loại: ${b.badge} | Ebook: ${b.ebookPrice}, Sách giấy: ${b.physicalPrice} (Slug: ${b.slug})`)
+						.join("\n");
+
+					thinkingSteps.push(
+						`Aura AI (${llmModel}): Nhận diện nhu cầu tìm tác phẩm khác (loại trừ: ${Array.from(seenBookSlugs).join(", ")}). Khởi tạo tư vấn tác phẩm mới từ kho còn lại.`,
+					);
+
+					const altPrompt = `Bạn là Aura AI, Chuyên viên Chăm sóc Khách hàng & Tư vấn Sách Thông minh của AuraBook.
+Khách hàng ${honorific} vừa nói: "${cleanQuery}" (muốn xem tác phẩm khác, không muốn lặp lại các cuốn đã biết).
+
+KHO CÁC TÁC PHẨM CÒN LẠI PHÙ HỢP CỦA AURABOOK:
+${candidatesSummary}
+
+YÊU CẦU:
+1. Chọn 1 cuốn sách tiếp theo phù hợp nhất trong danh sách trên để giới thiệu cho ${honorific}.
+2. Giải thích lý do tương đồng bằng giọng điệu ân cần, tự nhiên, sinh động, xưng "em" và gọi "${honorific}".
+3. Nêu rõ tên tác phẩm, tác giả, giá Bản Ebook và Bản Sách Giấy.
+4. TUYỆT ĐỐI KHÔNG sinh placeholder dạng "[Tùy vào phiên bản sách...]" hay "**Thẻ ấn phẩm:**".
+5. Cuối câu trả lời, ghi kèm slug sách vừa chọn theo định dạng: [BOOK: slug_sach] (ví dụ: [BOOK: ${candidates[0].slug}]).`;
+
+					const llmAltAnswer = await queryLLM({
+						model: llmModel,
+						provider: llmProvider,
+						apiKey: llmApiKey,
+						baseUrl: llmBaseUrl,
+						prompt: `Khách hàng ${honorific} hỏi: "${cleanQuery}". Hãy tư vấn 1 cuốn sách khác hấp dẫn trong kho sách cho khách hàng.`,
+						systemPrompt: altPrompt,
+						timeoutMs: 25000,
+					});
+
+					if (llmAltAnswer && llmAltAnswer.length > 25) {
+						const match = llmAltAnswer.match(/\[BOOK:\s*([^\n\]]+)\]/i);
+						const selectedSlug = match ? match[1].trim().toLowerCase() : candidates[0].slug;
+						const foundBook = candidates.find((b) => b.slug === selectedSlug || b.slug.includes(selectedSlug)) || candidates[0];
+						cards.push({ type: "product", data: foundBook });
+						answer = llmAltAnswer
+							.replace(/\*?\*?\s*(?:Mã|Mã sách|Slug|Tác phẩm)\s*:?\s*\*?\*?\s*\[BOOK:[^\]]+\]/gi, "")
+							.replace(/\[BOOK:[^\]]+\]/gi, "")
+							.replace(/\*\*Thẻ ấn phẩm:?\*\*[\s\S]*?(?=\n\n|$)/gi, "")
+							.replace(/\[Tùy vào phiên bản sách[^\]]*\]/gi, "")
+							.trim();
+					} else {
+						const nextBook = candidates[0];
+						cards.push({ type: "product", data: nextBook });
+						answer = `Dạ ${honorific} ơi, bên cạnh các tác phẩm đã đề xuất, AuraBook còn cuốn sách rất đặc sắc là "${nextBook.title}" của tác giả ${nextBook.author} (Bản Ebook: ${nextBook.ebookPrice} / Sách giấy: ${nextBook.physicalPrice}). Tác phẩm mang lại nhiều góc nhìn sâu sắc và bài học ứng dụng thiết thực, em đã gửi kèm thẻ ấn phẩm ngay bên dưới để ${honorific} tiện tham khảo nhé ạ!`;
+					}
+				} else if (answer) {
+					// Answer already generated by multi-book recommendation (e.g. self-development dual book)
+				} else if (matchedBook) {
 					thinkingSteps.push(
 						`Aura AI (${llmModel}): Nhận diện nhu cầu tư vấn chủ đề "${matchedBook.badge}". Khởi tạo đề xuất tác phẩm "${matchedBook.title}" (${matchedBook.author}).`,
 					);
@@ -1472,7 +1885,7 @@ Em đã gửi thẻ ấn phẩm chi tiết ngay bên dưới để ${honorific} 
 					else if (matchedBook.slug === "bon-thoa-uoc") categoryName = "tâm lý học và minh triết cuộc sống";
 					else if (matchedBook.slug === "tri-tue-do-thai") categoryName = "trí tuệ và phương pháp tư duy";
 
-					const systemPrompt = `Bạn là Aura AI, Chuyên viên Chăm sóc Khách hàng & Tư vấn Sách Thông minh của AuraBook. Giọng điệu ấm áp, ân cần, tự nhiên và chuyên nghiệp. Xưng là "em" và gọi khách hàng là "${honorific}". Trả lời tự nhiên, súc tích trong 2-3 câu ngắn. Giới thiệu ấn phẩm "${matchedBook.title}" của tác giả ${matchedBook.author} đúng với lĩnh vực ${categoryName} (có Bản Ebook Sách Điện Tử ${matchedBook.ebookPrice} và Bản Sách Giấy Vật Lý ${matchedBook.physicalPrice}), hướng dẫn khách xem thẻ ấn phẩm chi tiết ngay bên dưới để chọn phiên bản và mua sách.`;
+					const systemPrompt = `Bạn là Aura AI, Chuyên viên Chăm sóc Khách hàng & Tư vấn Sách Thông minh của AuraBook. Giọng điệu ấm áp, ân cần, tự nhiên và chuyên nghiệp. Xưng là "em" và gọi khách hàng là "${honorific}". Trả lời súc tích trong 2-3 câu ngắn. Giới thiệu ấn phẩm "${matchedBook.title}" của tác giả ${matchedBook.author} đúng với lĩnh vực ${categoryName} (có Bản Ebook Sách Điện Tử ${matchedBook.ebookPrice} và Bản Sách Giấy Vật Lý ${matchedBook.physicalPrice}), hướng dẫn khách xem thẻ ấn phẩm chi tiết ngay bên dưới để chọn phiên bản và mua sách. Quy tắc quan trọng: Luôn kết thúc bằng một câu văn trọn vẹn có dấu chấm (.), tuyệt đối không bỏ lửng câu chữ giữa chừng.`;
 
 					const llmAnswer = await queryLLM({
 						model: llmModel,
@@ -1481,7 +1894,7 @@ Em đã gửi thẻ ấn phẩm chi tiết ngay bên dưới để ${honorific} 
 						baseUrl: llmBaseUrl,
 						prompt: `Khách hàng ${honorific} vừa nói: "${cleanQuery}". Hãy tư vấn giới thiệu cuốn "${matchedBook.title}" của tác giả ${matchedBook.author} đúng với lĩnh vực ${categoryName} cho khách một cách tự nhiên, hấp dẫn.`,
 						systemPrompt,
-						timeoutMs: 2500,
+						timeoutMs: 25000,
 					});
 
 					if (llmAnswer && llmAnswer.length > 20) {
@@ -1545,128 +1958,92 @@ Tất cả tác phẩm đều có sẵn Bản Ebook DRM đọc ngay và Sách Gi
 						} else if (isInformationalQuestion) {
 							// Là câu hỏi giải thích / quy trình / thông tin -> để ngỏ để LLM (Gemma 2) trả lời tự nhiên ở TRƯỜNG HỢP 8
 							answer = "";
-						} else if (isAdviceOrTopicInquiry) {
-							// Câu hỏi nhờ tư vấn chủ đề -> Luôn đề xuất sách phù hợp mà KHÔNG BAO GIỜ nói "chưa có ấn phẩm"
-							let suggestedBook: BookProduct = CATALOG[0]; // Mặc định Đắc Nhân Tâm (phát triển bản thân)
-							let relatedTopic = "phát triển bản thân và nghệ thuật sống";
-
-							if (
-								lower.includes("tâm lý") ||
-								lower.includes("chữa lành") ||
-								lower.includes("tinh thần") ||
-								lower.includes("cảm xúc") ||
-								lower.includes("nội tâm") ||
-								lower.includes("hạnh phúc") ||
-								lower.includes("thói quen")
-							) {
-								suggestedBook = CATALOG.find((b) => b.slug === "bon-thoa-uoc") || CATALOG[1];
-								relatedTopic = "tâm lý học và minh triết sống";
-							} else if (
-								lower.includes("trí nhớ") ||
-								lower.includes("tri nho") ||
-								lower.includes("ghi nhớ")
-							) {
-								suggestedBook = CATALOG.find((b) => b.slug === "bi-mat-cua-mot-tri-nho-sieu-pham") || CATALOG[5];
-								relatedTopic = "rèn luyện trí nhớ siêu phàm và kỹ năng học tập nhanh";
-							} else if (
-								lower.includes("lịch sử") ||
-								lower.includes("văn minh") ||
-								lower.includes("loài người")
-							) {
-								suggestedBook = CATALOG.find((b) => b.slug === "sapiens-luoc-su-loai-nguoi") || CATALOG[2];
-								relatedTopic = "lịch sử và văn minh nhân loại";
-							} else if (
-								lower.includes("kinh doanh") ||
-								lower.includes("làm giàu") ||
-								lower.includes("tài chính") ||
-								lower.includes("tiền")
-							) {
-								suggestedBook = CATALOG.find((b) => b.slug === "cach-nghi-de-thanh-cong") || CATALOG[6];
-								relatedTopic = "tư duy làm giàu và phát triển sự nghiệp";
-							} else if (
-								lower.includes("trí tuệ") ||
-								lower.includes("tư duy") ||
-								lower.includes("logic") ||
-								lower.includes("công nghệ")
-							) {
-								suggestedBook = CATALOG.find((b) => b.slug === "tri-tue-do-thai") || CATALOG[3];
-								relatedTopic = "trí tuệ, rèn luyện tư duy và phương pháp học hỏi";
-							}
-
-							thinkingSteps.push(
-								`Aura AI (${llmModel}): Nhận diện nhu cầu tư vấn chủ đề "${relatedTopic}". Đề xuất ấn phẩm hàng đầu "${suggestedBook.title}" (${suggestedBook.author}).`,
-							);
-
-							cards.push({ type: "product", data: suggestedBook });
-
-							answer = `Dạ em chào ${honorific} ạ! Đúng với sự quan tâm của ${honorific} về chủ đề ${relatedTopic}, em xin gợi ý cuốn sách kinh điển và bán chạy nhất tại AuraBook là "${suggestedBook.title}" của tác giả ${suggestedBook.author}. Tác phẩm hiện có sẵn Bản Sách Điện Tử (${suggestedBook.ebookPrice}) đọc ngay có bản quyền DRM và Bản Sách Vật Lý (${suggestedBook.physicalPrice}) giao tận nhà. Em đã hiển thị thẻ ấn phẩm chi tiết ngay bên dưới để ${honorific} tiện tham khảo và đặt mua nhé ạ!`;
 						} else {
-							// NGUYÊN TẮC BẢO ĐẢM DỮ LIỆU CƠ SỞ DỮ LIỆU (ANTI-HALLUCINATION GUARDRAIL):
-							// Khách hàng thực sự tìm kiếm một tên sách cụ thể không có trong kho sách
-							let suggestedBook: BookProduct = CATALOG[0]; // Mặc định Đắc Nhân Tâm
-							let relatedTopic = "kỹ năng giao tiếp và đối nhân xử thế";
-
-							if (
-								lower.includes("nhà giả kim") ||
-								lower.includes("nha gia kim") ||
-								lower.includes("tâm lý") ||
-								lower.includes("chữa lành") ||
-								lower.includes("tinh thần") ||
-								lower.includes("cảm xúc") ||
-								lower.includes("nội tâm") ||
-								lower.includes("hạnh phúc") ||
-								lower.includes("thiền") ||
-								lower.includes("thói quen")
-							) {
-								suggestedBook = CATALOG.find((b) => b.slug === "bon-thoa-uoc") || CATALOG[1];
-								relatedTopic = "tâm lý học và minh triết sống";
-							} else if (
-								lower.includes("trí nhớ") ||
-								lower.includes("tri nho") ||
-								lower.includes("ghi nhớ") ||
-								lower.includes("nhớ lâu") ||
-								lower.includes("kỷ lục")
-							) {
-								suggestedBook = CATALOG.find((b) => b.slug === "bi-mat-cua-mot-tri-nho-sieu-pham") || CATALOG[5];
-								relatedTopic = "rèn luyện trí nhớ siêu phàm và kỹ năng học tập nhanh";
-							} else if (
-								lower.includes("harry potter") ||
-								lower.includes("lịch sử") ||
-								lower.includes("văn minh") ||
-								lower.includes("tiến hóa") ||
-								lower.includes("loài người") ||
-								lower.includes("khoa học") ||
-								lower.includes("xã hội") ||
-								lower.includes("thế giới")
-							) {
-								suggestedBook = CATALOG.find((b) => b.slug === "sapiens-luoc-su-loai-nguoi") || CATALOG[2];
-								relatedTopic = "lịch sử và văn minh nhân loại";
-							} else if (
-								lower.includes("kinh doanh") ||
-								lower.includes("làm giàu") ||
-								lower.includes("tiền") ||
-								lower.includes("tài chính") ||
-								lower.includes("tư duy") ||
-								lower.includes("logic") ||
-								lower.includes("công nghệ") ||
-								lower.includes("lập trình") ||
-								lower.includes("học tập") ||
-								lower.includes("hoc tap") ||
-								lower.includes("phát triển") ||
-								lower.includes("phat trien") ||
-								lower.includes("rèn luyện")
-							) {
-								suggestedBook = CATALOG.find((b) => b.slug === "tri-tue-do-thai") || CATALOG[3];
-								relatedTopic = "trí tuệ, rèn luyện tư duy và phát triển bản thân";
-							}
-
+							// TƯ VẤN SÁCH & SO KHỚP TƯƠNG ĐỒNG 100% BẰNG MÔ HÌNH LLM (Ollama Gemma 2: 2B trên GPU)
 							thinkingSteps.push(
-								`Aura AI (${llmModel}): Kiểm tra cơ sở dữ liệu Saleor & CATALOG: Không tìm thấy ấn phẩm "${extractedBookName}". Kích hoạt Anti-Hallucination Guardrail: Xác nhận trung thực chưa có và đề xuất sách hiện có cùng chủ đề "${suggestedBook.title}" (${relatedTopic}).`,
+								`Aura AI (${llmModel}): Khởi chạy cơ chế LLM Semantic Reasoning. Phân tích nhu cầu "${cleanQuery}" và đối chiếu kho sách 13 ấn phẩm thật của AuraBook.`,
 							);
 
-							cards.push({ type: "product", data: suggestedBook });
+							const bookCatalogSummary = CATALOG.map((b) => 
+								`- Slug: [${b.slug}] | Tựa sách: "${b.title}" | Tác giả: ${b.author} | Thể loại: ${b.badge} | Ebook: ${b.ebookPrice} | Sách giấy: ${b.physicalPrice} | Nội dung: ${b.description}`
+							).join("\n");
 
-							answer = `Dạ hiện tại kho sách của AuraBook chưa có ấn phẩm "${extractedBookName}" trong hệ thống cơ sở dữ liệu ạ. Tuy nhiên, nếu ${honorific} quan tâm đến các tác phẩm cùng chủ đề ${relatedTopic}, em xin phép gợi ý cuốn "${suggestedBook.title}" của tác giả ${suggestedBook.author} (Bản Ebook: ${suggestedBook.ebookPrice} / Bản Sách giấy: ${suggestedBook.physicalPrice}) hiện đang có sẵn trên hệ thống để ${honorific} tham khảo nhé ạ!`;
+							const consultationPrompt = `Bạn là Aura AI, Chuyên viên Chăm sóc Khách hàng & Tư vấn Sách Thông minh của AuraBook.
+Nhiệm vụ của bạn là đọc câu hỏi/yêu cầu của khách hàng, đối chiếu với KHO SÁCH CÓ SẴN CỦA AURABOOK và tư vấn 1 đến 2 cuốn sách phù hợp nhất, giải thích rõ lý do tương đồng.
+
+KHO 13 SÁCH HIỆN CÓ SẴN TẠI CỬA HÀNG AURABOOK:
+${bookCatalogSummary}
+
+HƯỚNG DẪN TƯ VẤN (BẮT BUỘC TUÂN THỦ):
+1. PHÂN TÍCH NHU CẦU: Nhận diện chính xác khách hàng đang quan tâm đến chủ đề gì (học tập, kinh tế, tài chính, trí nhớ, tư duy, tâm lý, lịch sử, văn học...).
+   - Nếu hỏi về KINH TẾ / TÀI CHÍNH / TIỀN TỆ / ĐẦU TƯ: Chọn "Chiến Tranh Tiền Tệ - Tập 1" (Song Hongbing) hoặc "Cách Nghĩ Để Thành Công" (Napoleon Hill).
+   - Nếu hỏi về HỌC TẬP / TRÍ NHỚ / PHƯƠNG PHÁP TƯ DUY: Chọn "Bí Mật Của Một Trí Nhớ Siêu Phàm" (Eran Katz) hoặc "Trí Tuệ Do Thái" (Eran Katz) hoặc "Tư Duy Nhanh Và Chậm" (Daniel Kahneman).
+   - Nếu hỏi về TÂM LÝ / CHỮA LÀNH / TRIẾT LÝ SỐNG: Chọn "Bốn Thỏa Ước" hoặc "Chủ Nghĩa Khắc Kỷ: Phong Cách Sống Bản Lĩnh & Bình Thản".
+   - Nếu hỏi về KỸ NĂNG GIAO TIẾP / ĐỐI NHÂN XỬ THẾ: Chọn "Đắc Nhân Tâm".
+   - Nếu hỏi về LỊCH SỬ / VĂN MINH NHÂN LOẠI: Chọn "Sapiens: Lược Sử Loài Người".
+   - Nếu hỏi về VĂN HỌC / CẢM XÚC TUỔI THƠ: Chọn "Cây Cam Ngọt Của Tôi".
+2. LÝ GIẢI TƯƠNG ĐỒNG BẰNG VĂN PHONG TỰ NHIÊN, ẤM ÁP:
+   - Giải thích cụ thể TẠI SAO cuốn sách này lại phù hợp và giúp ích cho nhu cầu của khách hàng. Tuyệt đối không trả lời rập khuôn, câu từ phải sinh động, tự nhiên.
+   - Luôn xưng "em" và gọi khách hàng là "${honorific}".
+   - Nêu rõ tên tác phẩm, tác giả, giá Bản Ebook và Bản Sách Giấy.
+3. KÈM THEO SLUG ĐỂ HỆ THỐNG GẮN THẺ SÁCH:
+   - Ở cuối câu trả lời, ghi kèm slug sách bạn vừa đề xuất theo định dạng: [BOOK: slug_sach] (ví dụ: [BOOK: chien-tranh-tien-te-tap-1] hoặc [BOOK: bi-mat-cua-mot-tri-nho-sieu-pham]).`;
+
+							const llmResponse = await queryLLM({
+								model: llmModel,
+								provider: llmProvider,
+								apiKey: llmApiKey,
+								baseUrl: llmBaseUrl,
+								prompt: `Khách hàng ${honorific} vừa nói: "${cleanQuery}". Hãy phân tích nhu cầu và tư vấn cuốn sách phù hợp nhất trong kho sách AuraBook cho khách hàng.`,
+								systemPrompt: consultationPrompt,
+								timeoutMs: 25000,
+							});
+
+							if (llmResponse && llmResponse.length > 25) {
+								// Extract book slugs from [BOOK: slug] (supports unicode, accents, or pure slug)
+								const bookSlugMatches = [...llmResponse.matchAll(/\[BOOK:\s*([^\n\]]+)\]/gi)];
+								const matchedSlugs = bookSlugMatches.map((m) => {
+									const raw = m[1].trim().toLowerCase();
+									return raw.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/[^a-z0-9\-]+/g, "-");
+								});
+
+								// Clean tags and metadata lines from final user-facing text
+								answer = llmResponse
+									.replace(/\*?\*?\s*(?:Mã|Mã sách|Slug|Tác phẩm)\s*:?\s*\*?\*?\s*\[BOOK:[^\]]+\]/gi, "")
+									.replace(/\[BOOK:[^\]]+\]/gi, "")
+									.replace(/^\s*\*\s*\*\*Slug:\*\*.*$/gim, "")
+									.trim();
+
+								// Push corresponding cards
+								for (const slug of matchedSlugs) {
+									const b = CATALOG.find((c) => c.slug === slug || c.slug.includes(slug));
+									if (b && !cards.some((card) => card.data?.slug === b.slug)) {
+										cards.push({ type: "product", data: b });
+									}
+								}
+
+								// Fallback: if no card matched, search title in text
+								if (cards.length === 0) {
+									for (const b of CATALOG) {
+										if (answer.toLowerCase().includes(b.title.toLowerCase())) {
+											cards.push({ type: "product", data: b });
+											if (cards.length >= 2) break;
+										}
+									}
+								}
+								if (cards.length === 0) {
+									cards.push({ type: "product", data: CATALOG[0] });
+								}
+							} else {
+								// Emergency fallback if LLM is unreachable
+								const defaultBook = lower.includes("kinh tế") || lower.includes("tài chính")
+									? (CATALOG.find((b) => b.slug === "chien-tranh-tien-te-tap-1") || CATALOG[6])
+									: lower.includes("học") || lower.includes("trí nhớ")
+									? (CATALOG.find((b) => b.slug === "bi-mat-cua-mot-tri-nho-sieu-pham") || CATALOG[3])
+									: CATALOG[0];
+								cards.push({ type: "product", data: defaultBook });
+								answer = `Dạ em chào ${honorific} ạ! Về chủ đề mà ${honorific} đang tìm hiểu, em xin gợi ý cuốn "${defaultBook.title}" của tác giả ${defaultBook.author} (Bản Ebook: ${defaultBook.ebookPrice} / Sách giấy: ${defaultBook.physicalPrice}). Em đã đính kèm thẻ ấn phẩm ngay bên dưới để ${honorific} tham khảo nhé ạ!`;
+							}
 						}
 					}
 				}
@@ -1691,7 +2068,7 @@ QUY TẮC BẮT BUỘC (TUYỆT ĐỐI KHÔNG BỊA ĐẶT / ZERO-HALLUCINATION)
 				baseUrl: llmBaseUrl,
 				prompt: `Khách hàng ${honorific} vừa nói: "${cleanQuery}". Hãy phản hồi ân cần, tự nhiên và hỗ trợ khách.`,
 				systemPrompt,
-				timeoutMs: 2500,
+				timeoutMs: 25000,
 			});
 
 			if (llmFallback && llmFallback.length > 15) {
@@ -1709,22 +2086,20 @@ QUY TẮC BẮT BUỘC (TUYỆT ĐỐI KHÔNG BỊA ĐẶT / ZERO-HALLUCINATION)
 		const isCasualSmallTalk = isFarewell || /^(xin chào|chào em|chào bạn|hello|hi|alo|a lô|bạn là ai|em là ai)$/i.test(lower.trim());
 		const hasThankYouForWaiting = answer.toLowerCase().includes("cảm ơn") && (answer.toLowerCase().includes("đã đợi") || answer.toLowerCase().includes("đã chờ"));
 
-		if (!isCasualSmallTalk && !hasThankYouForWaiting) {
-			const thankPrefixes = [
-				`Dạ, cảm ơn ${honorific} đã đợi em kiểm tra hệ thống ạ! `,
-				`Dạ em đã kiểm tra xong cho mình rồi, cảm ơn ${honorific} đã đợi em nhé ạ! `,
-				`Dạ, cảm ơn ${honorific} đã kiên nhẫn chờ em đối chiếu dữ liệu ạ! `,
-				`Dạ, em cảm ơn ${honorific} đã đợi em tra cứu trên hệ thống ạ! `,
-			];
-			const thankPrefix = thankPrefixes[Math.floor(Math.random() * thankPrefixes.length)];
-			if (answer.startsWith("Dạ, ") || answer.startsWith("Dạ em ") || answer.startsWith("Dạ hiện ")) {
-				answer = `${thankPrefix}${answer.slice(0, 1).toLowerCase() + answer.slice(1)}`;
-			} else {
-				answer = `${thankPrefix}${answer}`;
-			}
-		}
+		// Không tự động chèn câu cảm ơn cứng ngắc lặp đi lặp lại để giữ lời đáp tự nhiên nhất
+		// Giữ nguyên câu trả lời tự nhiên sinh động do LLM tạo ra
 
-		const activeVoice = (voice && typeof voice === "string" && voice.trim()) || ttsVoice || "f5-tts-vietnamese";
+		// Làm sạch triệt để mọi placeholder artifact còn sót lại trước khi trả lời khách
+		answer = answer
+			.replace(/\*\*Thẻ ấn phẩm:?\*\*[\s\S]*?(?=\n\n|$)/gi, "")
+			.replace(/\[Tùy vào phiên bản sách[^\]]*\]/gi, "")
+			.replace(/\[BOOK:[^\]]+\]/gi, "")
+			.trim();
+
+		const rawVoice = (voice && typeof voice === "string" && voice.trim()) || ttsVoice || "f5-tts-vietnamese";
+		const activeVoice = (rawVoice.toLowerCase().includes("f5") || rawVoice === "f5tts-vietnamese")
+			? "f5-tts-vietnamese"
+			: rawVoice;
 
 		// Tạo âm thanh TTS nếu là cuộc gọi thoại (CALL)
 		let audioBase64 = "";
@@ -1756,21 +2131,6 @@ QUY TẮC BẮT BUỘC (TUYỆT ĐỐI KHÔNG BỊA ĐẶT / ZERO-HALLUCINATION)
 					const ttsData = (await ttsRes.json().catch(() => null)) as any;
 					audioBase64 = ttsData?.audioBase64 || "";
 				}
-
-				// Fallback ngay lập tức sang mô hình Hoài My Piper Offline nếu voice ban đầu bị lỗi/timeout
-				if (!audioBase64 && ttsVoiceToUse !== "vi_VN-hoaimy-aurabook") {
-					console.warn(`[VoiceAgent Chat] TTS voice '${ttsVoiceToUse}' không trả về audio, fallback sang 'vi_VN-hoaimy-aurabook'...`);
-					const fbRes = await fetch(ttsUrl, {
-						method: "POST",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({ text: cleanSpeakText, speed: ttsSpeed, voice: "vi_VN-hoaimy-aurabook", format: "base64" }),
-						signal: AbortSignal.timeout(10000),
-					}).catch(() => null);
-					if (fbRes && fbRes.ok) {
-						const fbData = (await fbRes.json().catch(() => null)) as any;
-						audioBase64 = fbData?.audioBase64 || "";
-					}
-				}
 			} catch (ttsErr) {
 				console.warn("[VoiceAgent Chat] Lỗi kết nối TTS Server:", ttsErr);
 			}
@@ -1780,6 +2140,7 @@ QUY TẮC BẮT BUỘC (TUYỆT ĐỐI KHÔNG BỊA ĐẶT / ZERO-HALLUCINATION)
 
 		return NextResponse.json({
 			text: answer,
+			answer: answer,
 			thinking: thinkingText || null,
 			audioBase64,
 			cards,

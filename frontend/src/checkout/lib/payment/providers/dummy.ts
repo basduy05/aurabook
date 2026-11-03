@@ -1,7 +1,12 @@
 import { type PaymentGatewayLike } from "../types";
 
 /** Known Saleor Dummy Payment app IDs (legacy + current). */
-export const DUMMY_GATEWAY_IDS = ["saleor.io.dummy-payment-app", "mirumee.payments.dummy"] as const;
+export const DUMMY_GATEWAY_IDS = [
+	"saleor.io.dummy-payment-app",
+	"mirumee.payments.dummy",
+	"aurabook.payments.momo",
+	"aurabook.payments.vnpay",
+] as const;
 
 /** Shown when dummy payment is blocked (UI and server actions). */
 export const DUMMY_PAYMENT_NOT_ALLOWED_MESSAGE = "Test payment is not available in this environment.";

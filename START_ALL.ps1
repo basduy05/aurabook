@@ -64,6 +64,13 @@ for ($i = 0; $i -lt 10; $i++) {
 }
 if ($backendReady) {
     Write-Host "  [OK] Backend Saleor (8000) đã sẵn sàng." -ForegroundColor Green
+    try {
+        Write-Host "  -> Đồng bộ Cổng thanh toán (MoMo, VNPAY) & Extensions trong Saleor..." -ForegroundColor Cyan
+        docker exec aurabook-backend python register_payment_app.py 2>$null
+        Write-Host "  [OK] Đã kích hoạt Plugin & Extensions (MoMo, VNPAY) trong Saleor." -ForegroundColor Green
+    } catch {
+        Write-Host "  [!] Bỏ qua đồng bộ payment app: $_" -ForegroundColor Yellow
+    }
 } else {
     Write-Host "  [!] Backend Saleor đang khởi động..." -ForegroundColor Yellow
 }

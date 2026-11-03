@@ -1,17 +1,348 @@
 [
   {
-    "id": "ship-1791655518312",
-    "orderId": "T3JkZXI6ODhiZGEzNTgtM2Q3YS00N2QzLThiMGUtNGNmOTM1ZjhhYjJh",
-    "orderNumber": "9",
-    "trackingCode": "GHN79111707VN",
+    "id": "ship-order-1",
+    "orderId": "62c965e0-8f67-4ba1-b671-bdc2812d57b3",
+    "orderNumber": "1",
+    "orderStatus": "fulfilled",
+    "trackingCode": "GHN10245290VN",
     "carrier": "Giao Hàng Nhanh (GHN)",
     "serviceType": "standard",
     "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)",
     "fee": 22000,
     "codAmount": 0,
+    "totalAmount": 150000,
     "weightGrams": 500,
-    "status": "storing",
-    "statusDisplay": "Đã nhập kho phân loại",
+    "status": "delivered",
+    "statusDisplay": "Giao thành công",
+    "isDigital": false,
+    "sender": {
+      "name": "Nhà sách Aurabook",
+      "phone": "0912345678",
+      "address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu",
+      "warehouseName": "Kho Tổng Aurabook Hà Nội"
+    },
+    "recipient": {
+      "name": "basduy05",
+      "phone": "0912345678",
+      "address": "Địa chỉ mặc định",
+      "province": "Thành phố Hà Nội",
+      "district": "Hà Nội"
+    },
+    "itemsSummary": "Đơn hàng #1",
+    "createdAt": "2026-10-08T13:57:11.231Z",
+    "history": [
+      {
+        "status": "delivered",
+        "statusName": "Giao thành công",
+        "description": "Đơn hàng đã được tạo và đồng bộ với hệ thống Giao Hàng Nhanh.",
+        "time": "2026-10-08T13:57:11.231Z",
+        "location": "Kho Tổng Aurabook Hà Nội - 12 Duy Tân, Cầu Giấy"
+      }
+    ]
+  },
+  {
+    "id": "ship-order-2",
+    "orderId": "6c88e6e4-7190-488f-8665-a68b70dc386c",
+    "orderNumber": "2",
+    "orderStatus": "fulfilled",
+    "trackingCode": "GHN10245291VN",
+    "carrier": "Giao Hàng Nhanh (GHN)",
+    "serviceType": "standard",
+    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)",
+    "fee": 22000,
+    "codAmount": 0,
+    "totalAmount": 150000,
+    "weightGrams": 500,
+    "status": "delivered",
+    "statusDisplay": "Giao thành công",
+    "isDigital": false,
+    "sender": {
+      "name": "Nhà sách Aurabook",
+      "phone": "0912345678",
+      "address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu",
+      "warehouseName": "Kho Tổng Aurabook Hà Nội"
+    },
+    "recipient": {
+      "name": "basduy05",
+      "phone": "0912345678",
+      "address": "Địa chỉ mặc định",
+      "province": "Thành phố Hà Nội",
+      "district": "Hà Nội"
+    },
+    "itemsSummary": "Enterprise Cloud + On-premises (x1)",
+    "createdAt": "2026-10-08T13:58:08.293Z",
+    "history": [
+      {
+        "status": "delivered",
+        "statusName": "Giao thành công",
+        "description": "Đơn hàng đã được tạo và đồng bộ với hệ thống Giao Hàng Nhanh.",
+        "time": "2026-10-08T13:58:08.293Z",
+        "location": "Kho Tổng Aurabook Hà Nội - 12 Duy Tân, Cầu Giấy"
+      }
+    ]
+  },
+  {
+    "id": "ship-order-3",
+    "orderId": "b730f982-eddf-4276-817c-1ca135a8a240",
+    "orderNumber": "3",
+    "orderStatus": "fulfilled",
+    "trackingCode": "GHN10245292VN",
+    "carrier": "Giao Hàng Nhanh (GHN)",
+    "serviceType": "standard",
+    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)",
+    "fee": 22000,
+    "codAmount": 0,
+    "totalAmount": 150000,
+    "weightGrams": 500,
+    "status": "delivered",
+    "statusDisplay": "Giao thành công",
+    "isDigital": false,
+    "sender": {
+      "name": "Nhà sách Aurabook",
+      "phone": "0912345678",
+      "address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu",
+      "warehouseName": "Kho Tổng Aurabook Hà Nội"
+    },
+    "recipient": {
+      "name": "basduygame",
+      "phone": "0912345678",
+      "address": "Địa chỉ mặc định",
+      "province": "Thành phố Hà Nội",
+      "district": "Hà Nội"
+    },
+    "itemsSummary": "Own your stack and data (x1)",
+    "createdAt": "2026-10-08T13:58:52.864Z",
+    "history": [
+      {
+        "status": "delivered",
+        "statusName": "Giao thành công",
+        "description": "Đơn hàng đã được tạo và đồng bộ với hệ thống Giao Hàng Nhanh.",
+        "time": "2026-10-08T13:58:52.864Z",
+        "location": "Kho Tổng Aurabook Hà Nội - 12 Duy Tân, Cầu Giấy"
+      }
+    ]
+  },
+  {
+    "id": "ship-order-4",
+    "orderId": "af2a495b-46c4-40fd-9a39-e18751f12dbe",
+    "orderNumber": "4",
+    "orderStatus": "fulfilled",
+    "trackingCode": "GHN10245293VN",
+    "carrier": "Giao Hàng Nhanh (GHN)",
+    "serviceType": "standard",
+    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)",
+    "fee": 22000,
+    "codAmount": 0,
+    "totalAmount": 150000,
+    "weightGrams": 500,
+    "status": "delivered",
+    "statusDisplay": "Giao thành công",
+    "isDigital": false,
+    "sender": {
+      "name": "Nhà sách Aurabook",
+      "phone": "0912345678",
+      "address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu",
+      "warehouseName": "Kho Tổng Aurabook Hà Nội"
+    },
+    "recipient": {
+      "name": "customer",
+      "phone": "0912345678",
+      "address": "Địa chỉ mặc định",
+      "province": "Thành phố Hà Nội",
+      "district": "Hà Nội"
+    },
+    "itemsSummary": "Battle-tested at brands like Lush (x1)",
+    "createdAt": "2026-10-08T13:58:52.900Z",
+    "history": [
+      {
+        "status": "delivered",
+        "statusName": "Giao thành công",
+        "description": "Đơn hàng đã được tạo và đồng bộ với hệ thống Giao Hàng Nhanh.",
+        "time": "2026-10-08T13:58:52.900Z",
+        "location": "Kho Tổng Aurabook Hà Nội - 12 Duy Tân, Cầu Giấy"
+      }
+    ]
+  },
+  {
+    "id": "ship-order-5",
+    "orderId": "9c3af7bb-cbcf-48ad-bffb-2694a0058b4b",
+    "orderNumber": "5",
+    "orderStatus": "fulfilled",
+    "trackingCode": "GHN10245294VN",
+    "carrier": "Giao Hàng Nhanh (GHN)",
+    "serviceType": "standard",
+    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)",
+    "fee": 22000,
+    "codAmount": 0,
+    "totalAmount": 607000,
+    "weightGrams": 500,
+    "status": "delivered",
+    "statusDisplay": "Giao thành công",
+    "isDigital": false,
+    "sender": {
+      "name": "Nhà sách Aurabook",
+      "phone": "0912345678",
+      "address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu",
+      "warehouseName": "Kho Tổng Aurabook Hà Nội"
+    },
+    "recipient": {
+      "name": "Duy Nguyen",
+      "phone": "+84987844198",
+      "address": "Số nhà 12 đường Đường Lâm",
+      "province": "Hà Nội",
+      "district": "PHƯỜNG SƠN TÂY"
+    },
+    "itemsSummary": "Monospace Tee (x3)",
+    "createdAt": "2026-10-09T17:10:23.901Z",
+    "history": [
+      {
+        "status": "delivered",
+        "statusName": "Giao thành công",
+        "description": "Đơn hàng đã được tạo và đồng bộ với hệ thống Giao Hàng Nhanh.",
+        "time": "2026-10-09T17:10:23.901Z",
+        "location": "Kho Tổng Aurabook Hà Nội - 12 Duy Tân, Cầu Giấy"
+      }
+    ]
+  },
+  {
+    "id": "ship-order-6",
+    "orderId": "a1b10dd0-cd8c-467f-abdf-b2b40a22721a",
+    "orderNumber": "6",
+    "orderStatus": "fulfilled",
+    "trackingCode": "GHN10245295VN",
+    "carrier": "Giao Hàng Nhanh (GHN)",
+    "serviceType": "standard",
+    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)",
+    "fee": 22000,
+    "codAmount": 0,
+    "totalAmount": 885000,
+    "weightGrams": 500,
+    "status": "delivered",
+    "statusDisplay": "Giao thành công",
+    "isDigital": false,
+    "sender": {
+      "name": "Nhà sách Aurabook",
+      "phone": "0912345678",
+      "address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu",
+      "warehouseName": "Kho Tổng Aurabook Hà Nội"
+    },
+    "recipient": {
+      "name": "Duy Bá",
+      "phone": "0912345678",
+      "address": "Đường La Thành",
+      "province": "Hà Nội",
+      "district": "HÀ NỘI"
+    },
+    "itemsSummary": "Paul's Balance 420 (x1)",
+    "createdAt": "2026-10-09T17:18:51.383Z",
+    "history": [
+      {
+        "status": "delivered",
+        "statusName": "Giao thành công",
+        "description": "Đơn hàng đã được tạo và đồng bộ với hệ thống Giao Hàng Nhanh.",
+        "time": "2026-10-09T17:18:51.383Z",
+        "location": "Kho Tổng Aurabook Hà Nội - 12 Duy Tân, Cầu Giấy"
+      }
+    ]
+  },
+  {
+    "id": "ship-order-7",
+    "orderId": "0a7b5191-5bec-490c-9fd8-aa550e6c80bf",
+    "orderNumber": "7",
+    "orderStatus": "fulfilled",
+    "trackingCode": "GHN10245296VN",
+    "carrier": "Giao Hàng Nhanh (GHN)",
+    "serviceType": "standard",
+    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)",
+    "fee": 22000,
+    "codAmount": 0,
+    "totalAmount": 217000,
+    "weightGrams": 500,
+    "status": "delivered",
+    "statusDisplay": "Giao thành công",
+    "isDigital": false,
+    "sender": {
+      "name": "Nhà sách Aurabook",
+      "phone": "0912345678",
+      "address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu",
+      "warehouseName": "Kho Tổng Aurabook Hà Nội"
+    },
+    "recipient": {
+      "name": "Duy Nguyen",
+      "phone": "+84912345678",
+      "address": "123 Le Loi",
+      "province": "Thành phố Hà Nội",
+      "district": "HA NOI"
+    },
+    "itemsSummary": "Monospace Tee (x1)",
+    "createdAt": "2026-10-09T17:40:10.684Z",
+    "history": [
+      {
+        "status": "delivered",
+        "statusName": "Giao thành công",
+        "description": "Đơn hàng đã được tạo và đồng bộ với hệ thống Giao Hàng Nhanh.",
+        "time": "2026-10-09T17:40:10.684Z",
+        "location": "Kho Tổng Aurabook Hà Nội - 12 Duy Tân, Cầu Giấy"
+      }
+    ]
+  },
+  {
+    "id": "ship-order-8",
+    "orderId": "b6582232-9eba-49a2-afcc-807bc51d5710",
+    "orderNumber": "8",
+    "orderStatus": "canceled",
+    "trackingCode": "GHN10245297VN",
+    "carrier": "Giao Hàng Nhanh (GHN)",
+    "serviceType": "standard",
+    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)",
+    "fee": 22000,
+    "codAmount": 0,
+    "totalAmount": 89000,
+    "weightGrams": 500,
+    "status": "cancel",
+    "statusDisplay": "Đã hủy đơn hàng",
+    "isDigital": false,
+    "sender": {
+      "name": "Nhà sách Aurabook",
+      "phone": "0912345678",
+      "address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu",
+      "warehouseName": "Kho Tổng Aurabook Hà Nội"
+    },
+    "recipient": {
+      "name": "Duy Nguyễn",
+      "phone": "+84362632175",
+      "address": "số nhà 12 đường Cam Thượng",
+      "province": "Hà Nội",
+      "district": "HUYỆN BA VÌ"
+    },
+    "itemsSummary": "Apple Juice (x1), Bean Juice (x1)",
+    "createdAt": "2026-10-10T17:32:41.358Z",
+    "history": [
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã được hủy trên hệ thống AuraBook.",
+        "time": "2026-10-10T17:32:41.358Z",
+        "location": "Kho Tổng Aurabook Hà Nội - 12 Duy Tân, Cầu Giấy"
+      }
+    ]
+  },
+  {
+    "id": "ship-order-9",
+    "orderId": "88bda358-3d7a-47d3-8b0e-4cf935f8ab2a",
+    "orderNumber": "9",
+    "orderStatus": "unfulfilled",
+    "trackingCode": "GHN10245298VN",
+    "carrier": "Giao Hàng Nhanh (GHN)",
+    "serviceType": "standard",
+    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)",
+    "fee": 22000,
+    "codAmount": 0,
+    "totalAmount": 242000,
+    "weightGrams": 500,
+    "status": "ready_to_pick",
+    "statusDisplay": "Chờ lấy hàng",
+    "isDigital": false,
     "sender": {
       "name": "Nhà sách Aurabook",
       "phone": "0912345678",
@@ -25,420 +356,498 @@
       "province": "Hà Nội",
       "district": "HUYỆN BA VÌ"
     },
-    "itemsSummary": "Đơn hàng #9 (1 cuốn sách)",
-    "createdAt": "2026-10-10T18:05:18.312Z",
-    "estimatedDeliveryDate": "2026-10-13T18:05:18.312Z",
+    "itemsSummary": "Blue Polygon Shirt (x1)",
+    "createdAt": "2026-10-10T18:05:05.144Z",
     "history": [
-      {
-        "status": "storing",
-        "statusName": "Đã nhập kho phân loại",
-        "description": "Kiện hàng đã nhập trung tâm khai thác GHN Hà Nội và đang được luân chuyển.",
-        "time": "2026-10-12T11:42:20.925Z",
-        "location": "Bưu cục Trung tâm GHN Hà Nội"
-      },
       {
         "status": "ready_to_pick",
         "statusName": "Chờ lấy hàng",
-        "description": "Đơn hàng đã được tạo. Chờ GHN điều phối tài xế đến lấy hàng tại Kho Tổng Aurabook Hà Nội.",
-        "time": "2026-10-12T11:42:18.304Z",
+        "description": "Đơn hàng đã được tạo và đồng bộ với hệ thống Giao Hàng Nhanh.",
+        "time": "2026-10-10T18:05:05.144Z",
         "location": "Kho Tổng Aurabook Hà Nội - 12 Duy Tân, Cầu Giấy"
       }
     ]
   },
   {
-    "id": "ship-1791648664018",
-    "orderId": "7",
-    "orderNumber": "7",
-    "trackingCode": "GHN78177303VN",
-    "carrier": "Giao Hàng Nhanh (GHN)",
-    "serviceType": "standard",
-    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)",
-    "fee": 16500,
+    "id": "ship-order-42",
+    "orderId": "acad3bf8-42f4-41f4-be29-2a0ac1c5701b",
+    "orderNumber": "42",
+    "orderStatus": "unfulfilled",
+    "trackingCode": "DRM-EBOOK-ONLINE",
+    "carrier": "Phân phối số (Aura DRM Web Reader)",
+    "serviceType": "digital",
+    "serviceName": "Kích hoạt nội dung số trực tuyến",
+    "fee": 0,
     "codAmount": 0,
-    "weightGrams": 500,
-    "status": "storing",
-    "statusDisplay": "Đã nhập kho phân loại",
+    "totalAmount": 59000,
+    "weightGrams": 0,
+    "status": "delivered",
+    "statusDisplay": "Đã kích hoạt tủ sách",
+    "isDigital": true,
     "sender": {
       "name": "Nhà sách Aurabook",
       "phone": "0912345678",
       "address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu",
-      "warehouseName": "Kho Tổng Aurabook Hà Nội"
+      "warehouseName": "Kho Sách Số AuraBook"
     },
     "recipient": {
-      "name": "Duy Nguyễn",
-      "phone": "0912345678",
-      "address": "123 Lê Lợi",
-      "province": "Thành phố Hà Nội",
-      "district": "Quận Cầu Giấy"
+      "name": "Duy Nguyen Ba",
+      "phone": "+84362632175",
+      "address": "Tài khoản độc giả trực tuyến (DRM Web Reader)",
+      "province": "Online",
+      "district": "Online"
     },
-    "itemsSummary": "Đơn hàng sách Aurabook",
-    "createdAt": "2026-10-10T16:11:04.018Z",
-    "estimatedDeliveryDate": "2026-10-13T16:11:04.018Z",
+    "itemsSummary": "Đắc Nhân Tâm (How to Win Friends and Influence People) (x1)",
+    "createdAt": "2026-10-15T10:15:14.704Z",
     "history": [
-      {
-        "status": "storing",
-        "statusName": "Đã nhập kho phân loại",
-        "description": "Kiện hàng đã nhập trung tâm khai thác GHN Hà Nội và đang được luân chuyển.",
-        "time": "2026-10-21T05:24:08.873Z",
-        "location": "Bưu cục Trung tâm GHN Hà Nội"
-      },
       {
         "status": "ready_to_pick",
         "statusName": "Chờ lấy hàng",
-        "description": "Đơn hàng đã được tạo. Chờ GHN điều phối tài xế đến lấy hàng tại Kho Tổng Aurabook Hà Nội.",
-        "time": "2026-10-10T16:11:04.018Z",
+        "description": "Đơn hàng đã được tạo và đồng bộ với hệ thống Giao Hàng Nhanh.",
+        "time": "2026-10-15T10:15:14.704Z",
         "location": "Kho Tổng Aurabook Hà Nội - 12 Duy Tân, Cầu Giấy"
       }
     ]
   },
   {
-    "id": "ship-1791566353382",
-    "orderId": "6",
-    "orderNumber": "6",
-    "trackingCode": "GHN13723819VN",
-    "carrier": "Giao Hàng Nhanh (GHN)",
-    "serviceType": "standard",
-    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Nội thành HN)",
-    "fee": 16500,
+    "id": "ship-order-43",
+    "orderId": "ae9dfdec-db0e-4b7b-b315-6807c6b451f3",
+    "orderNumber": "43",
+    "orderStatus": "canceled",
+    "trackingCode": "DRM-EBOOK-ONLINE",
+    "carrier": "Phân phối số (Aura DRM Web Reader)",
+    "serviceType": "digital",
+    "serviceName": "Kích hoạt nội dung số trực tuyến",
+    "fee": 0,
     "codAmount": 0,
-    "weightGrams": 500,
-    "status": "storing",
-    "statusDisplay": "Đã nhập kho phân loại",
+    "totalAmount": 89000,
+    "weightGrams": 0,
+    "status": "cancel",
+    "statusDisplay": "Đã hủy đơn hàng",
+    "isDigital": true,
     "sender": {
       "name": "Nhà sách Aurabook",
       "phone": "0912345678",
       "address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu",
-      "warehouseName": "Kho Tổng Aurabook Hà Nội"
+      "warehouseName": "Kho Sách Số AuraBook"
     },
     "recipient": {
-      "name": "Duy Nguyễn",
-      "phone": "0912345678",
-      "address": "Số 88 Đường La Thành",
-      "province": "Thành phố Hà Nội",
-      "district": "Quận Ba Đình"
+      "name": "Duy Nguyen Ba",
+      "phone": "+84362632175",
+      "address": "Tài khoản độc giả trực tuyến (DRM Web Reader)",
+      "province": "Online",
+      "district": "Online"
     },
-    "itemsSummary": "Đơn hàng sách Aurabook",
-    "createdAt": "2026-10-09T17:19:13.382Z",
-    "estimatedDeliveryDate": "2026-10-10T17:19:13.382Z",
+    "itemsSummary": "Sapiens: Lược Sử Loài Người (A Brief History of Humankind) (x1)",
+    "createdAt": "2026-10-19T03:46:55.467Z",
     "history": [
       {
-        "status": "storing",
-        "statusName": "Đã nhập kho phân loại",
-        "description": "Kiện hàng đã nhập trung tâm khai thác GHN Hà Nội và đang được luân chuyển.",
-        "time": "2026-10-21T05:24:11.759Z",
-        "location": "Bưu cục Trung tâm GHN Hà Nội"
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T19:48:15.430Z",
+        "location": "Hệ thống Quản trị AuraBook"
       },
       {
-        "status": "ready_to_pick",
-        "statusName": "Chờ lấy hàng",
-        "description": "Đơn hàng đã được tạo. Chờ GHN điều phối tài xế đến lấy hàng tại Kho Tổng Aurabook Hà Nội.",
-        "time": "2026-10-09T17:19:13.382Z",
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T19:48:15.396Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T19:42:17.862Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T19:42:17.817Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T19:36:54.342Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T18:38:31.375Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T18:38:31.345Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T18:25:29.865Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T18:25:29.538Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T18:14:55.807Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T18:14:55.773Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T18:14:45.010Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T18:14:44.964Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T18:11:57.802Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã được hủy trên hệ thống AuraBook.",
+        "time": "2026-10-19T03:46:55.467Z",
         "location": "Kho Tổng Aurabook Hà Nội - 12 Duy Tân, Cầu Giấy"
       }
     ]
   },
   {
-    "id": "ship-1791565939977",
-    "orderId": "5",
-    "orderNumber": "5",
-    "trackingCode": "GHN94724134VN",
-    "carrier": "Giao Hàng Nhanh (GHN)",
-    "serviceType": "standard",
-    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)",
-    "fee": 22000,
+    "id": "ship-order-44",
+    "orderId": "344c44a7-bfc3-438d-8f42-c14c929dfb99",
+    "orderNumber": "44",
+    "orderStatus": "unfulfilled",
+    "trackingCode": "DRM-EBOOK-ONLINE",
+    "carrier": "Phân phối số (Aura DRM Web Reader)",
+    "serviceType": "digital",
+    "serviceName": "Kích hoạt nội dung số trực tuyến",
+    "fee": 0,
     "codAmount": 0,
-    "weightGrams": 500,
+    "totalAmount": 55000,
+    "weightGrams": 0,
     "status": "delivered",
-    "statusDisplay": "Giao hàng thành công (Completed)",
+    "statusDisplay": "Đã kích hoạt tủ sách",
+    "isDigital": true,
     "sender": {
       "name": "Nhà sách Aurabook",
       "phone": "0912345678",
       "address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu",
-      "warehouseName": "Kho Tổng Aurabook Hà Nội"
+      "warehouseName": "Kho Sách Số AuraBook"
     },
     "recipient": {
-      "name": "Duy Nguyễn",
-      "phone": "0912345678",
-      "address": "Số 12 Đường Lâm",
-      "province": "Thành phố Hà Nội",
-      "district": "Thị xã Sơn Tây"
+      "name": "Duy Nguyen Ba",
+      "phone": "+84362632175",
+      "address": "Tài khoản độc giả trực tuyến (DRM Web Reader)",
+      "province": "Online",
+      "district": "Online"
     },
-    "itemsSummary": "Đơn hàng sách Aurabook",
-    "createdAt": "2026-10-09T17:12:19.977Z",
-    "estimatedDeliveryDate": "2026-10-10T17:12:19.977Z",
-    "deliveredAt": "2026-10-10T11:00:00.000Z",
+    "itemsSummary": "Cây Cam Ngọt Của Tôi (Meu Pé de Laranja Lima) (x1)",
+    "createdAt": "2026-10-20T08:37:21.022Z",
     "history": [
-      {
-        "status": "delivered",
-        "statusName": "Giao hàng thành công (Completed)",
-        "description": "Người nhận đã nhận hàng thành công và thanh toán. Đơn hàng hoàn tất.",
-        "time": "2026-10-10T11:00:00.000Z",
-        "location": "Số 12 Đường Lâm, Sơn Tây, Hà Nội"
-      },
-      {
-        "status": "delivering",
-        "statusName": "Đang giao hàng",
-        "description": "Kiện hàng đã tới bưu cục phát. Shipper GHN đang trên đường giao đến bạn.",
-        "time": "2026-10-10T08:30:00.000Z",
-        "location": "Bưu cục phát GHN Sơn Tây"
-      },
-      {
-        "status": "storing",
-        "statusName": "Đã nhập kho phân loại",
-        "description": "Kiện hàng đã nhập trung tâm khai thác GHN Hà Nội và đang được luân chuyển.",
-        "time": "2026-10-09T21:00:00.000Z",
-        "location": "Bưu cục Trung tâm GHN Hà Nội"
-      },
       {
         "status": "ready_to_pick",
         "statusName": "Chờ lấy hàng",
-        "description": "Đơn hàng đã được tạo. Chờ GHN điều phối tài xế đến lấy hàng tại Kho Tổng Aurabook Hà Nội.",
-        "time": "2026-10-09T17:12:19.977Z",
+        "description": "Đơn hàng đã được tạo và đồng bộ với hệ thống Giao Hàng Nhanh.",
+        "time": "2026-10-20T08:37:21.022Z",
         "location": "Kho Tổng Aurabook Hà Nội - 12 Duy Tân, Cầu Giấy"
       }
     ]
   },
   {
-    "id": "ship-ghn-001",
-    "orderId": "62c965e0-8f67-4ba1-b671-bdc2812d57b3",
-    "orderNumber": "1",
-    "trackingCode": "GHN83921001VN",
-    "carrier": "Giao Hàng Nhanh (GHN)",
-    "serviceType": "standard",
-    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Nội thành HN)",
-    "fee": 16500,
+    "id": "ship-order-45",
+    "orderId": "9732c664-a666-48c5-bced-ac195abf5493",
+    "orderNumber": "45",
+    "orderStatus": "unfulfilled",
+    "trackingCode": "DRM-EBOOK-ONLINE",
+    "carrier": "Phân phối số (Aura DRM Web Reader)",
+    "serviceType": "digital",
+    "serviceName": "Kích hoạt nội dung số trực tuyến",
+    "fee": 0,
     "codAmount": 0,
-    "weightGrams": 450,
+    "totalAmount": 118000,
+    "weightGrams": 0,
     "status": "delivered",
-    "statusDisplay": "Giao hàng thành công (Completed)",
+    "statusDisplay": "Đã kích hoạt tủ sách",
+    "isDigital": true,
     "sender": {
       "name": "Nhà sách Aurabook",
       "phone": "0912345678",
-      "address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu, Cầu Giấy, Hà Nội",
-      "warehouseName": "Kho Tổng Aurabook Hà Nội"
+      "address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu",
+      "warehouseName": "Kho Sách Số AuraBook"
     },
     "recipient": {
-      "name": "Bùi Anh Duy",
-      "phone": "0987654321",
-      "address": "Số 144 Xuân Thủy",
-      "province": "Thành phố Hà Nội",
-      "district": "Quận Cầu Giấy"
+      "name": "Duy Nguyen Ba",
+      "phone": "+84362632175",
+      "address": "Tài khoản độc giả trực tuyến (DRM Web Reader)",
+      "province": "Online",
+      "district": "Online"
     },
-    "itemsSummary": "Đại Việt Sử Ký Toàn Thư (Bản đặc biệt)",
-    "createdAt": "2026-10-08T13:57:11.000Z",
-    "estimatedDeliveryDate": "2026-10-09T17:00:00.000Z",
-    "deliveredAt": "2026-10-09T10:30:00.000Z",
+    "itemsSummary": "Trí Tuệ Do Thái (Jerome Becomes a Genius) (x1), 10 Điều Tạo Nên Số Phận (The Ten Commitments) (x1)",
+    "createdAt": "2026-11-02T14:52:19.211Z",
     "history": [
-      {
-        "status": "delivered",
-        "statusName": "Giao hàng thành công (Completed)",
-        "description": "Người nhận đã nhận hàng thành công và ký nhận. Đơn hàng hoàn tất.",
-        "time": "2026-10-09T10:30:00.000Z",
-        "location": "144 Xuân Thủy, Cầu Giấy, Hà Nội"
-      },
-      {
-        "status": "delivering",
-        "statusName": "Đang giao hàng",
-        "description": "Shipper Nguyễn Văn Hùng (GHN - 0981234567) đang trên đường giao hàng đến bạn.",
-        "time": "2026-10-09T08:15:00.000Z",
-        "location": "Bưu cục GHN Cầu Giấy - Hà Nội"
-      },
-      {
-        "status": "storing",
-        "statusName": "Đã nhập kho phân loại",
-        "description": "Kiện hàng đã nhập trung tâm khai thác GHN Hà Nội và đang được luân chuyển.",
-        "time": "2026-10-08T18:40:00.000Z",
-        "location": "Trung tâm trung chuyển GHN Long Biên"
-      },
       {
         "status": "ready_to_pick",
         "statusName": "Chờ lấy hàng",
-        "description": "Đơn hàng đã được tạo. Chờ GHN điều phối tài xế đến lấy hàng tại Kho Tổng Aurabook Hà Nội.",
-        "time": "2026-10-08T14:00:00.000Z",
-        "location": "Kho Tổng Aurabook Hà Nội"
+        "description": "Đơn hàng đã được tạo và đồng bộ với hệ thống Giao Hàng Nhanh.",
+        "time": "2026-11-02T14:52:19.211Z",
+        "location": "Kho Tổng Aurabook Hà Nội - 12 Duy Tân, Cầu Giấy"
       }
     ]
   },
   {
-    "id": "ship-ghn-002",
-    "orderId": "6c88e6e4-7190-488f-8665-a68b70dc386c",
-    "orderNumber": "2",
-    "trackingCode": "GHN83921002VN",
-    "carrier": "Giao Hàng Nhanh (GHN)",
-    "serviceType": "standard",
-    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Nội thành HN)",
-    "fee": 16500,
+    "id": "ship-order-46",
+    "orderId": "893840cb-6513-4595-ac6e-5241bef64629",
+    "orderNumber": "46",
+    "orderStatus": "fulfilled",
+    "trackingCode": "DRM-EBOOK-ONLINE",
+    "carrier": "Phân phối số (Aura DRM Web Reader)",
+    "serviceType": "digital",
+    "serviceName": "Kích hoạt nội dung số trực tuyến",
+    "fee": 0,
     "codAmount": 0,
-    "weightGrams": 600,
+    "totalAmount": 124000,
+    "weightGrams": 0,
     "status": "delivered",
-    "statusDisplay": "Giao hàng thành công (Completed)",
+    "statusDisplay": "Đã kích hoạt tủ sách",
+    "isDigital": true,
     "sender": {
       "name": "Nhà sách Aurabook",
       "phone": "0912345678",
-      "address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu, Cầu Giấy, Hà Nội",
-      "warehouseName": "Kho Tổng Aurabook Hà Nội"
+      "address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu",
+      "warehouseName": "Kho Sách Số AuraBook"
     },
     "recipient": {
-      "name": "Bùi Anh Duy",
-      "phone": "0987654321",
-      "address": "Số 25 Lý Thường Kiệt",
-      "province": "Thành phố Hà Nội",
-      "district": "Quận Hoàn Kiếm"
+      "name": "Phương Nguyễn Phương",
+      "phone": "+84985600910",
+      "address": "Tài khoản độc giả trực tuyến (DRM Web Reader)",
+      "province": "Online",
+      "district": "Online"
     },
-    "itemsSummary": "Tâm Lý Học Tội Phạm",
-    "createdAt": "2026-10-08T13:58:08.000Z",
-    "estimatedDeliveryDate": "2026-10-09T17:00:00.000Z",
-    "deliveredAt": "2026-10-09T16:06:24.751Z",
+    "itemsSummary": "Cây Cam Ngọt Của Tôi (Meu Pé de Laranja Lima) (x1), Chiến Tranh Tiền Tệ - Tập 1: Dòng Chảy Của Tiền Ngầm (x1)",
+    "createdAt": "2026-11-02T15:37:42.879Z",
     "history": [
       {
         "status": "delivered",
-        "statusName": "Giao hàng thành công (Completed)",
-        "description": "Người nhận đã nhận hàng thành công và thanh toán. Đơn hàng hoàn tất.",
-        "time": "2026-10-09T16:06:24.751Z",
-        "location": "Số 25 Lý Thường Kiệt, Hoàn Kiếm, Hà Nội"
-      },
-      {
-        "status": "delivering",
-        "statusName": "Đang giao hàng",
-        "description": "Kiện hàng đã tới bưu cục phát. Shipper GHN đang trên đường giao đến bạn.",
-        "time": "2026-10-09T12:00:00.000Z",
-        "location": "Bưu cục phát GHN Hoàn Kiếm"
-      },
-      {
-        "status": "storing",
-        "statusName": "Đã nhập kho phân loại",
-        "description": "Kiện hàng đã nhập trung tâm khai thác GHN Hà Nội và đang được luân chuyển.",
-        "time": "2026-10-08T18:00:00.000Z",
-        "location": "Bưu cục Trung tâm GHN Hà Nội"
-      },
-      {
-        "status": "ready_to_pick",
-        "statusName": "Chờ lấy hàng",
-        "description": "Kiện hàng sẵn sàng tại Kho Tổng Aurabook Hà Nội.",
-        "time": "2026-10-08T14:10:00.000Z",
-        "location": "Kho Tổng Aurabook Hà Nội"
+        "statusName": "Giao thành công",
+        "description": "Đơn hàng đã được tạo và đồng bộ với hệ thống Giao Hàng Nhanh.",
+        "time": "2026-11-02T15:37:42.879Z",
+        "location": "Kho Tổng Aurabook Hà Nội - 12 Duy Tân, Cầu Giấy"
       }
     ]
   },
   {
-    "id": "ship-ghn-003",
-    "orderId": "b730f982-eddf-4276-817c-1ca135a8a240",
-    "orderNumber": "3",
-    "trackingCode": "GHN83921003VN",
-    "carrier": "Giao Hàng Nhanh (GHN)",
-    "serviceType": "standard",
-    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Nội thành HN)",
-    "fee": 16500,
+    "id": "ship-order-47",
+    "orderId": "e6b7aaaf-21e3-4fe3-bd72-44461ce3f9a6",
+    "orderNumber": "47",
+    "orderStatus": "canceled",
+    "trackingCode": "DRM-EBOOK-ONLINE",
+    "carrier": "Phân phối số (Aura DRM Web Reader)",
+    "serviceType": "digital",
+    "serviceName": "Kích hoạt nội dung số trực tuyến",
+    "fee": 0,
     "codAmount": 0,
-    "weightGrams": 500,
-    "status": "delivered",
-    "statusDisplay": "Giao hàng thành công (Completed)",
+    "totalAmount": 59000,
+    "weightGrams": 0,
+    "status": "cancel",
+    "statusDisplay": "Đã hủy đơn hàng",
+    "isDigital": true,
     "sender": {
       "name": "Nhà sách Aurabook",
       "phone": "0912345678",
-      "address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu, Cầu Giấy, Hà Nội",
-      "warehouseName": "Kho Tổng Aurabook Hà Nội"
+      "address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu",
+      "warehouseName": "Kho Sách Số AuraBook"
     },
     "recipient": {
-      "name": "Quản trị viên Aurabook",
-      "phone": "0901234567",
-      "address": "12 Duy Tân",
-      "province": "Thành phố Hà Nội",
-      "district": "Quận Cầu Giấy"
+      "name": "Phương Nguyễn Phương",
+      "phone": "+84985600910",
+      "address": "Tài khoản độc giả trực tuyến (DRM Web Reader)",
+      "province": "Online",
+      "district": "Online"
     },
-    "itemsSummary": "Bộ Sách Văn Học Kinh Điển",
-    "createdAt": "2026-10-08T13:58:52.000Z",
-    "estimatedDeliveryDate": "2026-10-09T17:00:00.000Z",
-    "deliveredAt": "2026-10-09T14:15:00.000Z",
+    "itemsSummary": "Bí Mật Của Một Trí Nhớ Siêu Phàm (Where Did You Put My Keys?) (x1)",
+    "createdAt": "2026-11-02T15:47:42.780Z",
     "history": [
       {
-        "status": "delivered",
-        "statusName": "Giao hàng thành công (Completed)",
-        "description": "Người nhận đã nhận hàng thành công. Đơn hàng hoàn tất.",
-        "time": "2026-10-09T14:15:00.000Z",
-        "location": "12 Duy Tân, Cầu Giấy, Hà Nội"
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T19:48:15.430Z",
+        "location": "Hệ thống Quản trị AuraBook"
       },
       {
-        "status": "delivering",
-        "statusName": "Đang giao hàng",
-        "description": "Kiện hàng đã tới bưu cục phát. Shipper GHN đang trên đường giao đến bạn.",
-        "time": "2026-10-09T10:00:00.000Z",
-        "location": "Bưu cục phát GHN Cầu Giấy"
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T19:48:15.396Z",
+        "location": "Hệ thống Quản trị AuraBook"
       },
       {
-        "status": "storing",
-        "statusName": "Đã nhập kho phân loại",
-        "description": "Kiện hàng đã nhập trung tâm khai thác GHN Hà Nội và đang được luân chuyển.",
-        "time": "2026-10-08T19:00:00.000Z",
-        "location": "Bưu cục Trung tâm GHN Hà Nội"
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T19:42:17.862Z",
+        "location": "Hệ thống Quản trị AuraBook"
       },
       {
-        "status": "ready_to_pick",
-        "statusName": "Chờ lấy hàng",
-        "description": "Kiện hàng sẵn sàng tại Kho Tổng Aurabook Hà Nội.",
-        "time": "2026-10-08T14:15:00.000Z",
-        "location": "Kho Tổng Aurabook Hà Nội"
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T19:42:17.817Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T19:36:54.342Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T18:38:31.375Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T18:38:31.345Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T18:25:29.865Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T18:25:29.537Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T18:14:55.807Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T18:14:55.773Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T18:14:45.010Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T18:14:44.964Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã hủy trên hệ thống AuraBook, vận đơn GHN tự động ngừng xử lý.",
+        "time": "2026-11-02T18:11:57.802Z",
+        "location": "Hệ thống Quản trị AuraBook"
+      },
+      {
+        "status": "cancel",
+        "statusName": "Đã hủy đơn hàng",
+        "description": "Đơn hàng đã được hủy trên hệ thống AuraBook.",
+        "time": "2026-11-02T15:47:42.780Z",
+        "location": "Kho Tổng Aurabook Hà Nội - 12 Duy Tân, Cầu Giấy"
       }
     ]
   },
   {
-    "id": "ship-ghn-004",
-    "orderId": "af2a495b-46c4-40fd-9a39-e18751f12dbe",
-    "orderNumber": "4",
-    "trackingCode": "GHN83921004VN",
-    "carrier": "Giao Hàng Nhanh (GHN)",
-    "serviceType": "standard",
-    "serviceName": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Nội thành HN)",
-    "fee": 16500,
+    "id": "ship-order-48",
+    "orderId": "550e0346-a261-46d3-9f17-643e7b897761",
+    "orderNumber": "48",
+    "orderStatus": "unfulfilled",
+    "trackingCode": "DRM-EBOOK-ONLINE",
+    "carrier": "Phân phối số (Aura DRM Web Reader)",
+    "serviceType": "digital",
+    "serviceName": "Kích hoạt nội dung số trực tuyến",
+    "fee": 0,
     "codAmount": 0,
-    "weightGrams": 400,
+    "totalAmount": 49000,
+    "weightGrams": 0,
     "status": "delivered",
-    "statusDisplay": "Giao hàng thành công (Completed)",
+    "statusDisplay": "Đã kích hoạt tủ sách",
+    "isDigital": true,
     "sender": {
       "name": "Nhà sách Aurabook",
       "phone": "0912345678",
-      "address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu, Cầu Giấy, Hà Nội",
-      "warehouseName": "Kho Tổng Aurabook Hà Nội"
+      "address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu",
+      "warehouseName": "Kho Sách Số AuraBook"
     },
     "recipient": {
-      "name": "Khách hàng Mẫu",
-      "phone": "0911223344",
-      "address": "Số 88 Hai Bà Trưng",
-      "province": "Thành phố Hà Nội",
-      "district": "Quận Hoàn Kiếm"
+      "name": "Phương Nguyễn Phương",
+      "phone": "+84985600910",
+      "address": "Tài khoản độc giả trực tuyến (DRM Web Reader)",
+      "province": "Online",
+      "district": "Online"
     },
-    "itemsSummary": "Nghệ Thuật Tư Duy Rành Mạch",
-    "createdAt": "2026-10-08T13:58:52.000Z",
-    "estimatedDeliveryDate": "2026-10-09T17:00:00.000Z",
-    "deliveredAt": "2026-10-09T15:00:00.000Z",
+    "itemsSummary": "Bốn Thỏa Ước (The Four Agreements) (x1)",
+    "createdAt": "2026-11-02T15:50:52.469Z",
     "history": [
-      {
-        "status": "delivered",
-        "statusName": "Giao hàng thành công (Completed)",
-        "description": "Người nhận đã nhận hàng thành công. Đơn hàng hoàn tất.",
-        "time": "2026-10-09T15:00:00.000Z",
-        "location": "88 Hai Bà Trưng, Hoàn Kiếm, Hà Nội"
-      },
-      {
-        "status": "delivering",
-        "statusName": "Đang giao hàng",
-        "description": "Kiện hàng đã tới bưu cục phát. Shipper GHN đang trên đường giao đến bạn.",
-        "time": "2026-10-09T11:00:00.000Z",
-        "location": "Bưu cục phát GHN Hoàn Kiếm"
-      },
-      {
-        "status": "storing",
-        "statusName": "Đã nhập kho phân loại",
-        "description": "Kiện hàng đã nhập trung tâm khai thác GHN Hà Nội và đang được luân chuyển.",
-        "time": "2026-10-08T19:00:00.000Z",
-        "location": "Bưu cục Trung tâm GHN Hà Nội"
-      },
       {
         "status": "ready_to_pick",
         "statusName": "Chờ lấy hàng",
-        "description": "Kiện hàng sẵn sàng tại Kho Tổng Aurabook Hà Nội.",
-        "time": "2026-10-08T14:20:00.000Z",
-        "location": "Kho Tổng Aurabook Hà Nội"
+        "description": "Đơn hàng đã được tạo và đồng bộ với hệ thống Giao Hàng Nhanh.",
+        "time": "2026-11-02T15:50:52.469Z",
+        "location": "Kho Tổng Aurabook Hà Nội - 12 Duy Tân, Cầu Giấy"
       }
     ]
   }

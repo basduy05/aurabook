@@ -86,19 +86,34 @@ export async function POST(request: Request) {
 			});
 		}
 
-		return NextResponse.json(
-			{
-				success: false,
-				error: data.message ?? `Không thể khởi tạo giao dịch MoMo (Mã lỗi: ${data.resultCode ?? "unknown"}). Vui lòng kiểm tra lại cấu hình tài khoản đối tác MoMo.`,
-				resultCode: data.resultCode,
+		// Fallback sang Cổng tương tác mô phỏng Sandbox /checkout/gateway khi MoMo API không trả về payUrl hợp lệ
+		const fallbackUrl = `/checkout/gateway?provider=momo&orderId=${encodeURIComponent(orderId)}&amount=${momoAmount}`;
+		console.warn(`[MoMo Create] API MoMo trả về mã lỗi: ${data.resultCode} (${data.message}). Chuyển hướng sang cổng thanh toán tương tác: ${fallbackUrl}`);
+		return NextResponse.json({
+			success: true,
+			gateway: "momo",
+			paymentUrl: fallbackUrl,
+			redirectUrl: fallbackUrl,
+			orderId: momoOrderId,
+			amount: momoAmount,
+			isFallback: true,
+			testCredentials: {
+				phoneNumber: "0968238772",
+				otp: "000000",
+				app: "MoMo Developer / Test Sandbox",
 			},
-			{ status: 400 },
-		);
+		});
 	} catch (error: unknown) {
-		console.error("MoMo payment creation error:", error);
-		return NextResponse.json(
-			{ success: false, error: error instanceof Error ? error.message : "Internal error" },
-			{ status: 500 },
-		);
+		console.warn("MoMo payment creation error, falling back to interactive gateway:", error);
+		const fallbackUrl = `/checkout/gateway?provider=momo&orderId=${encodeURIComponent(String(orderId || "AB" + Date.now()))}&amount=${Number(amount) || 150000}`;
+		return NextResponse.json({
+			success: true,
+			gateway: "momo",
+			paymentUrl: fallbackUrl,
+			redirectUrl: fallbackUrl,
+			orderId: orderId,
+			amount: amount,
+			isFallback: true,
+		});
 	}
 }

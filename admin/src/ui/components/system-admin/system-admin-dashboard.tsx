@@ -7,22 +7,19 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
 	Activity,
 	BookOpen,
-	ShoppingBag,
 	Users,
 	Sparkles,
 	Settings,
 	ExternalLink,
+	LogOut,
 	RefreshCw,
 	ChevronLeft,
 	ChevronRight,
-	CheckCircle2,
-	Mic,
-	ShieldCheck,
 	Truck,
-	Radio,
+	Sun,
+	Moon,
 } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
-import { Badge } from "@/ui/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 // The 6 Unified Admin Modules
@@ -46,65 +43,59 @@ interface NavGroupItem {
 	label: string;
 	shortLabel: string;
 	icon: any;
-	badge?: string;
 	description: string;
 }
 
 const UNIFIED_NAV_ITEMS: NavGroupItem[] = [
 	{
 		key: "overview",
-		label: "Tổng Quan & Hạ Tầng",
-		shortLabel: "Hạ Tầng",
+		label: "Tổng quan hệ thống",
+		shortLabel: "Tổng quan",
 		icon: Activity,
-		description: "Trạng thái live 6 dịch vụ, xóa cache ISR & KPI tổng thể",
+		description: "Tình trạng hạ tầng 8 dịch vụ và chỉ số hoạt động",
 	},
 	{
 		key: "catalog_drm",
-		label: "Sách, Ebook & DRM",
-		shortLabel: "Sách & DRM",
+		label: "Quản lý kho sách & DRM",
+		shortLabel: "Kho sách & DRM",
 		icon: BookOpen,
-		badge: "Bản quyền",
-		description: "Kho sách, giá bán, đồng bộ GraphRAG & quản trị thiết bị DRM",
+		description: "Danh mục sách, định dạng EPUB và phân quyền DRM",
 	},
 	{
 		key: "orders_shipping",
-		label: "Đơn Hàng & Vận Chuyển GHN",
+		label: "Đơn hàng & Vận chuyển GHN",
 		shortLabel: "Đơn & GHN",
 		icon: Truck,
-		badge: "GHN Live",
-		description: "Vận đơn GHN trực tuyến, đổi trạng thái 1 click đồng bộ Saleor",
+		description: "Quản lý đơn hàng Saleor và theo dõi vận đơn GHN",
 	},
 	{
 		key: "community",
-		label: "Cộng Đồng, Độc Giả & Đánh Giá",
-		shortLabel: "Cộng Đồng",
+		label: "Cộng đồng & Độc giả",
+		shortLabel: "Cộng đồng",
 		icon: Users,
-		description: "Quản lý thành viên, kiểm duyệt bài viết, duyệt đánh giá sách & thông báo BQT",
+		description: "Quản lý tài khoản độc giả, bài viết và đánh giá",
 	},
 	{
 		key: "ai_platform",
-		label: "Nền Tảng AI Voice & GraphRAG",
-		shortLabel: "AI Studio",
+		label: "Trợ lý AI & Giọng nói",
+		shortLabel: "Trợ lý AI",
 		icon: Sparkles,
-		badge: "Cốt lõi",
-		description: "Mô hình giọng nói TTS, truy vấn tri thức GraphRAG, hội thoại CSAT & Ragas",
+		description: "Cấu hình Ollama Gemma 2 2B, F5-TTS và GraphRAG",
 	},
 	{
 		key: "system_config",
-		label: "Trung Tâm Cấu Hình & Feature Flags",
-		shortLabel: "Cấu Hình",
+		label: "Cấu hình hệ thống",
+		shortLabel: "Cấu hình",
 		icon: Settings,
-		badge: "Không Cần Code",
-		description: "Bật/tắt tính năng, chọn model LLM, sửa System Prompt & Dify RAG",
+		description: "Tham số vận hành và chính sách nền tảng",
 	},
 ];
 
-export function SystemAdminDashboard() {
+export function SystemAdminDashboard({ onLogout }: { onLogout?: () => void } = {}) {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const [, startTransition] = useTransition();
 
-	// Read initial tab from search param or localStorage
 	const getInitialTab = (): AdminUnifiedTab => {
 		const paramTab = searchParams.get("tab") as AdminUnifiedTab;
 		if (paramTab && UNIFIED_NAV_ITEMS.some((i) => i.key === paramTab)) return paramTab;
@@ -117,29 +108,22 @@ export function SystemAdminDashboard() {
 
 	const [activeTab, setActiveTab] = useState<AdminUnifiedTab>(getInitialTab);
 	const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-	const [selectedVoice, setSelectedVoice] = useState<string>("vi_VN-hoaimy-aurabook");
 	const [isSyncing, setIsSyncing] = useState(false);
-
-	// Load authoritative voice
-	const fetchVoiceSetting = async () => {
-		try {
-			const res = await fetch("/api/system/admin/voice");
-			if (res.ok) {
-				const data = (await res.json()) as any;
-				if (data.activeVoice) {
-					setSelectedVoice(data.activeVoice);
-				}
-			}
-		} catch (err) {
-			console.warn("Lỗi tải giọng đọc:", err);
-		}
-	};
+	const [isDark] = useState<boolean>(true);
 
 	useEffect(() => {
-		fetchVoiceSetting();
-	}, []);
+		if (isDark) {
+			document.documentElement.classList.add("dark");
+			try { localStorage.setItem("aurabook_admin_theme", "dark"); } catch (_) {}
+		} else {
+			document.documentElement.classList.remove("dark");
+			try { localStorage.setItem("aurabook_admin_theme", "light"); } catch (_) {}
+		}
+	}, [isDark]);
 
-	// Handle tab switch
+	
+
+
 	const handleSelectTab = (tab: AdminUnifiedTab) => {
 		setActiveTab(tab);
 		if (typeof window !== "undefined") {
@@ -154,141 +138,127 @@ export function SystemAdminDashboard() {
 		});
 	};
 
-	const handleRefreshAll = async () => {
+	const handleRefreshAll = () => {
 		setIsSyncing(true);
-		await fetchVoiceSetting();
-		setTimeout(() => setIsSyncing(false), 500);
+		window.location.reload();
 	};
 
 	const currentNavItem = UNIFIED_NAV_ITEMS.find((i) => i.key === activeTab) || UNIFIED_NAV_ITEMS[0];
 
 	return (
-		<div className="min-h-screen w-full bg-background text-foreground font-sans flex flex-col">
-			{/* Top Universal Full-Width Header Bar */}
-			<header className="sticky top-0 z-40 border-b border-border bg-card/95 backdrop-blur-md px-4 lg:px-6 py-2.5 shadow-2xs">
-				<div className="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-					{/* Left: Branding & Breadcrumbs */}
-					<div className="space-y-0.5">
-						<div className="flex items-center gap-2">
-							<div className="flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-muted/60 p-1 shadow-2xs">
-								<img
-									src="/android-chrome-192x192.png"
-									alt="Aurabook"
-									className="h-5 w-5 rounded object-contain"
-								/>
-							</div>
-							<div className="flex items-center gap-2 flex-wrap">
-								<h1 className="text-sm sm:text-base font-bold tracking-tight text-foreground">
-									Trung Tâm Quản Trị Hệ Thống Aurabook
-								</h1>
-								<Badge variant="outline-solid" className="text-[10px] py-0 px-2 text-primary border-primary/30 font-semibold">
-									Cổng Độc Lập :3001
-								</Badge>
-							</div>
+		<div className="min-h-screen w-full bg-[#090d16] text-slate-100 font-sans flex flex-col">
+			{/* Clean Enterprise Top Navigation Bar */}
+			<header className="sticky top-0 z-40 border-b border-slate-800/80 bg-[#0f172a]/95 backdrop-blur-md px-6 py-3">
+				<div className="w-full flex items-center justify-between gap-4">
+					{/* Brand & Breadcrumbs */}
+					<div className="flex items-center gap-3">
+						<div className="flex h-8 w-8 items-center justify-center rounded-md border border-slate-800 bg-slate-900 p-1">
+							<img
+								src="/android-chrome-192x192.png"
+								alt="AuraBook"
+								className="h-5 w-5 rounded object-contain"
+							/>
 						</div>
-
-						<nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[11px] text-muted-foreground flex-wrap">
-							<span className="font-medium">Aurabook Platform</span>
-							<span>/</span>
-							<span className="font-semibold text-foreground">{currentNavItem.label}</span>
-							<span>•</span>
-							<span className="hidden sm:inline text-muted-foreground">{currentNavItem.description}</span>
-						</nav>
+						<div>
+							<div className="flex items-center gap-2">
+								<h1 className="text-sm font-semibold tracking-tight text-white">
+									AuraBook
+								</h1>
+								<span className="text-xs text-slate-400 dark:text-zinc-500">/</span>
+								<span className="text-xs font-medium text-slate-600 dark:text-zinc-300">
+									Quản trị hệ thống
+								</span>
+							</div>
+							<p className="text-[11px] text-slate-500 dark:text-zinc-400">
+								{currentNavItem.description}
+							</p>
+						</div>
 					</div>
 
-					{/* Right: Actions, Voice Indicator & External Port Links */}
-					<div className="flex items-center gap-2 flex-wrap">
-						{/* Active Voice Indicator */}
-						<button
-							type="button"
-							onClick={() => handleSelectTab("ai_platform")}
-							title="Nhấn để tùy chỉnh giọng nói trong AI Studio"
-							className="group inline-flex items-center gap-2 rounded-lg border border-border bg-card hover:border-primary/40 px-2.5 py-1.5 text-xs font-medium transition-all shadow-2xs cursor-pointer"
-						>
-							<span className="relative flex h-2 w-2">
-								<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-								<span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-							</span>
-							<Mic className="h-3.5 w-3.5 text-primary group-hover:scale-110 transition-transform" />
-							<div className="flex flex-col text-left">
-								<span className="text-[9px] text-muted-foreground uppercase tracking-wider font-semibold">
-									Giọng đọc mặc định
-								</span>
-								<span className="font-semibold text-foreground truncate max-w-[130px]">
-									{selectedVoice.includes("hoaimy") ? "Hoài My (VTV Studio)" : selectedVoice}
-								</span>
-							</div>
-						</button>
+					{/* System Status & Actions */}
+					<div className="flex items-center gap-2.5">
+						{/* Realtime Engine Status */}
+						<div className="hidden sm:flex items-center gap-2 rounded-md border border-slate-800 bg-slate-900/80 px-3 py-1.5 text-xs text-slate-300">
+							<span className="h-2 w-2 rounded-full bg-emerald-500" />
+							<span>Hệ thống trực tuyến</span>
+							<span className="text-[10px] text-slate-400 dark:text-zinc-500 font-mono">(Local AI)</span>
+						</div>
 
+						{/* Refresh Button */}
 						<Button
 							type="button"
 							variant="outline-solid"
 							size="sm"
 							onClick={handleRefreshAll}
 							disabled={isSyncing}
-							className="h-8 text-xs gap-1.5"
+							className="h-8 text-xs gap-1.5 border border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700 shadow-2xs font-medium cursor-pointer"
 						>
 							<RefreshCw className={cn("h-3.5 w-3.5", isSyncing && "animate-spin")} />
-							<span>{isSyncing ? "Đang đồng bộ..." : "Đồng bộ"}</span>
+							<span>{isSyncing ? "Đang tải..." : "Làm mới"}</span>
 						</Button>
 
-						{/* External Port Links */}
+						{/* Quick External Links */}
+												{/* Theme Badge */}
+						<div className="hidden sm:inline-flex items-center gap-1.5 rounded-md border border-slate-800 bg-slate-900 px-2.5 py-1.5 text-xs font-medium text-slate-300">
+							<Moon className="h-3.5 w-3.5 text-blue-400" />
+							<span>Dark Console</span>
+						</div>
+
 						<a
-							href="http://localhost:3000"
+						href="http://localhost:3000"
 							target="_blank"
 							rel="noreferrer"
-							className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs font-semibold text-foreground hover:bg-muted transition-colors shadow-2xs"
+							className="inline-flex items-center gap-1.5 rounded-md border border-slate-800 bg-slate-900 px-2.5 py-1.5 text-xs font-medium text-slate-300 hover:bg-slate-800 transition-colors"
 						>
-							<ExternalLink className="h-3 w-3 text-blue-500" />
-							<span className="hidden md:inline">Cửa Hàng</span>
-							<span className="font-mono text-muted-foreground">(:3000)</span>
+							<ExternalLink className="h-3 w-3 text-slate-400" />
+							<span>Cửa hàng</span>
 						</a>
 
 						<a
 							href="http://localhost:9000/dashboard/"
 							target="_blank"
 							rel="noreferrer"
-							className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs font-semibold text-foreground hover:bg-muted transition-colors shadow-2xs"
+							className="inline-flex items-center gap-1.5 rounded-md border border-slate-800 bg-slate-900 px-2.5 py-1.5 text-xs font-medium text-slate-300 hover:bg-slate-800 transition-colors"
 						>
-							<ExternalLink className="h-3 w-3 text-purple-500" />
-							<span className="hidden md:inline">Saleor</span>
-							<span className="font-mono text-muted-foreground">(:9000)</span>
+							<ExternalLink className="h-3 w-3 text-slate-400" />
+							<span>Saleor</span>
 						</a>
 
-						<a
-							href="http://localhost:8080"
-							target="_blank"
-							rel="noreferrer"
-							className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs font-semibold text-foreground hover:bg-muted transition-colors shadow-2xs"
-						>
-							<ExternalLink className="h-3 w-3 text-emerald-500" />
-							<span className="hidden md:inline">Dify</span>
-							<span className="font-mono text-muted-foreground">(:8080)</span>
-						</a>
+						{onLogout && (
+							<button
+								type="button"
+								onClick={onLogout}
+								className="inline-flex items-center gap-1.5 rounded-md border border-red-200 dark:border-red-900/50 bg-red-50/60 dark:bg-red-950/30 px-2.5 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors cursor-pointer"
+								title="Đăng xuất phiên quản trị"
+							>
+								<LogOut className="h-3 w-3" />
+								<span>Đăng xuất</span>
+							</button>
+						)}
 					</div>
 				</div>
 			</header>
 
-			{/* Main Full-Width Body with Sidebar + Dynamic Module View */}
-			<div className="flex-1 w-full px-4 lg:px-6 py-4 flex flex-col md:flex-row gap-5 items-start max-w-none">
-				{/* Fluid Sidebar */}
+			{/* Main Layout Body */}
+			<div className="flex-1 w-full px-6 py-5 flex flex-col md:flex-row gap-6 items-start">
+				{/* Quiet Navigation Sidebar */}
 				<aside
 					className={cn(
-						"transition-all duration-300 rounded-xl bg-card border border-border p-2 shadow-card shrink-0 w-full md:sticky md:top-16",
-						isSidebarCollapsed ? "md:w-16" : "md:w-64",
+						"transition-all duration-200 rounded-lg bg-[#0f172a] border border-slate-800 p-2 shrink-0 w-full md:sticky md:top-20",
+						isSidebarCollapsed ? "md:w-14" : "md:w-60",
 					)}
 				>
-					<div className="flex items-center justify-between p-1.5 mb-1.5 border-b border-border">
+					<div className="flex items-center justify-between px-2 py-1.5 mb-1 text-slate-400 dark:text-zinc-500">
 						{!isSidebarCollapsed && (
-							<span className="text-xs font-bold text-foreground uppercase tracking-wider text-[10px]">
-								6 Phân Hệ Quản Trị
+							<span className="text-[11px] font-semibold uppercase tracking-wider">
+								Menu quản trị
 							</span>
 						)}
 						<button
 							type="button"
 							onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-							className="p-1 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors ml-auto cursor-pointer"
-							title={isSidebarCollapsed ? "Mở rộng thanh menu" : "Thu gọn thanh menu"}
+							className="p-1 rounded text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors ml-auto cursor-pointer"
+							title={isSidebarCollapsed ? "Mở rộng menu" : "Thu gọn menu"}
 						>
 							{isSidebarCollapsed ? (
 								<ChevronRight className="h-4 w-4" />
@@ -299,83 +269,37 @@ export function SystemAdminDashboard() {
 					</div>
 
 					{/* Navigation List */}
-					<div className="space-y-1">
+					<nav className="space-y-0.5">
 						{UNIFIED_NAV_ITEMS.map((item) => {
 							const Icon = item.icon;
 							const isActive = activeTab === item.key;
 							return (
 								<button
 									key={item.key}
-									id={`nav-item-${item.key}`}
 									type="button"
 									onClick={() => handleSelectTab(item.key)}
 									title={item.label}
 									className={cn(
-										"flex items-center gap-2.5 rounded-lg px-2.5 py-2.5 text-xs font-semibold transition-all w-full text-left cursor-pointer",
+										"flex items-center gap-2.5 rounded-md px-2.5 py-2 text-xs font-medium transition-colors w-full text-left cursor-pointer",
 										isActive
-											? "bg-primary text-primary-foreground shadow-2xs font-bold"
-											: "text-muted-foreground hover:bg-muted hover:text-foreground",
-										isSidebarCollapsed ? "justify-center px-2" : "justify-start",
+											? "bg-blue-600 text-white font-semibold shadow-sm"
+											: "text-slate-400 hover:bg-slate-800/70 hover:text-slate-200",
+										isSidebarCollapsed ? "justify-center px-1" : "justify-start",
 									)}
 								>
 									<Icon className="h-4 w-4 shrink-0" />
 									{!isSidebarCollapsed && (
-										<div className="flex items-center justify-between w-full min-w-0">
-											<span className="truncate">{item.label}</span>
-											{item.badge && (
-												<Badge
-													variant="outline-solid"
-													className={cn(
-														"text-[9px] px-1 py-0 h-4 border-none font-semibold",
-														isActive ? "bg-white/20 text-white" : "bg-primary/10 text-primary",
-													)}
-												>
-													{item.badge}
-												</Badge>
-											)}
-										</div>
+										<span className="truncate">{item.label}</span>
 									)}
 								</button>
 							);
 						})}
-					</div>
-
-					{!isSidebarCollapsed && (
-						<div className="mt-4 pt-3 border-t border-border px-2">
-							<div className="text-[10px] text-muted-foreground leading-relaxed">
-								Admin Port :3001 kết nối trực tiếp với backend qua reverse proxy. Mọi thay đổi áp dụng tức thì.
-							</div>
-						</div>
-					)}
+					</nav>
 				</aside>
 
-				{/* Primary Content View Area - Full Width */}
-				<main className="flex-1 min-w-0 w-full space-y-4">
-					{/* Active Module Header Banner */}
-					<div className="rounded-xl border border-border bg-card p-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-						<div className="space-y-0.5">
-							<div className="flex items-center gap-2">
-								<Badge variant="outline-solid" className="text-xs text-primary border-primary/30 font-semibold">
-									Phân Hệ Quản Trị #{UNIFIED_NAV_ITEMS.findIndex((i) => i.key === activeTab) + 1}
-								</Badge>
-								<span className="text-xs text-muted-foreground">•</span>
-								<span className="text-xs text-muted-foreground">{currentNavItem.description}</span>
-							</div>
-							<h2 className="text-lg font-bold text-foreground flex items-center gap-2">
-								<currentNavItem.icon className="w-5 h-5 text-primary" />
-								<span>{currentNavItem.label}</span>
-							</h2>
-						</div>
-
-						{activeTab === "system_config" && (
-							<div className="flex items-center gap-2 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-3 py-1.5 rounded-lg border border-emerald-500/20 text-xs font-semibold">
-								<CheckCircle2 className="h-4 w-4 shrink-0" />
-								<span>Lưu trực tiếp vào máy chủ không cần sửa code</span>
-							</div>
-						)}
-					</div>
-
-					{/* 6 Unified Modules */}
+				{/* Primary Content View Area */}
+				<main className="flex-1 min-w-0 w-full space-y-5">
+					{/* Module Views */}
 					{activeTab === "overview" && (
 						<AdminOverviewModule onNavigateTab={(tab) => handleSelectTab(tab as AdminUnifiedTab)} />
 					)}

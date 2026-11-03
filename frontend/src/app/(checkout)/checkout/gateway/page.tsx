@@ -37,7 +37,15 @@ function GatewayContent() {
 	// Timer countdown 15:00
 	const [timeLeft, setTimeLeft] = useState(900);
 	const [isProcessing, setIsProcessing] = useState(false);
-	const [activeTab, setActiveTab] = useState<"qr" | "atm">("qr");
+	const [activeTab, setActiveTab] = useState<"qr" | "atm">("atm");
+
+	// Form state cho người dùng tự nhập thông tin thẻ / số tài khoản
+	const [cardNumber, setCardNumber] = useState("");
+	const [cardHolder, setCardHolder] = useState("");
+	const [issueDate, setIssueDate] = useState("");
+	const [otp, setOtp] = useState("");
+	const [step, setStep] = useState<"card" | "otp">("card");
+	const [formError, setFormError] = useState("");
 
 	useEffect(() => {
 		const timer = setInterval(() => {
@@ -49,6 +57,44 @@ function GatewayContent() {
 	const minutes = Math.floor(timeLeft / 60);
 	const seconds = timeLeft % 60;
 	const formattedTime = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+
+	// Xử lý khi nhấn Tiếp tục (từ màn hình nhập thẻ sang OTP)
+	const handleCardSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		const cleanCard = cardNumber.replace(/\s+/g, "");
+		if (cleanCard.length < 12) {
+			setFormError("Vui lòng nhập đúng số thẻ ngân hàng (tối thiểu 12-16 số)");
+			return;
+		}
+		if (!cardHolder.trim()) {
+			setFormError("Vui lòng nhập tên chủ thẻ (in hoa không dấu, ví dụ NGUYEN VAN A)");
+			return;
+		}
+		setFormError("");
+		setIsProcessing(true);
+		setTimeout(() => {
+			setIsProcessing(false);
+			setStep("otp");
+		}, 600);
+	};
+
+	// Xử lý khi người dùng điền nhanh thông tin thẻ test NCB
+	const handleFillTestCard = () => {
+		setCardNumber("9704 1985 2619 1432 198");
+		setCardHolder("NGUYEN VAN A");
+		setIssueDate("07/15");
+		setFormError("");
+	};
+
+	// Xử lý khi xác thực OTP thành công
+	const handleOtpSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		if (!otp.trim() || otp.length < 4) {
+			setFormError("Vui lòng nhập mã OTP xác thực (mã thử nghiệm: 123456)");
+			return;
+		}
+		handleSimulateBankApproval();
+	};
 
 	// Xử lý khi ngân hàng/cổng thanh toán phản hồi thành công
 	const handleSimulateBankApproval = () => {
@@ -260,53 +306,144 @@ function GatewayContent() {
 								</p>
 							</>
 						) : (
-							/* ATM Card Test Credentials View (VNPAY NCB) */
-							<div className="text-left space-y-4 max-w-sm mx-auto">
-								<div className="p-4 rounded-xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 space-y-2 text-xs">
-									<div className="flex items-center gap-1.5 font-bold text-blue-900 dark:text-blue-200">
-										<Sparkles className="w-4 h-4 text-blue-600" />
-										Thông tin thẻ thử nghiệm NCB chính thức (VNPAY):
+							/* ATM Card & Bank Account Entry Form */
+							<div className="text-left space-y-4 max-w-md mx-auto">
+								{/* Quick fill card test banner */}
+								<div className="p-3.5 rounded-xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 flex items-center justify-between text-xs">
+									<div className="flex items-center gap-2 text-blue-900 dark:text-blue-200">
+										<Sparkles className="w-4 h-4 text-blue-600 flex-shrink-0" />
+										<span>Thẻ test NCB: <strong>9704 1985...</strong></span>
 									</div>
-									<div className="grid grid-cols-3 gap-1 pt-1 text-slate-700 dark:text-slate-300">
-										<span className="text-slate-500">Ngân hàng:</span>
-										<span className="col-span-2 font-semibold">NCB (Ngân hàng Quốc Dân)</span>
-										<span className="text-slate-500">Số thẻ:</span>
-										<span className="col-span-2 font-mono font-bold">9704 1985 2619 1432 198</span>
-										<span className="text-slate-500">Chủ thẻ:</span>
-										<span className="col-span-2 font-semibold">NGUYEN VAN A</span>
-										<span className="text-slate-500">Ngày phát hành:</span>
-										<span className="col-span-2 font-semibold">07/15</span>
-										<span className="text-slate-500">Mã OTP:</span>
-										<span className="col-span-2 font-bold text-emerald-600">123456</span>
+									<button
+										type="button"
+										onClick={handleFillTestCard}
+										className="px-2.5 py-1 text-xs font-semibold rounded bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+									>
+										Điền nhanh
+									</button>
+								</div>
+
+								{formError && (
+									<div className="p-2.5 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-xs text-red-600 dark:text-red-300">
+										{formError}
 									</div>
-								</div>
-								<div className="text-xs text-slate-500 text-center">
-									Nhấn nút bên dưới để ngân hàng NCB xác nhận giao dịch thành công và chuyển hướng về Aurabook.
-								</div>
+								)}
+
+								{step === "card" ? (
+									<form onSubmit={handleCardSubmit} className="space-y-3.5 text-xs">
+										<div>
+											<label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+												Số thẻ ngân hàng / Số tài khoản
+											</label>
+											<input
+												type="text"
+												placeholder="Ví dụ: 9704 1985 2619 1432 198"
+												value={cardNumber}
+												onChange={(e) => setCardNumber(e.target.value)}
+												className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+												required
+											/>
+										</div>
+
+										<div>
+											<label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+												Tên chủ thẻ (In hoa không dấu)
+											</label>
+											<input
+												type="text"
+												placeholder="Ví dụ: NGUYEN VAN A"
+												value={cardHolder}
+												onChange={(e) => setCardHolder(e.target.value.toUpperCase())}
+												className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 uppercase font-semibold text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+												required
+											/>
+										</div>
+
+										<div className="grid grid-cols-2 gap-3">
+											<div>
+												<label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+													Ngày phát hành (MM/YY)
+												</label>
+												<input
+													type="text"
+													placeholder="07/15"
+													value={issueDate}
+													onChange={(e) => setIssueDate(e.target.value)}
+													className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+												/>
+											</div>
+											<div>
+												<label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+													Ngân hàng phát hành
+												</label>
+												<input
+													type="text"
+													disabled
+													value="NCB - Ngân hàng Quốc Dân"
+													className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-800 text-slate-500 text-xs cursor-not-allowed"
+												/>
+											</div>
+										</div>
+
+										<Button
+											type="submit"
+											disabled={isProcessing}
+											className={`w-full py-5 text-sm font-bold shadow rounded-xl mt-2 ${providerConfig.brandColor}`}
+										>
+											{isProcessing ? "Đang xác thực thẻ..." : "Tiếp tục xác thực OTP"}
+										</Button>
+									</form>
+								) : (
+									<form onSubmit={handleOtpSubmit} className="space-y-3.5 text-xs">
+										<div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl space-y-1">
+											<div className="text-slate-500">Mã xác thực OTP đã được gửi đến số điện thoại đăng ký thẻ:</div>
+											<div className="font-mono font-bold text-slate-800 dark:text-slate-200">
+												**** **** **** {cardNumber.slice(-4) || "1198"}
+											</div>
+											<div className="text-[11px] text-emerald-600 font-medium">
+												(Mã OTP thử nghiệm: <strong>123456</strong>)
+											</div>
+										</div>
+
+										<div>
+											<label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+												Nhập mã xác thực OTP
+											</label>
+											<input
+												type="text"
+												maxLength={6}
+												placeholder="Nhập 123456"
+												value={otp}
+												onChange={(e) => setOtp(e.target.value)}
+												className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 font-mono text-center tracking-widest text-lg font-bold focus:outline-none focus:ring-2 focus:ring-blue-500"
+												required
+												autoFocus
+											/>
+										</div>
+
+										<div className="flex gap-2">
+											<button
+												type="button"
+												onClick={() => setStep("card")}
+												className="px-4 py-2.5 border border-slate-300 dark:border-slate-700 rounded-xl font-semibold text-slate-600 dark:text-slate-300"
+											>
+												Quay lại
+											</button>
+											<Button
+												type="submit"
+												disabled={isProcessing}
+												className={`flex-1 py-5 text-sm font-bold shadow rounded-xl ${providerConfig.brandColor}`}
+											>
+												{isProcessing ? "Đang hoàn tất thanh toán..." : "Xác nhận thanh toán"}
+											</Button>
+										</div>
+									</form>
+								)}
 							</div>
 						)}
 
-						{/* Action Buttons */}
-						<div className="pt-2 space-y-3">
-							<Button
-								type="button"
-								onClick={handleSimulateBankApproval}
-								disabled={isProcessing}
-								className={`w-full py-6 text-base font-bold shadow-md rounded-xl ${providerConfig.brandColor}`}
-							>
-								{isProcessing ? (
-									<div className="flex items-center justify-center gap-2 text-white">
-										<Loader size="sm" className="text-white fill-white" />
-										<span>Ngân hàng đang xử lý giao dịch…</span>
-									</div>
-								) : (
-									<div className="flex items-center justify-center gap-2">
-										<CheckCircle2 className="w-5 h-5" />
-										<span>Xác nhận đã thanh toán từ ngân hàng</span>
-									</div>
-								)}
-							</Button>
-
+						{/* Bottom Cancel Button */}
+						<div className="pt-2">
 							<button
 								type="button"
 								onClick={handleCancelPayment}
@@ -314,7 +451,7 @@ function GatewayContent() {
 								className="text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors py-2 flex items-center justify-center gap-1.5 mx-auto"
 							>
 								<ArrowLeft className="w-3.5 h-3.5" />
-								<span>Hủy giao dịch và quay lại trang giỏ hàng</span>
+								<span>Hủy giao dịch và quay lại trang thanh toán</span>
 							</button>
 						</div>
 					</div>

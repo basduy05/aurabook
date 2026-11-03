@@ -84,45 +84,9 @@ export function App() {
 
 	return (
 		<div className="min-h-screen w-full bg-background text-foreground flex flex-col">
-			{/* Admin Session Strip */}
-			<div className="bg-slate-900 border-b border-slate-800 px-4 py-1.5 flex items-center justify-between text-xs text-slate-300">
-				<div className="flex items-center gap-2">
-					<span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-					<span className="font-semibold text-slate-200">Aurabook Dedicated Admin</span>
-					<span className="text-slate-500">|</span>
-					<span className="text-slate-400">Port 3001 (Độc lập Saleor Dashboard)</span>
-				</div>
-				<div className="flex items-center gap-4">
-					<a
-						href="http://localhost:3000"
-						target="_blank"
-						rel="noreferrer"
-						className="hover:text-white transition-colors"
-					>
-						Storefront (:3000)
-					</a>
-					<a
-						href="http://localhost:9000/dashboard/"
-						target="_blank"
-						rel="noreferrer"
-						className="hover:text-white transition-colors"
-					>
-						Saleor (:9000)
-					</a>
-					<button
-						type="button"
-						onClick={handleLogout}
-						className="flex items-center gap-1 text-red-400 hover:text-red-300 font-medium cursor-pointer"
-					>
-						<LogOut className="w-3 h-3" />
-						<span>Đăng xuất</span>
-					</button>
-				</div>
-			</div>
-
-			{/* Authentic System Admin Dashboard with all original tabs & logic */}
+			{/* Clean Dedicated System Admin Dashboard */}
 			<div className="flex-1">
-				<SystemAdminDashboard />
+				<SystemAdminDashboard onLogout={handleLogout} />
 			</div>
 		</div>
 	);

@@ -18,6 +18,9 @@ import {
 	Check,
 	RotateCcw,
 	HelpCircle,
+	CreditCard,
+	Wallet,
+	QrCode,
 } from "lucide-react";
 import { Button } from "@/ui/components/ui/button";
 import { Badge } from "@/ui/components/ui/badge";
@@ -32,6 +35,8 @@ export function AdminSystemConfigModule() {
 		enablePublicReviews: true,
 		enableOfflineDrm: true,
 		enableSimulatedPayments: true,
+		enableMomoGateway: true,
+		enableVnpayGateway: true,
 		maxOfflineDays: 7,
 		maxDrmDevices: 2,
 	});
@@ -44,7 +49,7 @@ export function AdminSystemConfigModule() {
 		apiKey: "",
 		temperature: 0.7,
 		maxTokens: 1024,
-		ttsVoice: "vi_VN-hoaimy-aurabook",
+		ttsVoice: "f5-tts-vietnamese",
 		ttsSpeed: 1.0,
 		systemPrompt:
 			"Bạn là Chuyên viên Chăm sóc Khách hàng & Tư vấn Sách Thông minh của AuraBook. Giọng điệu thân thiện, ấm áp, trả lời ngắn gọn, nắm vững kiến thức từ GraphRAG và hỗ trợ khách hàng mua sách chu đáo.",
@@ -212,9 +217,7 @@ export function AdminSystemConfigModule() {
 							Bật hoặc tắt các chức năng trực tiếp trên giao diện độc giả mà không cần chỉnh sửa code nguồn
 						</p>
 					</div>
-					<Badge variant="outline-solid" className="text-[10px] text-blue-500 border-blue-500/30 font-semibold">
-						Thay đổi tức thì
-					</Badge>
+
 				</div>
 
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
@@ -352,16 +355,14 @@ export function AdminSystemConfigModule() {
 				<div className="flex items-center justify-between pb-3 border-b border-border">
 					<div>
 						<h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-							<Cpu className="w-4 h-4 text-purple-500" />
+							<Cpu className="w-4 h-4 text-slate-600 dark:text-zinc-400" />
 							<span>Bộ Não Mô Hình Ngôn Ngữ (LLM Model & Provider)</span>
 						</h3>
 						<p className="text-xs text-muted-foreground mt-0.5">
 							Lựa chọn nhà cung cấp mô hình trí tuệ nhân tạo dùng cho Voice Agent và GraphRAG
 						</p>
 					</div>
-					<Badge variant="outline-solid" className="text-[10px] text-purple-500 border-purple-500/30 font-semibold">
-						Multi-Provider AI
-					</Badge>
+
 				</div>
 
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -500,10 +501,9 @@ export function AdminSystemConfigModule() {
 							onChange={(e) => setLlmConfig((prev) => ({ ...prev, ttsVoice: e.target.value }))}
 							className="w-full bg-background border border-border rounded-md py-1 px-2 text-xs font-semibold text-foreground focus:outline-none"
 						>
-							<option value="vi_VN-hoaimy-aurabook">Hoài My (1000 Epochs • VTV Studio)</option>
+							<option value="f5-tts-vietnamese">F5-TTS Vietnamese (Nam Minh Neural • Mặc định)</option>
 							<option value="mailinh">Mai Linh (Piper ONNX • Nữ trẻ trung)</option>
 							<option value="vixtts">viXTTS (Nam • Trầm ấm văn học)</option>
-							<option value="f5-tts-vietnamese">F5-TTS Vietnamese (Flow Matching)</option>
 							<option value="viettts">VietTTS (Nam • Chuẩn miền Bắc)</option>
 						</select>
 						<p className="text-[10px] text-muted-foreground">Được đồng bộ sang trình duyệt và máy chủ</p>
@@ -628,6 +628,148 @@ export function AdminSystemConfigModule() {
 							onChange={(e) => setDifyConfig((prev) => ({ ...prev, apiKey: e.target.value }))}
 							className="h-9 text-xs font-mono"
 						/>
+					</div>
+				</div>
+			</div>
+
+
+			{/* Section 5: Cổng Thanh Toán MoMo & VNPAY (Saleor Plugins & Extensions) */}
+			<div className="bg-card border border-border rounded-xl p-5 shadow-2xs space-y-4">
+				<div className="flex items-center justify-between pb-3 border-b border-border">
+					<div>
+						<h3 className="text-sm font-bold text-foreground flex items-center gap-2">
+							<CreditCard className="w-4 h-4 text-emerald-500" />
+							<span>Cổng Thanh Toán MoMo & VNPAY (Saleor Plugins & Extensions)</span>
+						</h3>
+						<p className="text-xs text-muted-foreground mt-0.5">
+							Quản lý trạng thái kích hoạt, môi trường Sandbox/Production và thông tin kết nối Saleor Payment App Extensions
+						</p>
+					</div>
+					<div className="flex items-center gap-2">
+						<Badge variant="outline-solid" className="text-[11px] font-mono text-emerald-600 bg-emerald-500/10 border-emerald-500/20">
+							Saleor Plugins: Active
+						</Badge>
+						<a
+							href="http://localhost:9000/dashboard/plugins"
+							target="_blank"
+							rel="noreferrer"
+							className="text-xs text-primary font-semibold hover:underline flex items-center gap-1"
+						>
+							<span>Saleor Dashboard (:9000)</span>
+							<span>↗</span>
+						</a>
+					</div>
+				</div>
+
+				<div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+					{/* MoMo Card */}
+					<div className="p-4 rounded-xl border border-border bg-muted/10 space-y-3">
+						<div className="flex items-center justify-between">
+							<div className="flex items-center gap-2.5">
+								<div className="w-8 h-8 rounded-lg bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-600 font-bold text-xs">
+									<Wallet className="w-4 h-4" />
+								</div>
+								<div>
+									<div className="text-xs font-bold text-foreground flex items-center gap-1.5">
+										<span>Ví Điện Tử MoMo</span>
+										<Badge variant="secondary" className="text-[10px] px-1.5 py-0 bg-pink-500/10 text-pink-600 border-none">
+											aurabook.payments.momo
+										</Badge>
+									</div>
+									<div className="text-[11px] text-muted-foreground">MoMo QR, Ví MoMo & Thẻ ATM Nội Địa</div>
+								</div>
+							</div>
+							<label className="relative inline-flex items-center cursor-pointer">
+								<input
+									type="checkbox"
+									checked={featureFlags.enableMomoGateway}
+									onChange={(e) =>
+										setFeatureFlags((prev) => ({ ...prev, enableMomoGateway: e.target.checked }))
+									}
+									className="sr-only peer"
+								/>
+								<div className="w-9 h-5 bg-muted peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-pink-600"></div>
+							</label>
+						</div>
+
+						<div className="space-y-2 pt-1 border-t border-border/50 text-xs">
+							<div className="grid grid-cols-2 gap-2">
+								<div>
+									<span className="text-[10px] font-semibold text-muted-foreground">Partner Code</span>
+									<div className="font-mono text-[11px] text-foreground bg-background px-2 py-1 rounded border border-border">
+										MOMOBKUN20180529
+									</div>
+								</div>
+								<div>
+									<span className="text-[10px] font-semibold text-muted-foreground">Môi trường</span>
+									<div className="font-semibold text-[11px] text-emerald-600 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">
+										Sandbox Testnet
+									</div>
+								</div>
+							</div>
+							<div>
+								<span className="text-[10px] font-semibold text-muted-foreground">Saleor Extension Mounts</span>
+								<div className="text-[11px] text-muted-foreground font-mono flex flex-wrap gap-1 mt-0.5">
+									<span className="px-1.5 py-0.5 bg-muted rounded border border-border">NAVIGATION_ORDERS</span>
+									<span className="px-1.5 py-0.5 bg-muted rounded border border-border">ORDER_DETAILS_MORE_ACTIONS</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					{/* VNPAY Card */}
+					<div className="p-4 rounded-xl border border-border bg-muted/10 space-y-3">
+						<div className="flex items-center justify-between">
+							<div className="flex items-center gap-2.5">
+								<div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-600 font-bold text-xs">
+									<QrCode className="w-4 h-4" />
+								</div>
+								<div>
+									<div className="text-xs font-bold text-foreground flex items-center gap-1.5">
+										<span>Cổng Quốc Gia VNPAY</span>
+										<Badge variant="secondary" className="text-[10px] px-1.5 py-0 bg-blue-500/10 text-blue-600 border-none">
+											aurabook.payments.vnpay
+										</Badge>
+									</div>
+									<div className="text-[11px] text-muted-foreground">VNPAY-QR, Thẻ Nội Địa & Thẻ Quốc Tế</div>
+								</div>
+							</div>
+							<label className="relative inline-flex items-center cursor-pointer">
+								<input
+									type="checkbox"
+									checked={featureFlags.enableVnpayGateway}
+									onChange={(e) =>
+										setFeatureFlags((prev) => ({ ...prev, enableVnpayGateway: e.target.checked }))
+									}
+									className="sr-only peer"
+								/>
+								<div className="w-9 h-5 bg-muted peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+							</label>
+						</div>
+
+						<div className="space-y-2 pt-1 border-t border-border/50 text-xs">
+							<div className="grid grid-cols-2 gap-2">
+								<div>
+									<span className="text-[10px] font-semibold text-muted-foreground">Terminal ID (vnp_TmnCode)</span>
+									<div className="font-mono text-[11px] text-foreground bg-background px-2 py-1 rounded border border-border">
+										BBFYMDIF
+									</div>
+								</div>
+								<div>
+									<span className="text-[10px] font-semibold text-muted-foreground">Môi trường</span>
+									<div className="font-semibold text-[11px] text-emerald-600 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">
+										Sandbox Testnet
+									</div>
+								</div>
+							</div>
+							<div>
+								<span className="text-[10px] font-semibold text-muted-foreground">Saleor Extension Mounts</span>
+								<div className="text-[11px] text-muted-foreground font-mono flex flex-wrap gap-1 mt-0.5">
+									<span className="px-1.5 py-0.5 bg-muted rounded border border-border">NAVIGATION_ORDERS</span>
+									<span className="px-1.5 py-0.5 bg-muted rounded border border-border">ORDER_DETAILS_MORE_ACTIONS</span>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -288,7 +288,7 @@ export function AIAdminDashboard({
 	const [voiceData, setVoiceData] = useState<any>(null);
 	const [activePreset, setActivePreset] = useState("local-free");
 	const [voiceForm, setVoiceForm] = useState(() => {
-		let initialVoice = "vi_VN-hoaimy-aurabook";
+		let initialVoice = "f5-tts-vietnamese";
 		if (typeof window !== "undefined") {
 			try {
 				const saved = localStorage.getItem("aurabook_admin_selected_voice");
@@ -318,7 +318,7 @@ export function AIAdminDashboard({
 	const [isSavingVoice, setIsSavingVoice] = useState(false);
 	const [testConnMessage, setTestConnMessage] = useState<{ url: string; msg: string; ok: boolean } | null>(null);
 	const [isTestingConn, setIsTestingConn] = useState(false);
-	const [installedOllamaModels, setInstalledOllamaModels] = useState<string[]>(["qwen2.5:3b"]);
+	const [installedOllamaModels, setInstalledOllamaModels] = useState<string[]>(["gemma2:2b"]);
 	const [isScanningOllama, setIsScanningOllama] = useState(false);
 
 	const handleScanOllamaModels = async () => {
@@ -2929,13 +2929,11 @@ export function AIAdminDashboard({
 											onChange={(e) => handleSelectVoiceAsDefault(e.target.value)}
 											className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1.5 text-xs text-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring"
 										>
-											<option value="vi_VN-hoaimy-aurabook">Hoài My (VTV MC Studio - 1000-Epoch Piper VITS)</option>
+											<option value="f5-tts-vietnamese">F5-TTS Vietnamese (Nam Minh Neural • Mặc định)</option>
+											<option value="vi-VN-NamMinhNeural">Nam Minh Neural (Microsoft Edge-TTS)</option>
 											<option value="mailinh">Mai Linh (beyoru/MaiLinh-TTS-CoreML - VITS/Piper ONNX)</option>
-											<option value="f5-tts-vietnamese">F5-TTS Vietnamese (zalopay/hynt ViVoice Flow Matching)</option>
 											<option value="vixtts">viXTTS (XTTS-v2 Tiếng Việt - Cảm xúc & Hơi thở)</option>
 											<option value="viettts">VietTTS (dangvansam/viet-tts FastSpeech2 + HiFi-GAN)</option>
-											<option value="vi-VN-HoaiMyNeural">Hoài My Neural (Microsoft Edge-TTS)</option>
-											<option value="vi-VN-NamMinhNeural">Nam Minh Neural (Microsoft Edge-TTS)</option>
 											<option value="alloy">OpenAI Alloy (TTS-1)</option>
 											<option value="echo">OpenAI Echo (TTS-1)</option>
 										</select>

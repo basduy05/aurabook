@@ -962,6 +962,8 @@ BUILTIN_PLUGINS = [
     "saleor.plugins.admin_email.plugin.AdminEmailPlugin",
     "saleor.plugins.openid_connect.plugin.OpenIDConnectPlugin",
     "saleor.plugins.tests.gateways.dummy.DummyGatewayPlugin",
+    "saleor.plugins.momo.plugin.MomoPlugin",
+    "saleor.plugins.vnpay.plugin.VnpayPlugin",
 ]
 
 # Plugin discovery

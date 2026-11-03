@@ -5,14 +5,14 @@
     "llmModel": "gemma2:2b",
     "llmBaseUrl": "http://localhost:11434",
     "llmApiKey": "",
-    "temperature": 0.5,
+    "temperature": 0.3,
     "ttsVoice": "f5-tts-vietnamese",
     "ttsSpeed": 1,
     "systemPrompt": "Bạn là Aura AI, Chuyên viên Chăm sóc Khách hàng & Tư vấn Sách Thông minh của AuraBook. Giọng điệu thân thiện, ấm áp, trả lời ngắn gọn và tra cứu sách chính xác.",
     "activeVoice": "f5-tts-vietnamese",
     "sttProvider": "whisper-local",
     "sttModel": "Systran/faster-whisper-small",
-    "sttBaseUrl": "http://localhost:8000/v1",
+    "sttBaseUrl": "http://localhost:5040/v1",
     "sttApiKey": "",
     "maxTokens": 180,
     "ttsProvider": "piper-local",
@@ -32,10 +32,10 @@
     "lcpServerUrl": "http://localhost:8989",
     "singleTabLock": true
   },
-  "updatedAt": "2026-11-02T05:41:58.640Z",
+  "updatedAt": "2026-11-02T23:35:00.000Z",
   "preset": "local-free",
   "reader": {
-    "llmModel": "qwen2.5:3b",
+    "llmModel": "gemma2:2b",
     "maxTokens": 4096
   }
 }

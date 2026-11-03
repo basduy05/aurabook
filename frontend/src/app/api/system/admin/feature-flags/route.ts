@@ -10,6 +10,8 @@ export interface SystemFeatureFlags {
 	enablePublicReviews: boolean;
 	enableOfflineDrm: boolean;
 	enableSimulatedPayments: boolean;
+	enableMomoGateway: boolean;
+	enableVnpayGateway: boolean;
 	maxOfflineDays: number;
 	maxDrmDevices: number;
 	updatedAt?: string;
@@ -21,6 +23,8 @@ const DEFAULT_FLAGS: SystemFeatureFlags = {
 	enablePublicReviews: true,
 	enableOfflineDrm: true,
 	enableSimulatedPayments: true,
+	enableMomoGateway: true,
+	enableVnpayGateway: true,
 	maxOfflineDays: 7,
 	maxDrmDevices: 2,
 	updatedAt: new Date().toISOString(),
@@ -29,7 +33,7 @@ const DEFAULT_FLAGS: SystemFeatureFlags = {
 function getFlags(): SystemFeatureFlags {
 	try {
 		if (fs.existsSync(FLAGS_FILE)) {
-			const data = JSON.parse(fs.readFileSync(FLAGS_FILE, "utf-8"));
+			const data = JSON.parse(fs.readFileSync(FLAGS_FILE, "utf-8")) as Partial<SystemFeatureFlags>;
 			return { ...DEFAULT_FLAGS, ...data };
 		}
 	} catch (e) {

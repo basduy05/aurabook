@@ -177,9 +177,12 @@ function loadData(): CommunityData {
 			}
 		}
 
-		// Ensure admin posts, comments, and notifications always display the Aurabook logo
+		// Ensure admin posts, comments, and notifications always display the Aurabook logo and official admin profile
 		for (const p of posts) {
-			if (p.author.id === ADMIN_USER_ID || p.author.username === "@aurabook_admin") {
+			if (p.author.id === ADMIN_USER_ID || p.author.username === "@aurabook_admin" || p.title.startsWith("[")) {
+				p.author.id = ADMIN_USER_ID;
+				p.author.username = "@aurabook_admin";
+				p.author.displayName = "Quản trị viên Aurabook";
 				p.author.avatar = "/android-chrome-512x512.png";
 			}
 			if (Array.isArray(p.comments)) {
@@ -847,8 +850,27 @@ export function saveCommunityUserWithPropagation(updatedUser: Partial<CommunityU
 	if (existingIndex !== -1) {
 		existing = data.users[existingIndex];
 	} else {
-		existing = data.users[0] || SEED_USERS[0];
-		existingIndex = 0;
+		// Create a brand new member user rather than inheriting from admin users[0]
+		const isSuperAdmin = updatedUser.id === ADMIN_USER_ID || updatedUser.realAccount?.email === "admin@aurabook.vn";
+		const newMemberUser: CommunityUser = {
+			id: updatedUser.id,
+			username: updatedUser.username || `@user_${Math.random().toString(36).substring(2, 7)}`,
+			displayName: updatedUser.displayName || "Độc giả AuraBook",
+			avatar: updatedUser.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+			bio: updatedUser.bio || "Độc giả yêu sách của AuraBook.",
+			favoriteGenre: updatedUser.favoriteGenre || "Văn học & Tri thức",
+			hasAcceptedTerms: true,
+			isBlocked: false,
+			joinedAt: new Date().toISOString(),
+			savedPosts: [],
+			followers: [],
+			following: [ADMIN_USER_ID],
+			role: isSuperAdmin ? "admin" : "member",
+			realAccount: updatedUser.realAccount,
+		};
+		data.users.push(newMemberUser);
+		existingIndex = data.users.length - 1;
+		existing = data.users[existingIndex];
 	}
 
 	const oldAvatar = existing.avatar;

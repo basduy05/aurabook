@@ -16,6 +16,7 @@ import {
 	Sliders,
 	Settings,
 	ExternalLink,
+	LogOut,
 	RefreshCw,
 	ChevronLeft,
 	ChevronRight,
@@ -122,7 +123,7 @@ const NAV_ITEMS: NavItem[] = [
 	},
 ];
 
-export function SystemAdminDashboard() {
+export function SystemAdminDashboard({ onLogout }: { onLogout?: () => void } = {}) {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const [, startTransition] = useTransition();

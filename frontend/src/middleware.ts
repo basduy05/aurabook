@@ -8,6 +8,8 @@ import { buildStorefrontPath } from "@/lib/storefront-path";
 
 const RESERVED_ROOT_SEGMENTS = new Set([
 	"admin",
+	"dashboard",
+	"auradashboard",
 	"system-admin",
 	"community-admin",
 	"ai-admin",

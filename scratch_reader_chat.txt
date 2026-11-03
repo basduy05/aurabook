@@ -1,0 +1,130 @@
+903: 						);
+904: 						const words = fallbackText.split(" ");
+905: 						for (let i = 0; i < words.length; i += 3) {
+906: 							const group = words.slice(i, i + 3).join(" ") + (i + 3 < words.length ? " " : "");
+907: 							sendChunk(group);
+908: 							await new Promise((r) => setTimeout(r, 18));
+909: 						}
+910: 					}
+911: 
+912: 					sendDone();
+913: 				},
+914: 			});
+915: 
+916: 			return new Response(readableStream, {
+917: 				headers: {
+918: 					"Content-Type": "text/event-stream; charset=utf-8",
+919: 					"Cache-Control": "no-cache, no-transform",
+920: 					Connection: "keep-alive",
+921: 					"X-Accel-Buffering": "no",
+922: 				},
+923: 			});
+924: 		}
+925: 
+926: 		// NON-STREAMING FALLBACK
+927: 		let answer = "";
+928: 		let thinkingText = "";
+929: 
+930: 		// Tier 1: Dify Non-Streaming Call (/chat-messages)
+931: 		const difyAnswer = await tryFetchDify(
+932: 			rag,
+933: 			cleanQuery || cleanQuote,
+934: 			resolvedTitle,
+935: 			graphResult.resolvedBookSlug || bookSlug,
+936: 			cleanQuote,
+937: 			sessionId,
+938: 			user,
+939: 		);
+940: 		if (difyAnswer) {
+941: 			answer = difyAnswer;
+942: 		}
+943: 
+944: 		// Tier 2: Ollama Non-Streaming Call
+945: 		if (!answer) {
+946: 			for (const currentModel of candidateModels) {
+947: 				if (answer) break;
+948: 				try {
+949: 					const numCtx = 4096;
+950: 					const ollamaRes = await fetch(`${llmBaseUrl}/api/chat`, {
+951: 						method: "POST",
+952: 						headers: { "Content-Type": "application/json" },
+953: 						body: JSON.stringify({
+954: 							model: currentModel,
+955: 							messages: [
+956: 								{ role: "system", content: systemPrompt },
+957: 								{ role: "user", content: userMessageContent },
+958: 							],
+959: 							stream: false,
+960: 							options: {
+961: 								temperature: 0.5,
+962: 								repeat_penalty: 1.1,
+963: 								num_ctx: numCtx,
+964: 								num_predict: 2048,
+965: 							},
+966: 						}),
+967: 						signal: AbortSignal.timeout(180000), // Timeout 180s cho non-streaming hoàn tất trọn vẹn
+968: 					});
+969: 
+970: 					if (ollamaRes.ok) {
+971: 						const data = (await ollamaRes.json()) as any;
+972: 						if (data.message?.thinking) {
+973: 							thinkingText = data.message.thinking.trim();
+974: 						}
+975: 						let text = data.message?.content?.trim();
+976: 						if (text) {
+977: 							if (text.includes("<think>")) {
+978: 								const match = text.match(/<think>([\s\S]*?)<\/think>/i);
+979: 								if (match) {
+980: 									if (!thinkingText) thinkingText = match[1].trim();
+981: 									text = text.replace(/<think>[\s\S]*?<\/think>/i, "").trim();
+982: 								}
+983: 							}
+984: 							answer = text;
+985: 							break;
+986: 						}
+987: 					}
+988: 				} catch (ollamaErr) {
+989: 					console.warn(`[Reader AI] Ollama model ${currentModel} error, trying next:`, ollamaErr);
+990: 				}
+991: 			}
+992: 		}
+993: 
+994: 		// Tier 3: Gemini Non-Streaming Fallback
+995: 		if (!answer && geminiApiKey) {
+996: 			const geminiAnswer = await tryFetchGemini(geminiApiKey, systemPrompt, userMessageContent);
+997: 			if (geminiAnswer) {
+998: 				answer = geminiAnswer;
+999: 			}
+1000: 		}
+1001: 
+1002: 		// Tier 4: Dynamic Fallback
+1003: 		if (!answer) {
+1004: 			answer = generateDynamicFallback(
+1005: 				intent,
+1006: 				resolvedTitle,
+1007: 				author,
+1008: 				totalChaps,
+1009: 				totalWords,
+1010: 				cleanQuote,
+1011: 				cleanQuery,
+1012: 				graphResult,
+1013: 			);
+1014: 		}
+1015: 
+1016: 		return NextResponse.json({
+1017: 			answer,
+1018: 			thinking: thinkingText || null,
+1019: 			bookSlug: graphResult.resolvedBookSlug || bookSlug,
+1020: 			source: "graphrag_ollama",
+1021: 		});
+1022: 	} catch (error) {
+1023: 		console.error("[api/ai/reader-chat] Error:", error);
+1024: 		return NextResponse.json(
+1025: 			{
+1026: 				error: "Đã xảy ra lỗi khi phân tích tác phẩm",
+1027: 				details: error instanceof Error ? error.message : "Unknown error",
+1028: 			},
+1029: 			{ status: 500 },
+1030: 		);
+1031: 	}
+1032: }

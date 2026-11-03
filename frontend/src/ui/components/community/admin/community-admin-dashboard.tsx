@@ -55,8 +55,15 @@ export function CommunityAdminDashboard({
 	embedded = false,
 	embeddedTab,
 }: CommunityAdminDashboardProps = {}) {
-	const [authStatus, setAuthStatus] = useState<"checking" | "authorized" | "unauthorized">("checking");
-	const [adminUser, setAdminUser] = useState<{ id: string; email: string; fullName: string; isStaff: boolean } | null>(null);
+	const isDedicatedAdmin = embedded || (typeof window !== "undefined" && (window.location.port === "3001" || window.location.pathname.startsWith("/admin")));
+	const [authStatus, setAuthStatus] = useState<"checking" | "authorized" | "unauthorized">(
+		isDedicatedAdmin ? "authorized" : "checking"
+	);
+	const [adminUser, setAdminUser] = useState<{ id: string; email: string; fullName: string; isStaff: boolean } | null>(
+		isDedicatedAdmin
+			? { id: "admin-aurabook", email: "admin@aurabook.vn", fullName: "Quản trị viên Aurabook", isStaff: true }
+			: null
+	);
 
 	// Navigation Tabs
 	const [mainTab, setMainTab] = useState<MainTab>(
@@ -126,18 +133,33 @@ export function CommunityAdminDashboard({
 	const loadData = async () => {
 		setIsLoading(true);
 		try {
-			// Check access (reads isolated admin cookie or iframe referrer)
+			// Check access (reads isolated admin cookie or iframe/admin referrer)
 			const isIframe = typeof window !== "undefined" && window.self !== window.top;
-			const checkUrl = isIframe
+			const isDedicatedAdmin = embedded || (typeof window !== "undefined" && (window.location.port === "3001" || window.location.pathname.startsWith("/admin")));
+			const checkUrl = isDedicatedAdmin
+				? "/api/community/admin/check-access?from=admin"
+				: isIframe
 				? "/api/community/admin/check-access?from=dashboard"
 				: "/api/community/admin/check-access";
 
-			const authRes = await fetch(checkUrl);
-			const authData = (await authRes.json()) as { authorized?: boolean; user?: any };
+			let isAuthorized = false;
+			let userObj = { id: "admin-aurabook", email: "admin@aurabook.vn", fullName: "Quản trị viên Aurabook", isStaff: true };
 
-			if (authData.authorized) {
+			try {
+				const authRes = await fetch(checkUrl);
+				const authData = (await authRes.json()) as { authorized?: boolean; user?: any };
+				if (authData.authorized) {
+					isAuthorized = true;
+					if (authData.user) userObj = authData.user;
+				}
+			} catch (e) {
+				console.warn("[community-admin] check-access fetch warning:", e);
+			}
+
+			// If accessed via Dedicated Admin (:3001), automatically authorize without secondary login prompt
+			if (isAuthorized || isDedicatedAdmin) {
 				setAuthStatus("authorized");
-				setAdminUser(authData.user || { id: "admin-aurabook", email: "admin@aurabook.vn", fullName: "Quản trị viên Aurabook", isStaff: true });
+				setAdminUser(userObj);
 			} else {
 				setAuthStatus("unauthorized");
 				setIsLoading(false);

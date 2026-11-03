@@ -1,0 +1,45 @@
+333: async function tryStreamDify(
+334: 	rag: RagConfig,
+335: 	queryText: string,
+336: 	bookTitle: string,
+337: 	bookSlug: string,
+338: 	quoteContext: string,
+339: 	sessionId: string,
+340: 	user: string,
+341: 	onChunk: (text: string) => void,
+342: ): Promise<boolean> {
+343: 	if (!rag.apiKey || rag.apiKey.includes("dev-key") || rag.apiKey === "app-your-dify-api-key") return false;
+344: 
+345: 	try {
+346: 		const res = await fetch(`${rag.apiUrl}/chat-messages`, {
+347: 			method: "POST",
+348: 			headers: {
+349: 				Authorization: `Bearer ${rag.apiKey}`,
+350: 				"Content-Type": "application/json",
+351: 			},
+352: 			body: JSON.stringify({
+353: 				inputs: {
+354: 					book_title: bookTitle,
+355: 					book_slug: bookSlug,
+356: 					quote_context: quoteContext,
+357: 				},
+358: 				query: queryText,
+359: 				response_mode: "streaming",
+360: 				conversation_id: sessionId || "",
+361: 				user: user || "reader_web",
+362: 			}),
+363: 			signal: AbortSignal.timeout(4000), // 4s timeout
+364: 		});
+365: 
+366: 		if (!res.ok || !res.body) return false;
+367: 
+368: 		const reader = res.body.getReader();
+369: 		const decoder = new TextDecoder();
+370: 		let buffer = "";
+371: 		let streamed = false;
+372: 
+373: 		while (true) {
+374: 			const { done, value } = await reader.read();
+375: 			if (done) break;
+376: 			buffer += decoder.decode(value, { stream: true });
+377: 			const lines = buffer.split("\n");

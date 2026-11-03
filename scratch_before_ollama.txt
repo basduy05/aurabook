@@ -1,0 +1,70 @@
+711: 		const targetTemperature = isDeepMode ? 0.6 : (defaultTemp || 0.3);
+712: 		// Đảm bảo trần token luôn hào phóng (4096 tokens) để mô hình KHÔNG BAO GIỜ bị cắt ngang giữa chừng
+713: 		const targetNumPredict = 4096;
+714: 
+715: 		if (isDeepMode) {
+716: 			systemPrompt += `\n\nCHẾ ĐỘ PHÂN TÍCH CHUYÊN SÂU (DEEP LITERARY ANALYSIS MODE):
+717: - Đào sâu phân tích đa chiều: diễn biến tâm lý nhân vật, động cơ hành vi, nghệ thuật ngôn từ và các tầng nghĩa ẩn dụ sâu sắc.
+718: - Đặt trích đoạn và câu hỏi vào bối cảnh tư tưởng tác phẩm và phong cách tác giả, mang lại góc nhìn nhân văn truyền cảm hứng.`;
+719: 		} else {
+720: 			systemPrompt += `\n\nCHẾ ĐỘ PHẢN HỒI SIÊU TỐC (FAST MODE):
+721: - Đi thẳng vào bản chất câu hỏi, trả lời súc tích, gãy gọn nhưng BẮT BUỘC PHẢI ĐẦY ĐỦ TẤT CẢ CÁC Ý VÀ VẾ HỎI.
+722: - Không diễn giải lan man ngoài lề, kết thúc câu trả lời một cách trọn vẹn và tự nhiên.`;
+723: 		}
+724: 
+725: 		systemPrompt += `\n\nQUY TẮC HOÀN TẤT CÂU HỎI (TUYỆT ĐỐI KHÔNG BỎ DỞ):
+726: 1. GIẢI QUYẾT HẾT TẤT CẢ CÂU HỎI: Nếu độc giả hỏi nhiều câu hoặc nhiều vế (ví dụ: vừa hỏi nhân vật, vừa hỏi ý nghĩa, vừa hỏi bối cảnh), BẮT BUỘC lần lượt trả lời trọn vẹn TỪNG CÂU HỎI MỘT, không được bỏ quên bất kỳ ý nào.
+727: 2. KHÔNG DỪNG GIỮA CHỪNG: Phải diễn đạt hoàn chỉnh từ đầu đến cuối, luôn kết thúc bằng dấu chấm và lời kết thúc hoàn thiện. Tuyệt đối không dừng ngang giữa câu.`;
+728: 
+729: 		// STREAMING RESPONSE (Chế độ truyền chunking tăng tốc độ hiển thị)
+730: 		if (isStream) {
+731: 			const encoder = new TextEncoder();
+732: 
+733: 			const readableStream = new ReadableStream({
+734: 				async start(controller) {
+735: 					const sendChunk = (textChunk: string) => {
+736: 						controller.enqueue(encoder.encode(`data: ${JSON.stringify({ chunk: textChunk })}\n\n`));
+737: 					};
+738: 					const sendDone = () => {
+739: 						controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+740: 						controller.close();
+741: 					};
+742: 
+743: 					let streamedAny = false;
+744: 
+745: 					// Tier 1: Thử nghiệm Dify RAG Knowledge Base streaming (/chat-messages)
+746: 					streamedAny = await tryStreamDify(
+747: 						rag,
+748: 						cleanQuery || cleanQuote,
+749: 						resolvedTitle,
+750: 						graphResult.resolvedBookSlug || bookSlug,
+751: 						cleanQuote,
+752: 						sessionId,
+753: 						user,
+754: 						sendChunk,
+755: 					);
+756: 
+757: 					// Tier 2: Thử nghiệm Streaming qua Ollama (Timeout 6.5s)
+758: 					if (!streamedAny) {
+759: 						for (const currentModel of candidateModels) {
+760: 							if (streamedAny) break;
+761: 							try {
+762: 								const numCtx = 2048;
+763: 								const ollamaRes = await fetch(`${llmBaseUrl}/api/chat`, {
+764: 									method: "POST",
+765: 									headers: { "Content-Type": "application/json" },
+766: 									body: JSON.stringify({
+767: 										model: currentModel,
+768: 										messages: [
+769: 											{ role: "system", content: systemPrompt },
+770: 											{ role: "user", content: userMessageContent },
+771: 										],
+772: 										stream: true,
+773: 										keep_alive: "24h",
+774: 										options: {
+775: 											temperature: targetTemperature,
+776: 											repeat_penalty: 1.05,
+777: 											num_ctx: numCtx,
+778: 											num_predict: 512,
+779: 										},
+780: 									}),

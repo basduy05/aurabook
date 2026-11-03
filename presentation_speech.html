@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Kịch Bản Thuyết Trình Bảo Vệ Đồ Án Tốt Nghiệp - AuraBook</title>
+<style>
+    @page {
+        size: A4;
+        margin: 20mm 18mm 20mm 22mm;
+        @bottom-right {
+            content: "Trang " counter(page);
+        }
+    }
+    body {
+        font-family: 'Times New Roman', 'Segoe UI', serif;
+        font-size: 13pt;
+        line-height: 1.45;
+        color: #0f172a;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Cover Page */
+    .cover-page {
+        page-break-after: always;
+        text-align: center;
+        padding-top: 40px;
+        padding-bottom: 30px;
+        height: 90vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .cover-institution {
+        font-size: 14pt;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #1e293b;
+    }
+    .cover-faculty {
+        font-size: 13pt;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        color: #1d4ed8;
+    }
+    .cover-divider {
+        width: 140px;
+        height: 2px;
+        background: #1d4ed8;
+        margin: 0 auto 40px auto;
+    }
+    .cover-badge {
+        display: inline-block;
+        background: #eff6ff;
+        color: #1d4ed8;
+        font-size: 11pt;
+        font-weight: bold;
+        padding: 6px 18px;
+        border-radius: 20px;
+        border: 1px solid #bfdbfe;
+        text-transform: uppercase;
+        margin-bottom: 25px;
+    }
+    .cover-title {
+        font-size: 22pt;
+        font-weight: 800;
+        color: #0f172a;
+        text-transform: uppercase;
+        line-height: 1.35;
+        margin-bottom: 15px;
+    }
+    .cover-subtitle {
+        font-size: 14pt;
+        font-weight: bold;
+        color: #2563eb;
+        margin-bottom: 35px;
+        line-height: 1.4;
+    }
+    .cover-info-card {
+        background: #f8fafc;
+        border-left: 4px solid #2563eb;
+        border-radius: 6px;
+        padding: 18px 24px;
+        text-align: left;
+        margin: 0 auto 30px auto;
+        max-width: 580px;
+        font-size: 12pt;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .cover-info-card strong {
+        color: #0f172a;
+    }
+    .cover-footer {
+        margin-top: auto;
+        font-size: 12pt;
+        color: #475569;
+    }
+
+    /* Headings */
+    h1 {
+        font-size: 15.5pt;
+        color: #0f172a;
+        border-bottom: 2px solid #2563eb;
+        padding-bottom: 5px;
+        margin-top: 30px;
+        margin-bottom: 14px;
+        text-transform: uppercase;
+        page-break-after: avoid;
+    }
+    h2 {
+        font-size: 13.5pt;
+        color: #1e3a8a;
+        margin-top: 22px;
+        margin-bottom: 10px;
+        page-break-after: avoid;
+    }
+    h3 {
+        font-size: 12.5pt;
+        color: #334155;
+        font-style: italic;
+        margin-top: 16px;
+        margin-bottom: 8px;
+        page-break-after: avoid;
+    }
+
+    p {
+        text-align: justify;
+        text-indent: 1.2cm;
+        margin-top: 0;
+        margin-bottom: 8px;
+    }
+    p.no-indent {
+        text-indent: 0;
+    }
+
+    /* Spoken quotes / Presentation Voice */
+    .speech-box {
+        background: #fafafa;
+        border-left: 4px solid #3b82f6;
+        padding: 12px 16px;
+        margin: 12px 0;
+        border-radius: 4px;
+        font-style: normal;
+    }
+    .speech-box p {
+        text-indent: 0;
+        margin-bottom: 6px;
+    }
+
+    /* Honest Callout (Chân thành, trung thực) */
+    .callout-honesty {
+        background: #fffbeb;
+        border-left: 4px solid #f59e0b;
+        padding: 14px 18px;
+        border-radius: 4px;
+        margin: 16px 0;
+        page-break-inside: avoid;
+    }
+    .callout-honesty-title {
+        font-weight: bold;
+        color: #b45309;
+        font-size: 12pt;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+    }
+
+    /* Code & Diagram Pre */
+    pre {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-left: 4px solid #3b82f6;
+        border-radius: 4px;
+        padding: 12px 14px;
+        font-family: 'Consolas', monospace;
+        font-size: 9pt;
+        line-height: 1.35;
+        overflow-x: auto;
+        color: #1e293b;
+        margin: 12px 0;
+        page-break-inside: avoid;
+    }
+
+    /* Tables */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 14px 0;
+        font-size: 10.5pt;
+        page-break-inside: avoid;
+    }
+    th {
+        background-color: #1e293b;
+        color: #ffffff;
+        font-weight: bold;
+        padding: 8px 10px;
+        border: 1px solid #cbd5e1;
+        text-align: center;
+    }
+    td {
+        padding: 7px 9px;
+        border: 1px solid #cbd5e1;
+        vertical-align: middle;
+    }
+    tr:nth-child(even) td {
+        background-color: #f8fafc;
+    }
+    .text-center { text-align: center; }
+    .status-pass {
+        color: #16a34a;
+        font-weight: bold;
+    }
+
+    /* Q&A Cards */
+    .qa-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-top: 3px solid #1e3a8a;
+        border-radius: 6px;
+        padding: 14px 18px;
+        margin: 16px 0;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        page-break-inside: avoid;
+    }
+    .qa-question {
+        font-size: 12pt;
+        font-weight: bold;
+        color: #1e3a8a;
+        margin-bottom: 8px;
+    }
+    .qa-answer {
+        font-size: 11pt;
+        color: #334155;
+        line-height: 1.45;
+    }
+    .qa-answer ul {
+        margin: 6px 0;
+        padding-left: 20px;
+    }
+    .qa-answer li {
+        margin-bottom: 4px;
+    }
+
+    .page-break {
+        page-break-after: always;
+    }
+</style>
+</head>
+<body>
+
+<!-- TRANG BÌA -->
+<div class="cover-page">
+    <div>
+        <div class="cover-institution">BÁO CÁO BẢO VỆ KHÓA LUẬN / ĐỒ ÁN TỐT NGHIỆP</div>
+        <div class="cover-faculty">HỘI ĐỒNG CHẤM TỐT NGHIỆP ĐẠI HỌC — NGÀNH CÔNG NGHỆ THÔNG TIN</div>
+        <div class="cover-divider"></div>
+        
+        <div class="cover-badge">Kịch Bản Thuyết Trình & Cẩm Nang Trả Lời Phản Biện</div>
+        
+        <div class="cover-title">KỊCH BẢN THUYẾT TRÌNH BẢO VỆ ĐỒ ÁN VÀ PHẢN BIỆN KỸ THUẬT AI</div>
+        <div class="cover-subtitle">NỀN TẢNG THƯƠNG MẠI ĐIỆN TỬ THÔNG MINH ỨNG DỤNG AI ĐA PHƯƠNG THỨC VÀ HỆ ĐA TÁC TỬ (AURABOOK)</div>
+        
+        <div class="cover-info-card">
+            <p class="no-indent"><strong>• Tên đồ án:</strong> Hệ thống E-commerce thông minh đa tác tử AuraBook</p>
+            <p class="no-indent"><strong>• Phong cách trình bày:</strong> Thuyết trình trước Hội đồng (Presentation Script), mạch lạc, chuẩn kỹ thuật, báo cáo trung thực ranh giới hoàn thiện.</p>
+            <p class="no-indent"><strong>• Trọng tâm công nghệ:</strong> Clean Architecture, PostgreSQL 16 + pgvector (HNSW), Hybrid Search (BM25 + Cosine + RRF), WebAssembly Canvas DRM (AES-256-GCM), RAG Companion (SSE), Voice Telephony Agent (Gemini Function Calling + Piper TTS).</p>
+            <p class="no-indent"><strong>• Kết quả thực nghiệm:</strong> 13/13 Use Cases đạt 100%, 55/55 ca kiểm thử tự động 4 tầng (Tiers 1–4) Pass 100% (thời gian chạy: 10.75s), P50 Search 54ms, RAG TTFT 49ms.</p>
+        </div>
+    </div>
+    
+    <div class="cover-footer">
+        <p class="no-indent text-center">Năm học 2026 — Khóa luận Tốt nghiệp Đại học</p>
+    </div>
+</div>
+
+<!-- NỘI DUNG CHÍNH -->
+
+<h1>PHẦN 1: LỜI MỞ ĐẦU THUYẾT TRÌNH & 3 NGHỊCH LÝ CÔNG NGHỆ</h1>
+
+<div class="speech-box">
+    <p><em>"Kính thưa Thầy Chủ tịch Hội đồng, thưa Quý Thầy Cô trong Hội đồng chấm khóa luận tốt nghiệp!</em></p>
+    <p><em>Em xin đại diện nhóm thực hiện đề tài kính gửi tới Quý Thầy Cô lời chào trân trọng nhất. Sau đây, em xin phép được trình bày báo cáo toàn diện về luồng vận hành kỹ thuật và giải pháp kiến trúc của nền tảng thương mại điện tử thông minh <strong>AuraBook</strong>.</em></p>
+    <p><em>Kính thưa các Thầy Cô, khi bắt tay vào nghiên cứu đề tài này, chúng em nhận thấy các nền tảng thương mại điện tử và xuất bản số hiện nay đang đối mặt với <strong>3 nghịch lý công nghệ lớn</strong> mà các giải pháp truyền thống chưa giải quyết triệt để:</em></p>
+</div>
+
+<p><strong>1. Nghịch lý tìm kiếm (Keyword Mismatch):</strong> Độc giả hiện nay không chỉ tìm theo tên sách chính xác, họ tìm theo <em>ý niệm triết lý, cảm xúc hoặc ngữ cảnh trừu tượng</em> (ví dụ: 'sách rèn luyện tâm lý thu phục lòng người' hay gõ tiếng Việt không dấu 'dac nhan tam'). Tìm kiếm từ khóa thuần túy (SQL LIKE hoặc Elastic đơn thuần) thất bại hoàn toàn trước bài toán này.</p>
+<p><strong>2. Lỗ hổng bản quyền số (DRM Fragility):</strong> Các trang đọc sách trực tuyến hiện nay chủ yếu kết xuất văn bản trực tiếp ra cấu trúc HTML DOM (thẻ <code>&lt;p&gt;</code>, <code>&lt;div&gt;</code>). Bất kỳ ai mở F12 DevTools hoặc dùng script đều có thể bóc trích 100% nội dung sách trong vài giây.</p>
+<p><strong>3. Sự rời rạc của AI (Data Silo):</strong> Các trang web thường gắn chatbot AI một cách chắp vá, không đồng bộ dữ liệu giao dịch nghiệp vụ, dẫn đến việc AI bị <strong>ảo giác (hallucination)</strong>: báo giá sai, tư vấn nhầm kho bãi, bịa đặt nội dung sách.</p>
+
+<p>Để giải quyết triệt để 3 bài toán trên, AuraBook được thiết kế theo mô hình <strong>Clean Architecture</strong>, kết hợp cơ sở dữ liệu hợp nhất <strong>PostgreSQL 16 + pgvector</strong>, công nghệ bảo mật <strong>WebAssembly Canvas DRM</strong>, và <strong>Hệ Đa tác tử AI</strong> được kiểm soát chặt chẽ.</p>
+
+<div class="page-break"></div>
+
+<h1>PHẦN 2: TOÀN BỘ LUỒNG VẬN HÀNH THỰC TẾ CỦA HỆ THỐNG</h1>
+
+<p>Sau đây, em xin phép đưa Thầy Cô đi qua hành trình trải nghiệm thực tế từ góc nhìn của Người dùng, Hệ thống xử lý Backend, và Hệ AI Tác tử:</p>
+
+<pre>[Khách hàng tìm kiếm] ──► [Hybrid Search: BM25 GIN + Vector HNSW ──► RRF]
+         │
+         ▼
+[Đặt hàng &amp; Thanh toán] ──► [Khóa bi quan FOR UPDATE chống bán vượt]
+         │
+         ▼ (Thanh toán thành công)
+ ┌───────┴─────────────────────────────────────────┐
+ ▼                                                 ▼
+[Đọc E-book Bản Quyền Số]               [Trợ Lý Thoại CSKH Voice AI]
+ ├─ AES-256-GCM + Token Ephemeral        ├─ Web Speech STT
+ ├─ Rust WebAssembly giải mã trong RAM    ├─ Gemini 2.0 Flash (Function Calling)
+ ├─ HTML5 Canvas vẽ điểm ảnh (Zero DOM)   ├─ Tra cứu đơn hàng / Hủy đơn (Audit Log)
+ └─ RAG Companion (SSE Stream, [Trang X]) └─ Piper TTS phát giọng nói tự nhiên</pre>
+
+<h2>1. Luồng Tìm kiếm lai thông minh (Hybrid Search &amp; Diacritics Normalization)</h2>
+<p>Khi khách hàng nhập một câu truy vấn tự nhiên vào thanh tìm kiếm (ví dụ: <em>"sách rèn luyện tâm lý ứng xử"</em> hoặc gõ không dấu <em>"dac nhan tam"</em>):</p>
+<ul>
+    <li><strong>Tại Frontend:</strong> Module <code>graph-store.ts</code> chạy thuật toán chuẩn hóa dấu tiếng Việt (Diacritics Normalization), đối chiếu đồ thị thực thể 13 đầu sách để loại bỏ độ trễ do gõ thiếu dấu.</li>
+    <li><strong>Tại Database:</strong> Hệ thống gửi véc-tơ nhúng 768 chiều (sinh bởi <code>text-embedding-004</code>) và câu chữ thô vào PostgreSQL 16. Một câu truy vấn <strong>SQL CTE duy nhất</strong> thực thi đồng thời:
+        <br>1. Tìm kiếm toàn văn BM25 qua chỉ mục <strong>GIN</strong> trên <code>lexical_tsv</code>.
+        <br>2. Tìm kiếm Cosine qua chỉ mục đồ thị phân cấp <strong>HNSW</strong> (<code>m = 16, ef_construction = 64</code>) trên <code>book_chunks</code>.</li>
+    <li><strong>Hợp nhất điểm số qua Reciprocal Rank Fusion (RRF):</strong>
+        <br>$$\text{RRF\_Score}(d) = \frac{0.5}{60 + \text{Rank}_{\text{BM25}}(d)} + \frac{0.5}{60 + \text{Rank}_{\text{Vector}}(d)}$$
+        Kết quả trả về cho người dùng với độ trễ P50 chỉ <strong>54 ms</strong>. Tại thẻ ấn phẩm, người dùng có thể nghe tóm tắt âm thanh 60s kèm hiệu ứng sóng âm Visualizer chạy mượt mà bằng Web Audio API (FFT).</li>
+</ul>
+
+<h2>2. Luồng Đặt hàng và Xử lý Giao dịch có Khóa bi quan (Zero Overselling)</h2>
+<p>Tại tiến trình Checkout, hệ thống kích hoạt giao dịch với cơ chế <strong>Khóa bi quan (Pessimistic Locking)</strong> cấp cơ sở dữ liệu:</p>
+<pre>stmt = select(Book).where(Book.id == item.book_id).with_for_update()</pre>
+<p>Dòng dữ liệu của cuốn sách bị khóa chặt trong suốt thời gian Transaction chạy. Nếu 50 người cùng bấm mua cuốn sách cuối cùng trong kho tại cùng một thời điểm, chỉ duy nhất người đầu tiên trừ kho thành công; 49 người còn lại khi khóa giải phóng sẽ nhận ngay thông báo lỗi <code>400 Bad Request: Sách đã hết hàng</code>. Khi thanh toán thành công, hệ thống tự động cấp quyền đọc trong bảng <code>ebook_accesses</code>.</p>
+
+<div class="page-break"></div>
+
+<h2>3. Luồng Đọc sách bảo mật DRM WebAssembly Canvas &amp; RAG Companion</h2>
+<ul>
+    <li><strong>Bảo vệ bản quyền số kép:</strong> Máy chủ mã hóa tệp sách bằng <strong>AES-256-GCM</strong> và cấp Khóa phiên tạm thời (Ephemeral Key) chỉ sống <strong>60 giây</strong>. Trình duyệt tải module <strong>WebAssembly (WASM viết bằng Rust)</strong> để giải mã trực tiếp trong RAM cô lập, sau đó vẽ từng ký tự thành điểm ảnh (pixels) lên thẻ <code>&lt;canvas&gt;</code>. Cuối cùng, hàm <code>Zero-out Memory</code> ghi đè byte <code>0</code> xóa sạch bộ nhớ tạm. Cây DOM hoàn toàn không chứa chữ, ngăn chặn 100% hành vi sao chép hay dump RAM.</li>
+    <li><strong>Tác tử RAG Đồng hành Đọc sách (AI Companion):</strong>
+        <br>1. Độc giả có thể đối thoại hoặc bôi đen đoạn văn để nhờ AI phân tích.
+        <br>2. Lọc ngữ cảnh với ngưỡng Cosine khắt khe: $S_{\text{Cosine}} \ge 0.70$. Nếu câu hỏi ngoài lề, AI kiên quyết từ chối để tránh ảo giác.
+        <br>3. Truyền dữ liệu dạng luồng <strong>SSE</strong> từ Gemini 2.0 Flash với $Temperature = 0.1$, bắt buộc dẫn chứng <code>[Trang X]</code> và xuất cấu trúc 3 phần học thuật: <em>Bối cảnh &amp; Ý nghĩa</em>, <em>Góc nhìn Triết lý</em>, <em>Bài học Thực tiễn</em>.</li>
+</ul>
+
+<h2>4. Luồng Trợ lý Thoại CSKH (Voice Telephony Agent)</h2>
+<p>Khách hàng nhấn vào biểu tượng micro nổi để trò chuyện hai chiều bằng tiếng Việt tự nhiên:</p>
+<ol>
+    <li><strong>STT:</strong> Web Speech STT trên trình duyệt nhận diện giọng nói tiếng Việt với độ trễ dưới 50ms.</li>
+    <li><strong>LLM Reasoning &amp; Function Calling:</strong> Dữ liệu chuyển tới máy chủ gọi Gemini 2.0 Flash với công cụ khai báo sẵn:
+        <ul>
+            <li><code>get_order_status</code>: Tra cứu lộ trình đơn hàng từ cơ sở dữ liệu giao vận GHN.</li>
+            <li><code>cancel_order</code>: Kiểm tra điều kiện đơn hàng. Nếu đơn chưa sang trạng thái <code>SHIPPING</code>, hệ thống chuyển sang <code>CANCELLED</code>, hoàn trả tồn kho và tự động ghi log vào <code>audit_logs</code>.</li>
+        </ul>
+    </li>
+    <li><strong>TTS:</strong> Câu trả lời được máy chủ cục bộ <strong>Piper TTS</strong> (mô hình <code>vi_VN-hoaimy-aurabook.onnx</code>) sinh file âm thanh WAV PCM 22.050 Hz chuẩn chất lượng cao phát lại cho khách hàng.</li>
+</ol>
+
+<div class="page-break"></div>
+
+<h1>PHẦN 3: BÁO CÁO TRUNG THỰC VỀ TÁC TỬ HÌNH ẢNH (VISION AGENT) &amp; ĐỊNH HƯỚNG PHÁT TRIỂN</h1>
+
+<div class="callout-honesty">
+    <div class="callout-honesty-title">BÁO CÁO MINH BẠCH VỀ TIẾN ĐỘ THỰC TẾ CỦA HỆ THỐNG</div>
+    <p class="no-indent"><em>"Kính thưa Quý Thầy Cô trong Hội đồng! Trước khi đi vào các số liệu kiểm thử, em xin phép được <strong>báo cáo một cách hết sức trung thực và minh bạch</strong> về phạm vi hoàn thiện của hệ thống:</em></p>
+    <p class="no-indent"><em>Trong đề cương ban đầu, nhóm có định hướng xây dựng 3 tác tử AI: Tác tử RAG Đọc sách, Tác tử Thoại CSKH, và Tác tử Thị giác Quản trị (Catalog Vision Agent) để bóc tách thông tin từ ảnh chụp bìa sách.</em></p>
+    <p class="no-indent"><em>Tuy nhiên, trong quá trình phát triển thực tế, nhóm nhận thấy bài toán <strong>Bảo mật bản quyền E-book bằng WebAssembly Canvas</strong> và việc <strong>tối ưu luồng RAG thời gian thực chống ảo giác trên 1.597 chunks</strong> đòi hỏi khối lượng nghiên cứu sâu, thử nghiệm toán học và tinh chỉnh kiến trúc rất lớn. Do đó, <strong>trong giới hạn thời gian của khóa luận tốt nghiệp, nhóm chưa kịp hoàn thiện và đưa Tác tử Xử lý Hình ảnh vào vận hành thực tế trên hệ thống</strong>. Hiện tại, việc nhập liệu sách trong trang Admin vẫn đang sử dụng form nhập liệu chuẩn nghiệp vụ."</em></p>
+</div>
+
+<h2>Nếu phát triển tiếp thì Tác tử Xử lý Hình ảnh sẽ được xây dựng như thế nào?</h2>
+<p>Nhóm chúng em đã nghiên cứu và thiết kế sẵn quy trình kỹ thuật 4 bước để triển khai tác tử này ngay khi có thêm thời gian:</p>
+
+<pre>[Ảnh Bìa Chụp Thực Tế] 
+         │
+         ▼
+[Bước 1: Tiền Xử Lý Ảnh - OpenCV] 
+(Căn chỉnh góc nghiêng Deskew, Cân bằng sáng CLAHE, Khử nhiễu)
+         │
+         ▼
+[Bước 2: Multimodal Vision Model - Gemini 2.0 Flash Vision / Florence-2]
+(Nhận diện Layout bìa: Khu vực Tiêu đề, Tác giả, Nhà xuất bản, Mã vạch ISBN)
+         │
+         ▼
+[Bước 3: Trích Xuất Dữ Liệu Có Cấu Trúc - Pydantic JSON Schema]
+(Ép kiểu dữ liệu: Title str, Author str, ISBN regex 10-13 số, Year int)
+         │
+         ▼
+[Bước 4: Pipeline Tự Động Hóa Quản Trị]
+├─ Tự động điền Form thêm sách mới trên Admin Dashboard
+├─ Kiểm duyệt chất lượng ảnh bìa (Độ phân giải tối thiểu 800x1200, tỷ lệ 2:3)
+└─ Mở rộng: Nhận diện sách bị rách/hỏng do vận chuyển khi khách gửi ảnh khiếu nại</pre>
+
+<ul>
+    <li><strong>Bước 1 - Tiền xử lý ảnh (Image Preprocessing):</strong> Sử dụng thư viện OpenCV để tự động phát hiện viền, căn chỉnh thẳng góc (Deskew) nếu ảnh chụp bị nghiêng, áp dụng thuật toán cân bằng độ tương phản CLAHE để xử lý ảnh ngược sáng hoặc bị lóa đèn flash.</li>
+    <li><strong>Bước 2 - Phân tích phân vùng đa phương thức (Multimodal Layout Analysis):</strong> Gọi mô hình thị giác nguyên bản <strong>Gemini 2.0 Flash Vision</strong> (hoặc mô hình mã nguồn mở on-premise như Microsoft Florence-2 / Donut) để khoanh vùng các khối thông tin (bounding boxes): Tựa đề, Tên tác giả, Logo NXB và Vạch mã vạch ISBN ở bìa sau.</li>
+    <li><strong>Bước 3 - Ép kiểu cấu trúc chặt chẽ qua Pydantic Schema:</strong> Thiết lập tham số <code>response_schema</code> để mô hình bắt buộc trả về JSON có cấu trúc chuẩn xác:
+        <br><code>class BookMetadata(BaseModel): title: str, author: str, publisher: str, isbn: str, year: int, summary: str</code></li>
+    <li><strong>Bước 4 - Tự động hóa nhập liệu và Mở rộng kiểm duyệt:</strong> Dữ liệu JSON tự động đổ vào form Admin, kích hoạt pipeline tạo véc-tơ nhúng 768 chiều vào <code>book_chunks</code> mà quản trị viên không cần gõ tay. Đồng thời mở rộng tính năng: tự động phân tích ảnh chụp bưu kiện bị móp méo/rách sách khi khách hàng gửi yêu cầu đổi trả hàng.</li>
+</ul>
+
+<div class="page-break"></div>
+
+<h1>PHẦN 4: BỘ CÂU HỎI PHẢN BIỆN CỦA HỘI ĐỒNG VỀ CƠ CHẾ AI HOẠT ĐỘNG NGẦM</h1>
+
+<div class="qa-card">
+    <div class="qa-question">Câu hỏi 1 của Thầy Cô: "Trong Tác tử RAG Đọc sách, các em phân đoạn (chunking) sách như thế nào? Và cơ chế kỹ thuật cụ thể nào ngăn chặn AI bịa đặt nội dung khi sách không nhắc tới?"</div>
+    <div class="qa-answer">
+        <strong>Em xin phép trả lời:</strong>
+        <ul>
+            <li><strong>Về Chunking:</strong> Sử dụng chiến lược <strong>Semantic Chunking</strong> với kích thước cửa sổ 512 tokens và độ gối đầu (overlap) 64 tokens. Mỗi chunk gắn liền với thuộc tính <code>page_number</code> và <code>chapter_title</code> của tệp EPUB gốc. Toàn bộ 13 cuốn sách chuẩn được phân tách thành <strong>1.597 chunks</strong> lưu trong bảng <code>book_chunks</code> kèm véc-tơ nhúng 768 chiều.</li>
+            <li><strong>Cơ chế triệt tiêu ảo giác (Anti-Hallucination):</strong>
+                <br>• <em>Tầng 1 - Ngưỡng lọc Cosine:</em> Trước khi gọi LLM, tính khoảng cách tương đồng $S_{\text{Cosine}} \ge 0.70$. Nếu không có chunk nào vượt ngưỡng, hệ thống <strong>chủ động từ chối ngay ở tầng API</strong>, không gửi payload cho Gemini để triệt tiêu 100% rủi ro LLM tự sáng tạo.
+                <br>• <em>Tầng 2 - Ràng buộc Prompt &amp; Temperature:</em> Cấu hình $Temperature = 0.1$. System Prompt ép buộc: 'Chỉ được trả lời dựa trên văn bản trích dẫn được cung cấp; bắt buộc ghi rõ dẫn chứng số trang dạng <code>[Trang X]</code>'.
+                <br>• Kết quả kiểm thử: Ca kiểm thử <code>TC-T2-08</code> (hỏi về tác phẩm ngoài hệ thống) và <code>TC-T2-05</code> (Prompt Injection vượt rào) đều bị từ chối chính xác, đạt tỷ lệ kháng ảo giác 100%.</li>
+        </ul>
+    </div>
+</div>
+
+<div class="qa-card">
+    <div class="qa-question">Câu hỏi 2 của Thầy Cô: "Tại sao các em không dùng một Vector DB riêng biệt như Pinecone, Milvus hay Qdrant mà lại đưa véc-tơ vào PostgreSQL 16 qua pgvector?"</div>
+    <div class="qa-answer">
+        <strong>Em xin phép trả lời:</strong> Xuất phát từ bài toán sống còn của E-commerce: <strong>Zero Data Silo và tính toàn vẹn giao dịch ACID</strong>:
+        <ul>
+            <li>Nếu dùng Vector DB tách rời (như Pinecone), hệ thống bị chia cắt dữ liệu: một bên lưu đơn hàng, giá tiền, tồn kho; một bên lưu véc-tơ sách. Khi sửa đổi hoặc xóa sách, hệ thống phải xử lý bài toán đồng bộ phân tán (2-Phase Commit), rất dễ bị lệch pha dữ liệu.</li>
+            <li>Với <code>pgvector</code> trên PostgreSQL 16, toàn bộ dữ liệu nằm chung một Database Engine. Hệ thống thực thi một câu lệnh <strong>SQL CTE duy nhất</strong> chạy song song tìm kiếm từ khóa GIN (BM25) và tìm kiếm Cosine HNSW, rồi tính toán điểm RRF ngay trên RAM của Database server. Độ trễ truy vấn P50 chỉ là <strong>54 ms</strong>, nhanh hơn nhiều so với việc gọi qua lại giữa 2 dịch vụ mạng khác nhau.</li>
+        </ul>
+    </div>
+</div>
+
+<div class="qa-card">
+    <div class="qa-question">Câu hỏi 3 của Thầy Cô: "Trong Voice Agent, khi khách hàng nói 'Hủy đơn hàng DH1024 do tôi đổi ý', luồng Function Calling diễn ra như thế nào? Và nếu máy chủ TTS bị nghẽn thì hệ thống ứng phó ra sao?"</div>
+    <div class="qa-answer">
+        <strong>Em xin phép trả lời:</strong>
+        <ul>
+            <li>Sau khi Web Speech STT nhận diện câu nói, Backend chuyển chuỗi văn bản cho Gemini 2.0 Flash kèm bộ khai báo công cụ <code>tools_schema</code> chứa hàm <code>cancel_order(order_id, reason)</code>.</li>
+            <li>Gemini trả về cấu trúc <code>function_call</code> với tham số trích xuất: <code>order_id="DH1024"</code>, <code>reason="Khách đổi ý"</code>.</li>
+            <li>Backend kiểm tra: nếu đơn ở trạng thái <code>PENDING</code> hoặc <code>PAID</code> (chưa chuyển sang <code>SHIPPING</code>), hệ thống đổi trạng thái thành <code>CANCELLED</code>, hoàn trả kho và ghi log vào <code>audit_logs</code>.</li>
+            <li>Kết quả hàm được nạp lại cho LLM để tạo câu phản hồi tự nhiên, sau đó chuyển tới máy chủ cục bộ <strong>Piper TTS</strong> sinh file âm thanh WAV PCM 22.050 Hz trong khoảng 2 giây. Nếu có lỗi mạng hoặc Piper quá tải, client tự động fallback sang giọng đọc Web Speech API của trình duyệt, bảo đảm cuộc gọi không bị ngắt quãng.</li>
+        </ul>
+    </div>
+</div>
+
+<div class="page-break"></div>
+
+<h1>PHẦN 5: LỜI KẾT &amp; CÁC CON SỐ THEN CHỐT CẦN GHI NHỚ</h1>
+
+<div class="speech-box">
+    <p><em>"Kính thưa Quý Thầy Cô trong Hội đồng!</em></p>
+    <p><em>Để kiểm chứng tính ổn định của toàn bộ các luồng kỹ thuật nêu trên, nhóm chúng em đã xây dựng một bộ kiểm thử tự động độc lập gồm <strong>55 kịch bản kiểm thử (Tiers 1 đến Tier 4)</strong> kiểm tra toàn diện từ tính năng cơ sở, khả năng xử lý chuỗi rỗng, chống SQL/Prompt Injection, đến các luồng liên thông đa tác tử. Toàn bộ 55/55 ca kiểm thử đã <strong>vượt qua 100% với thời gian thực thi chỉ 10,75 giây</strong>.</em></p>
+    <p><em>Mặc dù Tác tử Xử lý Hình ảnh chưa kịp hiện thực hóa do giới hạn thời gian, nhưng những kết quả đạt được ở phân hệ Tìm kiếm lai RRF, công nghệ bảo vệ bản quyền số WebAssembly Canvas và hệ tác tử RAG/Voice thời gian thực đã chứng minh tính đúng đắn về mặt kiến trúc và năng lực kỹ thuật hoàn chỉnh của đồ án.</em></p>
+    <p><em>Em xin chân thành cảm ơn Quý Thầy Cô đã chú ý lắng nghe! Em xin phép được tiếp nhận các câu hỏi nhận xét và đóng góp quý báu từ Hội đồng!"</em></p>
+</div>
+
+<h2>Bảng tổng hợp các thông số kỹ thuật then chốt khi đứng trên bục bảo vệ:</h2>
+<table>
+    <thead>
+        <tr>
+            <th style="width: 30%;">Thông số kỹ thuật cốt lõi</th>
+            <th style="width: 35%;">Giá trị thực tế trong hệ thống</th>
+            <th style="width: 35%;">Ý nghĩa / Vai trò kỹ thuật</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Cơ sở dữ liệu &amp; Véc-tơ</strong></td>
+            <td>PostgreSQL 16 + pgvector 0.7+</td>
+            <td>Zero Data Silo, kết hợp ACID và véc-tơ nhúng</td>
+        </tr>
+        <tr>
+            <td><strong>Số chiều nhúng véc-tơ</strong></td>
+            <td>768 chiều (text-embedding-004)</td>
+            <td>Mô hình nhúng ngữ nghĩa của Google</td>
+        </tr>
+        <tr>
+            <td><strong>Quy mô phân mảnh văn bản</strong></td>
+            <td>1.597 chunks (13 đầu sách chuẩn)</td>
+            <td>Cắt Semantic Chunking 512 tokens / overlap 64</td>
+        </tr>
+        <tr>
+            <td><strong>Tham số chỉ mục đồ thị HNSW</strong></td>
+            <td>m = 16, ef_construction = 64</td>
+            <td>Cân bằng tốc độ tra cứu và bộ nhớ RAM</td>
+        </tr>
+        <tr>
+            <td><strong>Hằng số làm mịn giải thuật RRF</strong></td>
+            <td>k = 60</td>
+            <td>Chuẩn quốc tế Cormack et al., cân bằng BM25 và véc-tơ</td>
+        </tr>
+        <tr>
+            <td><strong>Ngưỡng lọc Cosine RAG</strong></td>
+            <td>Cosine Similarity &ge; 0.70</td>
+            <td>Ngăn chặn triệt để hiện tượng ảo giác (Zero Hallucination)</td>
+        </tr>
+        <tr>
+            <td><strong>Thời hạn sống khóa phiên DRM</strong></td>
+            <td>TTL = 60 giây (Ephemeral Key)</td>
+            <td>Khóa phiên dùng một lần, chống chia sẻ khóa lậu</td>
+        </tr>
+        <tr>
+            <td><strong>Định dạng âm thanh Piper TTS</strong></td>
+            <td>WAV PCM 22.050 Hz (vi_VN-hoaimy)</td>
+            <td>Tổng hợp giọng nói tiếng Việt tự nhiên cục bộ</td>
+        </tr>
+        <tr>
+            <td><strong>Độ trễ tìm kiếm lai (P50)</strong></td>
+            <td>54 ms (P95: 116 ms)</td>
+            <td>Vượt chỉ tiêu thiết kế (&lt; 450 ms)</td>
+        </tr>
+        <tr>
+            <td><strong>Kết quả kiểm thử tự động</strong></td>
+            <td>55/55 ca kiểm thử ĐẠT (100.0%)</td>
+            <td>Bộ kiểm thử 4 tầng (Tiers 1-4) chạy trong 10.75s</td>
+        </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

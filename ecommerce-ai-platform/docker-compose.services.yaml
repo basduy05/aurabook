@@ -10,7 +10,7 @@ services:
       - "7881:7881"
       - "7882:7882/udp"
     environment:
-      - LIVEKIT_KEYS=devkey:secret
+      - "LIVEKIT_KEYS=devkey: secret"
 
   # Web Reader Secure Gateway (phục vụ giao diện đọc sách EPUB/PDF bảo mật DRM)
   web-reader:
@@ -21,3 +21,23 @@ services:
       - "8088:80"
     volumes:
       - ./drm-security/reader-portal:/usr/share/nginx/html:ro
+
+  # Ollama Local AI Engine (Mô hình Gemma 2: 2B trên GPU NVIDIA)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: aurabook-ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - C:/Users/basduy05/.ollama:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+      - OLLAMA_ORIGINS=*

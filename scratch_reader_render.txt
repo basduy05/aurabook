@@ -1,0 +1,80 @@
+4161: 
+4162: 			// Trường hợp 1: Streaming SSE (Real-time token typing)
+4163: 			if (contentType.includes("text/event-stream") && res.body) {
+4164: 				const reader = res.body.getReader();
+4165: 				const decoder = new TextDecoder("utf-8");
+4166: 				let buffer = "";
+4167: 
+4168: 				// Tin nhắn AI đã được khởi tạo ngay lúc bấm gửi
+4169: 
+4170: 				while (true) {
+4171: 					const { done, value } = await reader.read();
+4172: 					if (done) break;
+4173: 					buffer += decoder.decode(value, { stream: true });
+4174: 					const lines = buffer.split("\n");
+4175: 					buffer = lines.pop() || "";
+4176: 
+4177: 					for (const line of lines) {
+4178: 						const trimmed = line.trim();
+4179: 						if (trimmed.startsWith("data: ") && trimmed !== "data: [DONE]") {
+4180: 							try {
+4181: 								const parsed = JSON.parse(trimmed.slice(6)) as any;
+4182: 								if (parsed.error) {
+4183: 									throw new Error(parsed.error);
+4184: 								}
+4185: 								if (parsed.chunk) {
+4186: 									streamedText += parsed.chunk;
+4187: 									setAiMessages((prev) =>
+4188: 										prev.map((m) => (m.id === aiMsgId ? { ...m, text: streamedText, isStreaming: true } : m))
+4189: 									);
+4190: 								}
+4191: 							} catch (chunkErr: any) {
+4192: 								if (chunkErr?.message && !chunkErr.message.includes("JSON")) {
+4193: 									throw chunkErr;
+4194: 								}
+4195: 							}
+4196: 						}
+4197: 					}
+4198: 				}
+4199: 
+4200: 				// Flush trailing buffer nếu còn chunk cuối
+4201: 				if (buffer.trim()) {
+4202: 					const trimmed = buffer.trim();
+4203: 					if (trimmed.startsWith("data: ") && trimmed !== "data: [DONE]") {
+4204: 						try {
+4205: 							const parsed = JSON.parse(trimmed.slice(6)) as any;
+4206: 							if (parsed.chunk) {
+4207: 								streamedText += parsed.chunk;
+4208: 								setAiMessages((prev) =>
+4209: 									prev.map((m) => (m.id === aiMsgId ? { ...m, text: streamedText } : m))
+4210: 								);
+4211: 							}
+4212: 						} catch (_) {}
+4213: 					}
+4214: 				}
+4215: 
+4216: 				// Kết thúc stream thành công: hạ cờ isStreaming
+4217: 				setAiMessages((prev) =>
+4218: 					prev.map((m) => (m.id === aiMsgId ? { ...m, isStreaming: false } : m))
+4219: 				);
+4220: 			} else {
+4221: 				// Trường hợp 2: JSON Response thông thường
+4222: 				const data = (await res.json()) as any;
+4223: 				if (data.error) {
+4224: 					throw new Error(data.error);
+4225: 				}
+4226: 				streamedText = data.answer || data.response || data.text || "";
+4227: 				setAiMessages((prev) => [
+4228: 					...prev,
+4229: 					{
+4230: 						id: aiMsgId,
+4231: 						sender: "ai",
+4232: 						text: streamedText || `Phân tích tác phẩm từ AuraBook AI: Tác phẩm "${bookTitle}" là một tác phẩm mang nhiều giá trị nghệ thuật và nhân văn sâu sắc.`,
+4233: 						timestamp: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+4234: 						isStreaming: false,
+4235: 					},
+4236: 				]);
+4237: 			}
+4238: 
+4239: 			// Tự động lưu phiên vào chatSessions sau khi hoàn thành hội thoại
+4240: 			if (streamedText) {

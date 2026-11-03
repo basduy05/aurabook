@@ -1,0 +1,45 @@
+4091: 
+4092: 		// Tự động xóa ngay lập tức đoạn trích bôi đen & đã ghim khỏi ô typing sau khi gửi câu hỏi
+4093: 		setPinnedQuote("");
+4094: 		setSelectedText("");
+4095: 		setSurroundingContext("");
+4096: 		surroundingContextRef.current = "";
+4097: 
+4098: 		// Xóa trạng thái bôi đen vật lý trên trang sách
+4099: 		try {
+4100: 			const contentsList = (renditionRef.current as any)?.getContents?.() || [];
+4101: 			contentsList.forEach((c: any) => {
+4102: 				c?.window?.getSelection()?.removeAllRanges();
+4103: 			});
+4104: 		} catch {}
+4105: 
+4106: 		if (aiInputTextareaRef.current) {
+4107: 			aiInputTextareaRef.current.style.height = "auto";
+4108: 		}
+4109: 		userHasScrolledUpRef.current = false;
+4110: 		setShowScrollBottom(false);
+4111: 		const aiMsgId = `ai-${Date.now()}`;
+4112: 		let streamedText = "";
+4113: 		const abortController = new AbortController();
+4114: 		aiAbortControllerRef.current = abortController;
+4115: 
+4116: 		// Hiển thị ngay lập tức bubble tin nhắn với trạng thái streaming real-time 0ms
+4117: 		setAiMessages((prev) => [
+4118: 			...prev,
+4119: 			{
+4120: 				id: aiMsgId,
+4121: 				sender: "ai",
+4122: 				text: "",
+4123: 				timestamp: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+4124: 				isStreaming: true,
+4125: 			},
+4126: 		]);
+4127: 		setIsAiThinking(false);
+4128: 		setTimeout(() => {
+4129: 			scrollToBottom(true);
+4130: 		}, 30);
+4131: 
+4132: 		try {
+4133: 			const res = await fetch("/api/ai/reader-chat", {
+4134: 				method: "POST",
+4135: 				headers: { "Content-Type": "application/json" },

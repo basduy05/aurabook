@@ -8,80 +8,155 @@ interface CatalogBook {
 	author: string;
 	thumbnail: string;
 	rating: number;
+	category?: string;
 }
+
+const AUTHOR_MAP: Record<string, string> = {
+	"dac-nhan-tam": "Dale Carnegie",
+	"bon-thoa-uoc": "Don Miguel Ruiz",
+	"sapiens-luoc-su-loai-nguoi": "Yuval Noah Harari",
+	"tri-tue-do-thai": "Eran Katz",
+	"10-dieu-tao-nen-so-phan": "David Simon, M.D",
+	"bi-mat-cua-mot-tri-nho-sieu-pham": "Eran Katz",
+	"cach-nghi-de-thanh-cong": "Napoleon Hill",
+	"cay-cam-ngot-cua-toi": "José Mauro de Vasconcelos",
+	"chien-tranh-tien-te-tap-1": "Song Hongbing",
+	"chien-tranh-tien-te-tap-2": "Song Hongbing",
+	"chien-tranh-tien-te-tap-3": "Song Hongbing",
+	"chu-nghia-khac-ky-phong-cach-song-ban-linh-va-binh-than": "William B. Irvine",
+	"tu-duy-nhanh-va-cham": "Daniel Kahneman",
+};
 
 const FALLBACK_BOOKS: CatalogBook[] = [
 	{
 		id: "prod-1",
-		title: "Đắc Nhân Tâm (Khổ Lớn - Tái Bản)",
+		title: "Đắc Nhân Tâm",
 		slug: "dac-nhan-tam",
-		price: "86.000 ₫",
+		price: "59.000 ₫",
 		author: "Dale Carnegie",
-		thumbnail: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop&q=80",
+		thumbnail: "http://localhost:8000/media/thumbnails/products/book-dac-nhan-tam-cover_thumbnail_256.jpg",
 		rating: 4.9,
+		category: "Nghệ Thuật Giao Tiếp & Ứng Xử",
 	},
 	{
 		id: "prod-2",
-		title: "Nhà Giả Kim (Bìa Mềm)",
-		slug: "nha-gia-kim",
-		price: "79.000 ₫",
-		author: "Paulo Coelho",
-		thumbnail: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300&auto=format&fit=crop&q=80",
-		rating: 4.8,
+		title: "Bốn Thỏa Ước",
+		slug: "bon-thoa-uoc",
+		price: "49.000 ₫",
+		author: "Don Miguel Ruiz",
+		thumbnail: "http://localhost:8000/thumbnail/UHJvZHVjdE1lZGlhOjE0Mg==/256/",
+		rating: 4.9,
+		category: "Minh Triết Sống & Khai Phóng",
 	},
 	{
 		id: "prod-3",
-		title: "Tuổi Trẻ Đáng Giá Bao Nhiêu",
-		slug: "tuoi-tre-dang-gia-bao-nhieu",
-		price: "75.000 ₫",
-		author: "Rosie Nguyễn",
-		thumbnail: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&auto=format&fit=crop&q=80",
-		rating: 4.7,
+		title: "Sapiens: Lược Sử Loài Người",
+		slug: "sapiens-luoc-su-loai-nguoi",
+		price: "89.000 ₫",
+		author: "Yuval Noah Harari",
+		thumbnail: "http://localhost:8000/thumbnail/UHJvZHVjdE1lZGlhOjE0Mw==/256/",
+		rating: 5.0,
+		category: "Lược Sử Nhân Loại & Nền Văn Minh",
 	},
 	{
 		id: "prod-4",
-		title: "Tư Duy Nhanh Và Chậm",
-		slug: "tu-duy-nhanh-va-cham",
-		price: "189.000 ₫",
-		author: "Daniel Kahneman",
-		thumbnail: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=300&auto=format&fit=crop&q=80",
-		rating: 4.9,
+		title: "Trí Tuệ Do Thái",
+		slug: "tri-tue-do-thai",
+		price: "69.000 ₫",
+		author: "Eran Katz",
+		thumbnail: "http://localhost:8000/thumbnail/UHJvZHVjdE1lZGlhOjE0NA==/256/",
+		rating: 4.8,
+		category: "Trí Tuệ Do Thái & Danh Nhân",
 	},
 	{
 		id: "prod-5",
-		title: "Cây Cam Ngọt Của Tôi",
-		slug: "cay-cam-ngot-cua-toi",
-		price: "98.000 ₫",
-		author: "José Mauro de Vasconcelos",
-		thumbnail: "https://images.unsplash.com/photo-1495640388908-05fa85288e61?w=300&auto=format&fit=crop&q=80",
-		rating: 4.9,
+		title: "10 Điều Tạo Nên Số Phận",
+		slug: "10-dieu-tao-nen-so-phan",
+		price: "49.000 ₫",
+		author: "David Simon, M.D",
+		thumbnail: "http://localhost:8000/media/thumbnails/products/book-10-dieu-tao-nen-so-phan-cover_thumbnail_256.jpeg",
+		rating: 4.7,
+		category: "Quản Trị Tâm Trí & Thói Quen",
 	},
 	{
 		id: "prod-6",
-		title: "Hành Trình Về Phương Đông",
-		slug: "hanh-trinh-ve-phuong-dong",
-		price: "115.000 ₫",
-		author: "Baird T. Spalding",
-		thumbnail: "https://images.unsplash.com/photo-1532012164546-f432f2e37b73?w=300&auto=format&fit=crop&q=80",
+		title: "Bí Mật Của Một Trí Nhớ Siêu Phàm",
+		slug: "bi-mat-cua-mot-tri-nho-sieu-pham",
+		price: "59.000 ₫",
+		author: "Eran Katz",
+		thumbnail: "http://localhost:8000/thumbnail/UHJvZHVjdE1lZGlhOjE0Ng==/256/",
 		rating: 4.8,
+		category: "Trí Tuệ Do Thái & Danh Nhân",
 	},
 	{
 		id: "prod-7",
-		title: "Muôn Kiếp Nhân Sinh (Tập 1)",
-		slug: "muon-kiep-nhan-sinh",
-		price: "148.000 ₫",
-		author: "Nguyên Phong",
-		thumbnail: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=300&auto=format&fit=crop&q=80",
+		title: "Cách Nghĩ Để Thành Công",
+		slug: "cach-nghi-de-thanh-cong",
+		price: "59.000 ₫",
+		author: "Napoleon Hill",
+		thumbnail: "http://localhost:8000/thumbnail/UHJvZHVjdE1lZGlhOjE0Nw==/256/",
 		rating: 4.9,
+		category: "Quản Trị Tâm Trí & Thói Quen",
 	},
 	{
 		id: "prod-8",
-		title: "Sức Mạnh Của Hiện Tại",
-		slug: "suc-manh-cua-hien-tai",
-		price: "105.000 ₫",
-		author: "Eckhart Tolle",
-		thumbnail: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=300&auto=format&fit=crop&q=80",
+		title: "Cây Cam Ngọt Của Tôi",
+		slug: "cay-cam-ngot-cua-toi",
+		price: "55.000 ₫",
+		author: "José Mauro de Vasconcelos",
+		thumbnail: "http://localhost:8000/media/thumbnails/products/book-cay-cam-ngot-cua-toi-cover_thumbnail_256.jpeg",
+		rating: 4.9,
+		category: "Văn Học Kinh Điển Thế Giới",
+	},
+	{
+		id: "prod-9",
+		title: "Chiến Tranh Tiền Tệ - Tập 1: Dòng Chảy Của Tiền Ngầm",
+		slug: "chien-tranh-tien-te-tap-1",
+		price: "69.000 ₫",
+		author: "Song Hongbing",
+		thumbnail: "http://localhost:8000/media/thumbnails/products/book-chien-tranh-tien-te-tap-1-cover_thumbnail_256.jpeg",
+		rating: 4.9,
+		category: "Tài Chính Cá Nhân & Đầu Tư",
+	},
+	{
+		id: "prod-10",
+		title: "Chiến Tranh Tiền Tệ - Tập 2: Sự Thống Trị Của Quyền Lực Vàng",
+		slug: "chien-tranh-tien-te-tap-2",
+		price: "69.000 ₫",
+		author: "Song Hongbing",
+		thumbnail: "http://localhost:8000/thumbnail/UHJvZHVjdE1lZGlhOjE1MA==/256/",
 		rating: 4.8,
+		category: "Tài Chính Cá Nhân & Đầu Tư",
+	},
+	{
+		id: "prod-11",
+		title: "Chiến Tranh Tiền Tệ - Tập 3: Rừng Rậm Tài Chính",
+		slug: "chien-tranh-tien-te-tap-3",
+		price: "69.000 ₫",
+		author: "Song Hongbing",
+		thumbnail: "http://localhost:8000/thumbnail/UHJvZHVjdE1lZGlhOjE1MQ==/256/",
+		rating: 4.8,
+		category: "Tài Chính Cá Nhân & Đầu Tư",
+	},
+	{
+		id: "prod-12",
+		title: "Chủ Nghĩa Khắc Kỷ: Phong Cách Sống Bản Lĩnh & Bình Thản",
+		slug: "chu-nghia-khac-ky-phong-cach-song-ban-linh-va-binh-than",
+		price: "65.000 ₫",
+		author: "William B. Irvine",
+		thumbnail: "http://localhost:8000/thumbnail/UHJvZHVjdE1lZGlhOjE1Mg==/256/",
+		rating: 4.9,
+		category: "Minh Triết Sống & Khai Phóng",
+	},
+	{
+		id: "prod-13",
+		title: "Tư Duy Nhanh Và Chậm",
+		slug: "tu-duy-nhanh-va-cham",
+		price: "79.000 ₫",
+		author: "Daniel Kahneman",
+		thumbnail: "http://localhost:8000/thumbnail/UHJvZHVjdE1lZGlhOjE1Mw==/256/",
+		rating: 4.9,
+		category: "Tư Duy Phản Biện & Nhận Thức",
 	},
 ];
 
@@ -197,35 +272,31 @@ export async function GET(request: Request) {
 			]);
 
 			const allEdges = data?.data?.products?.edges || [];
-			const bookEdges = allEdges.filter(({ node }) => {
-				if (NON_BOOK_SLUGS.has(node.slug.toLowerCase())) return false;
-				const catSlug = node.category?.slug?.toLowerCase() || "";
-				const catName = node.category?.name?.toLowerCase() || "";
-				return (
-					catSlug.includes("book") ||
-					catSlug.includes("sach") ||
-					catName.includes("sách") ||
-					catName.includes("book")
-				);
-			});
+			// All products in channel-vnd that are not excluded non-book items are valid AuraBook books!
+			const bookEdges = allEdges.filter(({ node }) => !NON_BOOK_SLUGS.has(node.slug.toLowerCase()));
 
 			if (bookEdges.length > 0) {
 				const saleorBooks: CatalogBook[] = bookEdges.map(({ node }) => {
 					const amount = node.pricing?.priceRange?.start?.gross?.amount;
 					const priceFormatted = amount
 						? `${new Intl.NumberFormat("vi-VN").format(amount)} ₫`
-						: "120.000 ₫";
+						: "69.000 ₫";
+
+					// Format clean book name without parenthesis noise if needed
+					const cleanName = node.name.replace(/\s*\([^)]*\)\s*$/, "").trim() || node.name;
+					const author = AUTHOR_MAP[node.slug] || "Tác giả AuraBook";
 
 					return {
 						id: node.id,
-						title: node.name,
+						title: cleanName,
 						slug: node.slug,
 						price: priceFormatted,
-						author: "Tác giả Aurabook",
+						author,
 						thumbnail:
 							node.thumbnail?.url ||
-							"https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop&q=80",
-						rating: 4.8,
+							"http://localhost:8000/media/thumbnails/products/book-dac-nhan-tam-cover_thumbnail_256.jpg",
+						rating: 4.9,
+						category: node.category?.name || "Sách AuraBook",
 					};
 				});
 
@@ -242,7 +313,8 @@ export async function GET(request: Request) {
 				(b) =>
 					b.title.toLowerCase().includes(query) ||
 					b.author.toLowerCase().includes(query) ||
-					b.slug.includes(query),
+					b.slug.includes(query) ||
+					(b.category && b.category.toLowerCase().includes(query)),
 			)
 		: FALLBACK_BOOKS;
 

@@ -21,12 +21,62 @@
       },
       "savedPosts": [],
       "followers": [
+        "user-VXNlcjo4",
         "user-VXNlcjo3",
         "user-1",
         "user-VXNlcjo0Ng=="
       ],
       "following": [],
       "role": "admin"
+    },
+    {
+      "id": "user-VXNlcjo4",
+      "username": "@phuong",
+      "displayName": "Phuong Nguyen",
+      "avatar": "https://ui-avatars.com/api/?name=Phuong%20Nguyen&background=10b981&color=fff",
+      "bio": "Thành viên cộng đồng độc giả Aurabook",
+      "favoriteGenre": "Văn học & Kỹ năng sống",
+      "hasAcceptedTerms": false,
+      "isBlocked": false,
+      "joinedAt": "2026-11-02T15:39:51.549Z",
+      "realAccount": {
+        "id": "VXNlcjo4",
+        "email": "thilinhnguyen28042005@gmail.com",
+        "fullName": "Phuong Nguyen",
+        "ordersCount": 3,
+        "totalSpent": "232.000 ₫",
+        "registeredDate": "Gần đây",
+        "lastActive": "Đang online"
+      },
+      "savedPosts": [],
+      "followers": [
+        "user-VXNlcjo3",
+        "user-1",
+        "user-VXNlcjo0Ng=="
+      ],
+      "following": [
+        "admin-aurabook"
+      ],
+      "role": "member",
+      "profileHistory": [
+        {
+          "id": "hist-1793633991677-ah61",
+          "changedAt": "2026-11-02T15:39:51.677Z",
+          "previousAvatar": "/android-chrome-512x512.png",
+          "previousDisplayName": "Quản trị viên Aurabook",
+          "previousUsername": "@aurabook_admin",
+          "previousBio": "Tài khoản chính thức của Ban Quản Trị Aurabook. Cập nhật thông báo, chính sách và đồng hành cùng cộng đồng độc giả.",
+          "previousFavoriteGenre": "Sách chọn lọc & Thông báo",
+          "newAvatar": "https://ui-avatars.com/api/?name=Phuong%20Nguyen&background=10b981&color=fff",
+          "newDisplayName": "Phuong Nguyen",
+          "newUsername": "@phuong",
+          "newBio": "Thành viên cộng đồng độc giả Aurabook",
+          "newFavoriteGenre": "Văn học & Kỹ năng sống",
+          "favoriteGenre": "Văn học & Kỹ năng sống",
+          "followersCount": 3,
+          "followingCount": 0
+        }
+      ]
     },
     {
       "id": "user-VXNlcjo3",
@@ -55,7 +105,7 @@
       "following": [
         "admin-aurabook"
       ],
-      "role": "admin",
+      "role": "member",
       "profileHistory": [
         {
           "id": "hist-1792254649158-wqth",
@@ -240,8 +290,8 @@
         "id": "VXNlcjo0Ng==",
         "email": "basduy05@gmail.com",
         "fullName": "Duy Nguyễn Bá",
-        "ordersCount": 10,
-        "totalSpent": "2.543.000 ₫",
+        "ordersCount": 11,
+        "totalSpent": "2.661.000 ₫",
         "registeredDate": "Gần đây",
         "lastActive": "Đang online"
       },
@@ -311,6 +361,30 @@
   ],
   "posts": [
     {
+      "id": "post-review-rev-1793643521201-y362y",
+      "author": {
+        "id": "user-guest-Duy Nguyen Ba",
+        "username": "@duy_nguyen_ba",
+        "displayName": "Duy Nguyen Ba",
+        "avatar": "https://ui-avatars.com/api/?name=Duy%20Nguyen%20Ba&background=0D8ABC&color=fff",
+        "isVerifiedBuyer": true
+      },
+      "book": {
+        "slug": "10-dieu-tao-nen-so-phan",
+        "title": "10 Điều Tạo Nên Số Phận (The Ten Commitments)",
+        "rating": 5,
+        "price": "120.000 ₫",
+        "thumbnail": "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop&q=80",
+        "author": "Tác giả Aurabook"
+      },
+      "title": "10 Điều Tạo Nên Số Phận (The Ten Commitments)",
+      "content": "Cuốn sách mang đến những góc nhìn rất giá trị và thức tỉnh về hành động cũng như trách nhiệm của mỗi cá nhân đối với cuộc đời mình. Các cam kết được phân tích qua góc nhìn gần gũi, dễ hiểu nhưng đầy sức nặng, giúp người đọc tự ngẫm lại bản thân và định hình rõ hơn con đường phía trước. Rất đáng để đọc và nghiền ngẫm!",
+      "likes": [],
+      "comments": [],
+      "createdAt": "2026-11-02T18:18:41.201Z",
+      "isFromProductReview": true
+    },
+    {
       "author": {
         "id": "user-VXNlcjo0Ng==",
         "username": "@basduy",
@@ -353,8 +427,8 @@
     {
       "author": {
         "id": "admin-aurabook",
-        "username": "@duyduyy",
-        "displayName": "Duyduyy Nguyen",
+        "username": "@aurabook_admin",
+        "displayName": "Quản trị viên Aurabook",
         "avatar": "/android-chrome-512x512.png",
         "isVerifiedBuyer": false
       },
@@ -373,8 +447,8 @@
     {
       "author": {
         "id": "admin-aurabook",
-        "username": "@duyduyy",
-        "displayName": "Duyduyy Nguyen",
+        "username": "@aurabook_admin",
+        "displayName": "Quản trị viên Aurabook",
         "avatar": "/android-chrome-512x512.png",
         "isVerifiedBuyer": false
       },
@@ -392,8 +466,8 @@
     {
       "author": {
         "id": "admin-aurabook",
-        "username": "@duyduyy",
-        "displayName": "Duyduyy Nguyen",
+        "username": "@aurabook_admin",
+        "displayName": "Quản trị viên Aurabook",
         "avatar": "/android-chrome-512x512.png",
         "isVerifiedBuyer": false
       },
@@ -429,8 +503,8 @@
     {
       "author": {
         "id": "admin-aurabook",
-        "username": "@duyduyy",
-        "displayName": "Duyduyy Nguyen",
+        "username": "@aurabook_admin",
+        "displayName": "Quản trị viên Aurabook",
         "avatar": "/android-chrome-512x512.png",
         "isVerifiedBuyer": false
       },
@@ -476,8 +550,8 @@
     {
       "author": {
         "id": "admin-aurabook",
-        "username": "@duyduyy",
-        "displayName": "Duyduyy Nguyen",
+        "username": "@aurabook_admin",
+        "displayName": "Quản trị viên Aurabook",
         "avatar": "/android-chrome-512x512.png",
         "isVerifiedBuyer": false
       },

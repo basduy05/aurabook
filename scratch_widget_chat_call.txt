@@ -1,0 +1,90 @@
+1601: 									});
+1602: 								} else if (isWaitingResponseRef.current && !isTerminatedRef.current) {
+1603: 									holdMusicPlayerRef.current?.start();
+1604: 								}
+1605: 							}
+1606: 						})
+1607: 						.catch(() => {
+1608: 							if (isWaitingResponseRef.current && !isTerminatedRef.current) {
+1609: 								holdMusicPlayerRef.current?.start();
+1610: 							}
+1611: 						});
+1612: 				} catch {
+1613: 					if (isWaitingResponseRef.current && !isTerminatedRef.current) {
+1614: 						holdMusicPlayerRef.current?.start();
+1615: 					}
+1616: 				}
+1617: 			}
+1618: 
+1619: 			abortControllerRef.current = new AbortController();
+1620: 
+1621: 			try {
+1622: 				const res = await fetch("/api/ai/voice-agent/chat", {
+1623: 					method: "POST",
+1624: 					headers: { "Content-Type": "application/json" },
+1625: 					signal: abortControllerRef.current.signal,
+1626: 					body: JSON.stringify({
+1627: 						query: cleanQuery,
+1628: 						topic: selectedTopic,
+1629: 						history: newMsgHistory,
+1630: 						customerName,
+1631: 						customerPhone,
+1632: 						customerGender,
+1633: 						customerAge,
+1634: 						activeBookSlug,
+1635: 						voice: activeVoiceRef.current || "f5-tts-vietnamese",
+1636: 						contactMethod: contactMethodRef.current,
+1637: 						clientFarewellIntent: /(kết thúc|tạm biệt|dừng lại|cúp máy|ngắt máy|tắt máy|thôi nhé|thôi em|thế thôi nhé|hôm nay thế thôi|không cần nữa|cảm ơn em nhiều)/i.test(cleanQuery),
+1638: 					}),
+1639: 				});
+1640: 
+1641: 				// Tắt nhạc chờ ngay khi API trả kết quả
+1642: 				holdMusicPlayerRef.current?.stop();
+1643: 				// NGAY LẬP TỨC đánh dấu không còn chờ để ngăn chặn bất kỳ TTS giữ máy nào phát đè lên câu trả lời chính
+1644: 				isWaitingResponseRef.current = false;
+1645: 
+1646: 				if (isTerminatedRef.current) return;
+1647: 
+1648: 				if (res.ok) {
+1649: 					const data = ((await res.json()) || {}) as any;
+1650: 					if (isTerminatedRef.current) return;
+1651: 
+1652: 					if (data.activeModel) {
+1653: 						setActiveModel(data.activeModel);
+1654: 					}
+1655: 					if (data.activeBookSlug) {
+1656: 						setActiveBookSlug(data.activeBookSlug);
+1657: 					}
+1658: 
+1659: 					const replyText = data.text || "Em đã nhận thông tin và đang tra cứu cho mình ạ.";
+1660: 					const replyCards = data.cards || [];
+1661: 					const replyThinking = data.thinking || undefined;
+1662: 					const isFarewell = Boolean(data.isFarewell);
+1663: 
+1664: 					streamAiResponse(replyText, replyCards, data.audioBase64, replyThinking, isFarewell);
+1665: 				} else {
+1666: 					isWaitingResponseRef.current = false;
+1667: 					setIsWaitingResponse(false);
+1668: 					resumeSpeechRecognitionAfterAudio();
+1669: 				}
+1670: 			} catch (err: any) {
+1671: 				holdMusicPlayerRef.current?.stop();
+1672: 				isWaitingResponseRef.current = false;
+1673: 				setIsWaitingResponse(false);
+1674: 				resumeSpeechRecognitionAfterAudio();
+1675: 
+1676: 				if (err?.name === "AbortError" || isTerminatedRef.current) {
+1677: 					console.log("[VoiceAgent] Đã hủy yêu cầu ngầm theo lệnh kết thúc của người dùng.");
+1678: 					return;
+1679: 				}
+1680: 				console.error("[VoiceAgent Chat Error]:", err);
+1681: 				setMessages((prev) => {
+1682: 					const errMsg: Message = {
+1683: 						id: `agent-err-${Date.now()}`,
+1684: 						sender: "agent",
+1685: 						text: "Dạ hệ thống của AuraBook đang đồng bộ thêm dữ liệu. Anh/chị đợi em một chút nhé!",
+1686: 						timestamp: timeStr,
+1687: 					};
+1688: 					const next = [...prev, errMsg];
+1689: 					messagesRef.current = next;
+1690: 					return next;

@@ -139,24 +139,12 @@ export async function POST(req: Request) {
 		const TTS_URL = process.env.PIPER_TTS_URL || "http://127.0.0.1:5050/api/tts";
 
 		try {
-			let res = await fetch(TTS_URL, {
+			const res = await fetch(TTS_URL, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ text, speed, voice, format: "base64" }),
 				signal: AbortSignal.timeout(25000),
 			}).catch(() => null);
-
-			if (!res || !res.ok) {
-				// Fallback ngay lập tức sang giọng offline Hoài My nếu giọng yêu cầu bị chậm/lỗi
-				if (voice !== "vi_VN-hoaimy-aurabook") {
-					res = await fetch(TTS_URL, {
-						method: "POST",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({ text, speed, voice: "vi_VN-hoaimy-aurabook", format: "base64" }),
-						signal: AbortSignal.timeout(10000),
-					}).catch(() => null);
-				}
-			}
 
 			if (res && res.ok) {
 				const data: any = await res.json();

@@ -124,7 +124,7 @@ export async function POST() {
 	let totalLatency = 0;
 	let passedCount = 0;
 	// Đọc model đang kích hoạt từ ai_platform_config.json
-	let modelName = "qwen2.5:3b";
+	let modelName = "gemma2:2b";
 	try {
 		const cfgPath = path.resolve(process.cwd(), "../ecommerce-ai-platform/ai_platform_config.json");
 		if (fs.existsSync(cfgPath)) {
@@ -166,7 +166,7 @@ export async function POST() {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({
-						model: "qwen2.5:3b",
+						model: "gemma2:2b",
 						prompt: `Bạn là trợ lý AuraBook. Trả lời chính xác:\nCâu hỏi: ${tc.question}\nTrả lời ngắn gọn:`,
 						stream: false,
 						options: { temperature: 0.3, num_predict: 100 },

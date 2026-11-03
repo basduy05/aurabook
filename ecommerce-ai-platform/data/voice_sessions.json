@@ -1,5 +1,674 @@
 [
   {
+    "id": "sess-1793647811446",
+    "startedAt": "02:30:11 3/11/2026",
+    "endedAt": "02:35:14 3/11/2026",
+    "durationSeconds": 0,
+    "contactMethod": "chat",
+    "customerName": "Phương",
+    "customerPhone": "0985600910",
+    "customerGender": "Chị",
+    "customerAge": "18 - 24",
+    "topic": "Tư vấn chọn sách & Sách bán chạy",
+    "messages": [
+      {
+        "id": "welcome-personalized",
+        "sender": "agent",
+        "text": "Dạ em chào Chị Phương! Em là Aura AI, chuyên viên tư vấn của AuraBook. Em thấy Chị Phương đang quan tâm đến \"Tư vấn chọn sách & Sách bán chạy\". Em có thể hỗ trợ gì cho mình ạ?",
+        "timestamp": "02:30"
+      },
+      {
+        "id": "user-1793647826093",
+        "sender": "user",
+        "text": "Tôi đang muốn mua sách nhưng không biết mua quyển nào",
+        "timestamp": "02:30"
+      },
+      {
+        "id": "agent-1793647826130",
+        "sender": "agent",
+        "text": "Dạ em đã kiểm tra xong cho mình rồi, cảm ơn Chị Phương đã đợi em nhé ạ! dạ em chào Chị Phương ạ! Em rất sẵn lòng tư vấn cho mình. Để em có thể gợi ý chính xác những ấn phẩm phù hợp nhất, Chị Phương có thể chia sẻ giúp em là mình đang quan tâm đến thể loại nào (như lập trình công nghệ, tâm lý học, lịch sử hay phát triển bản thân) và mục tiêu đọc của mình đợt này là gì không ạ?",
+        "timestamp": "02:30"
+      },
+      {
+        "id": "user-1793647845080",
+        "sender": "user",
+        "text": "Sách về học tập và phát triển bản thân",
+        "timestamp": "02:30"
+      },
+      {
+        "id": "agent-1793647845115",
+        "sender": "agent",
+        "text": "Dạ, cảm ơn Chị Phương đã kiên nhẫn chờ em đối chiếu dữ liệu ạ! dạ em chào Chị Phương ạ! Trong dòng sách phát triển bản thân và hoàn thiện cuộc sống, AuraBook trân trọng gợi ý đến Chị Phương hai tác phẩm nổi bật:\n1. 🌿 **Bốn Thỏa Ước** của Don Miguel Ruiz (Bản Ebook: 49.000₫ / Sách giấy: 98.000₫) - Minh triết sống Toltec giúp giải phóng những niềm tin giới hạn, làm chủ cảm xúc và đạt tự do nội tâm.\n2. 📖 **Đắc Nhân Tâm** của Dale Carnegie (Bản Ebook: 59.000₫ / Sách giấy: 118.000₫) - Cẩm nang kinh điển về nghệ thuật giao tiếp, thấu hiểu tâm lý và thu phục lòng người.\n\nCả hai tác phẩm đều có sẵn Bản Sách Điện Tử (Ebook DRM) và Bản Sách Giấy. Em đã hiển thị thẻ ấn phẩm của cả 2 cuốn sách ngay bên dưới để Chị Phương tiện tham khảo và đặt mua nhé ạ!",
+        "timestamp": "02:30"
+      },
+      {
+        "id": "user-1793647875785",
+        "sender": "user",
+        "text": "Có quyển sách nào liên quan đến sự trí tuệ và học tập, kèm theo quá trình phát triển của loài người không",
+        "timestamp": "02:31"
+      },
+      {
+        "id": "agent-1793647887995",
+        "sender": "agent",
+        "text": "Dạ em đã kiểm tra xong cho mình rồi, cảm ơn Chị Phương đã đợi em nhé ạ! Chị Phương, chắc chắn chị muốn tìm hiểu về lịch sử và văn minh loài người, đúng không? \"Sapiens: Lược Sử Loài Người\" của tác giả Yuval Noah Harari là một cuốn sách tuyệt vời, nó sẽ giúp chị hiểu rõ hơn về sự phát triển của loài người từ những ngày đầu tiên cho đến hiện tại.  \n\n**Thẻ ấn phẩm:**\n\n[Ảnh thẻ ấn phẩm \"Sapiens: Lược Sử Loài Người\"]\n\n**Chọn phiên bản:**\n\n* **Bản Ebook:** 89.000đ (tự nhiên, tiện lợi)\n* **Bản Sách Giấy:** 189.000đ (thích hợp cho những ai yêu thích sách giấy)\n\n**Chúc chị tìm hiểu thêm về lịch sử và văn minh loài người!** 📚",
+        "timestamp": "02:31"
+      },
+      {
+        "id": "user-1793647909118",
+        "sender": "user",
+        "text": "còn tác phẩm khác không",
+        "timestamp": "02:31"
+      },
+      {
+        "id": "agent-1793647917137",
+        "sender": "agent",
+        "text": "Dạ, cảm ơn Chị Phương đã đợi em kiểm tra hệ thống ạ! Chị Phương, chắc chắn chị muốn tìm hiểu về lịch sử và văn minh loài người đúng không?  Cuốn sách \"Sapiens: Lược Sử Loài Người\" của Yuval Noah Harari sẽ giúp chị hiểu rõ hơn về sự phát triển của loài người từ những ngày đầu tiên cho đến hiện tại.  \n \n**Thẻ ấn phẩm:** \n[Tùy vào phiên bản sách, bạn hãy thêm thẻ ấn phẩm chi tiết] \n \nChị có muốn xem thêm chi tiết về sách không?",
+        "timestamp": "02:31"
+      },
+      {
+        "id": "user-1793648088305",
+        "sender": "user",
+        "text": "kết thúc",
+        "timestamp": "02:34"
+      },
+      {
+        "id": "agent-1793648088340",
+        "sender": "agent",
+        "text": "Dạ em cảm ơn Chị Phương rất nhiều ạ! Cuộc gọi tư vấn đã kết thúc, kính mời Chị Phương dành chút thời gian đánh giá chất lượng cuộc gọi ngay trên màn hình để Aura AI ngày càng hoàn thiện và phục vụ mình tốt hơn nhé ạ! Em xin chân thành cảm ơn.",
+        "timestamp": "02:34"
+      }
+    ],
+    "rating": 5,
+    "reviewTags": [
+      "🌟 Rất thông minh & uyên bác",
+      "⚡ Phản hồi siêu tốc, vượt mong đợi"
+    ],
+    "feedbackComment": "",
+    "status": "completed"
+  },
+  {
+    "id": "sess-1793647000344",
+    "startedAt": "02:16:40 3/11/2026",
+    "endedAt": "02:19:00 3/11/2026",
+    "durationSeconds": 0,
+    "contactMethod": "chat",
+    "customerName": "Phương",
+    "customerPhone": "0985600910",
+    "customerGender": "Chị",
+    "customerAge": "18 - 24",
+    "topic": "Tư vấn chọn sách & Sách bán chạy",
+    "messages": [
+      {
+        "id": "welcome-personalized",
+        "sender": "agent",
+        "text": "Dạ em chào Chị Phương! Em là Aura AI, chuyên viên tư vấn của AuraBook. Em thấy Chị Phương đang quan tâm đến \"Tư vấn chọn sách & Sách bán chạy\". Em có thể hỗ trợ gì cho mình ạ?",
+        "timestamp": "02:16"
+      },
+      {
+        "id": "user-1793647122017",
+        "sender": "user",
+        "text": "Tư vấn giúp tôi sách học tập",
+        "timestamp": "02:18"
+      },
+      {
+        "id": "agent-1793647140611",
+        "sender": "agent",
+        "text": "Dạ, em cảm ơn Chị Phương đã đợi em tra cứu trên hệ thống ạ! Chị Phương, em xin tư vấn sách giúp chị!  Để tìm cuốn sách phù hợp, em cần hiểu rõ chị muốn học tập ở lĩnh vực nào?  Chị muốn học tập về:\n\n* **Học cách ghi nhớ, tư duy, kỹ năng học tập hiệu quả?**  \n* **Học một kỹ năng cụ thể, chẳng hạn như tiếng Anh, coding, vẽ, nấu ăn?**\n* **Học về một chủ đề nào đó, ví dụ như kinh tế, lịch sử, văn hóa?**\n\nBây giờ em có thể tư vấn cho chị một số sách phù hợp:\n\n* **\"Bí Mật Của Một Trí Nhớ Siêu Phàm\"** (Eran Katz):  Với những kỹ thuật ghi nhớ, tư duy, và cách thức học tập hiệu quả, sách này sẽ giúp chị cải thiện khả năng học tập. \n* **\"Tư Duy Nhanh Và Chậm\"** (Daniel Kahneman):  Sách này sẽ giúp chị hiểu rõ hơn về cách tư duy của con người, giúp chị có thể áp dụng những kỹ thuật phù hợp để học tập hiệu quả. \n\nEm xin lưu ý, để tư vấn chính xác, em cần biết thêm về sở thích và mục tiêu học tập của chị.",
+        "timestamp": "02:19"
+      }
+    ],
+    "rating": 5,
+    "reviewTags": [
+      "🌟 Rất thông minh & uyên bác",
+      "⚡ Phản hồi siêu tốc, vượt mong đợi"
+    ],
+    "feedbackComment": "",
+    "status": "in_progress"
+  },
+  {
+    "id": "sess-1793645598917",
+    "startedAt": "01:53:18 3/11/2026",
+    "endedAt": "01:53:56 3/11/2026",
+    "durationSeconds": 0,
+    "contactMethod": "chat",
+    "customerName": "Duy",
+    "customerPhone": "0985600910",
+    "customerGender": "Anh",
+    "customerAge": "18 - 24",
+    "topic": "Tư vấn chọn sách & Sách bán chạy",
+    "messages": [
+      {
+        "id": "welcome-personalized",
+        "sender": "agent",
+        "text": "Dạ em chào Anh Duy! Em là Aura AI, chuyên viên tư vấn của AuraBook. Em thấy Anh Duy đang quan tâm đến \"Tư vấn chọn sách & Sách bán chạy\". Em có thể hỗ trợ gì cho mình ạ?",
+        "timestamp": "01:53"
+      },
+      {
+        "id": "user-1793645611420",
+        "sender": "user",
+        "text": "tư vấn giúp tôi sách phát triển bản thân",
+        "timestamp": "01:53"
+      },
+      {
+        "id": "agent-1793645612064",
+        "sender": "agent",
+        "text": "Dạ, cảm ơn Anh Duy đã kiên nhẫn chờ em đối chiếu dữ liệu ạ! dạ em chào Anh Duy ạ! Trong dòng sách phát triển bản thân và hoàn thiện cuộc sống, AuraBook trân trọng gợi ý đến Anh Duy hai tác phẩm nổi bật:\n1. 🌿 **Bốn Thỏa Ước** của Don Miguel Ruiz (Bản Ebook: 49.000₫ / Sách giấy: 98.000₫) - Minh triết sống Toltec giúp giải phóng những niềm tin giới hạn, làm chủ cảm xúc và đạt tự do nội tâm.\n2. 📖 **Đắc Nhân Tâm** của Dale Carnegie (Bản Ebook: 59.000₫ / Sách giấy: 118.000₫) - Cẩm nang kinh điển về nghệ thuật giao tiếp, thấu hiểu tâm lý và thu phục lòng người.\n\nCả hai tác phẩm đều có sẵn Bản Sách Điện Tử (Ebook DRM) và Bản Sách Giấy. Em đã hiển thị thẻ ấn phẩm của cả 2 cuốn sách ngay bên dưới để Anh Duy tiện tham khảo và đặt mua nhé ạ!",
+        "timestamp": "01:53"
+      },
+      {
+        "id": "user-1793645629569",
+        "sender": "user",
+        "text": "sách liên quan đến học tập và kinh tế",
+        "timestamp": "01:53"
+      },
+      {
+        "id": "agent-1793645636118",
+        "sender": "agent",
+        "text": "Dạ em đã kiểm tra xong cho mình rồi, cảm ơn Anh Duy đã đợi em nhé ạ! dạ, đúng với sự quan tâm của Anh Duy về lĩnh vực phát triển bản thân, nghệ thuật giao tiếp và đối nhân xử thế, em xin gợi ý cuốn sách kinh điển \"Đắc Nhân Tâm\" của tác giả Dale Carnegie. Tác phẩm hiện có 2 phiên bản phát hành chuẩn giá: Bản Sách Điện Tử (59.000₫) đọc ngay trên Web Reader có bản quyền DRM và Bản Sách Vật Lý (118.000₫) giao tận nhà. Em đã hiển thị thẻ ấn phẩm chi tiết ngay bên dưới để Anh Duy tiện tham khảo và đặt mua nhé ạ!",
+        "timestamp": "01:53"
+      }
+    ],
+    "rating": 5,
+    "reviewTags": [
+      "🌟 Rất thông minh & uyên bác",
+      "⚡ Phản hồi siêu tốc, vượt mong đợi"
+    ],
+    "feedbackComment": "",
+    "status": "in_progress"
+  },
+  {
+    "id": "sess-1793640361974",
+    "startedAt": "00:26:01 3/11/2026",
+    "endedAt": "00:29:33 3/11/2026",
+    "durationSeconds": 209,
+    "contactMethod": "call",
+    "customerName": "Duy",
+    "customerPhone": "0362632175",
+    "customerGender": "Anh",
+    "customerAge": "18 - 24",
+    "topic": "Tư vấn chọn sách & Sách bán chạy",
+    "messages": [
+      {
+        "id": "welcome-personalized",
+        "sender": "agent",
+        "text": "Dạ em chào Anh Duy! Em là Aura AI, chuyên viên tư vấn của AuraBook. Em thấy Anh Duy đang quan tâm đến \"Tư vấn chọn sách & Sách bán chạy\". Em có thể hỗ trợ gì cho mình ạ?",
+        "timestamp": "00:26"
+      },
+      {
+        "id": "user-1793640383320",
+        "sender": "user",
+        "text": "tư vấn giúp tôi một vài quyển sách",
+        "timestamp": "00:26"
+      },
+      {
+        "id": "agent-1793640384218",
+        "sender": "agent",
+        "text": "Dạ, cảm ơn Anh Duy đã đợi em kiểm tra hệ thống ạ! dạ em chào Anh Duy ạ! Em rất sẵn lòng tư vấn cho mình. Để em có thể gợi ý chính xác những ấn phẩm phù hợp nhất, Anh Duy có thể chia sẻ giúp em là mình đang quan tâm đến thể loại nào (như lập trình công nghệ, tâm lý học, lịch sử hay phát triển bản thân) và mục tiêu đọc của mình đợt này là gì không ạ?",
+        "timestamp": "00:26"
+      },
+      {
+        "id": "user-1793640414153",
+        "sender": "user",
+        "text": "bạn có thể gợi ý giúp tôi một vài quyển sách bất kỳ được không Ví dụ như là quyển sách nào đó bán chạy ở hệ thống được",
+        "timestamp": "00:26"
+      },
+      {
+        "id": "agent-1793640428670",
+        "sender": "agent",
+        "text": "Dạ, cảm ơn Anh Duy đã đợi em kiểm tra hệ thống ạ! dạ em chào Anh Duy ạ! Em là Aura AI - Chuyên viên tư vấn của AuraBook. Em rất sẵn lòng hỗ trợ mình. Anh Duy có thể chia sẻ cụ thể hơn giúp em là mình đang quan tâm đến thể loại sách nào (như tâm lý học, lịch sử văn minh, trí tuệ tư duy hay nghệ thuật giao tiếp) hoặc cần tra cứu đơn hàng để em phục vụ mình tốt nhất nhé ạ!",
+        "timestamp": "00:27"
+      },
+      {
+        "id": "user-1793640470103",
+        "sender": "user",
+        "text": "sách liên quan đến phát triển bản thân",
+        "timestamp": "00:27"
+      },
+      {
+        "id": "agent-1793640501146",
+        "sender": "agent",
+        "text": "Dạ, cảm ơn Anh Duy đã kiên nhẫn chờ em đối chiếu dữ liệu ạ! Anh Duy, \"Đắc Nhân Tâm\" của Dale Carnegie chính là cuốn sách bạn nên đọc!  Với những bài học về cách xây dựng mối quan hệ tốt đẹp,  thực hành nghệ thuật giao tiếp và đối nhân xử thế, cuốn sách này sẽ giúp Anh Duy phát triển bản thân và cuộc sống của mình.  \n \n**Thật ra, \"Đắc Nhân Tâm",
+        "timestamp": "00:28"
+      },
+      {
+        "id": "user-1793640544850",
+        "sender": "user",
+        "text": "kết thúc",
+        "timestamp": "00:29"
+      },
+      {
+        "id": "agent-1793640545607",
+        "sender": "agent",
+        "text": "Dạ em cảm ơn Anh Duy rất nhiều ạ! Cuộc gọi tư vấn đã kết thúc, kính mời Anh Duy dành chút thời gian đánh giá chất lượng cuộc gọi ngay trên màn hình để Aura AI ngày càng hoàn thiện và phục vụ mình tốt hơn nhé ạ! Em xin chân thành cảm ơn.",
+        "timestamp": "00:29"
+      }
+    ],
+    "rating": 1,
+    "reviewTags": [
+      "⚠️ Phản hồi chưa chính xác",
+      "🐢 Tốc độ phản hồi còn chậm"
+    ],
+    "feedbackComment": "Trả lời khôgn đún gtrongj tâm, không hiểu ý khách hàng",
+    "status": "completed"
+  },
+  {
+    "id": "sess-1793634677570",
+    "startedAt": "22:51:17 2/11/2026",
+    "endedAt": "22:51:59 2/11/2026",
+    "durationSeconds": 39,
+    "contactMethod": "call",
+    "customerName": "Phương",
+    "customerPhone": "0985600910",
+    "customerGender": "Chị",
+    "customerAge": "18 - 24",
+    "topic": "Tra cứu đơn hàng & Thời gian giao hàng",
+    "messages": [
+      {
+        "id": "welcome-personalized",
+        "sender": "agent",
+        "text": "Dạ em chào Chị Phương! Em là Aura AI, chuyên viên tư vấn của AuraBook. Em thấy Chị Phương đang quan tâm đến \"Tra cứu đơn hàng & Thời gian giao hàng\". Em có thể hỗ trợ gì cho mình ạ?",
+        "timestamp": "22:51"
+      },
+      {
+        "id": "user-1793634710227",
+        "sender": "user",
+        "text": "Tao muốn tra cứu đơn hàng",
+        "timestamp": "22:51"
+      },
+      {
+        "id": "agent-1793634719127",
+        "sender": "agent",
+        "text": "Dạ em đã kiểm tra xong cho mình rồi, cảm ơn Chị Phương đã đợi em nhé ạ! dạ em đã tra cứu thông tin đơn hàng #48 của Chị Phương trên hệ thống AuraBook rồi ạ! Đơn gồm: Bốn Thỏa Ước (The Four Agreements) (x1), tổng thanh toán là 49.000₫. Hiện tại đơn hàng đang ở trạng thái \"Đang xử lý / Chờ xuất kho\" và đang được đội ngũ kho AuraBook chuẩn bị gửi đến Chị Phương ạ!",
+        "timestamp": "22:51"
+      }
+    ],
+    "rating": 5,
+    "reviewTags": [
+      "🌟 Rất thông minh & uyên bác",
+      "⚡ Phản hồi siêu tốc, vượt mong đợi"
+    ],
+    "feedbackComment": "",
+    "status": "in_progress"
+  },
+  {
+    "id": "sess-1793634483502",
+    "startedAt": "22:48:03 2/11/2026",
+    "endedAt": "22:49:50 2/11/2026",
+    "durationSeconds": 77,
+    "contactMethod": "call",
+    "customerName": "Phương",
+    "customerPhone": "0985600910",
+    "customerGender": "Chị",
+    "customerAge": "18 - 24",
+    "topic": "Chính sách mua hàng & Thắc mắc khác",
+    "messages": [
+      {
+        "id": "welcome-personalized",
+        "sender": "agent",
+        "text": "Dạ em chào Chị Phương! Em là Aura AI, chuyên viên tư vấn của AuraBook. Em thấy Chị Phương đang quan tâm đến \"Chính sách mua hàng & Thắc mắc khác\". Em có thể hỗ trợ gì cho mình ạ?",
+        "timestamp": "22:48"
+      },
+      {
+        "id": "user-1793634501555",
+        "sender": "user",
+        "text": "Tao muốn tìm kiếm một đơn hàng để hủy",
+        "timestamp": "22:48"
+      },
+      {
+        "id": "agent-1793634529311",
+        "sender": "agent",
+        "text": "Dạ, em cảm ơn Chị Phương đã đợi em tra cứu trên hệ thống ạ! dạ em đã thực hiện hủy thành công đơn hàng mới vừa đặt #47 (Bí Mật Của Một Trí Nhớ Siêu Phàm (Where Did You Put My Keys?) (x1)) với tổng giá trị 59.000₫ cho Chị Phương rồi ạ! Trạng thái đơn hàng trên hệ thống AuraBook hiện đã được cập nhật thành \"Đã hủy\" (CANCELED). Chị Phương hoàn toàn có thể yên tâm nhé ạ!",
+        "timestamp": "22:48"
+      },
+      {
+        "id": "user-1793634558766",
+        "sender": "user",
+        "text": "mình đã xác nhận được",
+        "timestamp": "22:49"
+      },
+      {
+        "id": "agent-farewell-1793634563902",
+        "sender": "agent",
+        "text": "Dạ em cảm ơn chị Phương rất nhiều ạ! Cuộc gọi tư vấn đã kết thúc, kính mời chị Phương dành chút thời gian đánh giá chất lượng cuộc gọi ngay trên màn hình để Aura AI ngày càng hoàn thiện và phục vụ mình tốt hơn nhé ạ! Em xin chân thành cảm ơn.",
+        "timestamp": "22:49"
+      }
+    ],
+    "rating": 5,
+    "reviewTags": [
+      "🌟 Rất thông minh & uyên bác",
+      "⚡ Phản hồi siêu tốc, vượt mong đợi"
+    ],
+    "feedbackComment": "",
+    "status": "completed"
+  },
+  {
+    "id": "sess-1793634360052",
+    "startedAt": "22:46:00 2/11/2026",
+    "endedAt": "22:47:30 2/11/2026",
+    "durationSeconds": 88,
+    "contactMethod": "call",
+    "customerName": "Phương",
+    "customerPhone": "0985600910",
+    "customerGender": "Chị",
+    "customerAge": "18 - 24",
+    "topic": "Chính sách mua hàng & Thắc mắc khác",
+    "messages": [
+      {
+        "id": "welcome-personalized",
+        "sender": "agent",
+        "text": "Dạ em chào Chị Phương! Em là Aura AI, chuyên viên tư vấn của AuraBook. Em thấy Chị Phương đang quan tâm đến \"Chính sách mua hàng & Thắc mắc khác\". Em có thể hỗ trợ gì cho mình ạ?",
+        "timestamp": "22:46"
+      },
+      {
+        "id": "user-1793634383301",
+        "sender": "user",
+        "text": "Tao muốn hủy một đơn hàng",
+        "timestamp": "22:46"
+      },
+      {
+        "id": "agent-1793634411117",
+        "sender": "agent",
+        "text": "Dạ em đã kiểm tra xong cho mình rồi, cảm ơn Chị Phương đã đợi em nhé ạ! dạ em đã kiểm tra đơn hàng #46 (Chiến Tranh Tiền Tệ - Tập 1: Dòng Chảy Của Tiền Ngầm (x1), Cây Cam Ngọt Của Tôi (Meu Pé de Laranja Lima) (x1)) của Chị Phương. Hiện tại đơn hàng đã được xuất kho và đang trong quy trình vận chuyển (FULFILLED), do đó hệ thống không thể tự động hủy trực tiếp được nữa ạ. Khi bưu tá liên hệ giao hàng, Chị Phương có thể từ chối nhận hàng hoặc sử dụng chính sách đổi trả trong vòng 30 ngày của AuraBook nhé ạ!",
+        "timestamp": "22:46"
+      },
+      {
+        "id": "user-1793634450950",
+        "sender": "user",
+        "text": "bỏ mẹ",
+        "timestamp": "22:47"
+      }
+    ],
+    "rating": 5,
+    "reviewTags": [
+      "🌟 Rất thông minh & uyên bác",
+      "⚡ Phản hồi siêu tốc, vượt mong đợi"
+    ],
+    "feedbackComment": "",
+    "status": "in_progress"
+  },
+  {
+    "id": "sess-1793633314513",
+    "startedAt": "22:28:34 2/11/2026",
+    "endedAt": "22:32:58 2/11/2026",
+    "durationSeconds": 261,
+    "contactMethod": "call",
+    "customerName": "Phương",
+    "customerPhone": "0985600910",
+    "customerGender": "Chị",
+    "customerAge": "18 - 24",
+    "topic": "Tư vấn chọn sách & Sách bán chạy",
+    "messages": [
+      {
+        "id": "welcome-personalized",
+        "sender": "agent",
+        "text": "Dạ em chào Chị Phương! Em là Aura AI, chuyên viên tư vấn của AuraBook. Em thấy Chị Phương đang quan tâm đến \"Tư vấn chọn sách & Sách bán chạy\". Em có thể hỗ trợ gì cho mình ạ?",
+        "timestamp": "22:28"
+      },
+      {
+        "id": "user-1793633337809",
+        "sender": "user",
+        "text": "Tôi muốn tìm kiếm cuốn sách về nhận thức",
+        "timestamp": "22:28"
+      },
+      {
+        "id": "agent-1793633384358",
+        "sender": "agent",
+        "text": "Dạ, em cảm ơn Chị Phương đã đợi em tra cứu trên hệ thống ạ! dạ em chào Chị Phương ạ! Em là Aura AI - Chuyên viên tư vấn của AuraBook. Em rất sẵn lòng hỗ trợ mình. Chị Phương có thể chia sẻ cụ thể hơn giúp em là mình đang quan tâm đến thể loại sách nào (như tâm lý học, lịch sử văn minh, trí tuệ tư duy hay nghệ thuật giao tiếp) hoặc cần tra cứu đơn hàng để em phục vụ mình tốt nhất nhé ạ!",
+        "timestamp": "22:29"
+      },
+      {
+        "id": "user-1793633413034",
+        "sender": "user",
+        "text": "Tôi muốn tìm về cuốn sách về nhận thức của con người",
+        "timestamp": "22:30"
+      },
+      {
+        "id": "agent-1793633459952",
+        "sender": "agent",
+        "text": "Dạ, cảm ơn Chị Phương đã kiên nhẫn chờ em đối chiếu dữ liệu ạ! dạ, đúng với sự quan tâm của Chị Phương về lĩnh vực phát triển bản thân, nghệ thuật giao tiếp và đối nhân xử thế, em xin gợi ý cuốn sách kinh điển \"Đắc Nhân Tâm\" của tác giả Dale Carnegie. Tác phẩm hiện có 2 phiên bản phát hành chuẩn giá: Bản Sách Điện Tử (59.000₫) đọc ngay trên Web Reader có bản quyền DRM và Bản Sách Vật Lý (118.000₫) giao tận nhà. Em đã hiển thị thẻ ấn phẩm chi tiết ngay bên dưới để Chị Phương tiện tham khảo và đặt mua nhé ạ!",
+        "timestamp": "22:30"
+      },
+      {
+        "id": "user-1793633492265",
+        "sender": "user",
+        "text": "Tôi muốn tìm cuốn sách về lịch sử",
+        "timestamp": "22:31"
+      },
+      {
+        "id": "agent-1793633539200",
+        "sender": "agent",
+        "text": "Dạ em đã kiểm tra xong cho mình rồi, cảm ơn Chị Phương đã đợi em nhé ạ! dạ, đúng với sự quan tâm của Chị Phương về lĩnh vực phát triển bản thân, nghệ thuật giao tiếp và đối nhân xử thế, em xin gợi ý cuốn sách kinh điển \"Đắc Nhân Tâm\" của tác giả Dale Carnegie. Tác phẩm hiện có 2 phiên bản phát hành chuẩn giá: Bản Sách Điện Tử (59.000₫) đọc ngay trên Web Reader có bản quyền DRM và Bản Sách Vật Lý (118.000₫) giao tận nhà. Em đã hiển thị thẻ ấn phẩm chi tiết ngay bên dưới để Chị Phương tiện tham khảo và đặt mua nhé ạ!",
+        "timestamp": "22:32"
+      },
+      {
+        "id": "user-1793633554166",
+        "sender": "user",
+        "text": "kết thúc",
+        "timestamp": "22:32"
+      },
+      {
+        "id": "agent-1793633578869",
+        "sender": "agent",
+        "text": "Dạ em cảm ơn Chị Phương rất nhiều ạ! Cuộc gọi tư vấn đã kết thúc, kính mời Chị Phương dành chút thời gian đánh giá chất lượng cuộc gọi ngay trên màn hình để Aura AI ngày càng hoàn thiện và phục vụ mình tốt hơn nhé ạ! Em xin chân thành cảm ơn.",
+        "timestamp": "22:32"
+      }
+    ],
+    "rating": 5,
+    "reviewTags": [
+      "🌟 Rất thông minh & uyên bác",
+      "⚡ Phản hồi siêu tốc, vượt mong đợi"
+    ],
+    "feedbackComment": "",
+    "status": "in_progress"
+  },
+  {
+    "id": "sess-1793631172502",
+    "startedAt": "21:52:52 2/11/2026",
+    "endedAt": "21:54:29 2/11/2026",
+    "durationSeconds": 94,
+    "contactMethod": "call",
+    "customerName": "Duy",
+    "customerPhone": "0362632175",
+    "customerGender": "Anh",
+    "customerAge": "18 - 24",
+    "topic": "Chính sách mua hàng & Thắc mắc khác",
+    "messages": [
+      {
+        "id": "welcome-personalized",
+        "sender": "agent",
+        "text": "Dạ em chào Anh Duy! Em là Aura AI, chuyên viên tư vấn của AuraBook. Em thấy Anh Duy đang quan tâm đến \"Chính sách mua hàng & Thắc mắc khác\". Em có thể hỗ trợ gì cho mình ạ?",
+        "timestamp": "21:52"
+      },
+      {
+        "id": "user-1793631191006",
+        "sender": "user",
+        "text": "Tìm kiếm giúp tôi các đơn hàng tôi đã đặt để tôi hủy đơn hàng",
+        "timestamp": "21:53"
+      },
+      {
+        "id": "agent-1793631194332",
+        "sender": "agent",
+        "text": "Dạ, cảm ơn Anh Duy đã kiên nhẫn chờ em đối chiếu dữ liệu ạ! dạ em đã kiểm tra đơn hàng #9 (Mã vận đơn: GHN79111707VN) gửi về Coc Thon, HUYỆN BA VÌ rồi ạ. Hiện tại kiện hàng đã được xuất kho và đang được xử lý luân chuyển tại kho phân loại của GHN (Đã nhập kho phân loại), do đó hệ thống không thể hỗ trợ hủy đơn trực tiếp được nữa ạ. Khi bưu tá liên hệ giao hàng, Anh Duy có thể từ chối nhận nếu không còn nhu cầu nhé ạ!",
+        "timestamp": "21:53"
+      },
+      {
+        "id": "user-1793631222858",
+        "sender": "user",
+        "text": "có một đơn hàng mới cơ mà",
+        "timestamp": "21:53"
+      },
+      {
+        "id": "agent-1793631226486",
+        "sender": "agent",
+        "text": "Dạ, cảm ơn Anh Duy đã kiên nhẫn chờ em đối chiếu dữ liệu ạ! dạ em chào Anh Duy! Em đã kiểm tra trên hệ thống vận đơn GHN rồi ạ. Đơn hàng gần nhất của Anh Duy là đơn #9 (Mã vận đơn: GHN79111707VN), gồm Đơn hàng #9 (1 cuốn sách). Hiện kiện hàng đang ở trạng thái \"Đã nhập kho phân loại\" và dự kiến sẽ được giao đến Coc Thon, HUYỆN BA VÌ vào ngày 14/10/2026 ạ!",
+        "timestamp": "21:53"
+      },
+      {
+        "id": "user-1793631253673",
+        "sender": "user",
+        "text": "kết thúc",
+        "timestamp": "21:54"
+      },
+      {
+        "id": "agent-1793631254580",
+        "sender": "agent",
+        "text": "Dạ em cảm ơn Anh Duy rất nhiều ạ! Cuộc gọi tư vấn đã kết thúc, kính mời Anh Duy dành chút thời gian đánh giá chất lượng cuộc gọi ngay trên màn hình để Aura AI ngày càng hoàn thiện và phục vụ mình tốt hơn nhé ạ! Em xin chân thành cảm ơn.",
+        "timestamp": "21:54"
+      }
+    ],
+    "rating": 1,
+    "reviewTags": [
+      "⚠️ Phản hồi chưa chính xác",
+      "🐢 Tốc độ phản hồi còn chậm"
+    ],
+    "feedbackComment": "",
+    "status": "completed"
+  },
+  {
+    "id": "sess-1793630777540",
+    "startedAt": "21:46:17 2/11/2026",
+    "endedAt": "21:50:40 2/11/2026",
+    "durationSeconds": 260,
+    "contactMethod": "call",
+    "customerName": "Duy",
+    "customerPhone": "0362632175",
+    "customerGender": "Anh",
+    "customerAge": "18 - 24",
+    "topic": "Tư vấn chọn sách & Sách bán chạy",
+    "messages": [
+      {
+        "id": "welcome-personalized",
+        "sender": "agent",
+        "text": "Dạ em chào Anh Duy! Em là Aura AI, chuyên viên tư vấn của AuraBook. Em thấy Anh Duy đang quan tâm đến \"Tư vấn chọn sách & Sách bán chạy\". Em có thể hỗ trợ gì cho mình ạ?",
+        "timestamp": "21:46"
+      },
+      {
+        "id": "user-1793630797364",
+        "sender": "user",
+        "text": "Tôi muốn tìm một vài cuốn sách về tri thức",
+        "timestamp": "21:46"
+      },
+      {
+        "id": "agent-1793630820187",
+        "sender": "agent",
+        "text": "Dạ, em cảm ơn Anh Duy đã đợi em tra cứu trên hệ thống ạ! dạ em chào Anh Duy ạ! Em là Aura AI - Chuyên viên tư vấn của AuraBook. Em rất sẵn lòng hỗ trợ mình. Anh Duy có thể chia sẻ cụ thể hơn giúp em là mình đang quan tâm đến thể loại sách nào (như tâm lý học, lịch sử văn minh, trí tuệ tư duy hay nghệ thuật giao tiếp) hoặc cần tra cứu đơn hàng để em phục vụ mình tốt nhất nhé ạ!",
+        "timestamp": "21:47"
+      },
+      {
+        "id": "user-1793630847599",
+        "sender": "user",
+        "text": "Tôi muốn tìm những chính sách về tâm lý học",
+        "timestamp": "21:47"
+      },
+      {
+        "id": "agent-1793630871587",
+        "sender": "agent",
+        "text": "Dạ em đã kiểm tra xong cho mình rồi, cảm ơn Anh Duy đã đợi em nhé ạ! dạ, đúng với sự quan tâm của Anh Duy về lĩnh vực phát triển bản thân, nghệ thuật giao tiếp và đối nhân xử thế, em xin gợi ý cuốn sách kinh điển \"Đắc Nhân Tâm\" của tác giả Dale Carnegie. Tác phẩm hiện có 2 phiên bản phát hành chuẩn giá: Bản Sách Điện Tử (59.000₫) đọc ngay trên Web Reader có bản quyền DRM và Bản Sách Vật Lý (118.000₫) giao tận nhà. Em đã hiển thị thẻ ấn phẩm chi tiết ngay bên dưới để Anh Duy tiện tham khảo và đặt mua nhé ạ!",
+        "timestamp": "21:47"
+      },
+      {
+        "id": "user-1793630902292",
+        "sender": "user",
+        "text": "cường trí nhớ",
+        "timestamp": "21:48"
+      },
+      {
+        "id": "agent-1793630925150",
+        "sender": "agent",
+        "text": "Dạ, cảm ơn Anh Duy đã kiên nhẫn chờ em đối chiếu dữ liệu ạ! dạ, đúng với sự quan tâm của Anh Duy về lĩnh vực Rèn luyện trí nhớ, em xin gợi ý cuốn sách kinh điển \"Bí Mật Của Một Trí Nhớ Siêu Phàm\" của tác giả Eran Katz. Tác phẩm hiện có 2 phiên bản phát hành chuẩn giá: Bản Sách Điện Tử (59.000₫) đọc ngay trên Web Reader có bản quyền DRM và Bản Sách Vật Lý (119.000₫) giao tận nhà. Em đã hiển thị thẻ ấn phẩm chi tiết ngay bên dưới để Anh Duy tiện tham khảo và đặt mua nhé ạ!",
+        "timestamp": "21:48"
+      },
+      {
+        "id": "user-1793630959040",
+        "sender": "user",
+        "text": "tư vấn đọc giúp tôi một quyển đọc giúp tôi một mẩu chuyện vui",
+        "timestamp": "21:49"
+      },
+      {
+        "id": "agent-1793630981759",
+        "sender": "agent",
+        "text": "Dạ, cảm ơn Anh Duy đã kiên nhẫn chờ em đối chiếu dữ liệu ạ! dạ, đúng với sự quan tâm của Anh Duy về lĩnh vực trí tuệ và phương pháp tư duy, em xin gợi ý cuốn sách kinh điển \"Trí Tuệ Do Thái\" của tác giả Eran Katz. Tác phẩm hiện có 2 phiên bản phát hành chuẩn giá: Bản Sách Điện Tử (69.000₫) đọc ngay trên Web Reader có bản quyền DRM và Bản Sách Vật Lý (135.000₫) giao tận nhà. Em đã hiển thị thẻ ấn phẩm chi tiết ngay bên dưới để Anh Duy tiện tham khảo và đặt mua nhé ạ!",
+        "timestamp": "21:49"
+      },
+      {
+        "id": "user-1793631010064",
+        "sender": "user",
+        "text": "kết thúc",
+        "timestamp": "21:50"
+      },
+      {
+        "id": "agent-1793631011480",
+        "sender": "agent",
+        "text": "Dạ em cảm ơn Anh Duy rất nhiều ạ! Cuộc gọi tư vấn đã kết thúc, kính mời Anh Duy dành chút thời gian đánh giá chất lượng cuộc gọi ngay trên màn hình để Aura AI ngày càng hoàn thiện và phục vụ mình tốt hơn nhé ạ! Em xin chân thành cảm ơn.",
+        "timestamp": "21:50"
+      }
+    ],
+    "rating": 5,
+    "reviewTags": [
+      "🌟 Rất thông minh & uyên bác",
+      "⚡ Phản hồi siêu tốc, vượt mong đợi"
+    ],
+    "feedbackComment": "",
+    "status": "completed"
+  },
+  {
+    "id": "sess-1793629986551",
+    "startedAt": "21:33:06 2/11/2026",
+    "endedAt": "21:36:41 2/11/2026",
+    "durationSeconds": 172,
+    "contactMethod": "call",
+    "customerName": "Phương",
+    "customerPhone": "0362632175",
+    "customerGender": "Chị",
+    "customerAge": "18 - 24",
+    "topic": "Tư vấn chọn sách & Sách bán chạy",
+    "messages": [
+      {
+        "id": "welcome-personalized",
+        "sender": "agent",
+        "text": "Dạ em chào Chị Phương! Em là Aura AI, chuyên viên tư vấn của AuraBook. Em thấy Chị Phương đang quan tâm đến \"Tư vấn chọn sách & Sách bán chạy\". Em có thể hỗ trợ gì cho mình ạ?",
+        "timestamp": "21:33"
+      },
+      {
+        "id": "user-1793630027256",
+        "sender": "user",
+        "text": "t muốn tìm sách về tri thức",
+        "timestamp": "21:33"
+      },
+      {
+        "id": "agent-1793630060260",
+        "sender": "agent",
+        "text": "Dạ em đã kiểm tra xong cho mình rồi, cảm ơn Chị Phương đã đợi em nhé ạ! dạ em chào Chị Phương ạ! Đúng với sự quan tâm của Chị Phương về chủ đề phát triển bản thân và nghệ thuật sống, em xin gợi ý cuốn sách kinh điển và bán chạy nhất tại AuraBook là \"Đắc Nhân Tâm\" của tác giả Dale Carnegie. Tác phẩm hiện có sẵn Bản Sách Điện Tử (59.000₫) đọc ngay có bản quyền DRM và Bản Sách Vật Lý (118.000₫) giao tận nhà. Em đã hiển thị thẻ ấn phẩm chi tiết ngay bên dưới để Chị Phương tiện tham khảo và đặt mua nhé ạ!",
+        "timestamp": "21:34"
+      },
+      {
+        "id": "agent-inquiry-1793630117505",
+        "sender": "agent",
+        "text": "Dạ Chị Phương ơi, mình có còn ở đó không ạ? Chị Phương có muốn tiếp tục trò chuyện hay cần em giải đáp thêm điều gì không ạ?",
+        "timestamp": "21:35"
+      },
+      {
+        "id": "user-1793630136586",
+        "sender": "user",
+        "text": "mẹ nó còn dùng",
+        "timestamp": "21:35"
+      },
+      {
+        "id": "agent-farewell-1793630161071",
+        "sender": "agent",
+        "text": "Dạ em cảm ơn chị Phương rất nhiều ạ! Cuộc gọi tư vấn đã kết thúc, kính mời chị Phương dành chút thời gian đánh giá chất lượng cuộc gọi ngay trên màn hình để Aura AI ngày càng hoàn thiện và phục vụ mình tốt hơn nhé ạ! Em xin chân thành cảm ơn.",
+        "timestamp": "21:36"
+      }
+    ],
+    "rating": 5,
+    "reviewTags": [
+      "🌟 Rất thông minh & uyên bác",
+      "⚡ Phản hồi siêu tốc, vượt mong đợi"
+    ],
+    "feedbackComment": "",
+    "status": "completed"
+  },
+  {
     "id": "sess-1793611128959",
     "startedAt": "16:18:48 2/11/2026",
     "endedAt": "16:18:51 2/11/2026",

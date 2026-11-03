@@ -1,0 +1,14 @@
+Line 435: async function queryLLM({
+Line 1216: Tất cả tác phẩm đều có sẵn 2 phiên bản: **Bản Sách Điện Tử (Ebook DRM Readium LCP)** đọc trực tiếp trên Web Reader và **
+Line 1324: Em đã gửi thẻ ấn phẩm chi tiết ngay bên dưới để ${honorific} tiện tham khảo và đặt mua nhé ạ!`;
+Line 1605: answer = `Dạ, cuốn sách bán chạy hàng đầu tại AuraBook chính là "${b.title}" của tác giả ${b.author}. Tác phẩm có 2 phiê
+Line 1752: Cả hai tác phẩm đều có sẵn Bản Sách Điện Tử (Ebook DRM) và Bản Sách Giấy. Em đã hiển thị thẻ ấn phẩm của cả 2 cuốn sách 
+Line 1818: const systemPrompt = `Bạn là Aura AI, Chuyên viên Chăm sóc Khách hàng & Tư vấn Sách Thông minh của AuraBook. Giọng điệu 
+Line 1820: const llmAnswer = await queryLLM({
+Line 1833: answer = `Dạ, đúng với sự quan tâm của ${honorific} về lĩnh vực ${categoryName}, em xin gợi ý cuốn sách kinh điển "${mat
+Line 1841: answer = `Dạ, em tìm thấy ấn phẩm "${b.title}" rất phù hợp với từ khóa của ${honorific}. Sách có 2 phiên bản Sách Điện T
+Line 1880: Tất cả tác phẩm đều có sẵn Bản Ebook DRM đọc ngay và Sách Giấy giao tận nhà. Em đã hiển thị thẻ ấn phẩm bên dưới, ${hono
+Line 1887: answer = `Dạ, hai ấn phẩm được đông đảo độc giả yêu thích và đón nhận nhiều nhất tại AuraBook hiện nay là cuốn "${topBoo
+Line 1922: const llmResponse = await queryLLM({
+Line 1975: answer = `Dạ em chào ${honorific} ạ! Về chủ đề mà ${honorific} đang tìm hiểu, em xin gợi ý cuốn "${defaultBook.title}" c
+Line 1994: const llmFallback = await queryLLM({

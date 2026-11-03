@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict MKogaQyeFweAmDRaB784dQ3fat0HhJlkQ3LilzS8HDWglSuyKD3KjWYFxwgzhDN
+\restrict ZGN6mjMTjWIzIcKovGYTsCWvSQqgDQwjW7SXRzmvG2JB21kvOq9oh8bs4gHnX2R
 
 -- Dumped from database version 16.15 (Debian 16.15-1.pgdg12+2)
 -- Dumped by pg_dump version 16.15 (Debian 16.15-1.pgdg12+2)
@@ -4619,6 +4619,10 @@ COPY public.account_address (id, first_name, last_name, company_name, street_add
 15	Deanna	Wilson		0003 Grant Lakes		Port Karafort	05330	US	VT			{}	{}	f
 16	Duy	Nguyen Ba		Coc Thon, Cam Thuong	Ba Vi	HANOI	100000	VN	Hà Nội	+84362632175		{}	{}	f
 17	Quản Lý	Kho Hà Nội	Nhà sách Trực tuyến Aurabook Việt Nam	Số 12 Duy Tân, Phường Dịch Vọng Hậu, Quận Cầu Giấy		Hà Nội	100000	VN		+84912345678		{}	{}	f
+66	Phương	Nguyễn Phương		xom 4 thuong hoa		THÀNH PHỐ NINH BÌNH		VN	Ninh Bình	+84985600910		{}	{}	f
+67	Phương	Nguyễn Phương		xom 4 thuong hoa		THÀNH PHỐ NINH BÌNH		VN	Ninh Bình	+84985600910		{}	{}	f
+68	Phương	Nguyễn Phương		xom 4 thuong hoa		THÀNH PHỐ NINH BÌNH		VN	Ninh Bình	+84985600910		{}	{}	f
+69	Phương	Nguyễn Phương		xom 4 thuong hoa		THÀNH PHỐ NINH BÌNH		VN	Ninh Bình	+84985600910		{}	{}	f
 20	Duy	Nguyen		Số nhà 12 đường Đường Lâm		PHƯỜNG SƠN TÂY	12721	VN	Hà Nội	+84987844198		{}	{}	f
 21	Duy	Nguyen		Số nhà 12 đường Đường Lâm		PHƯỜNG SƠN TÂY	12721	VN	Hà Nội	+84987844198		{}	{}	f
 19	Duy	Bá		Đường La Thành		HÀ NỘI	100000	VN	Hà Nội			{}	{}	f
@@ -4634,6 +4638,9 @@ COPY public.account_address (id, first_name, last_name, company_name, street_add
 62	Duy	Nguyen Ba		Coc Thon, Cam Thuong	Ba Vi	QUẬN THANH XUÂN	100000	VN	Hà Nội	+84362632175		{}	{}	f
 63	Duy	Nguyen Ba		Coc Thon, Cam Thuong	Ba Vi	QUẬN THANH XUÂN	100000	VN	Hà Nội	+84362632175		{}	{}	f
 64	Duy	Nguyen Ba		Coc Thon, Cam Thuong	Ba Vi	QUẬN THANH XUÂN	100000	VN	Hà Nội	+84362632175		{}	{}	f
+65	Duy	Nguyen Ba		Coc Thon, Cam Thuong	Ba Vi	QUẬN THANH XUÂN	100000	VN	Hà Nội	+84362632175		{}	{}	f
+71	Duy	Nguyen Ba		Coc Thon, Cam Thuong	Ba Vi	QUẬN THANH XUÂN	100000	VN	Hà Nội	+84362632175		{}	{}	f
+70	Duy	Nguyen Ba		Coc Thon, Cam Thuong	Ba Vi	QUẬN THANH XUÂN	100000	VN	Hà Nội	+84362632175		{}	{}	f
 \.
 
 
@@ -4656,6 +4663,13 @@ COPY public.account_customerevent (id, date, type, parameters, user_id, app_id, 
 48	2026-10-17 16:29:55.438785+00	account_created	{}	7	\N	\N
 49	2026-10-19 03:46:55.611483+00	placed_order	{}	6	\N	ae9dfdec-db0e-4b7b-b315-6807c6b451f3
 50	2026-10-20 08:37:21.249438+00	placed_order	{}	6	\N	344c44a7-bfc3-438d-8f42-c14c929dfb99
+51	2026-11-02 14:52:19.581188+00	placed_order	{}	6	\N	9732c664-a666-48c5-bced-ac195abf5493
+52	2026-11-02 15:33:59.040737+00	account_created	{}	8	\N	\N
+53	2026-11-02 15:37:42.977597+00	placed_order	{}	8	\N	893840cb-6513-4595-ac6e-5241bef64629
+54	2026-11-02 15:47:42.930392+00	placed_order	{}	8	\N	e6b7aaaf-21e3-4fe3-bd72-44461ce3f9a6
+55	2026-11-02 15:50:52.574471+00	placed_order	{}	8	\N	550e0346-a261-46d3-9f17-643e7b897761
+56	2026-11-02 18:10:59.842854+00	password_reset_link_sent	{}	6	\N	\N
+57	2026-11-02 18:11:14.265135+00	password_reset	{}	6	\N	\N
 \.
 
 
@@ -5258,12 +5272,13 @@ COPY public.account_staffnotificationrecipient (id, staff_email, active, user_id
 --
 
 COPY public.account_user (id, is_superuser, email, is_staff, is_active, password, date_joined, last_login, default_billing_address_id, default_shipping_address_id, note, first_name, last_name, avatar, private_metadata, metadata, jwt_token_key, language_code, search_document, updated_at, uuid, external_reference, last_password_reset_request, is_confirmed, last_confirm_email_request, number_of_orders, search_vector, customer_type_id) FROM stdin;
-6	f	basduy05@gmail.com	f	t	pbkdf2_sha256$1000000$yi9vfvWaNeUkk3AEn2Safp$YUfrOn1icawYDjJW/57OSYvqSxkBD9kKw0nhOzf3y+g=	2026-10-09 16:16:41.021344+00	2026-11-01 18:11:56.841471+00	62	\N	\N				{}	{}	doDGkOooGOAl	en		2026-11-01 18:11:56.841702+00	2bd6eab4-6e15-469e-b039-f4fb3d599921	\N	\N	t	\N	8	'basduy05@gmail.com':1A 'gmail.com':2B	1
+1	t	basduygame@gmail.com	t	t	pbkdf2_sha256$1000000$ScyUZA9j0qj8MXbDgDyaKO$+g53Mp6JCWgtoZFTj0HbBissPHu52tL5dNuw4xNtVqo=	2026-10-08 07:25:34.670974+00	2026-11-03 01:57:28.331256+00	\N	\N	\N	Ba Duy	Nguyen		{}	{"onboarding": "{\\"onboardingExpanded\\":true,\\"stepsCompleted\\":[\\"get-started\\",\\"view-extensions\\",\\"explore-orders\\",\\"invite-staff\\"],\\"stepsExpanded\\":{}}", "sidebar_app_webhook_alert_state": "{\\"lastClickDate\\":\\"2026-11-02T20:01:51.209Z\\",\\"lastFailedAttemptDate\\":\\"2026-10-20T08:37:20.434Z\\"}"}	VaLwhMRt2eV0	en		2026-11-03 01:57:28.331467+00	5b0648de-22b5-4ffb-907b-74b2f34c54b2	\N	2026-10-09 06:57:45.902424+00	t	\N	0	'ba':1A 'basduygame@gmail.com':4A 'duy':2A 'gmail.com':5B 'nguyen':3A	1
 2	f	customer@example.com	f	t	pbkdf2_sha256$1000000$IYO0B8K4uGcCgWcN39qspD$yLCRJU/0N94fKHZwjgPphciK6IVoPZSkSEGCu4PMR4w=	2026-10-08 07:25:35.222499+00	2026-10-08 07:26:00.983257+00	\N	\N	\N	Khách	Hàng		{}	{}	tYdd7vaPyVYX	en		2026-10-08 07:26:00.983409+00	cc071f17-16e3-4a53-86e0-38eb75667270	\N	2026-10-08 08:38:18.326821+00	t	\N	0	\N	\N
 7	f	usertest@gmail.com	f	t	pbkdf2_sha256$1000000$Hxuhd4CAWC23cpsIoB49A1$BiOSslL6MFS4kFrODZK2ozIFg5E9tK2clXIM9S9SE+k=	2026-10-17 16:29:52.674969+00	2026-10-21 05:40:30.641237+00	\N	\N	\N	Duyduyy	Nguyen		{}	{}	dRJVzqobBElC	en		2026-10-21 05:40:30.641575+00	aa0d588f-14b4-44c2-9956-f46fdeb3b2bf	\N	\N	t	\N	0	'duyduyy':1A 'gmail.com':4B 'nguyen':2A 'usertest@gmail.com':3A	1
 5	f	baduynguyen210705@gmail.com	t	t		2026-10-09 15:39:38.32072+00	\N	\N	\N	\N	Duy	Nguyen Ba		{}	{}	pY0pAMPXgcuk	en		2026-10-09 15:39:38.330744+00	bfd536c5-198d-40cd-9660-c8f194f6c948	\N	\N	t	\N	0	'ba':3A 'baduynguyen210705@gmail.com':4A 'duy':1A 'gmail.com':5B 'nguyen':2A	1
-1	t	basduygame@gmail.com	t	t	pbkdf2_sha256$1000000$ScyUZA9j0qj8MXbDgDyaKO$+g53Mp6JCWgtoZFTj0HbBissPHu52tL5dNuw4xNtVqo=	2026-10-08 07:25:34.670974+00	2026-11-01 12:37:59.323452+00	\N	\N	\N	Ba Duy	Nguyen		{}	{"onboarding": "{\\"onboardingExpanded\\":true,\\"stepsCompleted\\":[\\"get-started\\",\\"view-extensions\\",\\"explore-orders\\",\\"invite-staff\\"],\\"stepsExpanded\\":{}}", "sidebar_app_webhook_alert_state": "{\\"lastClickDate\\":\\"2026-10-21T04:47:54.251Z\\",\\"lastFailedAttemptDate\\":\\"2026-10-20T08:37:20.434Z\\"}"}	VaLwhMRt2eV0	en		2026-11-01 12:37:59.323547+00	5b0648de-22b5-4ffb-907b-74b2f34c54b2	\N	2026-10-09 06:57:45.902424+00	t	\N	0	'ba':1A 'basduygame@gmail.com':4A 'duy':2A 'gmail.com':5B 'nguyen':3A	1
-4	t	admin@example.com	t	t	pbkdf2_sha256$1000000$V1U9blCavygryPagvC58lq$kysawB3NammHoZbUfvxH9LirR5vYcvGtICeGWtDwIsQ=	2026-10-09 15:04:57.722594+00	2026-10-20 04:51:10.820719+00	\N	\N	\N				{}	{"onboarding": "{\\"onboardingExpanded\\":true,\\"stepsCompleted\\":[\\"get-started\\",\\"explore-orders\\",\\"view-extensions\\"],\\"stepsExpanded\\":{}}", "sidebar_app_webhook_alert_state": "{\\"lastClickDate\\":\\"2026-10-19T13:49:51.041Z\\",\\"lastFailedAttemptDate\\":\\"\\"}"}	7VbODWADAx7b	en		2026-10-20 04:51:10.820967+00	fe882b22-6646-43b1-a551-44ab934ae13e	\N	\N	t	\N	0	\N	\N
+8	f	thilinhnguyen28042005@gmail.com	f	t	pbkdf2_sha256$1000000$fmzamh06TNeA28t0gdxae1$k2h0l64bNtQfTqTGUfjhqOtxtNesAAIwmZ7/GorP+Aw=	2026-11-02 15:33:57.83396+00	2026-11-02 18:10:01.831102+00	67	\N	\N	Phuong	Nguyen		{}	{}	XmQKNmrIvyYC	en		2026-11-02 18:10:01.831281+00	9990f073-9002-4254-9f9a-2eb95f974941	\N	\N	t	\N	3	'gmail.com':4B 'nguyen':2A 'phuong':1A 'thilinhnguyen28042005@gmail.com':3A	1
+4	t	admin@example.com	t	t	pbkdf2_sha256$1000000$V1U9blCavygryPagvC58lq$kysawB3NammHoZbUfvxH9LirR5vYcvGtICeGWtDwIsQ=	2026-10-09 15:04:57.722594+00	2026-11-02 15:14:39.971627+00	\N	\N	\N				{}	{"onboarding": "{\\"onboardingExpanded\\":true,\\"stepsCompleted\\":[\\"get-started\\",\\"explore-orders\\",\\"view-extensions\\"],\\"stepsExpanded\\":{}}", "sidebar_app_webhook_alert_state": "{\\"lastClickDate\\":\\"2026-10-19T13:49:51.041Z\\",\\"lastFailedAttemptDate\\":\\"\\"}"}	7VbODWADAx7b	en		2026-11-02 15:14:39.971835+00	fe882b22-6646-43b1-a551-44ab934ae13e	\N	\N	t	\N	0	\N	\N
+6	f	basduy05@gmail.com	f	t	pbkdf2_sha256$1000000$m0YzZu6Py7qSlO2OEtWdVp$JTW6aLM5xO1s21gFFQvY86puya4JyYUNXjmDDw5NP2Y=	2026-10-09 16:16:41.021344+00	2026-11-03 01:54:02.829334+00	62	\N	\N				{}	{}	doDGkOooGOAl	en		2026-11-03 01:54:02.829711+00	2bd6eab4-6e15-469e-b039-f4fb3d599921	\N	2026-11-02 18:10:59.53024+00	t	\N	9	'basduy05@gmail.com':1A 'gmail.com':2B	1
 \.
 
 
@@ -5273,6 +5288,7 @@ COPY public.account_user (id, is_superuser, email, is_staff, is_active, password
 
 COPY public.account_user_addresses (id, user_id, address_id) FROM stdin;
 1	6	62
+2	8	67
 \.
 
 
@@ -7446,7 +7462,8 @@ d2ec784b-df1d-465b-853a-5e94c81186ff	13	tu-duy-nhanh-va-cham	259	Chương 31. C�
 --
 
 COPY public.app_app (id, private_metadata, metadata, name, created_at, is_active, about_app, app_url, configuration_url, data_privacy, data_privacy_url, homepage_url, identifier, support_url, type, version, manifest_url, audience, is_installed, author, uuid, brand_logo_default, removed_at) FROM stdin;
-4	{}	{}	Cổng thanh toán Aurabook (VNPAY, MoMo, Thẻ Thử Nghiệm)	2026-10-20 06:20:23.053233+00	t	Cổng thanh toán tích hợp Aurabook hỗ trợ VNPAY, MoMo Sandbox và Thẻ Test	http://localhost:3000	http://localhost:3000	\N	\N	http://localhost:3000	saleor.io.dummy-payment-app	\N	thirdparty	1.0.0	\N	\N	t	\N	5a145233-3b3a-4a52-bbcf-1d03e4008e8b		\N
+5	{}	{}	System Admin App	2026-11-02 16:40:38.633829+00	t	Ứng dụng Quản trị Hệ thống Độc lập AuraBook	http://localhost:3001	http://localhost:3001	\N	\N	http://localhost:3001	aurabook.system.admin	\N	thirdparty	1.0.0	\N	\N	t	\N	c116767e-2a6d-4287-8e19-c08ad6630d50		\N
+4	{}	{}	Cổng thanh toán Aurabook (VNPAY, MoMo, Thẻ Thử Nghiệm)	2026-10-20 06:20:23.053233+00	t	Cổng thanh toán tích hợp Aurabook hỗ trợ VNPAY, MoMo Sandbox và Thẻ Test	http://localhost:3001?tab=system_config	http://localhost:3001?tab=system_config	\N	\N	http://localhost:3000	saleor.io.dummy-payment-app	\N	thirdparty	1.0.0	\N	\N	t	\N	5a145233-3b3a-4a52-bbcf-1d03e4008e8b		\N
 \.
 
 
@@ -7458,9 +7475,23 @@ COPY public.app_app_permissions (id, app_id, permission_id) FROM stdin;
 17	4	344
 18	4	291
 19	4	431
-20	4	403
-21	4	172
-22	4	111
+23	5	291
+24	5	172
+25	5	431
+26	5	111
+27	5	403
+28	5	344
+29	5	496
+30	5	5
+31	4	496
+32	4	403
+33	4	5
+34	5	390
+35	5	286
+36	4	390
+37	4	172
+38	4	286
+39	4	111
 \.
 
 
@@ -7469,6 +7500,11 @@ COPY public.app_app_permissions (id, app_id, permission_id) FROM stdin;
 --
 
 COPY public.app_appextension (id, label, url, app_id, mount, target, http_target_method, settings, identifier) FROM stdin;
+7	Cổng thanh toán MoMo	http://localhost:3001?tab=system_config&subtab=momo	4	navigation_orders	app_page	\N	{"name": "MoMo Payment Gateway", "type": "payment_gateway", "gateway": "momo"}	aurabook.extension.momo.orders
+8	Tra cứu giao dịch MoMo	http://localhost:3001?tab=orders_shipping&gateway=momo	4	order_details_more_actions	popup	\N	{"name": "MoMo Transaction Actions", "type": "action_popup", "gateway": "momo"}	aurabook.extension.momo.actions
+9	Cổng thanh toán VNPAY	http://localhost:3001?tab=system_config&subtab=vnpay	4	navigation_orders	app_page	\N	{"name": "VNPay Payment Gateway", "type": "payment_gateway", "gateway": "vnpay"}	aurabook.extension.vnpay.orders
+10	Tra cứu giao dịch VNPAY	http://localhost:3001?tab=orders_shipping&gateway=vnpay	4	order_details_more_actions	popup	\N	{"name": "VNPay Transaction Actions", "type": "action_popup", "gateway": "vnpay"}	aurabook.extension.vnpay.actions
+11	Quản trị Hệ thống	http://localhost:3001	5	navigation_pages	app_page	\N	{"name": "System Admin", "type": "admin_hub"}	aurabook.extension.system.admin
 \.
 
 
@@ -7477,6 +7513,16 @@ COPY public.app_appextension (id, label, url, app_id, mount, target, http_target
 --
 
 COPY public.app_appextension_permissions (id, appextension_id, permission_id) FROM stdin;
+7	7	344
+8	7	431
+9	8	344
+10	8	431
+11	9	344
+12	9	431
+13	10	344
+14	10	431
+15	11	403
+16	11	111
 \.
 
 
@@ -7509,8 +7555,7 @@ COPY public.app_appproblem (id, created_at, updated_at, message, key, count, is_
 --
 
 COPY public.app_apptoken (id, name, auth_token, app_id, token_last_4) FROM stdin;
-3	Dummy Payment Token	pbkdf2_sha256$1000000$hqd7H2Pc95irTK5rCZGmWg$Mop0wD0AzUFD8GzFUlzGr1XzSBB9tANver7+lg8AWvE=	4	Jubu
-4	Storefront Runtime Token	pbkdf2_sha256$1000000$srdakOYOS2Db6QrIlscfuZ$cpC5vE9wYfvX/uLn+uW+Fjypyob4v1igoAake7NmzJA=	4	YWNU
+13	System Admin & Storefront Runtime Token	pbkdf2_sha256$1000000$J0DcZjg6YsyH7fZjlIblqX$GFADlfHnBuhzAjP2LT/4ztOLmebnWalHhza9UQ1v/As=	5	YWNU
 \.
 
 
@@ -8339,11 +8384,13 @@ COPY public.checkout_checkout (created_at, last_change, email, token, user_id, b
 2026-10-09 17:26:17.390453+00	2026-10-10 15:27:30.973573+00	basduy05@gmail.com	150a02c2-0cd3-4086-9cef-71dac32498ac	6	\N	0.000	\N		22	\N	\N	\N	\N	\N	VND	VN	\N	\N	2	en	\N	2026-10-10 15:27:30.973381+00	22000.000	22000.000	0.0000	429000.000	429000.000	451000.000	451000.000	f	none	none	\N	f	0.000	0.000	\N	f	\N	\N	Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)	22000.000	t	f	2026-10-10 16:27:31.0128+00	\N	2026-10-09 17:53:46.645079+00	1be44959-29cf-485a-b92b-188906b36b02	\N	t
 2026-10-09 14:47:59.241462+00	2026-10-09 15:02:29.336914+00	basduygame@gmail.com	e5862592-5a11-40a5-a3de-c1a10e0233fd	1	\N	0.000	\N		\N	\N	\N	\N	\N	\N	VND	VN	\N	\N	2	vi	\N	2026-10-09 15:02:29.336732+00	0.000	0.000	0.0000	35000.000	35000.000	35000.000	35000.000	f	none	none	\N	f	0.000	0.000	\N	f	\N	\N	\N	0.000	t	t	2026-10-09 16:02:29.377971+00	\N	2026-10-09 14:47:59.531016+00	\N	\N	t
 2026-11-01 16:03:00.759101+00	2026-11-01 16:03:01.46077+00	\N	f1bbda1e-042b-4538-ad80-a3e23e605add	\N	\N	0.000	\N		\N	\N	\N	\N	\N	\N	VND	VN	\N	\N	2	vi	\N	2026-11-01 16:03:01.460256+00	0.000	0.000	0.0000	0.000	0.000	0.000	0.000	f	none	none	\N	f	69000.000	69000.000	\N	f	\N	\N	\N	0.000	t	t	2026-11-01 17:03:01.534938+00	\N	\N	\N	\N	t
+2026-11-02 19:37:16.482518+00	2026-11-03 01:55:52.456138+00	basduy05@gmail.com	aedec5c1-f213-4487-90fb-4ba7fd9c43d0	6	71	0.000	\N		70	\N	\N	\N	\N	\N	VND	VN	\N	\N	2	vi	\N	2026-11-03 02:55:52.572563+00	16500.000	16500.000	0.0000	159000.000	159000.000	175500.000	175500.000	f	none	none	\N	f	159000.000	175500.000	\N	f	\N	\N	Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Nội thành HN)	16500.000	f	f	2026-11-03 02:55:52.572563+00	\N	2026-11-03 01:55:52.429052+00	a056be9b-b4fd-4350-9673-b413ff0db328	\N	t
 2026-11-01 16:19:23.981084+00	2026-11-01 16:19:24.254469+00	\N	edc6c7bd-2955-4336-9109-7f6379ee9b7f	\N	\N	0.000	\N		\N	\N	\N	\N	\N	\N	VND	VN	\N	\N	2	vi	\N	2026-11-01 16:19:24.254242+00	0.000	0.000	0.0000	0.000	0.000	0.000	0.000	f	none	none	\N	f	59000.000	59000.000	\N	f	\N	\N	\N	0.000	t	t	2026-11-01 17:19:24.320545+00	\N	\N	\N	\N	t
 2026-11-01 17:32:28.263971+00	2026-11-01 17:32:33.324082+00	basduy05@gmail.com	e696ffab-bf4c-4aec-a694-f95f001ce78d	6	\N	0.000	\N		\N	\N	\N	\N	\N	\N	VND	VN	\N	\N	2	vi	\N	2026-11-01 17:32:33.323838+00	0.000	0.000	0.0000	59000.000	59000.000	59000.000	59000.000	f	none	none	\N	f	0.000	0.000	\N	f	\N	\N	\N	0.000	t	t	2026-11-01 18:32:33.400976+00	\N	\N	\N	\N	t
 2026-10-10 17:37:34.922182+00	2026-10-10 17:37:50.274092+00	test@aurabook.vn	d60bff3a-3412-43e8-95b9-815817d747f7	\N	\N	0.000	\N		\N	\N	\N	\N	\N	\N	VND	VN	\N	\N	2	en	\N	2026-10-10 17:37:50.273959+00	0.000	0.000	0.0000	0.000	0.000	0.000	0.000	f	none	none	\N	f	31906000.000	31906000.000	\N	f	\N	\N	\N	0.000	t	t	2026-10-10 17:37:50.273959+00	\N	2026-10-10 17:37:50.248031+00	\N	\N	t
 2026-10-10 17:37:00.875369+00	2026-10-10 17:37:19.709966+00	test@aurabook.vn	37814d9b-6b5d-4a7c-8144-e83370a742cb	\N	\N	0.000	\N		\N	\N	\N	\N	\N	\N	VND	VN	\N	\N	2	en	\N	2026-10-10 17:37:19.709807+00	0.000	0.000	0.0000	0.000	0.000	0.000	0.000	f	none	none	\N	f	0.000	0.000	\N	f	\N	\N	\N	0.000	t	t	2026-10-10 17:37:19.709807+00	\N	2026-10-10 17:37:19.02876+00	\N	\N	t
 2026-10-20 06:22:55.340357+00	2026-10-20 06:22:56.085751+00	usertest@gmail.com	9e544775-7d7f-4c53-b4bc-d69338b0b16a	7	\N	0.000	\N		\N	\N	\N	\N	\N	\N	VND	VN	\N	\N	2	vi	\N	2026-10-20 09:31:58.754851+00	0.000	0.000	0.0000	49000.000	49000.000	49000.000	49000.000	f	none	none	\N	f	49000.000	49000.000	\N	f	\N	\N	\N	0.000	t	t	2026-10-20 09:31:58.754851+00	\N	\N	\N	\N	t
+2026-11-02 19:25:49.214091+00	2026-11-02 19:25:52.141389+00	basduy05@gmail.com	46efdae0-dcb4-4ef4-8e82-1d84d39b1649	6	\N	0.000	\N		\N	\N	\N	\N	\N	\N	VND	VN	\N	\N	2	vi	\N	2026-11-02 19:25:52.140975+00	0.000	0.000	0.0000	79000.000	79000.000	79000.000	79000.000	f	none	none	\N	f	0.000	0.000	\N	f	\N	\N	\N	0.000	t	t	2026-11-02 20:25:52.201957+00	\N	\N	\N	\N	t
 2026-11-01 16:03:12.905481+00	2026-11-01 16:03:13.423087+00	\N	7ca94037-c1c2-4280-9a14-d03af90c71cc	\N	\N	0.000	\N		\N	\N	\N	\N	\N	\N	VND	VN	\N	\N	2	vi	\N	2026-11-01 16:03:13.422856+00	0.000	0.000	0.0000	0.000	0.000	0.000	0.000	f	none	none	\N	f	135000.000	135000.000	\N	f	\N	\N	\N	0.000	t	t	2026-11-01 17:03:13.514672+00	\N	2026-11-01 16:03:13.380738+00	\N	\N	t
 2026-11-01 16:19:31.26921+00	2026-11-01 16:19:31.476395+00	\N	793b3378-83c2-4630-b255-ef0f5e707680	\N	\N	0.000	\N		\N	\N	\N	\N	\N	\N	VND	VN	\N	\N	2	vi	\N	2026-11-01 16:19:31.476189+00	0.000	0.000	0.0000	0.000	0.000	0.000	0.000	f	none	none	\N	f	118000.000	118000.000	\N	f	\N	\N	\N	0.000	t	t	2026-11-01 17:19:31.535562+00	\N	2026-11-01 16:19:31.447056+00	\N	\N	t
 2026-10-10 17:37:50.407912+00	2026-10-10 17:38:06.081431+00	test@aurabook.vn	e07898d3-57a6-4a37-90e9-616789e3f6f8	\N	\N	0.000	\N		\N	\N	\N	\N	\N	\N	USD	US	\N	\N	1	en	\N	2026-10-10 17:38:06.081279+00	0.000	0.000	0.0000	0.000	0.000	0.000	0.000	f	none	none	\N	f	1310.400	1310.400	\N	f	\N	\N	\N	0.000	t	t	2026-10-10 17:38:06.081279+00	\N	2026-10-10 17:38:06.055289+00	\N	\N	t
@@ -8373,6 +8420,9 @@ c560480c-5e1c-4b6b-a89e-26c9612a3a10	\N	29	TNT	\N	66.190	VND	\N	\N	{}	{}	t		f	t	
 69a645d1-1e19-4b5f-b3d2-2cd19093d585	\N	9	China Post	\N	80.940	VND	\N	\N	{}	{}	t		f	t	2026-10-08 09:21:50.498028+00	2026-10-08 09:21:50.498032+00	\N	\N	{}	{}	f34a5a83-8d33-492a-aef3-442807c5a817
 1be44959-29cf-485a-b92b-188906b36b02	\N	40	Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)	\N	22000.000	VND	4	2	{}	{}	t		f	t	2026-10-09 17:43:35.961265+00	2026-10-09 17:43:36.190471+00	\N	\N	{}	{}	150a02c2-0cd3-4086-9cef-71dac32498ac
 f2eddaf0-4482-4b58-9032-74ae0374502b	\N	41	Giao Hàng Nhanh (GHN) - Hỏa Tốc (Nội thành HN)	\N	35000.000	VND	2	1	{}	{}	t		f	t	2026-10-09 17:34:38.925732+00	2026-10-09 17:43:36.190522+00	\N	\N	{}	{}	150a02c2-0cd3-4086-9cef-71dac32498ac
+a056be9b-b4fd-4350-9673-b413ff0db328	\N	47	Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Nội thành HN)	\N	16500.000	VND	2	1	{}	{}	t		f	t	2026-11-02 19:37:39.811092+00	2026-11-03 01:55:49.116675+00	\N	\N	{}	{}	aedec5c1-f213-4487-90fb-4ba7fd9c43d0
+4fa549c4-a799-4b2f-be68-a356287c4e14	\N	48	Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)	\N	22000.000	VND	4	2	{}	{}	t		f	t	2026-11-02 19:37:39.811222+00	2026-11-03 01:55:49.116714+00	\N	\N	{}	{}	aedec5c1-f213-4487-90fb-4ba7fd9c43d0
+6b134f96-280e-4e0b-8346-df81a4460465	\N	49	Giao Hàng Nhanh (GHN) - Hỏa Tốc (Nội thành HN)	\N	35000.000	VND	1	1	{}	{}	t		f	t	2026-11-02 19:37:39.811329+00	2026-11-03 01:55:49.116747+00	\N	\N	{}	{}	aedec5c1-f213-4487-90fb-4ba7fd9c43d0
 \.
 
 
@@ -8381,6 +8431,7 @@ f2eddaf0-4482-4b58-9032-74ae0374502b	\N	41	Giao Hàng Nhanh (GHN) - Hỏa Tốc 
 --
 
 COPY public.checkout_checkoutline (quantity, checkout_id, variant_id, price_override, created_at, old_id, id, metadata, private_metadata, currency, tax_rate, total_price_gross_amount, total_price_net_amount, is_gift, undiscounted_unit_price_amount, prior_unit_price_amount, price_override_reason) FROM stdin;
+1	aedec5c1-f213-4487-90fb-4ba7fd9c43d0	69	\N	2026-11-02 19:37:20.293619+00	\N	095fbed1-1589-4d6a-8f25-a0b73a9f88a7	{}	{}	VND	0.0000	159000.000	159000.000	f	159000.000	\N	\N
 1	9e544775-7d7f-4c53-b4bc-d69338b0b16a	52	\N	2026-10-20 06:22:55.948436+00	\N	f9bda570-2014-4c1a-a8a7-953c64d8c93c	{}	{}	VND	0.0000	49000.000	49000.000	f	49000.000	\N	\N
 1	f1bbda1e-042b-4538-ad80-a3e23e605add	50	\N	2026-11-01 16:03:01.37503+00	\N	ac6fc135-d57f-431e-bf9b-26345ee9cb5e	{}	{}	VND	0.0000	0.000	0.000	f	69000.000	\N	\N
 1	7ca94037-c1c2-4280-9a14-d03af90c71cc	51	\N	2026-11-01 16:03:13.352403+00	\N	7e2a9fc4-9c17-44b4-aa60-4e7e59f104e0	{}	{}	VND	0.0000	0.000	0.000	f	135000.000	\N	\N
@@ -8407,6 +8458,8 @@ COPY public.checkout_checkoutmetadata (id, private_metadata, metadata, checkout_
 20	{}	{"commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-11-01T16:19:23.929Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	edc6c7bd-2955-4336-9109-7f6379ee9b7f
 21	{}	{"commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-11-01T16:19:31.215Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	793b3378-83c2-4630-b255-ef0f5e707680
 22	{}	{"commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-11-01T17:32:27.923Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	e696ffab-bf4c-4aec-a694-f95f001ce78d
+27	{}	{"commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-11-02T19:25:49.001Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	46efdae0-dcb4-4ef4-8e82-1d84d39b1649
+28	{}	{"commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-11-02T19:37:16.355Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	aedec5c1-f213-4487-90fb-4ba7fd9c43d0
 \.
 
 
@@ -10331,13 +10384,16 @@ COPY public.drm_readingprogress (id, user_email, product_id, current_page, total
 7	basduy05@gmail.com	bon-thoa-uoc	1	158	0.6	2026-10-18 13:33:54.331956+00
 5	basduy05@gmail.com	sample-book	1	2	50	2026-10-15 09:02:35.394978+00
 12	usertest@gmail.com	cay-cam-ngot-cua-toi	3	16	18.8	2026-10-20 12:23:13.851995+00
+13	basduy05@gmail.com	cay-cam-ngot-cua-toi	1	244	0.4	2026-11-02 14:30:34.516017+00
 4	basduy05@gmail.com	enterprise-cloud-on-premises-tales	4	8	50	2026-10-14 09:21:31.009915+00
+14	basduy05@gmail.com	10-dieu-tao-nen-so-phan	1	8	12.5	2026-11-02 15:27:51.571285+00
 9	usertest@gmail.com	dac-nhan-tam	12	352	3.4	2026-10-17 18:04:24.066419+00
 11	usertest@gmail.com	sapiens-luoc-su-loai-nguoi	1	9	11.1	2026-10-19 16:29:02.871636+00
-13	basduy05@gmail.com	cay-cam-ngot-cua-toi	8	244	3.3	2026-11-01 15:42:45.002613+00
 8	basduy05@gmail.com	tri-tue-do-thai	15	16	93.8	2026-10-15 09:56:49.173237+00
 6	basduy05@gmail.com	dac-nhan-tam	5	352	1.4	2026-10-20 01:04:44.204108+00
+15	thilinhnguyen28042005@gmail.com	chien-tranh-tien-te-tap-1	1	800	0.1	2026-11-02 15:42:07.925439+00
 10	basduy05@gmail.com	sapiens-luoc-su-loai-nguoi	40	938	4.3	2026-10-19 14:23:37.550602+00
+16	thilinhnguyen28042005@gmail.com	bon-thoa-uoc	16	158	10.1	2026-11-02 17:33:53.937916+00
 \.
 
 
@@ -10445,6 +10501,7 @@ COPY public.order_fulfillment (id, tracking_number, created_at, fulfillment_orde
 7		2026-10-09 17:19:45.90128+00	2	fulfilled	{}	{}	\N	\N	a1b10dd0-cd8c-467f-abdf-b2b40a22721a		\N
 8	GHN83921007VN	2026-10-10 16:11:24.163947+00	1	fulfilled	{"origin": "Kho Tổng Aurabook Hà Nội", "status": "ready_to_pick", "carrier": "Giao Hàng Nhanh (GHN)", "tracking_code": "GHN83921007VN", "status_display": "Đang giao hàng"}	{}	\N	\N	0a7b5191-5bec-490c-9fd8-aa550e6c80bf		\N
 9	GHN83921009VN	2026-10-12 11:38:17.311297+00	1	fulfilled	{"origin": "Kho Tổng Aurabook Hà Nội", "status": "storing", "carrier": "Giao Hàng Nhanh (GHN)", "tracking_code": "GHN83921009VN", "status_display": "Đang giao hàng"}	{}	\N	\N	88bda358-3d7a-47d3-8b0e-4cf935f8ab2a		\N
+11		2026-11-02 15:38:24.755279+00	1	fulfilled	{}	{}	\N	\N	893840cb-6513-4595-ac6e-5241bef64629		\N
 \.
 
 
@@ -10461,6 +10518,8 @@ COPY public.order_fulfillmentline (id, quantity, fulfillment_id, stock_id, order
 6	1	7	\N	1e0845bc-3a57-4f9a-b84f-39d99d53c83f		\N
 7	1	8	\N	d6c9e6b8-2b7b-4faa-8545-a7049efdf4bb		\N
 8	1	9	\N	f665a9a2-b105-4b84-93bb-e026083aa408		\N
+9	1	11	\N	387d02e3-07c8-4cf5-a093-0b503296cbb0		\N
+10	1	11	\N	69cff069-0e82-4972-baed-3109534ad0be		\N
 \.
 
 
@@ -10476,11 +10535,15 @@ COPY public.order_order (created_at, tracking_client_id, user_email, id, billing
 2026-10-09 17:10:23.901739+00		basduy05@gmail.com	9c3af7bb-cbcf-48ad-bffb-2694a0058b4b	21	20	6	607000.000	\N	vi	22000.000	607000.000	22000.000	fulfilled	Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)	40	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1791565822882, Thẻ: 4242)	3000	b7528b83-168f-4f49-802f-f80e72fc5c17	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "ghn_status": "delivered", "ghn_carrier": "Giao Hàng Nhanh (GHN)", "ghn_service": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)", "delivered_at": "2026-10-09T17:13:34.499571+00:00", "ghn_updated_at": "2026-10-09T17:13:34.499571+00:00", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1791565822882", "delivery_status": "completed", "payment_gateway": "test-card", "ghn_tracking_code": "GHN83921005VN", "ghn_origin_address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu, Cầu Giấy, Hà Nội", "ghn_status_display": "Giao hàng thành công (Completed)", "payment_recorded_at": "2026-10-09T17:10:22.995Z", "ghn_origin_warehouse": "Kho Tổng Aurabook Hà Nội", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-09T17:03:59.345Z\\",\\"consent\\":\\"unknown\\"}", "delivery_status_display": "Đã hoàn tất (Completed)", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	607000.000	607000.000	607000.000	checkout	\N	\N		2026-10-09 17:13:34.499834+00	f	5	\N	0.000	full	full	'+84987844198':41B,58B '12':29B,46B '12721':40B,57B '1791565822882':22B,68 '328223582':59C '4242':24B '5':1A 'basduy05@gmail.com':3A 'card':16B,21B,67 'credit':14B 'debit':15B 'duy':25B,42B 'gd':19B 'gmail.com':4B 'ha':35B,52B 'l':62C 'lam':32B,49B 'ma':18B 'monospace':60C,63C 'nghiem':13B 'nguyen':26B,43B 'nha':28B,45B 'noi':36B,53B 'phuong':5B,37B,54B 'so':27B,44B 'son':38B,55B 't3jkzxi6owmzywy3ymity2jjzi00ogfklwjmzmitmjy5ngewmdu4yjri':2A 'tay':39B,56B 'tee':61C,64C 'test':17B,20B,66 'thanh':7B,10B 'the':9B,23B 'thu':12B 'thuc':6B 'toan':8B,11B 'vhjhbnnhy3rpb25jdgvtojyynwqwywnllthlotutngjhzs1izwu2lwu1mzc5yzk2owq4oq':65 'vietnam':33B,50B 'vn':34B,51B 'đuong':30B,31B,47B,48B	f	f	22000.000	\N	{}		{}	\N	\N	\N	585000.000	585000.000	\N	22000.000	\N	\N	1	{}	{}
 2026-10-09 17:18:51.383407+00		basduy05@gmail.com	a1b10dd0-cd8c-467f-abdf-b2b40a22721a	19	18	6	885000.000	\N	vi	35000.000	885000.000	35000.000	fulfilled	Giao Hàng Nhanh (GHN) - Hỏa Tốc (Nội thành HN)	41	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1791562851352, Thẻ: 4242)	1000	a43c9037-36fe-4a64-a158-0bd8dba8cf94	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "ghn_status": "delivered", "ghn_carrier": "Giao Hàng Nhanh (GHN)", "ghn_service": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)", "delivered_at": "2026-10-09T17:19:38.140647+00:00", "ghn_updated_at": "2026-10-09T17:19:38.140647+00:00", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1791562851352", "delivery_status": "completed", "payment_gateway": "test-card", "ghn_tracking_code": "GHN83921006VN", "ghn_origin_address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu, Cầu Giấy, Hà Nội", "ghn_status_display": "Giao hàng thành công (Completed)", "payment_recorded_at": "2026-10-09T16:20:51.587Z", "ghn_origin_warehouse": "Kho Tổng Aurabook Hà Nội", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-09T16:19:48.567Z\\",\\"consent\\":\\"unknown\\"}", "delivery_status_display": "Đã hoàn tất (Completed)", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	885000.000	885000.000	885000.000	checkout	\N	\N		2026-10-09 17:19:38.141072+00	f	6	\N	0.000	full	full	'100000':36B,48B '118223583':49C '1791562851352':22B '41':54C '420':53C,58C '4242':24B '6':1A 'ba':26B,38B 'balance':52C,57C 'basduy05@gmail.com':3A 'card':16B,21B 'credit':14B 'debit':15B 'duy':25B,37B 'gd':19B 'gmail.com':4B 'ha':32B,34B,44B,46B 'la':28B,40B 'ma':18B 'nghiem':13B 'noi':33B,35B,45B,47B 'paul':50C,55C 'phuong':5B 's':51C,56C 't3jkzxi6ytfimtbkzdaty2q4yy00njdmlwfizgytyjjindbhmji3mjfh':2A 'test':17B,20B 'thanh':7B,10B,29B,41B 'the':9B,23B 'thu':12B 'thuc':6B 'toan':8B,11B 'vhjhbnnhy3rpb25jdgvtoju0ngmymmziltaxyzqtndy1oc05ndnjlwjhnti4ngrkywu1nw':59 'vietnam':30B,42B 'vn':31B,43B 'đuong':27B,39B	f	f	35000.000	\N	{}		{}	\N	\N	\N	850000.000	850000.000	\N	35000.000	\N	\N	1	{}	{}
 2026-10-09 17:40:10.684393+00		basduy05@gmail.com	0a7b5191-5bec-490c-9fd8-aa550e6c80bf	24	23	6	217000.000	\N	vi	22000.000	217000.000	22000.000	fulfilled	Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)	40	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1791567608757, Thẻ: 4242)	1000	f602bbc7-5c2a-4c78-a9cc-8cec78703c8e	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "ghn_status": "ready_to_pick", "ghn_carrier": "Giao Hàng Nhanh (GHN)", "ghn_service": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)", "delivered_at": "2026-10-10T16:11:28.372904+00:00", "ghn_updated_at": "2026-10-10T16:11:37.822881+00:00", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1791567608757", "delivery_status": "delivering", "payment_gateway": "test-card", "ghn_tracking_code": "GHN83921007VN", "ghn_origin_address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu, Cầu Giấy, Hà Nội", "ghn_status_display": "Đang giao hàng", "payment_recorded_at": "2026-10-09T17:40:09.063Z", "ghn_origin_warehouse": "Kho Tổng Aurabook Hà Nội", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-09T17:36:37.616Z\\",\\"consent\\":\\"unknown\\"}", "delivery_status_display": "Đang giao hàng", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	217000.000	217000.000	217000.000	checkout	\N	\N		2026-10-10 16:11:37.823073+00	f	7	\N	0.000	full	full	'+84912345678':34B,44B '123':27B,37B '1791567608757':22B,54 '328223580':45C '4242':24B '7':1A 'basduy05@gmail.com':3A 'card':16B,21B,53 'credit':14B 'debit':15B 'duy':25B,35B 'gd':19B 'gmail.com':4B 'ha':32B,42B 'le':28B,38B 'loi':29B,39B 'ma':18B 'monospace':46C,49C 'nghiem':13B 'nguyen':26B,36B 'noi':33B,43B 'phuong':5B 's':48C 't3jkzxi6mge3yjuxotetnwjlyy00otbjltlmzdgtywe1ntblnmm4mgjm':2A 'tee':47C,50C 'test':17B,20B,52 'thanh':7B,10B 'the':9B,23B 'thu':12B 'thuc':6B 'toan':8B,11B 'vhjhbnnhy3rpb25jdgvtojnmmjdlmwu5lwuwmgutndm0ni1inmrmlty1zdlhyjq1zgy3oa':51 'vietnam':30B,40B 'vn':31B,41B	f	f	22000.000	\N	{}		{}	\N	\N	\N	195000.000	195000.000	\N	22000.000	\N	\N	1	{}	{}
-2026-10-20 08:37:21.022302+00		basduy05@gmail.com	344c44a7-bfc3-438d-8f42-c14c929dfb99	64	\N	6	55000.000	\N	vi	0.000	55000.000	0.000	unfulfilled	\N	\N	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1792485439358, Thẻ: 4242)	0.5	9dd259eb-5ba2-4eac-96c3-4f72bda5af4f	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1792485439358", "payment_gateway": "test-card", "payment_recorded_at": "2026-10-20T08:37:19.531Z", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-20T06:01:17.881Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	55000.000	55000.000	55000.000	checkout	\N	\N		2026-10-20 08:37:21.160681+00	f	44	\N	0.000	full	full	'+84362632175':42B '100000':41B '1792485439358':22B,76 '4242':24B '44':1A 'ba':27B,39B 'ban':58C 'basduy05@gmail.com':3A 'cam':30B,46C,49C,64C 'card':16B,21B,75 'cay':45C,48C,63C 'coc':28B 'credit':14B 'cua':51C,66C 'de':55C,70C 'debit':15B 'duy':25B 'eb':44C 'eb-cay-cam-ngot':43C 'ebook':59C 'gd':19B 'gmail.com':4B 'ha':34B 'laranja':56C,71C 'lima':57C,72C 'ma':18B 'meu':53C,68C 'nghiem':13B 'ngot':47C,50C,65C 'nguyen':26B 'noi':35B 'pe':54C,69C 'phuong':5B 'quan':36B 'sach':60C 't3jkzxi6mzq0yzq0ytctymzjmy00mzhklthmndityze0yzkyowrmyjk5':2A 'test':17B,20B,74 'thanh':7B,10B,37B 'the':9B,23B 'thon':29B 'thu':12B 'thuc':6B 'thuong':31B 'toan':8B,11B 'toi':52C,67C 'tu':62C 'vhjhbnnhy3rpb25jdgvtomuzmmjjytu0ltyzntitndy0zi1imtq2lwu5nzvmntrmnmexna':73 'vi':40B 'vietnam':32B 'vn':33B 'xuan':38B 'đien':61C	f	f	0.000	\N	{}	\N	{}	\N	\N	\N	55000.000	55000.000	\N	0.000	\N	\N	1	{}	{}
-2026-10-10 17:32:41.358659+00		basduy05@gmail.com	b6582232-9eba-49a2-afcc-807bc51d5710	26	25	6	89000.000	\N	vi	22000.000	89000.000	22000.000	unfulfilled	Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)	48	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1791653560147, Thẻ: 4242)	200	5d0d4284-7dd0-478f-bcdf-5e4ad276eb35	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1791653560147", "payment_gateway": "test-card", "payment_recorded_at": "2026-10-10T17:32:40.417Z", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-10T16:47:54.647Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	89000.000	89000.000	89000.000	checkout	\N	\N		2026-10-10 17:32:41.448774+00	f	8	\N	0.000	full	full	'+84362632175':40B,56B '12':29B,45B '1791653560147':22B,70 '4242':24B '8':1A 'apple':57C,60C 'ba':38B,54B 'basduy05@gmail.com':3A 'bean':62C,65C 'cam':31B,47B 'card':16B,21B,69 'credit':14B 'debit':15B 'duy':25B,41B 'gd':19B 'gmail.com':4B 'ha':35B,51B 'huyen':37B,53B 'juice':58C,61C,63C,66C 'ma':18B 'nghiem':13B 'nguyen':26B,42B 'nha':28B,44B 'noi':36B,52B 'phuong':5B 'so':27B,43B 't3jkzxi6yjy1odiymzitowviys00oweylwfmy2mtoda3ymm1mwq1nzew':2A 'test':17B,20B,68 'thanh':7B,10B 'the':9B,23B 'thu':12B 'thuc':6B 'thuong':32B,48B 'toan':8B,11B 'uhjvzhvjdfzhcmlhbnq6mzg0':59C 'uhjvzhvjdfzhcmlhbnq6mzg1':64C 'vhjhbnnhy3rpb25jdgvtojhiotbhzwjklwixywmtndu2zs05mzfmltq3mjbmmdrmymzhyq':67 'vi':39B,55B 'vietnam':33B,49B 'vn':34B,50B 'đuong':30B,46B	f	f	22000.000	\N	{}		{}	\N	\N	\N	67000.000	67000.000	\N	22000.000	\N	\N	2	{}	{}
 2026-10-10 18:05:05.144987+00		basduy05@gmail.com	88bda358-3d7a-47d3-8b0e-4cf935f8ab2a	28	27	6	242000.000	\N	vi	22000.000	242000.000	22000.000	unfulfilled	Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)	48	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1791655504140, Thẻ: 4242)	1000	1799fe63-77ff-4aaa-9463-ffa87dde23ef	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "ghn_status": "storing", "ghn_carrier": "Giao Hàng Nhanh (GHN)", "ghn_service": "Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)", "ghn_updated_at": "2026-10-12T11:42:33.246175+00:00", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1791655504140", "delivery_status": "delivering", "payment_gateway": "test-card", "ghn_tracking_code": "GHN83921009VN", "ghn_origin_address": "Số 12 Duy Tân, Phường Dịch Vọng Hậu, Cầu Giấy, Hà Nội", "ghn_status_display": "Đang giao hàng", "payment_recorded_at": "2026-10-10T18:05:04.332Z", "ghn_origin_warehouse": "Kho Tổng Aurabook Hà Nội", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-10T17:51:42.644Z\\",\\"consent\\":\\"unknown\\"}", "delivery_status_display": "Đang giao hàng", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	242000.000	242000.000	242000.000	checkout	\N	\N		2026-10-12 11:42:33.24638+00	f	9	\N	0.000	full	full	'+84912345678':39B,54B '100000':38B,53B '1791655504140':22B,66 '218223580':55C '4242':24B '9':1A 'ba':34B,49B 'bas':26B,41B 'basduy05@gmail.com':3A 'blue':56C,60C 'cam':36B,51B 'card':16B,21B,65 'coc':27B,42B 'credit':14B 'debit':15B 'duy':25B,40B 'gd':19B 'gmail.com':4B 'ha':31B,46B 'huyen':33B,48B 'm':59C 'ma':18B 'nghiem':13B 'noi':32B,47B 'phuong':5B 'polygon':57C,61C 'shirt':58C,62C 't3jkzxi6odhizgezntgtm2q3ys00n2qzlthimgutngnmotm1zjhhyjjh':2A 'test':17B,20B,64 'thanh':7B,10B 'the':9B,23B 'thon':28B,43B 'thu':12B 'thuc':6B 'thuong':37B,52B 'toan':8B,11B 'vhjhbnnhy3rpb25jdgvtojqynjhjntk2lta0y2etngnhzi1hotbiltc0yte2mjm0ymq3na':63 'vi':35B,50B 'vietnam':29B,44B 'vn':30B,45B	f	f	22000.000	\N	{}		{}	\N	\N	\N	220000.000	220000.000	\N	22000.000	\N	\N	1	{}	{}
-2026-10-19 03:46:55.467203+00		basduy05@gmail.com	ae9dfdec-db0e-4b7b-b315-6807c6b451f3	63	\N	6	89000.000	\N	vi	0.000	89000.000	0.000	unfulfilled	\N	\N	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1792381614187, Thẻ: 4242)	0.5	aa9ba21c-c530-4cfb-995e-1dea0c906dcf	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1792381614187", "payment_gateway": "test-card", "payment_recorded_at": "2026-10-19T03:46:54.316Z", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-19T03:46:43.290Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	89000.000	89000.000	89000.000	checkout	\N	\N		2026-10-19 03:46:55.574917+00	f	43	\N	0.000	full	full	'+84362632175':42B '100000':41B '1792381614187':22B,74 '4242':24B '43':1A 'a':51C,66C 'ba':27B,39B 'ban':56C 'basduy05@gmail.com':3A 'brief':52C,67C 'cam':30B 'card':16B,21B,73 'coc':28B 'credit':14B 'debit':15B 'duy':25B 'eb':44C 'eb-sapiens':43C 'ebook':57C 'gd':19B 'gmail.com':4B 'ha':34B 'history':53C,68C 'humankind':55C,70C 'loai':49C,64C 'luoc':47C,62C 'ma':18B 'nghiem':13B 'nguoi':50C,65C 'nguyen':26B 'noi':35B 'of':54C,69C 'phuong':5B 'quan':36B 'sach':58C 'sapiens':45C,46C,61C 'su':48C,63C 't3jkzxi6ywu5zgzkzwmtzgiwzs00yjdilwizmtutnjgwn2m2yjq1mwyz':2A 'test':17B,20B,72 'thanh':7B,10B,37B 'the':9B,23B 'thon':29B 'thu':12B 'thuc':6B 'thuong':31B 'toan':8B,11B 'tu':60C 'vhjhbnnhy3rpb25jdgvtojq4mdkyndk5ltkxztctndawzc05yjc0lwrhmwuzm2e1zmzhmq':71 'vi':40B 'vietnam':32B 'vn':33B 'xuan':38B 'đien':59C	f	f	0.000	\N	{}	\N	{}	\N	\N	\N	89000.000	89000.000	\N	0.000	\N	\N	1	{}	{}
 2026-10-15 10:15:14.704484+00		basduy05@gmail.com	acad3bf8-42f4-41f4-be29-2a0ac1c5701b	61	\N	6	59000.000	\N	vi	0.000	59000.000	0.000	unfulfilled	\N	\N	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1792059312167, Thẻ: 4242)	0.5	48bf9719-a71b-49d4-a03f-8e2e8beff35b	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1792059312167", "payment_gateway": "test-card", "payment_recorded_at": "2026-10-15T10:15:12.582Z", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-15T09:11:07.791Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	59000.000	59000.000	59000.000	checkout	\N	\N		2026-10-15 10:15:14.884768+00	f	42	\N	0.000	full	full	'+84362632175':42B '100000':41B '1792059312167':22B,76 '42':1A '4242':24B 'and':55C,70C 'ba':27B,39B 'ban':58C 'basduy05@gmail.com':3A 'cam':30B 'card':16B,21B,75 'coc':28B 'credit':14B 'dac':45C 'debit':15B 'duy':25B 'eb':44C 'eb-dac-nhan-tam':43C 'ebook':59C 'friends':54C,69C 'gd':19B 'gmail.com':4B 'ha':34B 'how':51C,66C 'influence':56C,71C 'ma':18B 'nghiem':13B 'nguyen':26B 'nhan':46C,49C,64C 'noi':35B 'people':57C,72C 'phuong':5B 'quan':36B 'sach':60C 't3jkzxi6ywnhzdnizjgtndjmnc00mwy0lwjlmjktmmewywmxyzu3mdfi':2A 'tam':47C,50C,65C 'test':17B,20B,74 'thanh':7B,10B,37B 'the':9B,23B 'thon':29B 'thu':12B 'thuc':6B 'thuong':31B 'to':52C,67C 'toan':8B,11B 'tu':62C 'vhjhbnnhy3rpb25jdgvtojuwzmi4m2fhlteymgmtndjioc04zgi3ltjkyjfkzje0yzk0za':73 'vi':40B 'vietnam':32B 'vn':33B 'win':53C,68C 'xuan':38B 'đac':48C,63C 'đien':61C	f	f	0.000	\N	{}	\N	{}	\N	\N	\N	59000.000	59000.000	\N	0.000	\N	\N	1	{}	{}
+2026-10-19 03:46:55.467203+00		basduy05@gmail.com	ae9dfdec-db0e-4b7b-b315-6807c6b451f3	63	\N	6	89000.000	\N	vi	0.000	89000.000	0.000	canceled	\N	\N	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1792381614187, Thẻ: 4242)	0.5	aa9ba21c-c530-4cfb-995e-1dea0c906dcf	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1792381614187", "payment_gateway": "test-card", "payment_recorded_at": "2026-10-19T03:46:54.316Z", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-19T03:46:43.290Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	89000.000	89000.000	89000.000	checkout	\N	\N		2026-11-02 17:08:05.162214+00	f	43	\N	0.000	full	full	'+84362632175':42B '100000':41B '1792381614187':22B,74 '4242':24B '43':1A 'a':51C,66C 'ba':27B,39B 'ban':56C 'basduy05@gmail.com':3A 'brief':52C,67C 'cam':30B 'card':16B,21B,73 'coc':28B 'credit':14B 'debit':15B 'duy':25B 'eb':44C 'eb-sapiens':43C 'ebook':57C 'gd':19B 'gmail.com':4B 'ha':34B 'history':53C,68C 'humankind':55C,70C 'loai':49C,64C 'luoc':47C,62C 'ma':18B 'nghiem':13B 'nguoi':50C,65C 'nguyen':26B 'noi':35B 'of':54C,69C 'phuong':5B 'quan':36B 'sach':58C 'sapiens':45C,46C,61C 'su':48C,63C 't3jkzxi6ywu5zgzkzwmtzgiwzs00yjdilwizmtutnjgwn2m2yjq1mwyz':2A 'test':17B,20B,72 'thanh':7B,10B,37B 'the':9B,23B 'thon':29B 'thu':12B 'thuc':6B 'thuong':31B 'toan':8B,11B 'tu':60C 'vhjhbnnhy3rpb25jdgvtojq4mdkyndk5ltkxztctndawzc05yjc0lwrhmwuzm2e1zmzhmq':71 'vi':40B 'vietnam':32B 'vn':33B 'xuan':38B 'đien':59C	f	f	0.000	\N	{}	\N	{}	\N	\N	\N	89000.000	89000.000	\N	0.000	\N	\N	1	{}	{}
+2026-11-02 14:52:19.211667+00		basduy05@gmail.com	9732c664-a666-48c5-bced-ac195abf5493	65	\N	6	118000.000	\N	vi	0.000	118000.000	0.000	unfulfilled	\N	\N	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1793631137083, Thẻ: 4242)	1	767f9cc2-1808-4c89-a988-639195f0dfd1	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1793631137083", "payment_gateway": "test-card", "payment_recorded_at": "2026-11-02T14:52:17.395Z", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-11-02T09:16:03.612Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	118000.000	118000.000	118000.000	checkout	\N	\N		2026-11-02 14:52:19.523942+00	f	45	\N	0.000	full	full	'+84362632175':42B '-10':44C '10':51C,65C '100000':41B '1793631137083':22B,104 '4242':24B '45':1A 'a':86C,99C 'ba':27B,39B 'ban':60C,88C 'basduy05@gmail.com':3A 'becomes':85C,98C 'cam':30B 'card':16B,21B,103 'coc':28B 'commitments':59C,73C 'credit':14B 'debit':15B 'dieu':46C 'dieu-tao-nen-so-phan':45C 'do':78C,82C,95C 'duy':25B 'eb':43C,75C 'eb-tri-tue-do-thai':74C 'ebook':61C,89C 'gd':19B 'genius':87C,100C 'gmail.com':4B 'ha':34B 'jerome':84C,97C 'ma':18B 'nen':48C,54C,68C 'nghiem':13B 'nguyen':26B 'noi':35B 'phan':50C,56C,70C 'phuong':5B 'quan':36B 'sach':62C,90C 'so':49C,55C,69C 't3jkzxi6otczmmm2njqtyty2ni00ogm1lwjjzwqtywmxotvhymy1ndkz':2A 'tao':47C,53C,67C 'ten':58C,72C 'test':17B,20B,102 'thai':79C,83C,96C 'thanh':7B,10B,37B 'the':9B,23B,57C,71C 'thon':29B 'thu':12B 'thuc':6B 'thuong':31B 'toan':8B,11B 'tri':76C,80C,93C 'tu':64C,92C 'tue':77C,81C,94C 'vhjhbnnhy3rpb25jdgvtommwnjc1mtzmlwi5yjctngmzny1hztvjltmwmwywztfkngfinq':101 'vi':40B 'vietnam':32B 'vn':33B 'xuan':38B 'đien':63C,91C 'đieu':52C,66C	f	f	0.000	\N	{}	\N	{}	\N	\N	\N	118000.000	118000.000	\N	0.000	\N	\N	2	{}	{}
+2026-11-02 15:37:42.879633+00		thilinhnguyen28042005@gmail.com	893840cb-6513-4595-ac6e-5241bef64629	66	\N	8	124000.000	\N	vi	0.000	124000.000	0.000	fulfilled	\N	\N	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1793633862014, Thẻ: 4242)	1	19026e00-23f3-4edd-9e1d-11f3793366a3	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1793633862014", "payment_gateway": "test-card", "payment_recorded_at": "2026-11-02T15:37:42.114Z", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-11-02T15:35:06.725Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	124000.000	124000.000	124000.000	checkout	\N	\N		2026-11-02 15:38:24.819983+00	f	46	\N	0.000	full	full	'+84985600910':42B '1':49C,55C,71C '1793633862014':24B,110 '4':31B '4242':26B '46':1A 'ban':61C,92C 'binh':37B,41B 'cam':80C,83C,98C 'card':18B,23B,109 'cay':79C,82C,97C 'chay':57C,73C 'chien':45C,50C,66C 'credit':16B 'cua':58C,74C,85C,100C 'de':89C,104C 'debit':17B 'dong':56C,72C 'eb':44C,78C 'eb-cay-cam-ngot':77C 'eb-chien-tranh-tien-te':43C 'ebook':62C,93C 'gd':21B 'gmail.com':4B 'hoa':33B 'laranja':90C,105C 'lima':91C,106C 'ma':20B 'meu':87C,102C 'ngam':60C,76C 'nghiem':15B 'ngot':81C,84C,99C 'nguyen':6A,28B 'ninh':36B,40B 'pe':88C,103C 'pho':39B 'phuong':5A,7B,27B,29B 'sach':63C,94C 't3jkzxi6odkzodqwy2itnjuxmy00ntk1lwfjnmutnti0mwjlzjy0nji5':2A 'tap':54C,70C 'te':48C,53C,69C 'test':19B,22B,108 'thanh':9B,12B,38B 'the':11B,25B 'thilinhnguyen28042005@gmail.com':3A 'thu':14B 'thuc':8B 'thuong':32B 'tien':47C,52C,59C,68C,75C 'toan':10B,13B 'toi':86C,101C 'tranh':46C,51C,67C 'tu':65C,96C 'vhjhbnnhy3rpb25jdgvtomewzty2zjqyltjjytmtngi0os05zdhllwq2zdhjzwzlyzriyg':107 'vietnam':34B 'vn':35B 'xom':30B 'đien':64C,95C	f	f	0.000	\N	{}	\N	{}	\N	\N	\N	124000.000	124000.000	\N	0.000	\N	\N	2	{}	{}
+2026-11-02 15:47:42.780536+00		thilinhnguyen28042005@gmail.com	e6b7aaaf-21e3-4fe3-bd72-44461ce3f9a6	68	\N	8	59000.000	\N	vi	0.000	59000.000	0.000	canceled	\N	\N	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1793634461358, Thẻ: 4242)	0.5	eb970b69-2091-44a6-ba39-9ea74cf41711	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1793634461358", "payment_gateway": "test-card", "payment_recorded_at": "2026-11-02T15:47:41.474Z", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-11-02T15:47:29.621Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	59000.000	59000.000	59000.000	checkout	\N	\N		2026-11-02 15:48:22.419109+00	f	47	\N	0.000	full	full	'+84985600910':42B '1793634461358':24B,85 '4':31B '4242':26B '47':1A 'ban':63C 'bi':45C,49C,68C 'binh':37B,41B 'card':18B,23B,84 'credit':16B 'cua':51C,70C 'debit':17B 'did':58C,77C 'eb':44C 'eb-bi-mat-tri-nho':43C 'ebook':64C 'gd':21B 'gmail.com':4B 'hoa':33B 'keys':62C,81C 'ma':20B 'mat':46C,50C,69C 'mot':52C,71C 'my':61C,80C 'nghiem':15B 'nguyen':6A,28B 'nho':48C,54C,73C 'ninh':36B,40B 'pham':56C,75C 'pho':39B 'phuong':5A,7B,27B,29B 'put':60C,79C 'sach':65C 'sieu':55C,74C 't3jkzxi6ztzin2fhywytmjflmy00zmuzlwjknzitndq0njfjztnmowe2':2A 'test':19B,22B,83 'thanh':9B,12B,38B 'the':11B,25B 'thilinhnguyen28042005@gmail.com':3A 'thu':14B 'thuc':8B 'thuong':32B 'toan':10B,13B 'tri':47C,53C,72C 'tu':67C 'vhjhbnnhy3rpb25jdgvtomq0mwjkmmjhltdintqtndbjmy1izjq5lwzkyzi1mzhjngjioq':82 'vietnam':34B 'vn':35B 'where':57C,76C 'xom':30B 'you':59C,78C 'đien':66C	f	f	0.000	\N	{}	\N	{}	\N	\N	\N	59000.000	59000.000	\N	0.000	\N	\N	1	{}	{}
+2026-11-02 15:50:52.469352+00		thilinhnguyen28042005@gmail.com	550e0346-a261-46d3-9f17-643e7b897761	69	\N	8	49000.000	\N	vi	0.000	49000.000	0.000	unfulfilled	\N	\N	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1793634651493, Thẻ: 4242)	0.5	ea27e390-e5f3-44fa-80fe-c710f35d4564	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1793634651493", "payment_gateway": "test-card", "payment_recorded_at": "2026-11-02T15:50:51.602Z", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-11-02T15:50:41.321Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	49000.000	49000.000	49000.000	checkout	\N	\N		2026-11-02 15:50:52.541394+00	f	48	\N	0.000	full	full	'+84985600910':42B '1793634651493':24B,68 '4':31B '4242':26B '48':1A 'agreements':53C,64C 'ban':54C 'binh':37B,41B 'bon':45C,48C,59C 'card':18B,23B,67 'credit':16B 'debit':17B 'eb':44C 'eb-bon-thoa-uoc':43C 'ebook':55C 'four':52C,63C 'gd':21B 'gmail.com':4B 'hoa':33B 'ma':20B 'nghiem':15B 'nguyen':6A,28B 'ninh':36B,40B 'pho':39B 'phuong':5A,7B,27B,29B 'sach':56C 't3jkzxi6ntuwztazndytyti2ms00nmqzltlmmtctnjqzztdiodk3nzyx':2A 'test':19B,22B,66 'thanh':9B,12B,38B 'the':11B,25B,51C,62C 'thilinhnguyen28042005@gmail.com':3A 'thoa':46C,49C,60C 'thu':14B 'thuc':8B 'thuong':32B 'toan':10B,13B 'tu':58C 'uoc':47C,50C,61C 'vhjhbnnhy3rpb25jdgvtoje4yjc3yzzlltjjntutnge1zi1howu2lte4n2yymzy2nmuyna':65 'vietnam':34B 'vn':35B 'xom':30B 'đien':57C	f	f	0.000	\N	{}	\N	{}	\N	\N	\N	49000.000	49000.000	\N	0.000	\N	\N	1	{}	{}
+2026-10-10 17:32:41.358659+00		basduy05@gmail.com	b6582232-9eba-49a2-afcc-807bc51d5710	26	25	6	89000.000	\N	vi	22000.000	89000.000	22000.000	canceled	Giao Hàng Nhanh (GHN) - Tiêu Chuẩn (Kho Hà Nội)	48	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1791653560147, Thẻ: 4242)	200	5d0d4284-7dd0-478f-bcdf-5e4ad276eb35	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1791653560147", "payment_gateway": "test-card", "payment_recorded_at": "2026-10-10T17:32:40.417Z", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-10T16:47:54.647Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	89000.000	89000.000	89000.000	checkout	\N	\N		2026-11-02 17:00:00.881862+00	f	8	\N	0.000	full	full	'+84362632175':40B,56B '12':29B,45B '1791653560147':22B,70 '4242':24B '8':1A 'apple':57C,60C 'ba':38B,54B 'basduy05@gmail.com':3A 'bean':62C,65C 'cam':31B,47B 'card':16B,21B,69 'credit':14B 'debit':15B 'duy':25B,41B 'gd':19B 'gmail.com':4B 'ha':35B,51B 'huyen':37B,53B 'juice':58C,61C,63C,66C 'ma':18B 'nghiem':13B 'nguyen':26B,42B 'nha':28B,44B 'noi':36B,52B 'phuong':5B 'so':27B,43B 't3jkzxi6yjy1odiymzitowviys00oweylwfmy2mtoda3ymm1mwq1nzew':2A 'test':17B,20B,68 'thanh':7B,10B 'the':9B,23B 'thu':12B 'thuc':6B 'thuong':32B,48B 'toan':8B,11B 'uhjvzhvjdfzhcmlhbnq6mzg0':59C 'uhjvzhvjdfzhcmlhbnq6mzg1':64C 'vhjhbnnhy3rpb25jdgvtojhiotbhzwjklwixywmtndu2zs05mzfmltq3mjbmmdrmymzhyq':67 'vi':39B,55B 'vietnam':33B,49B 'vn':34B,50B 'đuong':30B,46B	f	f	22000.000	\N	{}		{}	\N	\N	\N	67000.000	67000.000	\N	22000.000	\N	\N	2	{}	{}
+2026-10-20 08:37:21.022302+00		basduy05@gmail.com	344c44a7-bfc3-438d-8f42-c14c929dfb99	64	\N	6	55000.000	\N	vi	0.000	55000.000	0.000	unfulfilled	\N	\N	t	Phương thức thanh toán: Thẻ thanh toán thử nghiệm (Credit / Debit Card Test) (Mã GD: TEST_CARD_1792485439358, Thẻ: 4242)	0.5	9dd259eb-5ba2-4eac-96c3-4f72bda5af4f	VND	{"card_brand": "Visa / Mastercard Test", "card_last4": "4242", "payment_method": "Thẻ thanh toán thử nghiệm (Credit / Debit Card Test)", "payment_status": "PAID", "test_reference": "TEST_CARD_1792485439358", "payment_gateway": "test-card", "payment_recorded_at": "2026-10-20T08:37:19.531Z", "commerce.context.origin": "{\\"surface\\":\\"storefront\\",\\"system\\":\\"paper\\",\\"capturedAt\\":\\"2026-10-20T06:01:17.881Z\\",\\"consent\\":\\"unknown\\"}", "commerce.context.ext.paper": "{\\"locale\\":\\"vi-VN\\",\\"paperVersion\\":\\"223382c0\\"}"}	{}	2	\N	0.0000	55000.000	55000.000	55000.000	checkout	\N	\N		2026-10-20 08:37:21.160681+00	f	44	\N	0.000	full	full	'+84362632175':42B '100000':41B '1792485439358':22B,76 '4242':24B '44':1A 'ba':27B,39B 'ban':58C 'basduy05@gmail.com':3A 'cam':30B,46C,49C,64C 'card':16B,21B,75 'cay':45C,48C,63C 'coc':28B 'credit':14B 'cua':51C,66C 'de':55C,70C 'debit':15B 'duy':25B 'eb':44C 'eb-cay-cam-ngot':43C 'ebook':59C 'gd':19B 'gmail.com':4B 'ha':34B 'laranja':56C,71C 'lima':57C,72C 'ma':18B 'meu':53C,68C 'nghiem':13B 'ngot':47C,50C,65C 'nguyen':26B 'noi':35B 'pe':54C,69C 'phuong':5B 'quan':36B 'sach':60C 't3jkzxi6mzq0yzq0ytctymzjmy00mzhklthmndityze0yzkyowrmyjk5':2A 'test':17B,20B,74 'thanh':7B,10B,37B 'the':9B,23B 'thon':29B 'thu':12B 'thuc':6B 'thuong':31B 'toan':8B,11B 'toi':52C,67C 'tu':62C 'vhjhbnnhy3rpb25jdgvtomuzmmjjytu0ltyzntitndy0zi1imtq2lwu5nzvmntrmnmexna':73 'vi':40B 'vietnam':32B 'vn':33B 'xuan':38B 'đien':61C	f	f	0.000	\N	{}	\N	{}	\N	\N	\N	55000.000	55000.000	\N	0.000	\N	\N	1	{}	{}
 \.
 
 
@@ -10564,6 +10627,34 @@ COPY public.order_orderevent (id, date, type, user_id, parameters, app_id, order
 93	2026-10-20 08:37:21.66569+00	confirmed	6	{}	\N	344c44a7-bfc3-438d-8f42-c14c929dfb99	\N
 94	2026-10-20 08:37:22.285887+00	email_sent	\N	{"email": "basduy05@gmail.com", "email_type": "payment_confirmation"}	\N	344c44a7-bfc3-438d-8f42-c14c929dfb99	\N
 95	2026-10-20 08:37:22.535407+00	email_sent	\N	{"email": "basduy05@gmail.com", "email_type": "order_confirmation"}	\N	344c44a7-bfc3-438d-8f42-c14c929dfb99	\N
+96	2026-11-02 14:52:19.588153+00	placed	6	{}	\N	9732c664-a666-48c5-bced-ac195abf5493	\N
+97	2026-11-02 14:52:19.598792+00	order_fully_paid	6	{}	\N	9732c664-a666-48c5-bced-ac195abf5493	\N
+98	2026-11-02 14:52:19.991174+00	confirmed	6	{}	\N	9732c664-a666-48c5-bced-ac195abf5493	\N
+99	2026-11-02 14:52:20.392654+00	email_sent	\N	{"email": "basduy05@gmail.com", "email_type": "payment_confirmation"}	\N	9732c664-a666-48c5-bced-ac195abf5493	\N
+100	2026-11-02 14:52:20.780703+00	email_sent	\N	{"email": "basduy05@gmail.com", "email_type": "order_confirmation"}	\N	9732c664-a666-48c5-bced-ac195abf5493	\N
+101	2026-11-02 15:37:42.979977+00	placed	8	{}	\N	893840cb-6513-4595-ac6e-5241bef64629	\N
+102	2026-11-02 15:37:42.985938+00	order_fully_paid	8	{}	\N	893840cb-6513-4595-ac6e-5241bef64629	\N
+103	2026-11-02 15:37:43.078099+00	confirmed	8	{}	\N	893840cb-6513-4595-ac6e-5241bef64629	\N
+104	2026-11-02 15:37:43.172668+00	email_sent	\N	{"email": "thilinhnguyen28042005@gmail.com", "email_type": "payment_confirmation"}	\N	893840cb-6513-4595-ac6e-5241bef64629	\N
+105	2026-11-02 15:37:43.491805+00	email_sent	\N	{"email": "thilinhnguyen28042005@gmail.com", "email_type": "order_confirmation"}	\N	893840cb-6513-4595-ac6e-5241bef64629	\N
+106	2026-11-02 15:38:24.82241+00	fulfillment_fulfilled_items	1	{"auto": false, "fulfilled_items": [9, 10]}	\N	893840cb-6513-4595-ac6e-5241bef64629	\N
+107	2026-11-02 15:38:26.980442+00	email_sent	1	{"email": "thilinhnguyen28042005@gmail.com", "email_type": "fulfillment_confirmation"}	\N	893840cb-6513-4595-ac6e-5241bef64629	\N
+108	2026-11-02 15:47:42.933582+00	placed	8	{}	\N	e6b7aaaf-21e3-4fe3-bd72-44461ce3f9a6	\N
+109	2026-11-02 15:47:42.939563+00	order_fully_paid	8	{}	\N	e6b7aaaf-21e3-4fe3-bd72-44461ce3f9a6	\N
+110	2026-11-02 15:47:43.013906+00	confirmed	8	{}	\N	e6b7aaaf-21e3-4fe3-bd72-44461ce3f9a6	\N
+111	2026-11-02 15:47:43.124213+00	email_sent	\N	{"email": "thilinhnguyen28042005@gmail.com", "email_type": "payment_confirmation"}	\N	e6b7aaaf-21e3-4fe3-bd72-44461ce3f9a6	\N
+112	2026-11-02 15:47:43.868628+00	email_sent	\N	{"email": "thilinhnguyen28042005@gmail.com", "email_type": "order_confirmation"}	\N	e6b7aaaf-21e3-4fe3-bd72-44461ce3f9a6	\N
+113	2026-11-02 15:48:22.402225+00	canceled	\N	{}	4	e6b7aaaf-21e3-4fe3-bd72-44461ce3f9a6	\N
+114	2026-11-02 15:48:22.7379+00	email_sent	\N	{"email": "thilinhnguyen28042005@gmail.com", "email_type": "order_cancel"}	4	e6b7aaaf-21e3-4fe3-bd72-44461ce3f9a6	\N
+115	2026-11-02 15:50:52.577982+00	placed	8	{}	\N	550e0346-a261-46d3-9f17-643e7b897761	\N
+116	2026-11-02 15:50:52.583786+00	order_fully_paid	8	{}	\N	550e0346-a261-46d3-9f17-643e7b897761	\N
+117	2026-11-02 15:50:52.655014+00	confirmed	8	{}	\N	550e0346-a261-46d3-9f17-643e7b897761	\N
+118	2026-11-02 15:50:53.020216+00	email_sent	\N	{"email": "thilinhnguyen28042005@gmail.com", "email_type": "payment_confirmation"}	\N	550e0346-a261-46d3-9f17-643e7b897761	\N
+119	2026-11-02 15:50:53.3305+00	email_sent	\N	{"email": "thilinhnguyen28042005@gmail.com", "email_type": "order_confirmation"}	\N	550e0346-a261-46d3-9f17-643e7b897761	\N
+120	2026-11-02 17:00:00.8499+00	canceled	\N	{}	5	b6582232-9eba-49a2-afcc-807bc51d5710	\N
+121	2026-11-02 17:00:01.55291+00	email_sent	\N	{"email": "basduy05@gmail.com", "email_type": "order_cancel"}	5	b6582232-9eba-49a2-afcc-807bc51d5710	\N
+122	2026-11-02 17:08:05.14647+00	canceled	\N	{}	5	ae9dfdec-db0e-4b7b-b315-6807c6b451f3	\N
+123	2026-11-02 17:08:05.366786+00	email_sent	\N	{"email": "basduy05@gmail.com", "email_type": "order_cancel"}	5	ae9dfdec-db0e-4b7b-b315-6807c6b451f3	\N
 \.
 
 
@@ -10600,6 +10691,12 @@ Blue Polygon Shirt	218223580	1	220000.000	220000.000	t	0	\N	0.0000	Blue Polygon 
 Đắc Nhân Tâm (How to Win Friends and Influence People)	EB-DAC-NHAN-TAM	1	59000.000	59000.000	f	0	\N	0.0000	Đắc Nhân Tâm (How to Win Friends and Influence People)	VND		Bản Ebook (Sách Điện Tử)	59000.000	59000.000	0.000	0.000	\N	fixed	59000.000	59000.000	59000.000	59000.000	f	UHJvZHVjdFZhcmlhbnQ6Mg==	\N	\N	acad3bf8-42f4-41f4-be29-2a0ac1c5701b	f54abbb5-4b74-4882-9a80-d2ece79d22a5	\N	2026-10-15 10:15:14.774596+00	59000.000	59000.000	{}	{}	\N	{}	\N	{}	f	f	\N	2	\N
 Sapiens: Lược Sử Loài Người (A Brief History of Humankind)	EB-SAPIENS	1	89000.000	89000.000	f	0	\N	0.0000	Sapiens: Lược Sử Loài Người (A Brief History of Humankind)	VND		Bản Ebook (Sách Điện Tử)	89000.000	89000.000	0.000	0.000	\N	fixed	89000.000	89000.000	89000.000	89000.000	f	UHJvZHVjdFZhcmlhbnQ6Ng==	\N	\N	ae9dfdec-db0e-4b7b-b315-6807c6b451f3	77f74351-84a2-409a-bdca-f87176a15157	\N	2026-10-19 03:46:55.513007+00	89000.000	89000.000	{}	{}	\N	{}	\N	{}	f	f	\N	2	\N
 Cây Cam Ngọt Của Tôi (Meu Pé de Laranja Lima)	EB-CAY-CAM-NGOT	1	55000.000	55000.000	f	0	58	0.0000	Cây Cam Ngọt Của Tôi (Meu Pé de Laranja Lima)	VND		Bản Ebook (Sách Điện Tử)	55000.000	55000.000	0.000	0.000	\N	fixed	55000.000	55000.000	55000.000	55000.000	f	UHJvZHVjdFZhcmlhbnQ6NTg=	\N	\N	344c44a7-bfc3-438d-8f42-c14c929dfb99	6f2fc786-6e1f-416b-acb4-5b5a015a60da	\N	2026-10-20 08:37:21.081087+00	55000.000	55000.000	{}	{}	\N	{}	\N	{}	f	f	\N	2	\N
+10 Điều Tạo Nên Số Phận (The Ten Commitments)	EB-10-DIEU-TAO-NEN-SO-PHAN	1	49000.000	49000.000	f	0	52	0.0000	10 Điều Tạo Nên Số Phận (The Ten Commitments)	VND		Bản Ebook (Sách Điện Tử)	49000.000	49000.000	0.000	0.000	\N	fixed	49000.000	49000.000	49000.000	49000.000	f	UHJvZHVjdFZhcmlhbnQ6NTI=	\N	\N	9732c664-a666-48c5-bced-ac195abf5493	4fe6b971-9490-4aac-a45a-5843d36653d5	\N	2026-11-02 14:52:19.340373+00	49000.000	49000.000	{}	{}	\N	{}	\N	{}	f	f	\N	2	\N
+Trí Tuệ Do Thái (Jerome Becomes a Genius)	EB-TRI-TUE-DO-THAI	1	69000.000	69000.000	f	0	50	0.0000	Trí Tuệ Do Thái (Jerome Becomes a Genius)	VND		Bản Ebook (Sách Điện Tử)	69000.000	69000.000	0.000	0.000	\N	fixed	69000.000	69000.000	69000.000	69000.000	f	UHJvZHVjdFZhcmlhbnQ6NTA=	\N	\N	9732c664-a666-48c5-bced-ac195abf5493	b0c63d4b-b9b7-4d92-8427-01990355c2c1	\N	2026-11-02 14:52:19.340741+00	69000.000	69000.000	{}	{}	\N	{}	\N	{}	f	f	\N	2	\N
+Chiến Tranh Tiền Tệ - Tập 1: Dòng Chảy Của Tiền Ngầm	EB-CHIEN-TRANH-TIEN-TE-1	1	69000.000	69000.000	f	1	60	0.0000	Chiến Tranh Tiền Tệ - Tập 1: Dòng Chảy Của Tiền Ngầm	VND		Bản Ebook (Sách Điện Tử)	69000.000	69000.000	0.000	0.000	\N	fixed	69000.000	69000.000	69000.000	69000.000	f	UHJvZHVjdFZhcmlhbnQ6NjA=	\N	\N	893840cb-6513-4595-ac6e-5241bef64629	387d02e3-07c8-4cf5-a093-0b503296cbb0	\N	2026-11-02 15:37:42.905301+00	69000.000	69000.000	{}	{}	\N	{}	\N	{}	f	f	\N	2	\N
+Cây Cam Ngọt Của Tôi (Meu Pé de Laranja Lima)	EB-CAY-CAM-NGOT	1	55000.000	55000.000	f	1	58	0.0000	Cây Cam Ngọt Của Tôi (Meu Pé de Laranja Lima)	VND		Bản Ebook (Sách Điện Tử)	55000.000	55000.000	0.000	0.000	\N	fixed	55000.000	55000.000	55000.000	55000.000	f	UHJvZHVjdFZhcmlhbnQ6NTg=	\N	\N	893840cb-6513-4595-ac6e-5241bef64629	69cff069-0e82-4972-baed-3109534ad0be	\N	2026-11-02 15:37:42.905474+00	55000.000	55000.000	{}	{}	\N	{}	\N	{}	f	f	\N	2	\N
+Bí Mật Của Một Trí Nhớ Siêu Phàm (Where Did You Put My Keys?)	EB-BI-MAT-TRI-NHO	1	59000.000	59000.000	f	0	54	0.0000	Bí Mật Của Một Trí Nhớ Siêu Phàm (Where Did You Put My Keys?)	VND		Bản Ebook (Sách Điện Tử)	59000.000	59000.000	0.000	0.000	\N	fixed	59000.000	59000.000	59000.000	59000.000	f	UHJvZHVjdFZhcmlhbnQ6NTQ=	\N	\N	e6b7aaaf-21e3-4fe3-bd72-44461ce3f9a6	cbb3059d-23e3-404b-8f48-475e4e98bceb	\N	2026-11-02 15:47:42.818061+00	59000.000	59000.000	{}	{}	\N	{}	\N	{}	f	f	\N	2	\N
+Bốn Thỏa Ước (The Four Agreements)	EB-BON-THOA-UOC	1	49000.000	49000.000	f	0	46	0.0000	Bốn Thỏa Ước (The Four Agreements)	VND		Bản Ebook (Sách Điện Tử)	49000.000	49000.000	0.000	0.000	\N	fixed	49000.000	49000.000	49000.000	49000.000	f	UHJvZHVjdFZhcmlhbnQ6NDY=	\N	\N	550e0346-a261-46d3-9f17-643e7b897761	3423b9ae-e449-4c86-80e1-6cf3f3e48c2f	\N	2026-11-02 15:50:52.499845+00	49000.000	49000.000	{}	{}	\N	{}	\N	{}	f	f	\N	2	\N
 \.
 
 
@@ -10701,6 +10798,10 @@ COPY public.payment_transactionevent (id, created_at, status, transaction_id, am
 38	2026-10-15 10:15:14.024812+00	\N	38	59000.000	\N	aurabook.community.admin	VND	\N	t	Manual adjustment of the transaction.	\N	charge_success	\N	\N	\N	\N
 39	2026-10-19 03:46:54.961636+00	\N	39	89000.000	\N	aurabook.community.admin	VND	\N	t	Manual adjustment of the transaction.	\N	charge_success	\N	\N	\N	\N
 40	2026-10-20 08:37:20.592106+00	\N	40	55000.000	\N	aurabook.system.admin	VND	\N	t	Manual adjustment of the transaction.	\N	charge_success	\N	\N	\N	\N
+41	2026-11-02 14:52:18.453571+00	\N	41	118000.000	4	saleor.io.dummy-payment-app	VND	\N	t	Manual adjustment of the transaction.	\N	charge_success	\N	\N	\N	\N
+42	2026-11-02 15:37:42.609225+00	\N	42	124000.000	4	saleor.io.dummy-payment-app	VND	\N	t	Manual adjustment of the transaction.	\N	charge_success	\N	\N	\N	\N
+43	2026-11-02 15:47:42.197035+00	\N	43	59000.000	4	saleor.io.dummy-payment-app	VND	\N	t	Manual adjustment of the transaction.	\N	charge_success	\N	\N	\N	\N
+44	2026-11-02 15:50:52.156727+00	\N	44	49000.000	4	saleor.io.dummy-payment-app	VND	\N	t	Manual adjustment of the transaction.	\N	charge_success	\N	\N	\N	\N
 \.
 
 
@@ -10717,6 +10818,10 @@ COPY public.payment_transactionitem (id, private_metadata, metadata, created_at,
 38	{}	{}	2026-10-15 10:15:14.00782+00	2026-10-15 10:15:14.042075+00	\N	{}	VND	59000.000	0.000	0.000	\N	acad3bf8-42f4-41f4-be29-2a0ac1c5701b	\N	aurabook.community.admin	0.000	0.000	0.000	0.000	\N	Thanh toán thành công qua thẻ thử nghiệm	Thẻ thanh toán thử nghiệm	TEST_CARD_1792059312167	0.000	\N	50fb83aa-120c-42b8-8db7-2db1df14c94d	t	t	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 39	{}	{}	2026-10-19 03:46:54.952557+00	2026-10-19 03:46:54.97558+00	\N	{}	VND	89000.000	0.000	0.000	\N	ae9dfdec-db0e-4b7b-b315-6807c6b451f3	\N	aurabook.community.admin	0.000	0.000	0.000	0.000	\N	Thanh toán thành công qua thẻ thử nghiệm	Thẻ thanh toán thử nghiệm	TEST_CARD_1792381614187	0.000	\N	48092499-91e7-400d-9b74-da1e33a5ffa1	t	t	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 40	{}	{}	2026-10-20 08:37:20.577844+00	2026-10-20 08:37:20.60865+00	\N	{}	VND	55000.000	0.000	0.000	\N	344c44a7-bfc3-438d-8f42-c14c929dfb99	\N	aurabook.system.admin	0.000	0.000	0.000	0.000	\N	Thanh toán thành công qua thẻ thử nghiệm	Thẻ thanh toán thử nghiệm	TEST_CARD_1792485439358	0.000	\N	e32bca54-6352-464f-b146-e975f54f6a14	t	t	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
+41	{}	{}	2026-11-02 14:52:18.423968+00	2026-11-02 14:52:18.481479+00	\N	{}	VND	118000.000	0.000	0.000	\N	9732c664-a666-48c5-bced-ac195abf5493	4	saleor.io.dummy-payment-app	0.000	0.000	0.000	0.000	\N	Thanh toán thành công qua thẻ thử nghiệm	Thẻ thanh toán thử nghiệm	TEST_CARD_1793631137083	0.000	\N	c067516f-b9b7-4c37-ae5c-301f0e1d4ab5	t	t	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
+42	{}	{}	2026-11-02 15:37:42.597162+00	2026-11-02 15:37:42.617648+00	\N	{}	VND	124000.000	0.000	0.000	\N	893840cb-6513-4595-ac6e-5241bef64629	4	saleor.io.dummy-payment-app	0.000	0.000	0.000	0.000	\N	Thanh toán thành công qua thẻ thử nghiệm	Thẻ thanh toán thử nghiệm	TEST_CARD_1793633862014	0.000	\N	a0e66f42-2ca3-4b49-9d8e-d6d8cefec4bb	t	t	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
+43	{}	{}	2026-11-02 15:47:42.184366+00	2026-11-02 15:47:42.208805+00	\N	{}	VND	59000.000	0.000	0.000	\N	e6b7aaaf-21e3-4fe3-bd72-44461ce3f9a6	4	saleor.io.dummy-payment-app	0.000	0.000	0.000	0.000	\N	Thanh toán thành công qua thẻ thử nghiệm	Thẻ thanh toán thử nghiệm	TEST_CARD_1793634461358	0.000	\N	d41bd2ba-7b54-40c3-bf49-fdc2538c4bb9	t	t	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
+44	{}	{}	2026-11-02 15:50:52.152867+00	2026-11-02 15:50:52.164056+00	\N	{}	VND	49000.000	0.000	0.000	\N	550e0346-a261-46d3-9f17-643e7b897761	4	saleor.io.dummy-payment-app	0.000	0.000	0.000	0.000	\N	Thanh toán thành công qua thẻ thử nghiệm	Thẻ thanh toán thử nghiệm	TEST_CARD_1793634651493	0.000	\N	18b77c6e-2c55-4a5f-a9e6-187f23666e24	t	t	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N
 \.
 
 
@@ -11285,6 +11390,14 @@ COPY public.plugins_pluginconfiguration (id, name, description, active, configur
 1	User emails		t	[{"name": "host", "value": "mailpit"}, {"name": "port", "value": 1025}, {"name": "username", "value": ""}, {"name": "password", "value": ""}, {"name": "sender_name", "value": "AuraBook"}, {"name": "sender_address", "value": "no-reply@aurabook.vn"}, {"name": "use_tls", "value": false}, {"name": "use_ssl", "value": false}]	mirumee.notifications.user_email	3
 2	User emails		t	[{"name": "host", "value": "mailpit"}, {"name": "port", "value": 1025}, {"name": "username", "value": ""}, {"name": "password", "value": ""}, {"name": "sender_name", "value": "AuraBook"}, {"name": "sender_address", "value": "no-reply@aurabook.vn"}, {"name": "use_tls", "value": false}, {"name": "use_ssl", "value": false}]	mirumee.notifications.user_email	2
 3	User emails		t	[{"name": "host", "value": "mailpit"}, {"name": "port", "value": 1025}, {"name": "username", "value": ""}, {"name": "password", "value": ""}, {"name": "sender_name", "value": "AuraBook"}, {"name": "sender_address", "value": "no-reply@aurabook.vn"}, {"name": "use_tls", "value": false}, {"name": "use_ssl", "value": false}]	mirumee.notifications.user_email	1
+4	Ví MoMo	Cổng thanh toán điện tử MoMo hỗ trợ Quét mã MoMo QR, Ví điện tử MoMo, và Thẻ ATM liên kết nội địa.	t	[{"name": "partner_code", "value": "MOMOBKUN20180529"}, {"name": "access_key", "value": "klm05TvNBzhg7h7j"}, {"name": "secret_key", "value": "at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa"}, {"name": "endpoint_url", "value": "https://test-payment.momo.vn/v2/gateway/api/create"}, {"name": "auto_capture", "value": true}, {"name": "supported_currencies", "value": "VND"}]	aurabook.payments.momo	\N
+5	Ví MoMo	Cổng thanh toán điện tử MoMo hỗ trợ Quét mã MoMo QR, Ví điện tử MoMo, và Thẻ ATM liên kết nội địa.	t	[{"name": "partner_code", "value": "MOMOBKUN20180529"}, {"name": "access_key", "value": "klm05TvNBzhg7h7j"}, {"name": "secret_key", "value": "at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa"}, {"name": "endpoint_url", "value": "https://test-payment.momo.vn/v2/gateway/api/create"}, {"name": "auto_capture", "value": true}, {"name": "supported_currencies", "value": "VND"}]	aurabook.payments.momo	3
+6	Ví MoMo	Cổng thanh toán điện tử MoMo hỗ trợ Quét mã MoMo QR, Ví điện tử MoMo, và Thẻ ATM liên kết nội địa.	t	[{"name": "partner_code", "value": "MOMOBKUN20180529"}, {"name": "access_key", "value": "klm05TvNBzhg7h7j"}, {"name": "secret_key", "value": "at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa"}, {"name": "endpoint_url", "value": "https://test-payment.momo.vn/v2/gateway/api/create"}, {"name": "auto_capture", "value": true}, {"name": "supported_currencies", "value": "VND"}]	aurabook.payments.momo	2
+7	Ví MoMo	Cổng thanh toán điện tử MoMo hỗ trợ Quét mã MoMo QR, Ví điện tử MoMo, và Thẻ ATM liên kết nội địa.	t	[{"name": "partner_code", "value": "MOMOBKUN20180529"}, {"name": "access_key", "value": "klm05TvNBzhg7h7j"}, {"name": "secret_key", "value": "at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa"}, {"name": "endpoint_url", "value": "https://test-payment.momo.vn/v2/gateway/api/create"}, {"name": "auto_capture", "value": true}, {"name": "supported_currencies", "value": "VND"}]	aurabook.payments.momo	1
+8	VNPAY-QR & Thẻ Ngân Hàng	Cổng thanh toán điện tử VNPAY hỗ trợ Quét mã VNPAY-QR, Thẻ ATM/Tài khoản ngân hàng nội địa và Thẻ thanh toán quốc tế Visa/Mastercard.	t	[{"name": "tmn_code", "value": "BBFYMDIF"}, {"name": "hash_secret", "value": "BCZZEBRSOOXEEJPHAANOTOGBBECPQJYR"}, {"name": "payment_url", "value": "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"}, {"name": "auto_capture", "value": true}, {"name": "supported_currencies", "value": "VND"}]	aurabook.payments.vnpay	\N
+9	VNPAY-QR & Thẻ Ngân Hàng	Cổng thanh toán điện tử VNPAY hỗ trợ Quét mã VNPAY-QR, Thẻ ATM/Tài khoản ngân hàng nội địa và Thẻ thanh toán quốc tế Visa/Mastercard.	t	[{"name": "tmn_code", "value": "BBFYMDIF"}, {"name": "hash_secret", "value": "BCZZEBRSOOXEEJPHAANOTOGBBECPQJYR"}, {"name": "payment_url", "value": "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"}, {"name": "auto_capture", "value": true}, {"name": "supported_currencies", "value": "VND"}]	aurabook.payments.vnpay	3
+10	VNPAY-QR & Thẻ Ngân Hàng	Cổng thanh toán điện tử VNPAY hỗ trợ Quét mã VNPAY-QR, Thẻ ATM/Tài khoản ngân hàng nội địa và Thẻ thanh toán quốc tế Visa/Mastercard.	t	[{"name": "tmn_code", "value": "BBFYMDIF"}, {"name": "hash_secret", "value": "BCZZEBRSOOXEEJPHAANOTOGBBECPQJYR"}, {"name": "payment_url", "value": "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"}, {"name": "auto_capture", "value": true}, {"name": "supported_currencies", "value": "VND"}]	aurabook.payments.vnpay	2
+11	VNPAY-QR & Thẻ Ngân Hàng	Cổng thanh toán điện tử VNPAY hỗ trợ Quét mã VNPAY-QR, Thẻ ATM/Tài khoản ngân hàng nội địa và Thẻ thanh toán quốc tế Visa/Mastercard.	t	[{"name": "tmn_code", "value": "BBFYMDIF"}, {"name": "hash_secret", "value": "BCZZEBRSOOXEEJPHAANOTOGBBECPQJYR"}, {"name": "payment_url", "value": "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"}, {"name": "auto_capture", "value": true}, {"name": "supported_currencies", "value": "VND"}]	aurabook.payments.vnpay	1
 \.
 
 
@@ -11951,7 +12064,7 @@ COPY public.shipping_shippingzone_channels (id, shippingzone_id, channel_id) FRO
 --
 
 COPY public.site_sitesettings (id, header_text, description, site_id, bottom_menu_id, top_menu_id, display_gross_prices, include_taxes_in_prices, charge_taxes_on_shipping, track_inventory_by_default, default_weight_unit, company_address_id, default_mail_sender_address, default_mail_sender_name, customer_set_password_url, fulfillment_allow_unpaid, fulfillment_auto_approve, gift_card_expiry_period, gift_card_expiry_period_type, gift_card_expiry_type, reserve_stock_duration_anonymous_user, reserve_stock_duration_authenticated_user, limit_quantity_per_checkout, enable_account_confirmation_by_email, metadata, private_metadata, allow_login_without_confirmation, refund_reason_reference_type_id, use_legacy_update_webhook_emission, preserve_all_address_fields, instance_id, usage_telemetry_reported_at, password_login_mode, use_legacy_shipping_zone_stock_availability, return_reason_reference_type_id, account_confirm_merge_mode, allow_storefront_traffic) FROM stdin;
-1	Test Saleor - a sample shop!		1	2	1	t	t	t	t	kg	\N	\N		\N	t	t	\N	\N	never_expire	\N	\N	50	t	{}	{}	f	\N	t	f	2c4a3eb0-d568-4b90-a6de-8e3be69d4f29	2026-10-31 13:12:59.480077+00	enabled	t	\N	merge_disabled	t
+1	Test Saleor - a sample shop!		1	2	1	t	t	t	t	kg	\N	\N		\N	t	t	\N	\N	never_expire	\N	\N	50	t	{}	{}	f	\N	t	f	2c4a3eb0-d568-4b90-a6de-8e3be69d4f29	2026-11-02 14:17:39.626687+00	enabled	t	\N	merge_disabled	t
 \.
 
 
@@ -12047,6 +12160,28 @@ COPY public.thumbnail_thumbnail (id, image, size, format, category_id, collectio
 403	thumbnails/products/book-cay-cam-ngot-cua-toi-cover_thumbnail_2048.webp	2048	webp	\N	\N	148	\N	\N	\N
 404	thumbnails/products/book-tri-tue-do-thai-cover_thumbnail_1024.webp	1024	webp	\N	\N	144	\N	\N	\N
 405	thumbnails/products/book-dac-nhan-tam-cover_thumbnail_256.webp	256	webp	\N	\N	141	\N	\N	\N
+406	thumbnails/products/book-sapiens-luoc-su-loai-nguoi-cover_thumbnail_1024.webp	1024	webp	\N	\N	143	\N	\N	\N
+407	thumbnails/products/book-cach-nghi-de-thanh-cong-cover_thumbnail_1024.webp	1024	webp	\N	\N	147	\N	\N	\N
+408	thumbnails/products/book-bi-mat-cua-mot-tri-nho-sieu-pham-cover_thumbnail_256.webp	256	webp	\N	\N	146	\N	\N	\N
+409	thumbnails/products/book-cach-nghi-de-thanh-cong-cover_thumbnail_256.webp	256	webp	\N	\N	147	\N	\N	\N
+410	thumbnails/products/book-bon-thoa-uoc-cover_thumbnail_256.webp	256	webp	\N	\N	142	\N	\N	\N
+411	thumbnails/products/book-sapiens-luoc-su-loai-nguoi-cover_thumbnail_256.webp	256	webp	\N	\N	143	\N	\N	\N
+412	thumbnails/products/book-tri-tue-do-thai-cover_thumbnail_256.webp	256	webp	\N	\N	144	\N	\N	\N
+413	thumbnails/products/book-tri-tue-do-thai-cover_thumbnail_64.jpeg	64	\N	\N	\N	144	\N	\N	\N
+414	thumbnails/products/book-10-dieu-tao-nen-so-phan-cover_thumbnail_128.webp	128	webp	\N	\N	145	\N	\N	\N
+415	thumbnails/products/book-tri-tue-do-thai-cover_thumbnail_128.webp	128	webp	\N	\N	144	\N	\N	\N
+416	thumbnails/products/book-chien-tranh-tien-te-tap-1-cover_thumbnail_1024.webp	1024	webp	\N	\N	149	\N	\N	\N
+417	thumbnails/products/book-chien-tranh-tien-te-tap-1-cover_thumbnail_256.webp	256	webp	\N	\N	149	\N	\N	\N
+418	thumbnails/products/book-chien-tranh-tien-te-tap-1-cover_thumbnail_64.jpeg	64	\N	\N	\N	149	\N	\N	\N
+419	thumbnails/products/book-chien-tranh-tien-te-tap-1-cover_thumbnail_128.webp	128	webp	\N	\N	149	\N	\N	\N
+420	thumbnails/products/book-chien-tranh-tien-te-tap-1-cover_thumbnail_256.jpeg	256	\N	\N	\N	149	\N	\N	\N
+421	thumbnails/products/book-bi-mat-cua-mot-tri-nho-sieu-pham-cover_thumbnail_64.jpeg	64	\N	\N	\N	146	\N	\N	\N
+422	thumbnails/products/book-bi-mat-cua-mot-tri-nho-sieu-pham-cover_thumbnail_128.webp	128	webp	\N	\N	146	\N	\N	\N
+423	thumbnails/products/book-bon-thoa-uoc-cover_thumbnail_64.jpg	64	\N	\N	\N	142	\N	\N	\N
+424	thumbnails/products/book-bon-thoa-uoc-cover_thumbnail_128.webp	128	webp	\N	\N	142	\N	\N	\N
+425	thumbnails/products/book-tu-duy-nhanh-va-cham-cover_thumbnail_256.webp	256	webp	\N	\N	153	\N	\N	\N
+426	thumbnails/products/book-tu-duy-nhanh-va-cham-cover_thumbnail_1024.webp	1024	webp	\N	\N	153	\N	\N	\N
+427	thumbnails/products/book-tu-duy-nhanh-va-cham-cover_thumbnail_64.jpeg	64	\N	\N	\N	153	\N	\N	\N
 \.
 
 
@@ -12196,7 +12331,7 @@ COPY public.webhook_webhookevent (id, event_type, webhook_id) FROM stdin;
 -- Name: account_customerevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.account_customerevent_id_seq', 50, true);
+SELECT pg_catalog.setval('public.account_customerevent_id_seq', 57, true);
 
 
 --
@@ -12224,21 +12359,21 @@ SELECT pg_catalog.setval('public.account_group_channels_id_seq', 3, true);
 -- Name: account_serviceaccount_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.account_serviceaccount_id_seq', 4, true);
+SELECT pg_catalog.setval('public.account_serviceaccount_id_seq', 5, true);
 
 
 --
 -- Name: account_serviceaccount_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.account_serviceaccount_permissions_id_seq', 22, true);
+SELECT pg_catalog.setval('public.account_serviceaccount_permissions_id_seq', 39, true);
 
 
 --
 -- Name: account_serviceaccounttoken_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.account_serviceaccounttoken_id_seq', 4, true);
+SELECT pg_catalog.setval('public.account_serviceaccounttoken_id_seq', 13, true);
 
 
 --
@@ -12252,14 +12387,14 @@ SELECT pg_catalog.setval('public.account_staffnotificationrecipient_id_seq', 1, 
 -- Name: app_appextension_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.app_appextension_id_seq', 6, true);
+SELECT pg_catalog.setval('public.app_appextension_id_seq', 11, true);
 
 
 --
 -- Name: app_appextension_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.app_appextension_permissions_id_seq', 6, true);
+SELECT pg_catalog.setval('public.app_appextension_permissions_id_seq', 16, true);
 
 
 --
@@ -12371,7 +12506,7 @@ SELECT pg_catalog.setval('public.checkout_checkout_gift_cards_id_seq', 1, false)
 -- Name: checkout_checkoutmetadata_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.checkout_checkoutmetadata_id_seq', 22, true);
+SELECT pg_catalog.setval('public.checkout_checkoutmetadata_id_seq', 28, true);
 
 
 --
@@ -12574,7 +12709,7 @@ SELECT pg_catalog.setval('public.django_site_id_seq', 1, true);
 -- Name: drm_readingprogress_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.drm_readingprogress_id_seq', 13, true);
+SELECT pg_catalog.setval('public.drm_readingprogress_id_seq', 16, true);
 
 
 --
@@ -12644,14 +12779,14 @@ SELECT pg_catalog.setval('public.menu_menuitemtranslation_id_seq', 7, true);
 -- Name: order_fulfillment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.order_fulfillment_id_seq', 9, true);
+SELECT pg_catalog.setval('public.order_fulfillment_id_seq', 11, true);
 
 
 --
 -- Name: order_fulfillmentline_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.order_fulfillmentline_id_seq', 8, true);
+SELECT pg_catalog.setval('public.order_fulfillmentline_id_seq', 10, true);
 
 
 --
@@ -12665,14 +12800,14 @@ SELECT pg_catalog.setval('public.order_order_gift_cards_id_seq', 1, false);
 -- Name: order_order_number_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.order_order_number_seq', 44, true);
+SELECT pg_catalog.setval('public.order_order_number_seq', 48, true);
 
 
 --
 -- Name: order_orderevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.order_orderevent_id_seq', 95, true);
+SELECT pg_catalog.setval('public.order_orderevent_id_seq', 123, true);
 
 
 --
@@ -12728,14 +12863,14 @@ SELECT pg_catalog.setval('public.payment_transaction_id_seq', 1, false);
 -- Name: payment_transactionevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.payment_transactionevent_id_seq', 40, true);
+SELECT pg_catalog.setval('public.payment_transactionevent_id_seq', 44, true);
 
 
 --
 -- Name: payment_transactionitem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.payment_transactionitem_id_seq', 40, true);
+SELECT pg_catalog.setval('public.payment_transactionitem_id_seq', 44, true);
 
 
 --
@@ -12749,7 +12884,7 @@ SELECT pg_catalog.setval('public.plugins_emailtemplate_id_seq', 1, false);
 -- Name: plugins_pluginconfiguration_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.plugins_pluginconfiguration_id_seq', 3, true);
+SELECT pg_catalog.setval('public.plugins_pluginconfiguration_id_seq', 11, true);
 
 
 --
@@ -13022,21 +13157,21 @@ SELECT pg_catalog.setval('public.tax_taxconfigurationpercountry_id_seq', 1, fals
 -- Name: thumbnail_thumbnail_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.thumbnail_thumbnail_id_seq', 405, true);
+SELECT pg_catalog.setval('public.thumbnail_thumbnail_id_seq', 427, true);
 
 
 --
 -- Name: userprofile_address_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.userprofile_address_id_seq', 64, true);
+SELECT pg_catalog.setval('public.userprofile_address_id_seq', 71, true);
 
 
 --
 -- Name: userprofile_user_addresses_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.userprofile_user_addresses_id_seq', 1, true);
+SELECT pg_catalog.setval('public.userprofile_user_addresses_id_seq', 2, true);
 
 
 --
@@ -13050,7 +13185,7 @@ SELECT pg_catalog.setval('public.userprofile_user_groups_id_seq', 3, true);
 -- Name: userprofile_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.userprofile_user_id_seq', 7, true);
+SELECT pg_catalog.setval('public.userprofile_user_id_seq', 8, true);
 
 
 --
@@ -13113,14 +13248,14 @@ SELECT pg_catalog.setval('public.warehouse_warehouse_shipping_zones_id_seq', 32,
 -- Name: webhook_webhook_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.webhook_webhook_id_seq', 1, true);
+SELECT pg_catalog.setval('public.webhook_webhook_id_seq', 2, true);
 
 
 --
 -- Name: webhook_webhookevent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.webhook_webhookevent_id_seq', 4, true);
+SELECT pg_catalog.setval('public.webhook_webhookevent_id_seq', 8, true);
 
 
 --
@@ -20950,5 +21085,5 @@ ALTER TABLE ONLY public.webhook_webhookevent
 -- PostgreSQL database dump complete
 --
 
-\unrestrict MKogaQyeFweAmDRaB784dQ3fat0HhJlkQ3LilzS8HDWglSuyKD3KjWYFxwgzhDN
+\unrestrict ZGN6mjMTjWIzIcKovGYTsCWvSQqgDQwjW7SXRzmvG2JB21kvOq9oh8bs4gHnX2R
 

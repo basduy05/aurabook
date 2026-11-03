@@ -13,6 +13,7 @@ import { buttonClassName } from "@/ui/components/ui/button";
 import { LinkWithChannel } from "@/ui/atoms/link-with-channel";
 import { buildStorefrontPath } from "@/lib/storefront-path";
 import { graphRAGStore, type BookRecommendationDetail } from "@/lib/graphrag/graph-store";
+import { getLLMSemanticSearch } from "@/lib/search/ai-semantic";
 import { GraphRAGAnalysisSection } from "./graphrag-analysis-section";
 
 // Prefetch: default (auto). Search is reached via form submit, not `prefetch={true}` links.
@@ -122,9 +123,9 @@ async function SearchContent({
 
 	let recommendedProducts: typeof products = [];
 
-	// 2. NẾU KHÔNG TÌM THẤY KẾT QUẢ THƯỜNG -> CHUYỂN NGAY LẬP TỨC SANG GRAPHRAG THEO NGỮ CẢNH
+	// 2. NẾU KHÔNG TÌM THẤY KẾT QUẢ THƯỜNG -> SỬ DỤNG BỘ NÃO LLM GEMMA 2 & GRAPHRAG NGỮ NGHĨA
 	if (pagination.totalCount === 0 || products.length === 0) {
-		const ragResult = graphRAGStore.searchProductsByContext(query, {
+		const ragResult = await getLLMSemanticSearch(query, {
 			channel: params.channel,
 			locale: params.locale,
 		});

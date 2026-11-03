@@ -68,40 +68,74 @@ export function BrowserExtensionGuard(): ReactElement {
 							}
 						} catch(e) {}
 
-						// 2. Intercept noisy console.error messages from extensions & hydration mismatch diffs
+						// 2. Intercept noisy console messages from extensions & hydration mismatch diffs
+						var isNoise = function(text) {
+							if (!text || typeof text !== 'string') return false;
+							return (
+								text.indexOf('bis_skin_checked') !== -1 ||
+								text.indexOf('UtilityScript') !== -1 ||
+								text.indexOf('chrome-extension') !== -1 ||
+								text.indexOf('moz-extension') !== -1 ||
+								text.indexOf('installHook.js') !== -1 ||
+								text.indexOf('updateFiberRecursively') !== -1 ||
+								text.indexOf('updateVirtualChildrenRecursively') !== -1 ||
+								text.indexOf('updateVirtualInstanceRecursively') !== -1 ||
+								text.indexOf('The children should not have changed if we pass in the same set') !== -1 ||
+								text.indexOf('React instrumentation encountered an error') !== -1 ||
+								text.indexOf('fmkadmapgofadopljbjfkapdkoienihi') !== -1 ||
+								text.indexOf('M_ID') !== -1 ||
+								text.indexOf('There is no child at offset') !== -1 ||
+								text.indexOf("Failed to execute 'setEnd' on 'Range'") !== -1 ||
+								text.indexOf("Failed to execute 'setStart' on 'Range'") !== -1
+							);
+						};
+
+						var extractText = function(item) {
+							if (!item) return '';
+							if (typeof item === 'string') return item;
+							var t = '';
+							if (typeof item === 'object') {
+								if (item.name) t += item.name + ' ';
+								if (item.message) t += item.message + ' ';
+								if (item.stack) t += item.stack + ' ';
+								try {
+									t += JSON.stringify(item) + ' ';
+								} catch(e) {}
+							}
+							try {
+								t += String(item) + ' ';
+							} catch(e) {}
+							return t;
+						};
+
+						var shouldFilterLog = function(args) {
+							if (!args || args.length === 0) return false;
+							var combined = '';
+							for (var i = 0; i < args.length; i++) {
+								combined += extractText(args[i]) + ' ';
+							}
+							if (isNoise(combined)) return true;
+							try {
+								var stack = new Error().stack || '';
+								if (isNoise(stack)) return true;
+							} catch(e) {}
+							return false;
+						};
+
 						var origConsoleError = window.console.error;
 						window.console.error = function() {
 							var args = arguments;
 							if (args.length === 0 || args[0] === undefined || args[0] === null) return;
-
-							var combined = '';
-							for (var i = 0; i < args.length; i++) {
-								try {
-									combined += (typeof args[i] === 'object' ? JSON.stringify(args[i]) : String(args[i])) + ' ';
-								} catch(e) {
-									combined += String(args[i]) + ' ';
-								}
-							}
-
-							if (
-								combined.indexOf('bis_skin_checked') !== -1 ||
-								combined.indexOf('UtilityScript') !== -1 ||
-								combined.indexOf('chrome-extension') !== -1 ||
-								combined.indexOf('moz-extension') !== -1 ||
-								combined.indexOf('M_ID') !== -1 ||
-								combined.indexOf('There is no child at offset') !== -1 ||
-								combined.indexOf("Failed to execute 'setEnd' on 'Range'") !== -1 ||
-								combined.indexOf("Failed to execute 'setStart' on 'Range'") !== -1
-							) {
-								return;
-							}
-
-							try {
-								var stack = new Error().stack || '';
-								if (stack.indexOf('UtilityScript') !== -1 || stack.indexOf('chrome-extension:') !== -1 || stack.indexOf('moz-extension:') !== -1) return;
-							} catch(e) {}
-
+							if (shouldFilterLog(args)) return;
 							if (origConsoleError) origConsoleError.apply(console, args);
+						};
+
+						var origConsoleWarn = window.console.warn;
+						window.console.warn = function() {
+							var args = arguments;
+							if (args.length === 0 || args[0] === undefined || args[0] === null) return;
+							if (shouldFilterLog(args)) return;
+							if (origConsoleWarn) origConsoleWarn.apply(console, args);
 						};
 
 						// 3. Catch unhandled errors & rejections emitted by third-party extension scripts
@@ -109,21 +143,12 @@ export function BrowserExtensionGuard(): ReactElement {
 							var msg = (event && (event.message || (event.error && event.error.message))) || String((event && event.error) || '');
 							var filename = (event && event.filename) || '';
 							var stack = (event && event.error && event.error.stack) || '';
+							var combined = msg + ' ' + filename + ' ' + stack;
 
 							if (
 								!msg ||
 								msg === 'undefined' ||
-								filename.indexOf('chrome-extension:') !== -1 ||
-								filename.indexOf('moz-extension:') !== -1 ||
-								stack.indexOf('chrome-extension:') !== -1 ||
-								stack.indexOf('moz-extension:') !== -1 ||
-								msg.indexOf('M_ID') !== -1 ||
-								msg.indexOf('chrome-extension') !== -1 ||
-								msg.indexOf('UtilityScript') !== -1 ||
-								msg.indexOf('bis_skin_checked') !== -1 ||
-								msg.indexOf("Failed to execute 'setEnd' on 'Range'") !== -1 ||
-								msg.indexOf("Failed to execute 'setStart' on 'Range'") !== -1 ||
-								msg.indexOf("There is no child at offset") !== -1 ||
+								isNoise(combined) ||
 								(event && event.error && event.error.name === 'IndexSizeError')
 							) {
 								if (event.preventDefault) event.preventDefault();
@@ -136,19 +161,13 @@ export function BrowserExtensionGuard(): ReactElement {
 							var reason = event && event.reason;
 							var reasonStr = String((reason && reason.message) || reason || '');
 							var stack = String((reason && reason.stack) || '');
+							var combined = reasonStr + ' ' + stack;
 
 							if (
 								!reason ||
 								reasonStr === 'undefined' ||
 								reasonStr === '' ||
-								stack.indexOf('chrome-extension:') !== -1 ||
-								stack.indexOf('moz-extension:') !== -1 ||
-								reasonStr.indexOf('M_ID') !== -1 ||
-								reasonStr.indexOf('chrome-extension') !== -1 ||
-								reasonStr.indexOf('UtilityScript') !== -1 ||
-								reasonStr.indexOf('bis_skin_checked') !== -1 ||
-								reasonStr.indexOf("Failed to execute 'setEnd' on 'Range'") !== -1 ||
-								reasonStr.indexOf("There is no child at offset") !== -1 ||
+								isNoise(combined) ||
 								(reason && reason.name === 'IndexSizeError')
 							) {
 								if (event.preventDefault) event.preventDefault();

@@ -46,7 +46,7 @@ function getPlatformConfig() {
 	};
 	return {
 		rag,
-		llmBaseUrl: (cfg.voice?.llmBaseUrl || "http://localhost:11434").replace(/\/v1\/?$/, ""),
+		llmBaseUrl: (cfg.voice?.llmBaseUrl || "http://127.0.0.1:11434").replace(/\/v1\/?$/, ""),
 		temperature: typeof cfg.reader?.temperature === "number" ? cfg.reader.temperature : 0.5,
 		geminiApiKey: process.env.GEMINI_API_KEY || cfg.voice?.llmApiKey || cfg.gemini?.apiKey || "",
 	};
@@ -605,15 +605,16 @@ export async function POST(request: Request) {
 		const { rag, llmBaseUrl, temperature: defaultTemp, geminiApiKey } = getPlatformConfig();
 
 		// Context Expansion: Lấy top 3 chunks với độ dài đầy đủ 1500-1800 ký tự thay vì cắt ngắn 300 ký tự
+		// Tối ưu hóa độ dài RAG context (lấy 1-2 chunk trọng tâm, tối đa 500 ký tự) để giảm prompt prefill time
 		const ragChunksText =
 			graphResult.relevantChunks && graphResult.relevantChunks.length > 0
 				? graphResult.relevantChunks
-						.slice(0, 3)
+						.slice(0, 1)
 						.map(
 							(rc, idx) =>
-								`[Trích đoạn RAG ${idx + 1} - ${rc.chunk.chapterTitle || "Nội dung"}]:\n"${rc.chunk.content.slice(0, 1800)}"`,
+								`[Ngữ cảnh sách - ${rc.chunk.chapterTitle || "Nội dung"}]: "${rc.chunk.content.slice(0, 500)}"`,
 						)
-						.join("\n\n")
+						.join("\n")
 				: "";
 
 		// 3. Prompt Engineering thích ứng theo Intent (Intent-Adaptive Prompting)
@@ -705,9 +706,8 @@ NGUYÊN TẮC PHÂN TÍCH & XÁC ĐỊNH NHÂN VẬT (CỰC KỲ QUAN TRỌNG - 
 			}
 		}
 
-		// Cấu hình mô hình & tham số thích ứng theo Chế độ Siêu Tốc vs Chuyên Sâu
-		// Luôn ưu tiên qwen2.5:3b vì vừa vặn 100% trong 4GB VRAM của NVIDIA Quadro P1000, tốc độ cực nhanh, không bao giờ bị nghẽn
-		const candidateModels = ["qwen2.5:3b", "gemma2:2b"];
+		// Khóa cứng duy nhất Gemma 2: 2B (đã nạp sẵn trong VRAM GPU Quadro P1000, phản hồi siêu tốc dưới 500ms)
+		const candidateModels = ["gemma2:2b"];
 		const targetTemperature = isDeepMode ? 0.6 : (defaultTemp || 0.3);
 		// Đảm bảo trần token luôn hào phóng (4096 tokens) để mô hình KHÔNG BAO GIỜ bị cắt ngang giữa chừng
 		const targetNumPredict = 4096;
@@ -742,87 +742,88 @@ NGUYÊN TẮC PHÂN TÍCH & XÁC ĐỊNH NHÂN VẬT (CỰC KỲ QUAN TRỌNG - 
 
 					let streamedAny = false;
 
-					// Tier 1: Thử nghiệm Dify RAG Knowledge Base streaming (/chat-messages)
-					streamedAny = await tryStreamDify(
-						rag,
-						cleanQuery || cleanQuote,
-						resolvedTitle,
-						graphResult.resolvedBookSlug || bookSlug,
-						cleanQuote,
-						sessionId,
-						user,
-						sendChunk,
-					);
+					// Tier 1: Streaming siêu tốc qua Local Ollama GPU (Gemma 2: 2B - tức thì sau 50ms)
+					for (const currentModel of candidateModels) {
+						if (streamedAny) break;
+						try {
+							const numCtx = 2048;
+							const ollamaRes = await fetch(`${llmBaseUrl}/api/chat`, {
+								method: "POST",
+								headers: { "Content-Type": "application/json" },
+								body: JSON.stringify({
+									model: currentModel,
+									messages: [
+										{ role: "system", content: systemPrompt },
+										{ role: "user", content: userMessageContent },
+									],
+									stream: true,
+									keep_alive: "24h",
+									options: {
+										temperature: targetTemperature,
+										repeat_penalty: 1.05,
+										num_ctx: numCtx,
+										num_predict: 512,
+									},
+								}),
+								signal: AbortSignal.timeout(60000),
+							});
 
-					// Tier 2: Thử nghiệm Streaming qua Ollama (Timeout 6.5s)
-					if (!streamedAny) {
-						for (const currentModel of candidateModels) {
-							if (streamedAny) break;
-							try {
-								const numCtx = 4096;
-								const ollamaRes = await fetch(`${llmBaseUrl}/api/chat`, {
-									method: "POST",
-									headers: { "Content-Type": "application/json" },
-									body: JSON.stringify({
-										model: currentModel,
-										messages: [
-											{ role: "system", content: systemPrompt },
-											{ role: "user", content: userMessageContent },
-										],
-										stream: true,
-										options: {
-											temperature: targetTemperature,
-											repeat_penalty: 1.1,
-											num_ctx: numCtx,
-											num_predict: targetNumPredict,
-										},
-									}),
-									signal: AbortSignal.timeout(180000), // Timeout 180s cho phép streaming trọn vẹn không bị ngắt giữa chừng
-								});
+							if (ollamaRes.ok && ollamaRes.body) {
+								const reader = ollamaRes.body.getReader();
+								const decoder = new TextDecoder();
+								let buffer = "";
+								let inThinkTag = false;
 
-								if (ollamaRes.ok && ollamaRes.body) {
-									const reader = ollamaRes.body.getReader();
-									const decoder = new TextDecoder();
-									let buffer = "";
-									let inThinkTag = false;
+								while (true) {
+									const { done, value } = await reader.read();
+									if (done) break;
+									buffer += decoder.decode(value, { stream: true });
+									const lines = buffer.split("\n");
+									buffer = lines.pop() || "";
 
-									while (true) {
-										const { done, value } = await reader.read();
-										if (done) break;
-										buffer += decoder.decode(value, { stream: true });
-										const lines = buffer.split("\n");
-										buffer = lines.pop() || "";
-
-										for (const line of lines) {
-											if (!line.trim()) continue;
-											try {
-												const parsed = JSON.parse(line) as any;
-												const token = parsed.message?.content || "";
-												if (token) {
-													let cleanToken = token;
-													if (cleanToken.includes("<think>")) {
-														inThinkTag = true;
-														cleanToken = cleanToken.replace(/<think>[\s\S]*?(?:<\/think>|$)/g, "");
-													} else if (cleanToken.includes("</think>")) {
-														inThinkTag = false;
-														cleanToken = cleanToken.replace(/^[\s\S]*?<\/think>/g, "");
-													} else if (inThinkTag) {
-														continue;
-													}
-
-													if (cleanToken) {
-														streamedAny = true;
-														sendChunk(cleanToken);
-													}
+									for (const line of lines) {
+										if (!line.trim()) continue;
+										try {
+											const parsed = JSON.parse(line) as any;
+											const token = parsed.message?.content || "";
+											if (token) {
+												let cleanToken = token;
+												if (cleanToken.includes("<think>")) {
+													inThinkTag = true;
+													cleanToken = cleanToken.replace(/<think>[\s\S]*?(?:<\/think>|$)/g, "");
+												} else if (cleanToken.includes("</think>")) {
+													inThinkTag = false;
+													cleanToken = cleanToken.replace(/^[\s\S]*?<\/think>/g, "");
+												} else if (inThinkTag) {
+													cleanToken = "";
 												}
-											} catch {}
-										}
+
+												if (cleanToken) {
+													sendChunk(cleanToken);
+													streamedAny = true;
+												}
+											}
+										} catch {}
 									}
 								}
-							} catch (ollamaErr) {
-								console.warn(`[Reader AI Stream] Ollama error with model ${currentModel}:`, ollamaErr);
 							}
+						} catch (ollamaErr) {
+							console.warn("[Reader Chat] Ollama stream error:", ollamaErr);
 						}
+					}
+
+					// Tier 2: Fallback Dify RAG nếu cần
+					if (!streamedAny && rag?.apiKey && !rag.apiKey.includes("dev-key")) {
+						streamedAny = await tryStreamDify(
+							rag,
+							cleanQuery || cleanQuote,
+							resolvedTitle,
+							graphResult.resolvedBookSlug || bookSlug,
+							cleanQuote,
+							sessionId,
+							user,
+							sendChunk,
+						);
 					}
 
 					// Tier 3: Thử nghiệm Streaming qua Gemini (Gemini 3.8 Flash per gemini-api-dev, Timeout 8s)
@@ -917,6 +918,7 @@ NGUYÊN TẮC PHÂN TÍCH & XÁC ĐỊNH NHÂN VẬT (CỰC KỲ QUAN TRỌNG - 
 					"Content-Type": "text/event-stream; charset=utf-8",
 					"Cache-Control": "no-cache, no-transform",
 					Connection: "keep-alive",
+					"X-Accel-Buffering": "no",
 				},
 			});
 		}

@@ -73,11 +73,7 @@ export async function POST(request: Request) {
 
 		if (!tmnCode || !secretKey) {
 			return NextResponse.json(
-				{
-					success: false,
-					error:
-						"Cổng VNPAY chưa được cấu hình Terminal ID (vnp_TmnCode) hoặc Hash Secret trong hệ thống.",
-				},
+				{ success: false, error: "Chưa cấu hình VNPAY_TMN_CODE hoặc VNPAY_HASH_SECRET" },
 				{ status: 500 },
 			);
 		}

@@ -67,9 +67,11 @@ export async function GET(request: Request) {
 		// 3. Detect if request is originating inside the Saleor Dashboard iframe (localhost:9000)
 		const isFromDashboardIframe =
 			referer.includes(":9000") ||
+			referer.includes(":3001") ||
 			referer.includes("/dashboard") ||
 			secFetchDest === "iframe" ||
 			searchParams.get("from") === "dashboard" ||
+			searchParams.get("from") === "admin" ||
 			searchParams.has("id");
 
 		if (isFromDashboardIframe) {

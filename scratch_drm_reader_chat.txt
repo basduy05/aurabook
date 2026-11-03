@@ -1,0 +1,75 @@
+4123: 				timestamp: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+4124: 				isStreaming: true,
+4125: 			},
+4126: 		]);
+4127: 		setIsAiThinking(false);
+4128: 		setTimeout(() => {
+4129: 			scrollToBottom(true);
+4130: 		}, 30);
+4131: 
+4132: 		try {
+4133: 			const res = await fetch("/api/ai/reader-chat", {
+4134: 				method: "POST",
+4135: 				headers: { "Content-Type": "application/json" },
+4136: 				body: JSON.stringify({
+4137: 					query: text,
+4138: 					bookTitle,
+4139: 					bookSlug,
+4140: 					quoteContext: quote,
+4141: 					surroundingContext: surrounding,
+4142: 					user: userProfileRef.current?.email || "reader_web",
+4143: 					stream: true,
+4144: 					aiMode: aiSpeedMode,
+4145: 				}),
+4146: 				signal: abortController.signal,
+4147: 			});
+4148: 
+4149: 			if (!res.ok) {
+4150: 				let errDetail = `Lỗi máy chủ HTTP ${res.status}`;
+4151: 				try {
+4152: 					const errJson = (await res.json()) as any;
+4153: 					if (errJson.error) {
+4154: 						errDetail = errJson.error + (errJson.details ? `: ${errJson.details}` : "");
+4155: 					}
+4156: 				} catch {}
+4157: 				throw new Error(errDetail);
+4158: 			}
+4159: 
+4160: 			const contentType = res.headers.get("content-type") || "";
+4161: 
+4162: 			// Trường hợp 1: Streaming SSE (Real-time token typing)
+4163: 			if (contentType.includes("text/event-stream") && res.body) {
+4164: 				const reader = res.body.getReader();
+4165: 				const decoder = new TextDecoder("utf-8");
+4166: 				let buffer = "";
+4167: 
+4168: 				// Tin nhắn AI đã được khởi tạo ngay lúc bấm gửi
+4169: 
+4170: 				while (true) {
+4171: 					const { done, value } = await reader.read();
+4172: 					if (done) break;
+4173: 					buffer += decoder.decode(value, { stream: true });
+4174: 					const lines = buffer.split("\n");
+4175: 					buffer = lines.pop() || "";
+4176: 
+4177: 					for (const line of lines) {
+4178: 						const trimmed = line.trim();
+4179: 						if (trimmed.startsWith("data: ") && trimmed !== "data: [DONE]") {
+4180: 							try {
+4181: 								const parsed = JSON.parse(trimmed.slice(6)) as any;
+4182: 								if (parsed.error) {
+4183: 									throw new Error(parsed.error);
+4184: 								}
+4185: 								if (parsed.chunk) {
+4186: 									streamedText += parsed.chunk;
+4187: 									setAiMessages((prev) =>
+4188: 										prev.map((m) => (m.id === aiMsgId ? { ...m, text: streamedText, isStreaming: true } : m))
+4189: 									);
+4190: 								}
+4191: 							} catch (chunkErr: any) {
+4192: 								if (chunkErr?.message && !chunkErr.message.includes("JSON")) {
+4193: 									throw chunkErr;
+4194: 								}
+4195: 							}
+4196: 						}
+4197: 					}

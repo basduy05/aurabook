@@ -166,7 +166,7 @@ export async function POST(req: Request) {
 		// Dify offline -> fallback to local Ollama LLM
 	}
 
-	let activeModel = "qwen2.5:3b";
+	let activeModel = "gemma2:2b";
 	try {
 		const cfgPath = getConfigPath();
 		if (fs.existsSync(cfgPath)) {
@@ -198,7 +198,7 @@ export async function POST(req: Request) {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
-					model: "qwen2.5:3b",
+					model: "gemma2:2b",
 					prompt: `Bạn là trợ lý RAG của AuraBook. Trả lời:\n${prompt}`,
 					stream: false,
 					options: { temperature: 0.5, num_predict: 150 },

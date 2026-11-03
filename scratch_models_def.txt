@@ -1,0 +1,30 @@
+734: 				async start(controller) {
+735: 					const sendChunk = (textChunk: string) => {
+736: 						controller.enqueue(encoder.encode(`data: ${JSON.stringify({ chunk: textChunk })}\n\n`));
+737: 					};
+738: 					const sendDone = () => {
+739: 						controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+740: 						controller.close();
+741: 					};
+742: 
+743: 					let streamedAny = false;
+744: 
+745: 					// Tier 1: Thử nghiệm Dify RAG Knowledge Base streaming (/chat-messages)
+746: 					streamedAny = await tryStreamDify(
+747: 						rag,
+748: 						cleanQuery || cleanQuote,
+749: 						resolvedTitle,
+750: 						graphResult.resolvedBookSlug || bookSlug,
+751: 						cleanQuote,
+752: 						sessionId,
+753: 						user,
+754: 						sendChunk,
+755: 					);
+756: 
+757: 					// Tier 2: Thử nghiệm Streaming qua Ollama (Timeout 6.5s)
+758: 					if (!streamedAny) {
+759: 						for (const currentModel of candidateModels) {
+760: 							if (streamedAny) break;
+761: 							try {
+762: 								const numCtx = 2048;
+763: 								const ollamaRes = await fetch(`${llmBaseUrl}/api/chat`, {

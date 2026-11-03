@@ -959,6 +959,39 @@ export function VoiceAgentWidget() {
 	// Inactivity Timeout state & ref (tự động hỏi thăm sau 30s im lặng, nếu tiếp tục im lặng sẽ tự động kết thúc cuộc gọi)
 	const [isSessionPaused, setIsSessionPaused] = useState(false);
 	const [isWaitingInactivityPrompt, setIsWaitingInactivityPrompt] = useState(false);
+	const [showHistoryModal, setShowHistoryModal] = useState(false);
+	const [allSessionsList, setAllSessionsList] = useState<any[]>([]);
+	const [isLoadingSessions, setIsLoadingSessions] = useState(false);
+	const idleAutoCloseTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+	const loadChatHistory = useCallback(async () => {
+		setIsLoadingSessions(true);
+		try {
+			const res = await fetch("/api/ai/voice-agent/sessions");
+			if (res.ok) {
+				const data = (await res.json()) as any;
+				if (Array.isArray(data.sessions)) {
+					setAllSessionsList(data.sessions);
+				}
+			}
+		} catch (e) {
+			console.warn("Lỗi tải lịch sử chat:", e);
+		} finally {
+			setIsLoadingSessions(false);
+		}
+	}, []);
+
+	const restorePreviousSession = (sess: any) => {
+		if (Array.isArray(sess.messages) && sess.messages.length > 0) {
+			setMessages(sess.messages);
+			messagesRef.current = sess.messages;
+		}
+		// restore topic
+		if (sess.id) sessionIdRef.current = sess.id;
+		setShowHistoryModal(false);
+	};
+
+
 	const isWaitingInactivityPromptRef = useRef(false);
 	const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
 	const inactivityGraceTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -1043,6 +1076,63 @@ export function VoiceAgentWidget() {
 			messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
 		}
 	}, [messages, isOpen, sessionPhase, streamingText, liveUserTranscript]);
+
+	// HÀM DỪNG TOÀN BỘ ÂM THANH NGAY LẬP TỨC (Audio Element, SpeechSynthesis, Hold Music)
+	const stopAllAudio = useCallback(() => {
+		try {
+			if (audioElementRef.current) {
+				audioElementRef.current.pause();
+				audioElementRef.current.currentTime = 0;
+				audioElementRef.current.src = "";
+				audioElementRef.current.onended = null;
+				audioElementRef.current.onerror = null;
+			}
+		} catch {}
+		try {
+			if (typeof window !== "undefined" && window.speechSynthesis) {
+				window.speechSynthesis.cancel();
+			}
+		} catch {}
+		try {
+			holdMusicPlayerRef.current?.stop();
+		} catch {}
+		isAudioPlayingRef.current = false;
+		agentSpeakingRef.current = false;
+		isFarewellSpeakingRef.current = false;
+		setIsFarewellSpeaking(false);
+		setAgentSpeaking(false);
+	}, []);
+
+	const resetIdleTimer = useCallback(() => {
+		if (idleAutoCloseTimerRef.current) {
+			clearTimeout(idleAutoCloseTimerRef.current);
+		}
+		if (isOpen) {
+			idleAutoCloseTimerRef.current = setTimeout(() => {
+				console.log("[VoiceAgent] Đóng widget do 3 phút không hoạt động");
+				stopAllAudio();
+				setIsOpen(false);
+			}, 180000); // 3 phút tự động đóng
+		}
+	}, [isOpen, stopAllAudio]);
+
+	useEffect(() => {
+		if (isOpen) {
+			resetIdleTimer();
+		} else if (idleAutoCloseTimerRef.current) {
+			clearTimeout(idleAutoCloseTimerRef.current);
+		}
+		return () => {
+			if (idleAutoCloseTimerRef.current) clearTimeout(idleAutoCloseTimerRef.current);
+		};
+	}, [isOpen, resetIdleTimer]);
+
+	// Dừng phát âm thanh ngay lập tức khi tắt hoặc thu nhỏ widget
+	useEffect(() => {
+		if (!isOpen) {
+			stopAllAudio();
+		}
+	}, [isOpen, stopAllAudio]);
 
 	const formatDuration = (secs: number) => {
 		const m = Math.floor(secs / 60)
@@ -1593,7 +1683,7 @@ export function VoiceAgentWidget() {
 					body: JSON.stringify({
 						query: cleanQuery,
 						topic: selectedTopic,
-						history: newMsgHistory,
+						history: newMsgHistory as HistoryIcon,
 						customerName,
 						customerPhone,
 						customerGender,
@@ -2783,7 +2873,30 @@ export function VoiceAgentWidget() {
 
 						<div className="flex items-center gap-1">
 							<button
-								onClick={() => setIsOpen(false)}
+								type="button"
+								onClick={() => {
+									loadChatHistory();
+									setShowHistoryModal(true);
+								}}
+								className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+								title="Lịch sử cuộc trò chuyện"
+							>
+								<HistoryIcon className="h-4 w-4" />
+							</button>
+							<button
+								type="button"
+								onClick={resetToNewSession}
+								className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+								title="Bắt đầu cuộc trò chuyện mới"
+							>
+								<RotateCcw className="h-3.5 w-3.5" />
+							</button>
+							<button
+								type="button"
+								onClick={() => {
+									stopAllAudio();
+									setIsOpen(false);
+								}}
 								className="rounded-lg p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
 								title="Thu nhỏ cửa sổ"
 							>
@@ -2791,6 +2904,86 @@ export function VoiceAgentWidget() {
 							</button>
 						</div>
 					</div>
+
+					{/* MODAL LỊCH SỬ CUỘC TRÒ CHUYỆN */}
+					{showHistoryModal && (
+						<div className="absolute inset-0 z-50 flex flex-col bg-background/95 backdrop-blur-md p-4 animate-in fade-in">
+							<div className="flex items-center justify-between pb-3 border-b border-border">
+								<div className="flex items-center gap-2">
+									<div className="p-1.5 rounded-lg bg-primary/10 text-primary">
+										<HistoryIcon className="h-4 w-4" />
+									</div>
+									<div>
+										<h4 className="text-sm font-bold text-foreground">Lịch sử cuộc trò chuyện</h4>
+										<p className="text-[11px] text-muted-foreground">Các phiên tư vấn trước đây của bạn</p>
+									</div>
+								</div>
+								<div className="flex items-center gap-1">
+									<Button
+										size="sm"
+										variant="outline-solid"
+										onClick={() => {
+											setShowHistoryModal(false);
+											resetToNewSession();
+										}}
+										className="h-7 text-[11px] gap-1"
+									>
+										<RotateCcw className="h-3 w-3" />
+										<span>Phiên mới</span>
+									</Button>
+									<button
+										type="button"
+										onClick={() => setShowHistoryModal(false)}
+										className="p-1 rounded-md text-muted-foreground hover:text-foreground"
+									>
+										<X className="h-4 w-4" />
+									</button>
+								</div>
+							</div>
+
+							<div className="flex-1 overflow-y-auto py-3 space-y-2.5">
+								{isLoadingSessions ? (
+									<div className="flex flex-col items-center justify-center py-12 text-muted-foreground text-xs gap-2">
+										<Loader size="sm" text="Đang tải lịch sử phiên..." />
+									</div>
+								) : allSessionsList.length === 0 ? (
+									<div className="text-center py-12 text-muted-foreground text-xs space-y-2">
+										<p>Chưa có phiên trò chuyện nào được lưu.</p>
+										<Button size="sm" onClick={() => setShowHistoryModal(false)} className="h-7 text-xs">
+											Bắt đầu trò chuyện ngay
+										</Button>
+									</div>
+								) : (
+									allSessionsList.slice(0, 15).map((sess, idx) => {
+										const msgCount = Array.isArray(sess.messages) ? sess.messages.length : 0;
+										const lastMsg = msgCount > 0 ? sess.messages[msgCount - 1]?.text : "";
+										const dateLabel = sess.startedAt ? new Date(sess.startedAt).toLocaleString("vi-VN") : `Phiên #${idx + 1}`;
+
+										return (
+											<div
+												key={sess.id || idx}
+												onClick={() => restorePreviousSession(sess)}
+												className="p-3 rounded-xl border border-border bg-card hover:border-primary/50 hover:bg-primary/5 cursor-pointer transition-all space-y-1 shadow-2xs group"
+											>
+												<div className="flex items-center justify-between text-xs font-semibold text-foreground">
+													<span className="truncate max-w-[200px]">{sess.topic || "Tư vấn chọn sách"}</span>
+													<span className="text-[10px] text-muted-foreground font-mono">{msgCount} tin nhắn</span>
+												</div>
+												{lastMsg && (
+													<p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
+														{lastMsg}
+													</p>
+												)}
+												<div className="text-[10px] text-muted-foreground/80 pt-0.5">
+													{dateLabel}
+												</div>
+											</div>
+										);
+									})
+								)}
+							</div>
+						</div>
+					)}
 
 					{/* POPUP CONFIRM KẾT THÚC CUỘC GỌI / ĐOẠN CHAT */}
 					{showEndConfirm && (
@@ -3159,7 +3352,7 @@ export function VoiceAgentWidget() {
 													<span className="font-semibold">
 														{isUser ? (customerName ? `${customerGender} ${customerName}` : "Bạn") : "Aura AI"}
 													</span>
-													<span className="tabular-nums">{m.timestamp}</span>
+													
 												</div>
 
 												{/* Khối hiển thị suy nghĩ của AI (nếu có) */}
@@ -3185,6 +3378,7 @@ export function VoiceAgentWidget() {
 															addedBookIds={addedBookIds}
 															onAddToCart={handleAddToCart}
 															onViewDetail={(slug) => {
+																stopAllAudio();
 																router.push(`/products/${slug}`);
 																setIsOpen(false);
 															}}
@@ -3311,7 +3505,15 @@ export function VoiceAgentWidget() {
 											<RotateCcw className="h-3 w-3 mr-1" />
 											<span>Tạo phiên mới</span>
 										</Button>
-										<Button size="sm" variant="ghost" onClick={() => setIsOpen(false)} className="h-8 text-xs text-muted-foreground hover:text-foreground">
+										<Button
+											size="sm"
+											variant="ghost"
+											onClick={() => {
+												stopAllAudio();
+												setIsOpen(false);
+											}}
+											className="h-8 text-xs text-muted-foreground hover:text-foreground"
+										>
 											<span>Đóng</span>
 										</Button>
 									</div>
@@ -3695,7 +3897,10 @@ export function VoiceAgentWidget() {
 								</Button>
 								<Button
 									variant="ghost"
-									onClick={() => setIsOpen(false)}
+									onClick={() => {
+										stopAllAudio();
+										setIsOpen(false);
+									}}
 									className="w-full h-9 rounded-button text-xs text-muted-foreground hover:text-foreground"
 								>
 									<span>Đóng cửa sổ</span>
